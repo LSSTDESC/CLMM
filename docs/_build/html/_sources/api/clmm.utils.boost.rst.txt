@@ -1,0 +1,7 @@
+clmm.utils.boost module
+=======================
+
+.. automodule:: clmm.utils.boost
+   :members:
+   :undoc-members:
+   :show-inheritance:

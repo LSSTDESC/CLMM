@@ -1,7 +1,0 @@
-clmm.z\_distributions module
-============================
-
-.. automodule:: clmm.z_distributions
-   :members:
-   :undoc-members:
-   :show-inheritance:

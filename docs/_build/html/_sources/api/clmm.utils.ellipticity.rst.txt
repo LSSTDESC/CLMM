@@ -1,0 +1,7 @@
+clmm.utils.ellipticity module
+=============================
+
+.. automodule:: clmm.utils.ellipticity
+   :members:
+   :undoc-members:
+   :show-inheritance:

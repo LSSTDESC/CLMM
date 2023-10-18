@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model WL Profiles (Object Oriented) &mdash; CLMM 1.7.1 documentation</title>
+  <title>Model WL Profiles (Object Oriented) &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Model WL Profiles (Object Oriented)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/demo_theory_functionality_oo.rst.txt" rel="nofollow"> View page source</a>
@@ -137,9 +151,9 @@
            <div itemprop="articleBody">
              
   <section id="model-wl-profiles-object-oriented">
-<h1>Model WL Profiles (Object Oriented)<a class="headerlink" href="#model-wl-profiles-object-oriented" title="Permalink to this heading"></a></h1>
+<h1>Model WL Profiles (Object Oriented)<a class="headerlink" href="#model-wl-profiles-object-oriented" title="Link to this heading"></a></h1>
 <section id="notebook-for-generating-an-example-galaxy-cluster-model">
-<h2>Notebook for generating an example galaxy cluster model.<a class="headerlink" href="#notebook-for-generating-an-example-galaxy-cluster-model" title="Permalink to this heading"></a></h2>
+<h2>Notebook for generating an example galaxy cluster model.<a class="headerlink" href="#notebook-for-generating-an-example-galaxy-cluster-model" title="Link to this heading"></a></h2>
 <p>This notebook goes through the steps to generate model data for galaxy
 cluster weak lensing observables. In particular, we define a galaxy
 cluster model that follows and NFW distribution and generate various
@@ -147,19 +161,18 @@ profiles for the model (mass density, convergence, shear, etc.), which
 we plot. Note, a full pipeline to measure a galaxy cluster weak lensing
 mass requires fitting the observed (or mock) data to a model. In this
 notebook we use the OO interface to theory.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;.*(!).*&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
 <p>Imports specific to clmm</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CLMM_MODELING_BACKEND&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ccl&#39;</span> <span class="c1"># here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span>
+    <span class="s2">&quot;CLMM_MODELING_BACKEND&quot;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ccl&quot;</span>  <span class="c1"># here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)</span>
 
 <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
@@ -169,28 +182,28 @@ notebook we use the OO interface to theory.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
 </pre></div>
 </div>
 <p>Define a cosmology using astropy</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.27</span><span class="o">-</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Define the galaxy cluster model. Here, we choose parameters that
 describe the galaxy cluster model, including the mass definition,
 concentration, and mass distribution. For the mass distribution, we
 choose a distribution that follows an NFW profile.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;nfw&quot;</span><span class="p">)</span>
 
 <span class="n">moo</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">moo</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="mf">1.e15</span><span class="p">)</span>
+<span class="n">moo</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="mf">1.0e15</span><span class="p">)</span>
 
-<span class="n">z_cl</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">z_cl</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-<span class="c1">#source properties</span>
-<span class="n">z_source</span> <span class="o">=</span> <span class="mf">2.</span> <span class="c1">#all sources in the same plane</span>
-<span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">z_distributions</span><span class="o">.</span><span class="n">chang2013</span> <span class="c1">#sources redshift following a distribution</span>
+<span class="c1"># source properties</span>
+<span class="n">z_src</span> <span class="o">=</span> <span class="mf">2.0</span>  <span class="c1"># all sources in the same plane</span>
+<span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">redshift</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">chang2013</span>  <span class="c1"># sources redshift following a distribution</span>
 <span class="n">alpha</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -199,91 +212,94 @@ choose a distribution that follows an NFW profile.</p>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 <span class="n">Sigma</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 <span class="n">DeltaSigma</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-<span class="n">gammat</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
-<span class="n">kappa</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+<span class="n">gammat</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
-<span class="n">gt</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
-<span class="c1">#Lensing quantities assuming sources follow a given redshift distribution.</span>
-<span class="n">gt_z</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s1">&#39;distribution&#39;</span><span class="p">,</span>
-                                        <span class="n">approx</span><span class="o">=</span><span class="s1">&#39;order2&#39;</span><span class="p">)</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+<span class="c1"># Lensing quantities assuming sources follow a given redshift distribution.</span>
+<span class="n">gt_z</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span>
+    <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
+<span class="p">)</span>
 
-<span class="n">mu</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
-<span class="n">mu_bias</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification_bias</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+<span class="n">mu_bias</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification_bias</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.7.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">72</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Magnification</span> <span class="ow">is</span> <span class="n">negative</span> <span class="k">for</span> <span class="n">certain</span> <span class="n">radii</span><span class="p">,</span>                     <span class="n">returning</span> <span class="n">nan</span> <span class="k">for</span> <span class="n">magnification</span> <span class="n">bias</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="o">.</span>
-<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.7.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">74</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">power</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">66</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Magnification</span> <span class="ow">is</span> <span class="n">negative</span> <span class="k">for</span> <span class="n">certain</span> <span class="n">radii</span><span class="p">,</span>                     <span class="n">returning</span> <span class="n">nan</span> <span class="k">for</span> <span class="n">magnification</span> <span class="n">bias</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="o">.</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">70</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">power</span>
 </pre></div>
 </div>
 <p>Plot the predicted profiles</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">profile_vals</span><span class="p">,</span> <span class="n">profile_label</span><span class="o">=</span><span class="s1">&#39;rho&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">profile_vals</span><span class="p">,</span> <span class="n">profile_label</span><span class="o">=</span><span class="s2">&quot;rho&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">profile_vals</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">profile_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;r [Mpc]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;xx-large&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">profile_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;xx-large&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">rho_{</span><span class="se">\\</span><span class="s1">rm 3d}$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">rho_{</span><span class="se">\\</span><span class="s2">rm 3d}$&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_theory_functionality_oo_15_0.png" src="../_images/demo_theory_functionality_oo_15_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm 2d}$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_16_0.png" src="../_images/demo_theory_functionality_oo_16_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">Sigma_{</span><span class="se">\\</span><span class="s1">rm 2d}$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">DeltaSigma</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Delta</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm 2d}$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_17_0.png" src="../_images/demo_theory_functionality_oo_17_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">DeltaSigma</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">Delta</span><span class="se">\\</span><span class="s1">Sigma_{</span><span class="se">\\</span><span class="s1">rm 2d}$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">kappa$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_18_0.png" src="../_images/demo_theory_functionality_oo_18_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">kappa$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gammat</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">gamma_t$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_19_0.png" src="../_images/demo_theory_functionality_oo_19_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gammat</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">gamma_t$&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="s2">&quot;$g_t$&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;single plane&quot;</span><span class="p">)</span>
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gt_z</span><span class="p">,</span> <span class="s2">&quot;$g_t$&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;redshift distribution&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_20_0.png" src="../_images/demo_theory_functionality_oo_20_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;single plane&#39;</span><span class="p">)</span>
-<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">gt_z</span><span class="p">,</span> <span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;redshift distribution&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="s2">&quot;$\mu$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_oo_21_0.png" src="../_images/demo_theory_functionality_oo_21_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="s1">&#39;$\mu$&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<img alt="../_images/demo_theory_functionality_oo_22_0.png" src="../_images/demo_theory_functionality_oo_22_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mu_bias</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">profile_label</span> <span class="o">=</span> <span class="s1">&#39;$\delta_{\mu}$&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">alpha$ =&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mu_bias</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;$\delta_{\mu}$&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">alpha$ =&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_profile</span><span class="p">(</span>
+    <span class="n">r3d</span><span class="p">,</span> <span class="n">mu_bias</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">profile_label</span><span class="o">=</span><span class="s2">&quot;$\delta_{\mu}$&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">alpha$ =&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="p">)</span>
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mu_bias</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;$\delta_{\mu}$&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">alpha$ =&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;xx-large&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_oo_23_1.png" src="../_images/demo_theory_functionality_oo_23_1.png" />
+<img alt="../_images/demo_theory_functionality_oo_22_1.png" src="../_images/demo_theory_functionality_oo_22_1.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The 2-halo term excess surface density is currently only implemented for the CCL and NC backends</span>
 <span class="c1"># An error will be raised if using the CT backend instead</span>
 
 <span class="n">DeltaSigma_2h</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density_2h</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">DeltaSigma_2h</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">Delta</span><span class="se">\\</span><span class="s1">Sigma_{</span><span class="se">\\</span><span class="s1">rm 2h}$&#39;</span><span class="p">)</span>
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">DeltaSigma_2h</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Delta</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm 2h}$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_oo_24_0.png" src="../_images/demo_theory_functionality_oo_24_0.png" />
+<img alt="../_images/demo_theory_functionality_oo_23_0.png" src="../_images/demo_theory_functionality_oo_23_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The 2-halo term excess surface density is currently only implemented for the CCL and NC backends</span>
 <span class="c1"># An error will be raised if using the CT backend instead</span>
 
 <span class="n">Sigma_2h</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_surface_density_2h</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma_2h</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">Delta</span><span class="se">\\</span><span class="s1">Sigma_{</span><span class="se">\\</span><span class="s1">rm 2h}$&#39;</span><span class="p">)</span>
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma_2h</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Delta</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm 2h}$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_oo_25_0.png" src="../_images/demo_theory_functionality_oo_25_0.png" />
+<img alt="../_images/demo_theory_functionality_oo_24_0.png" src="../_images/demo_theory_functionality_oo_24_0.png" />
 </section>
 <section id="side-note-regarding-the-einasto-profile-ccl-and-nc-backends-only">
-<h2>Side note regarding the Einasto profile (CCL and NC backends only)<a class="headerlink" href="#side-note-regarding-the-einasto-profile-ccl-and-nc-backends-only" title="Permalink to this heading"></a></h2>
+<h2>Side note regarding the Einasto profile (CCL and NC backends only)<a class="headerlink" href="#side-note-regarding-the-einasto-profile-ccl-and-nc-backends-only" title="Link to this heading"></a></h2>
 <p>The Einasto profile is supported by both the CCL and NumCosmo backends.
 The value of the slope of the Einasto profile <span class="math notranslate nohighlight">\(\alpha_{\rm ein}\)</span>
 can be defined by the user, using the <code class="docutils literal notranslate"><span class="pre">set_einasto_alpha</span></code> method. If
@@ -296,10 +312,10 @@ only available for CCL version &gt;= 2.6.</strong> Earlier versions only allow t
 default option.</p>
 <p>The verbose option allows to print the value of <span class="math notranslate nohighlight">\(\alpha\)</span> that is
 being used, as follows:</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo_ein</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo_ein</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;einasto&quot;</span><span class="p">)</span>
 <span class="n">moo_ein</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
 <span class="n">moo_ein</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">moo_ein</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="mf">1.e15</span><span class="p">)</span>
+<span class="n">moo_ein</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="mf">1.0e15</span><span class="p">)</span>
 
 <span class="c1"># With the NC backend or CCL &gt;=2.6 you may set the slope to the value of your choosing.</span>
 <span class="c1"># Otherwise, the backend default value will be used</span>
@@ -307,13 +323,46 @@ being used, as follows:</p>
 
 <span class="n">r3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">moo_ein</span><span class="o">.</span><span class="n">eval_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">rho_{</span><span class="se">\\</span><span class="s1">rm 3d}$&#39;</span><span class="p">)</span>
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">rho_{</span><span class="se">\\</span><span class="s2">rm 3d}$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Einasto</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.17</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_oo_27_1.png" src="../_images/demo_theory_functionality_oo_27_1.png" />
+<img alt="../_images/demo_theory_functionality_oo_26_1.png" src="../_images/demo_theory_functionality_oo_26_1.png" />
+</section>
+<section id="side-note-regarding-the-einasto-profile-ccl-backend-only">
+<h2>Side note regarding the Einasto profile (CCL backend only)<a class="headerlink" href="#side-note-regarding-the-einasto-profile-ccl-backend-only" title="Link to this heading"></a></h2>
+<p>For CCL versions &gt;= 2.8.1.dev73+g86125b08, the surface mass density
+profile can be calculated with the quad_vec numerial integration in
+addition to the default FFTLog. This option will increase the precision
+of the profile at large radii and can be enabled by calling
+<code class="docutils literal notranslate"><span class="pre">set_projected_quad(True)</span></code>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># use quad_vec</span>
+<span class="n">moo_ein</span><span class="o">.</span><span class="n">set_projected_quad</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">Sigma_quad</span> <span class="o">=</span> <span class="n">moo_ein</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma_quad</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm quad}$&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Einasto</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3713561546989172</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_theory_functionality_oo_28_1.png" src="../_images/demo_theory_functionality_oo_28_1.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># revert the effect from the previous cell</span>
+<span class="n">moo_ein</span><span class="o">.</span><span class="n">set_projected_quad</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># default behavior</span>
+<span class="n">Sigma_FFTLog</span> <span class="o">=</span> <span class="n">moo_ein</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plot_profile</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">Sigma_FFTLog</span><span class="p">,</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">Sigma_{</span><span class="se">\\</span><span class="s2">rm FFTLog}$&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Einasto</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3713561546989172</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_theory_functionality_oo_29_1.png" src="../_images/demo_theory_functionality_oo_29_1.png" />
 </section>
 </section>
 

@@ -22,7 +22,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -31,7 +31,7 @@ Define cosmology object
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 First, we want to generate a :math:`\Delta\Sigma` (excess surface
 density) profile from mock data, to which we can apply boost factors.
@@ -43,21 +43,24 @@ Generate cluster object from mock data
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
-    cluster_m = 1.e15
+    cluster_m = 1.0e15
     cluster_z = 0.3
     concentration = 4
     ngals = 1000
     
-    zsrc_min = cluster_z + 0.1 # we only want to draw background galaxies
+    zsrc_min = cluster_z + 0.1  # we only want to draw background galaxies
     
-    noisy_data_z = mock.generate_galaxy_catalog(cluster_m,
-                                                cluster_z,
-                                                concentration,
-                                                cosmo,
-                                                'chang13',
-                                                zsrc_min=zsrc_min,
-                                                shapenoise=0.005,
-                                                photoz_sigma_unscaled=0.05, ngals=ngals)
+    noisy_data_z = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        "chang13",
+        zsrc_min=zsrc_min,
+        shapenoise=0.005,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals,
+    )
 
 Loading this into a CLMM cluster object centered on (0,0)
 
@@ -65,8 +68,7 @@ Loading this into a CLMM cluster object centered on (0,0)
 
     cluster_ra = 0.0
     cluster_dec = 0.0
-    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
-                                   cluster_z, noisy_data_z)
+    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, noisy_data_z)
 
 Compute cross and tangential excess surface density for each source
 galaxy
@@ -74,14 +76,20 @@ galaxy
 .. code:: ipython3
 
     _ = cl.compute_tangential_and_cross_components(
-        geometry="flat", shape_component1='e1', shape_component2='e2', 
-        tan_component='DeltaSigma_tan', cross_component='DeltaSigma_cross',
-        add=True, cosmo=cosmo, is_deltasigma=True)
+        geometry="flat",
+        shape_component1="e1",
+        shape_component2="e2",
+        tan_component="DeltaSigma_tan",
+        cross_component="DeltaSigma_cross",
+        add=True,
+        cosmo=cosmo,
+        is_deltasigma=True,
+    )
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -90,17 +98,22 @@ Calculate the binned profile
 
 .. code:: ipython3
 
-    cl.make_radial_profile("kpc", cosmo=cosmo, 
-                           tan_component_in='DeltaSigma_tan', cross_component_in='DeltaSigma_cross',
-                           tan_component_out='DeltaSigma_tan', cross_component_out='DeltaSigma_cross',
-                           table_name='DeltaSigma_profile')
+    cl.make_radial_profile(
+        "kpc",
+        cosmo=cosmo,
+        tan_component_in="DeltaSigma_tan",
+        cross_component_in="DeltaSigma_cross",
+        tan_component_out="DeltaSigma_tan",
+        cross_component_out="DeltaSigma_cross",
+        table_name="DeltaSigma_profile",
+    )
     # Format columns for display
     for col in cl.DeltaSigma_profile.colnames:
         fmt = cl.DeltaSigma_profile[col].info.format
-        if 'DeltaSigma' in col:
-            fmt = '.2e'
-        elif any(typ in col for typ in ('z', 'radius')):
-            fmt = '.2f'
+        if "DeltaSigma" in col:
+            fmt = ".2e"
+        elif any(typ in col for typ in ("z", "radius")):
+            fmt = ".2f"
         cl.DeltaSigma_profile[col].info.format = fmt
     # Show
     cl.DeltaSigma_profile.show_in_notebook()
@@ -111,18 +124,18 @@ Calculate the binned profile
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455174878864-845689" class="table-striped table-bordered table-condensed">
+    <table id="table140312001036944-695941" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-    <tr><td>0</td><td>126.33</td><td>508.50</td><td>673.87</td><td>1.84e+14</td><td>1.12e+13</td><td>3.45e+11</td><td>2.42e+12</td><td>1.31</td><td>0.17</td><td>19</td><td>19.0</td></tr>
-    <tr><td>1</td><td>673.87</td><td>988.75</td><td>1221.41</td><td>1.13e+14</td><td>3.50e+12</td><td>1.92e+12</td><td>2.71e+12</td><td>1.13</td><td>0.09</td><td>57</td><td>57.0</td></tr>
-    <tr><td>2</td><td>1221.41</td><td>1533.45</td><td>1768.95</td><td>7.58e+13</td><td>2.35e+12</td><td>7.11e+10</td><td>1.80e+12</td><td>1.13</td><td>0.06</td><td>87</td><td>87.0</td></tr>
-    <tr><td>3</td><td>1768.95</td><td>2061.71</td><td>2316.49</td><td>5.67e+13</td><td>1.85e+12</td><td>2.23e+12</td><td>1.47e+12</td><td>1.32</td><td>0.09</td><td>96</td><td>96.0</td></tr>
-    <tr><td>4</td><td>2316.49</td><td>2598.44</td><td>2864.03</td><td>4.46e+13</td><td>1.34e+12</td><td>6.92e+11</td><td>1.31e+12</td><td>1.31</td><td>0.05</td><td>163</td><td>163.0</td></tr>
-    <tr><td>5</td><td>2864.03</td><td>3154.61</td><td>3411.57</td><td>3.24e+13</td><td>1.18e+12</td><td>2.35e+12</td><td>1.22e+12</td><td>1.35</td><td>0.06</td><td>164</td><td>164.0</td></tr>
-    <tr><td>6</td><td>3411.57</td><td>3700.92</td><td>3959.11</td><td>2.69e+13</td><td>1.19e+12</td><td>-1.25e+12</td><td>1.34e+12</td><td>1.19</td><td>0.05</td><td>193</td><td>193.0</td></tr>
-    <tr><td>7</td><td>3959.11</td><td>4185.57</td><td>4506.65</td><td>2.47e+13</td><td>1.38e+12</td><td>-2.37e+11</td><td>1.35e+12</td><td>1.24</td><td>0.06</td><td>129</td><td>129.0</td></tr>
-    <tr><td>8</td><td>4506.65</td><td>4729.89</td><td>5054.19</td><td>1.96e+13</td><td>1.63e+12</td><td>-1.19e+12</td><td>2.13e+12</td><td>1.39</td><td>0.09</td><td>69</td><td>69.0</td></tr>
-    <tr><td>9</td><td>5054.19</td><td>5270.56</td><td>5601.73</td><td>1.97e+13</td><td>3.31e+12</td><td>6.14e+11</td><td>3.02e+12</td><td>1.22</td><td>0.18</td><td>23</td><td>23.0</td></tr>
+    <tr><td>0</td><td>129.68</td><td>404.29</td><td>662.49</td><td>2.11e+14</td><td>1.21e+13</td><td>2.00e+12</td><td>2.58e+12</td><td>1.49</td><td>0.15</td><td>21</td><td>21.0</td></tr>
+    <tr><td>1</td><td>662.49</td><td>897.54</td><td>1195.31</td><td>1.38e+14</td><td>1.38e+13</td><td>-9.11e+10</td><td>4.90e+12</td><td>1.15</td><td>0.08</td><td>50</td><td>50.0</td></tr>
+    <tr><td>2</td><td>1195.31</td><td>1509.51</td><td>1728.12</td><td>7.95e+13</td><td>3.68e+12</td><td>-6.72e+11</td><td>2.53e+12</td><td>1.20</td><td>0.08</td><td>68</td><td>68.0</td></tr>
+    <tr><td>3</td><td>1728.12</td><td>2012.26</td><td>2260.93</td><td>5.73e+13</td><td>1.86e+12</td><td>-2.10e+12</td><td>1.76e+12</td><td>1.21</td><td>0.07</td><td>103</td><td>103.0</td></tr>
+    <tr><td>4</td><td>2260.93</td><td>2551.61</td><td>2793.74</td><td>4.40e+13</td><td>1.50e+12</td><td>1.01e+12</td><td>1.17e+12</td><td>1.20</td><td>0.05</td><td>130</td><td>130.0</td></tr>
+    <tr><td>5</td><td>2793.74</td><td>3058.68</td><td>3326.55</td><td>3.71e+13</td><td>1.27e+12</td><td>-4.86e+11</td><td>1.44e+12</td><td>1.30</td><td>0.06</td><td>157</td><td>157.0</td></tr>
+    <tr><td>6</td><td>3326.55</td><td>3605.89</td><td>3859.37</td><td>3.01e+13</td><td>1.57e+12</td><td>2.20e+12</td><td>2.82e+12</td><td>1.30</td><td>0.05</td><td>192</td><td>192.0</td></tr>
+    <tr><td>7</td><td>3859.37</td><td>4079.44</td><td>4392.18</td><td>2.39e+13</td><td>1.22e+12</td><td>5.17e+11</td><td>1.47e+12</td><td>1.37</td><td>0.06</td><td>144</td><td>144.0</td></tr>
+    <tr><td>8</td><td>4392.18</td><td>4635.51</td><td>4924.99</td><td>1.82e+13</td><td>1.66e+12</td><td>2.09e+12</td><td>1.65e+12</td><td>1.28</td><td>0.07</td><td>87</td><td>87.0</td></tr>
+    <tr><td>9</td><td>4924.99</td><td>5107.68</td><td>5457.80</td><td>1.28e+13</td><td>3.50e+12</td><td>-1.97e+12</td><td>2.42e+12</td><td>1.17</td><td>0.09</td><td>48</td><td>48.0</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -146,14 +159,14 @@ Calculate the binned profile
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455174878864-845689').dataTable()");
+        console.log("$('#table140312001036944-695941').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455174878864-845689').dataTable({
+        $('#table140312001036944-695941').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -170,12 +183,16 @@ Plot the :math:`\Delta\Sigma` profile
 
 .. code:: ipython3
 
-    plt.errorbar(cl.DeltaSigma_profile['radius'], cl.DeltaSigma_profile['DeltaSigma_tan'],
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+    )
     
-    plt.title('DeltaSigma profile')
+    plt.title("DeltaSigma profile")
     plt.xlabel("Radius [kpc]")
-    plt.ylabel('$\Delta\Sigma [M_\odot\; Mpc^{-2}]$')
+    plt.ylabel("$\Delta\Sigma [M_\odot\; Mpc^{-2}]$")
     
     plt.show()
 
@@ -201,16 +218,18 @@ First, we can calculate the boost factors from the two models.
 
 .. code:: ipython3
 
-    nfw_boost = u.compute_nfw_boost(cl.DeltaSigma_profile['radius'],rs=1000, b0=0.1)
+    nfw_boost = u.compute_nfw_boost(cl.DeltaSigma_profile["radius"], rscale=1000, boost0=0.1)
     
-    powerlaw_boost = u.compute_powerlaw_boost(cl.DeltaSigma_profile['radius'],rs=1000, b0=0.1, alpha=-1.0)
+    powerlaw_boost = u.compute_powerlaw_boost(
+        cl.DeltaSigma_profile["radius"], rscale=1000, boost0=0.1, alpha=-1.0
+    )
 
 Plot the two boost factors, :math:`B(R)`
 
 .. code:: ipython3
 
-    plt.plot(cl.DeltaSigma_profile['radius'],nfw_boost,label='NFW boost factor')
-    plt.plot(cl.DeltaSigma_profile['radius'],powerlaw_boost,label='Powerlaw boost factor')
+    plt.plot(cl.DeltaSigma_profile["radius"], nfw_boost, label="NFW boost factor")
+    plt.plot(cl.DeltaSigma_profile["radius"], powerlaw_boost, label="Powerlaw boost factor")
     plt.xlabel("Radius [kpc]")
     plt.ylabel("$B(R)$")
     plt.legend()
@@ -256,28 +275,46 @@ First we will apply the boost factor with
 
 .. code:: ipython3
 
-    Sigma_corrected_powerlaw_boost = u.correct_sigma_with_boost_values(cl.DeltaSigma_profile['DeltaSigma_tan'],
-                                                                       powerlaw_boost)
-    Sigma_corrected_nfw_boost = u.correct_sigma_with_boost_values(cl.DeltaSigma_profile['DeltaSigma_tan'],
-                                                                  nfw_boost)
+    Sigma_corrected_powerlaw_boost = u.correct_sigma_with_boost_values(
+        cl.DeltaSigma_profile["DeltaSigma_tan"], powerlaw_boost
+    )
+    Sigma_corrected_nfw_boost = u.correct_sigma_with_boost_values(
+        cl.DeltaSigma_profile["DeltaSigma_tan"], nfw_boost
+    )
 
 Plot the result
 
 .. code:: ipython3
 
-    plt.errorbar(cl.DeltaSigma_profile['radius'], Sigma_corrected_nfw_boost,
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='$\Delta \Sigma$ / NFW boost factor')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        Sigma_corrected_nfw_boost,
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="$\Delta \Sigma$ / NFW boost factor",
+    )
     
-    plt.errorbar(cl.DeltaSigma_profile['radius'], Sigma_corrected_powerlaw_boost,
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='$\Delta \Sigma$ / Powerlaw boost factor')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        Sigma_corrected_powerlaw_boost,
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="$\Delta \Sigma$ / Powerlaw boost factor",
+    )
     
-    plt.errorbar(cl.DeltaSigma_profile['radius'], cl.DeltaSigma_profile['DeltaSigma_tan'],
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='uncorrected $\Delta \Sigma$',color='grey')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="uncorrected $\Delta \Sigma$",
+        color="grey",
+    )
     
-    #plt.loglog()
-    plt.title('DeltaSigma profile')
+    # plt.loglog()
+    plt.title("DeltaSigma profile")
     plt.xlabel("Radius [kpc]")
-    plt.ylabel('$\Delta\Sigma [M_\odot\; Mpc^{-2}]$')
+    plt.ylabel("$\Delta\Sigma [M_\odot\; Mpc^{-2}]$")
     plt.legend()
     plt.show()
 
@@ -290,26 +327,46 @@ Now the same again but with ``correct_sigma_with_boost_model``
 
 .. code:: ipython3
 
-    Sigma_corrected_powerlaw_boost = u.correct_sigma_with_boost_model(cl.DeltaSigma_profile['radius'],
-                                                                       cl.DeltaSigma_profile['DeltaSigma_tan'],
-                                                                       boost_model='powerlaw_boost')
-    Sigma_corrected_nfw_boost = u.correct_sigma_with_boost_model(cl.DeltaSigma_profile['radius'],
-                                                                  cl.DeltaSigma_profile['DeltaSigma_tan'],
-                                                                  boost_model='nfw_boost')
+    Sigma_corrected_powerlaw_boost = u.correct_sigma_with_boost_model(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        boost_model="powerlaw_boost",
+    )
+    Sigma_corrected_nfw_boost = u.correct_sigma_with_boost_model(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        boost_model="nfw_boost",
+    )
     
-    plt.errorbar(cl.DeltaSigma_profile['radius'], Sigma_corrected_nfw_boost,
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='$\Delta \Sigma$ / NFW boost factor')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        Sigma_corrected_nfw_boost,
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="$\Delta \Sigma$ / NFW boost factor",
+    )
     
-    plt.errorbar(cl.DeltaSigma_profile['radius'], Sigma_corrected_powerlaw_boost,
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='$\Delta \Sigma$ / Powerlaw boost factor')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        Sigma_corrected_powerlaw_boost,
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="$\Delta \Sigma$ / Powerlaw boost factor",
+    )
     
-    plt.errorbar(cl.DeltaSigma_profile['radius'], cl.DeltaSigma_profile['DeltaSigma_tan'],
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o',label='uncorrected $\Delta \Sigma$',color='grey')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="uncorrected $\Delta \Sigma$",
+        color="grey",
+    )
     
-    #plt.loglog()
-    plt.title('DeltaSigma profile')
+    # plt.loglog()
+    plt.title("DeltaSigma profile")
     plt.xlabel("Radius [kpc]")
-    plt.ylabel('$\Delta\Sigma [M_\odot\; Mpc^{-2}]$')
+    plt.ylabel("$\Delta\Sigma [M_\odot\; Mpc^{-2}]$")
     plt.legend()
     plt.show()
 

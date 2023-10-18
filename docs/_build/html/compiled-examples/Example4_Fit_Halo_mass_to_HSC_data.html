@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example 4: Using a real dataset (HSC) &mdash; CLMM 1.7.1 documentation</title>
+  <title>Example 4: Using a real dataset (HSC) &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -100,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -124,7 +138,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Example 4: Using a real dataset (HSC)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.rst.txt" rel="nofollow"> View page source</a>
@@ -136,9 +150,10 @@
            <div itemprop="articleBody">
              
   <section id="example-4-using-a-real-dataset-hsc">
-<h1>Example 4: Using a real dataset (HSC)<a class="headerlink" href="#example-4-using-a-real-dataset-hsc" title="Permalink to this heading"></a></h1>
+<h1>Example 4: Using a real dataset (HSC)<a class="headerlink" href="#example-4-using-a-real-dataset-hsc" title="Link to this heading"></a></h1>
+<p><em>Note: this notebook was produced using a previous version of CLMM (v1.5.1)</em></p>
 <section id="fit-halo-mass-to-shear-profile-using-hsc-data">
-<h2>Fit halo mass to shear profile using HSC data<a class="headerlink" href="#fit-halo-mass-to-shear-profile-using-hsc-data" title="Permalink to this heading"></a></h2>
+<h2>Fit halo mass to shear profile using HSC data<a class="headerlink" href="#fit-halo-mass-to-shear-profile-using-hsc-data" title="Link to this heading"></a></h2>
 <p><em>the LSST-DESC CLMM team</em></p>
 <p>This notebook can be run on NERSC.</p>
 <p>Here we demonstrate how to run CLMM on real observational datasets. As
@@ -161,7 +176,9 @@ on the dataset</a></p>
 <a class="reference external" href="https://hsc-release.mtk.nao.ac.jp/doc/index.php/photometric-redshifts/">https://hsc-release.mtk.nao.ac.jp/doc/index.php/photometric-redshifts/</a></p>
 <p>Cluster catalog:
 <a class="reference external" href="https://hsc-release.mtk.nao.ac.jp/doc/index.php/camira_pdr2/">https://hsc-release.mtk.nao.ac.jp/doc/index.php/camira_pdr2/</a></p>
-<p>## 1. Setup</p>
+</section>
+<section id="setup">
+<h2>1. Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h2>
 <p>We import packages.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -171,22 +188,15 @@ on the dataset</a></p>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 </pre></div>
 </div>
-<p>## 2. Selecting a cluster</p>
+</section>
+<section id="selecting-a-cluster">
+<h2>2. Selecting a cluster<a class="headerlink" href="#selecting-a-cluster" title="Link to this heading"></a></h2>
 <p>We use the HSC SSP publications
 (<a class="reference external" href="https://hsc.mtk.nao.ac.jp/ssp/publications/">https://hsc.mtk.nao.ac.jp/ssp/publications/</a>) to select a list of
 reported massive galaxy clusters that have been measured by weak
 lensing. In the table below, the coordinates are for lensing peaks
 unless otherwise specified, and we assume h=0.7.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 14%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"></th>
@@ -330,7 +340,9 @@ center</p></td>
 </tr>
 </tbody>
 </table>
-<p>## 3. Downloading the catalog at the cluster field</p>
+</section>
+<section id="downloading-the-catalog-at-the-cluster-field">
+<h2>3. Downloading the catalog at the cluster field<a class="headerlink" href="#downloading-the-catalog-at-the-cluster-field" title="Link to this heading"></a></h2>
 <p>The 3 most massive cluster-candidates are MaxBCG.J140.53188+03.76632 (in
 the GAMA09H field), Miyazaki+2018 (M18 hearafter) rank 48 and 62 (in the
 GAMA15H field). We consider MaxBCG.J140.53188+03.76632 first. The
@@ -393,7 +405,9 @@ webpage. To unpress the file “.gz”, use “gunzip” or “gzip -d”.</p>
  <span class="o">--</span><span class="n">LIMIT</span> <span class="mi">5</span>
 </pre></div>
 </div>
-<p>## 4. Loading the catalog into CLMM</p>
+</section>
+<section id="loading-the-catalog-into-clmm">
+<h2>4. Loading the catalog into CLMM<a class="headerlink" href="#loading-the-catalog-into-clmm" title="Link to this heading"></a></h2>
 <p>Once we have the catalog, we read in the catalog, make cuts on the
 catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
@@ -407,8 +421,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
     <span class="n">data_0</span> <span class="o">=</span> <span class="n">pkl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">214</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">983</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.2</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.72</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">223</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">1.15</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.37</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.08</span> <span class="n">s</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data_0</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
@@ -527,8 +541,9 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="c1">#make_plots(data_2)</span>
 </pre></div>
 </div>
-<p>## 5. Running CLMM on the dataset We use the functions similar to
-<code class="docutils literal notranslate"><span class="pre">examples/Paper_v1.0/gt_and_use_case.ipynb</span></code>.</p>
+</section>
+<section id="running-clmm-on-the-dataset-we-use-the-functions-similar-to-examples-paper-v1-0-gt-and-use-case-ipynb">
+<h2>5. Running CLMM on the dataset We use the functions similar to examples/Paper_v1.0/gt_and_use_case.ipynb<a class="headerlink" href="#running-clmm-on-the-dataset-we-use-the-functions-similar-to-examples-paper-v1-0-gt-and-use-case-ipynb" title="Link to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
 <span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.27</span><span class="o">-</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 
@@ -590,7 +605,7 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="s1">&#39;ex&#39;</span><span class="p">]</span>
-<span class="p">[</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">,</span> <span class="s1">&#39;W_l&#39;</span><span class="p">,</span> <span class="s1">&#39;gal_id&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">,</span> <span class="s1">&#39;gal_id&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -690,8 +705,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="n">fit_individual_redshift</span> <span class="o">=</span> <span class="n">fit_mass</span><span class="p">(</span><span class="n">predict_reduced_tangential_shear_individual_redshift</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">356</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">356</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">355</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">939</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">939</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">938</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for N(z) model                     = </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
@@ -723,8 +738,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reduced chi2 (individual (R,z) model) = </span><span class="si">{</span><span class="n">chi2_individual_redshift_dof</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4805403526947982</span>
-<span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">individual</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.6209850216324067</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4805403526932137</span>
+<span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">individual</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.6209850216326234</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span>
@@ -815,7 +830,7 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 </div>
 <img alt="../_images/Example4_Fit_Halo_mass_to_HSC_data_24_0.png" src="../_images/Example4_Fit_Halo_mass_to_HSC_data_24_0.png" />
 <section id="reference">
-<h3>Reference<a class="headerlink" href="#reference" title="Permalink to this heading"></a></h3>
+<h3>Reference<a class="headerlink" href="#reference" title="Link to this heading"></a></h3>
 <p>Aihara, H., Arimoto, N., Armstrong, R., et al. 2018, Publications of the
 Astronomical Society of Japan, 70, S4</p>
 <p>Aihara, H., Armstrong, R., Bickerton, S., et al. 2018, Publications of

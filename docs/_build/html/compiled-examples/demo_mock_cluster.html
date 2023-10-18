@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate mock data for a cluster &mdash; CLMM 1.7.1 documentation</title>
+  <title>Generate mock data for a cluster &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -100,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -124,7 +138,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Generate mock data for a cluster</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/demo_mock_cluster.rst.txt" rel="nofollow"> View page source</a>
@@ -136,7 +150,7 @@
            <div itemprop="articleBody">
              
   <section id="generate-mock-data-for-a-cluster">
-<h1>Generate mock data for a cluster<a class="headerlink" href="#generate-mock-data-for-a-cluster" title="Permalink to this heading"></a></h1>
+<h1>Generate mock data for a cluster<a class="headerlink" href="#generate-mock-data-for-a-cluster" title="Link to this heading"></a></h1>
 <p>In this example we generate mock data with a variety of systematic
 effects including photometric redshifts, source galaxy distributions,
 and shape noise. We then populate a galaxy cluster object. This
@@ -146,38 +160,36 @@ data with different field-of-view options - Generate mock data with
 different galaxy cluster options (only available with the Numcosmo
 and/or CCL backends). Use the <code class="docutils literal notranslate"><span class="pre">os.environ['CLMM_MODELING_BACKEND']</span></code>
 line below to select your backend.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;.*(!).*&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
 <span class="c1">## Uncomment the following line if you want to use a specific modeling backend among &#39;ct&#39; (cluster-toolkit), &#39;ccl&#39; (CCL) or &#39;nc&#39; (Numcosmo). Default is &#39;ccl&#39;</span>
-<span class="c1">#os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
+<span class="c1"># os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">notebook_install</span>
-    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="kn">import</span> <span class="nn">clmm</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
 <span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm</span>
 </pre></div>
 </div>
 <p>Make sure we know which version we’re using</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
 </pre></div>
 </div>
 <section id="import-mock-data-module-and-setup-the-configuration">
-<h2>Import mock data module and setup the configuration<a class="headerlink" href="#import-mock-data-module-and-setup-the-configuration" title="Permalink to this heading"></a></h2>
+<h2>Import mock data module and setup the configuration<a class="headerlink" href="#import-mock-data-module-and-setup-the-configuration" title="Link to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
 <span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
 </pre></div>
 </div>
 <p>Mock data generation requires a defined cosmology</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Mock data generation requires some cluster information. The default is
@@ -186,48 +198,58 @@ Numcosmo and CCL backends allow for more flexibility (see last section
 of this notebook)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">mock_cosmo</span>
 <span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;Awesome_cluster&quot;</span>
-<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span> <span class="c1"># M200,m</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.0e15</span>  <span class="c1"># M200,m</span>
 <span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">src_z</span> <span class="o">=</span> <span class="mf">0.8</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">ngals</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># number of source galaxies</span>
+<span class="n">ngals</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># number of source galaxies</span>
 
 <span class="c1"># Cluster centre coordinates</span>
-<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">50.</span>
-<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">87.</span>
+<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">50.0</span>
+<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">87.0</span>
 </pre></div>
 </div>
 </section>
 <section id="generate-the-mock-catalog-with-different-source-galaxy-options">
-<h2>Generate the mock catalog with different source galaxy options<a class="headerlink" href="#generate-the-mock-catalog-with-different-source-galaxy-options" title="Permalink to this heading"></a></h2>
+<h2>Generate the mock catalog with different source galaxy options<a class="headerlink" href="#generate-the-mock-catalog-with-different-source-galaxy-options" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Clean data: no noise, all galaxies at the same redshift</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">src_z</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
-                                          <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
+    <span class="n">cluster_m</span><span class="p">,</span>
+    <span class="n">cluster_z</span><span class="p">,</span>
+    <span class="n">concentration</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">src_z</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span>
+    <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># let&#39;s put all these quantities in a single dictionary to facilitate clarity</span>
 <span class="n">cluster_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;cluster_m&#39;</span><span class="p">:</span><span class="n">cluster_m</span><span class="p">,</span> <span class="s1">&#39;cluster_z&#39;</span><span class="p">:</span><span class="n">cluster_z</span><span class="p">,</span>
-    <span class="s1">&#39;cluster_ra&#39;</span><span class="p">:</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="s1">&#39;cluster_dec&#39;</span><span class="p">:</span><span class="n">cluster_dec</span><span class="p">,</span>
-    <span class="s1">&#39;cluster_c&#39;</span><span class="p">:</span><span class="n">concentration</span><span class="p">,</span>
-    <span class="s1">&#39;cosmo&#39;</span><span class="p">:</span><span class="n">cosmo</span><span class="p">}</span>
+    <span class="s2">&quot;cluster_m&quot;</span><span class="p">:</span> <span class="n">cluster_m</span><span class="p">,</span>
+    <span class="s2">&quot;cluster_z&quot;</span><span class="p">:</span> <span class="n">cluster_z</span><span class="p">,</span>
+    <span class="s2">&quot;cluster_ra&quot;</span><span class="p">:</span> <span class="n">cluster_ra</span><span class="p">,</span>
+    <span class="s2">&quot;cluster_dec&quot;</span><span class="p">:</span> <span class="n">cluster_dec</span><span class="p">,</span>
+    <span class="s2">&quot;cluster_c&quot;</span><span class="p">:</span> <span class="n">concentration</span><span class="p">,</span>
+    <span class="s2">&quot;cosmo&quot;</span><span class="p">:</span> <span class="n">cosmo</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Noisy data: shape noise, all galaxies at the same redshift</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_src_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -235,8 +257,8 @@ of this notebook)</p>
 same redshift</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_src_z_e_err</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">mean_e_err</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">mean_e_err</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <div class="alert alert-warning docutils container">
@@ -253,9 +275,13 @@ by <code class="docutils literal notranslate"><span class="pre">dz</span> <span 
 distribution centered around <code class="docutils literal notranslate"><span class="pre">z</span></code> instead of <code class="docutils literal notranslate"><span class="pre">ztrue</span></code>.</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>In the default PDF storing (<code class="docutils literal notranslate"><span class="pre">pzpdf_type='shared_bins'</span></code>), the values of
@@ -265,27 +291,27 @@ stored in the <code class="docutils literal notranslate"><span class="pre">pzpdf
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;shared_bins&#39;</span><span class="p">,</span>
- <span class="s1">&#39;zbins&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.02030982</span><span class="p">,</span> <span class="mf">0.04061963</span><span class="p">,</span> <span class="mf">0.06092945</span><span class="p">,</span> <span class="mf">0.08123926</span><span class="p">,</span>
-        <span class="mf">0.10154908</span><span class="p">,</span> <span class="mf">0.12185889</span><span class="p">,</span> <span class="mf">0.14216871</span><span class="p">,</span> <span class="mf">0.16247852</span><span class="p">,</span> <span class="mf">0.18278834</span><span class="p">,</span>
-        <span class="mf">0.20309815</span><span class="p">,</span> <span class="mf">0.22340797</span><span class="p">,</span> <span class="mf">0.24371778</span><span class="p">,</span> <span class="mf">0.2640276</span> <span class="p">,</span> <span class="mf">0.28433742</span><span class="p">,</span>
-        <span class="mf">0.30464723</span><span class="p">,</span> <span class="mf">0.32495705</span><span class="p">,</span> <span class="mf">0.34526686</span><span class="p">,</span> <span class="mf">0.36557668</span><span class="p">,</span> <span class="mf">0.38588649</span><span class="p">,</span>
-        <span class="mf">0.40619631</span><span class="p">,</span> <span class="mf">0.42650612</span><span class="p">,</span> <span class="mf">0.44681594</span><span class="p">,</span> <span class="mf">0.46712575</span><span class="p">,</span> <span class="mf">0.48743557</span><span class="p">,</span>
-        <span class="mf">0.50774538</span><span class="p">,</span> <span class="mf">0.5280552</span> <span class="p">,</span> <span class="mf">0.54836502</span><span class="p">,</span> <span class="mf">0.56867483</span><span class="p">,</span> <span class="mf">0.58898465</span><span class="p">,</span>
-        <span class="mf">0.60929446</span><span class="p">,</span> <span class="mf">0.62960428</span><span class="p">,</span> <span class="mf">0.64991409</span><span class="p">,</span> <span class="mf">0.67022391</span><span class="p">,</span> <span class="mf">0.69053372</span><span class="p">,</span>
-        <span class="mf">0.71084354</span><span class="p">,</span> <span class="mf">0.73115335</span><span class="p">,</span> <span class="mf">0.75146317</span><span class="p">,</span> <span class="mf">0.77177298</span><span class="p">,</span> <span class="mf">0.7920828</span> <span class="p">,</span>
-        <span class="mf">0.81239262</span><span class="p">,</span> <span class="mf">0.83270243</span><span class="p">,</span> <span class="mf">0.85301225</span><span class="p">,</span> <span class="mf">0.87332206</span><span class="p">,</span> <span class="mf">0.89363188</span><span class="p">,</span>
-        <span class="mf">0.91394169</span><span class="p">,</span> <span class="mf">0.93425151</span><span class="p">,</span> <span class="mf">0.95456132</span><span class="p">,</span> <span class="mf">0.97487114</span><span class="p">,</span> <span class="mf">0.99518095</span><span class="p">,</span>
-        <span class="mf">1.01549077</span><span class="p">,</span> <span class="mf">1.03580058</span><span class="p">,</span> <span class="mf">1.0561104</span> <span class="p">,</span> <span class="mf">1.07642022</span><span class="p">,</span> <span class="mf">1.09673003</span><span class="p">,</span>
-        <span class="mf">1.11703985</span><span class="p">,</span> <span class="mf">1.13734966</span><span class="p">,</span> <span class="mf">1.15765948</span><span class="p">,</span> <span class="mf">1.17796929</span><span class="p">,</span> <span class="mf">1.19827911</span><span class="p">,</span>
-        <span class="mf">1.21858892</span><span class="p">,</span> <span class="mf">1.23889874</span><span class="p">,</span> <span class="mf">1.25920855</span><span class="p">,</span> <span class="mf">1.27951837</span><span class="p">,</span> <span class="mf">1.29982818</span><span class="p">,</span>
-        <span class="mf">1.320138</span>  <span class="p">,</span> <span class="mf">1.34044782</span><span class="p">,</span> <span class="mf">1.36075763</span><span class="p">,</span> <span class="mf">1.38106745</span><span class="p">,</span> <span class="mf">1.40137726</span><span class="p">,</span>
-        <span class="mf">1.42168708</span><span class="p">,</span> <span class="mf">1.44199689</span><span class="p">,</span> <span class="mf">1.46230671</span><span class="p">,</span> <span class="mf">1.48261652</span><span class="p">,</span> <span class="mf">1.50292634</span><span class="p">,</span>
-        <span class="mf">1.52323615</span><span class="p">,</span> <span class="mf">1.54354597</span><span class="p">,</span> <span class="mf">1.56385578</span><span class="p">,</span> <span class="mf">1.5841656</span> <span class="p">,</span> <span class="mf">1.60447542</span><span class="p">,</span>
-        <span class="mf">1.62478523</span><span class="p">,</span> <span class="mf">1.64509505</span><span class="p">,</span> <span class="mf">1.66540486</span><span class="p">,</span> <span class="mf">1.68571468</span><span class="p">,</span> <span class="mf">1.70602449</span><span class="p">,</span>
-        <span class="mf">1.72633431</span><span class="p">,</span> <span class="mf">1.74664412</span><span class="p">,</span> <span class="mf">1.76695394</span><span class="p">,</span> <span class="mf">1.78726375</span><span class="p">,</span> <span class="mf">1.80757357</span><span class="p">,</span>
-        <span class="mf">1.82788338</span><span class="p">,</span> <span class="mf">1.8481932</span> <span class="p">,</span> <span class="mf">1.86850302</span><span class="p">,</span> <span class="mf">1.88881283</span><span class="p">,</span> <span class="mf">1.90912265</span><span class="p">,</span>
-        <span class="mf">1.92943246</span><span class="p">,</span> <span class="mf">1.94974228</span><span class="p">,</span> <span class="mf">1.97005209</span><span class="p">,</span> <span class="mf">1.99036191</span><span class="p">,</span> <span class="mf">2.01067172</span><span class="p">,</span>
-        <span class="mf">2.03098154</span><span class="p">])}</span>
+ <span class="s1">&#39;zbins&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.02010102</span><span class="p">,</span> <span class="mf">0.04020204</span><span class="p">,</span> <span class="mf">0.06030306</span><span class="p">,</span> <span class="mf">0.08040408</span><span class="p">,</span>
+        <span class="mf">0.1005051</span> <span class="p">,</span> <span class="mf">0.12060612</span><span class="p">,</span> <span class="mf">0.14070714</span><span class="p">,</span> <span class="mf">0.16080816</span><span class="p">,</span> <span class="mf">0.18090918</span><span class="p">,</span>
+        <span class="mf">0.2010102</span> <span class="p">,</span> <span class="mf">0.22111122</span><span class="p">,</span> <span class="mf">0.24121224</span><span class="p">,</span> <span class="mf">0.26131326</span><span class="p">,</span> <span class="mf">0.28141428</span><span class="p">,</span>
+        <span class="mf">0.3015153</span> <span class="p">,</span> <span class="mf">0.32161632</span><span class="p">,</span> <span class="mf">0.34171734</span><span class="p">,</span> <span class="mf">0.36181836</span><span class="p">,</span> <span class="mf">0.38191938</span><span class="p">,</span>
+        <span class="mf">0.4020204</span> <span class="p">,</span> <span class="mf">0.42212141</span><span class="p">,</span> <span class="mf">0.44222243</span><span class="p">,</span> <span class="mf">0.46232345</span><span class="p">,</span> <span class="mf">0.48242447</span><span class="p">,</span>
+        <span class="mf">0.50252549</span><span class="p">,</span> <span class="mf">0.52262651</span><span class="p">,</span> <span class="mf">0.54272753</span><span class="p">,</span> <span class="mf">0.56282855</span><span class="p">,</span> <span class="mf">0.58292957</span><span class="p">,</span>
+        <span class="mf">0.60303059</span><span class="p">,</span> <span class="mf">0.62313161</span><span class="p">,</span> <span class="mf">0.64323263</span><span class="p">,</span> <span class="mf">0.66333365</span><span class="p">,</span> <span class="mf">0.68343467</span><span class="p">,</span>
+        <span class="mf">0.70353569</span><span class="p">,</span> <span class="mf">0.72363671</span><span class="p">,</span> <span class="mf">0.74373773</span><span class="p">,</span> <span class="mf">0.76383875</span><span class="p">,</span> <span class="mf">0.78393977</span><span class="p">,</span>
+        <span class="mf">0.80404079</span><span class="p">,</span> <span class="mf">0.82414181</span><span class="p">,</span> <span class="mf">0.84424283</span><span class="p">,</span> <span class="mf">0.86434385</span><span class="p">,</span> <span class="mf">0.88444487</span><span class="p">,</span>
+        <span class="mf">0.90454589</span><span class="p">,</span> <span class="mf">0.92464691</span><span class="p">,</span> <span class="mf">0.94474793</span><span class="p">,</span> <span class="mf">0.96484895</span><span class="p">,</span> <span class="mf">0.98494997</span><span class="p">,</span>
+        <span class="mf">1.00505099</span><span class="p">,</span> <span class="mf">1.02515201</span><span class="p">,</span> <span class="mf">1.04525303</span><span class="p">,</span> <span class="mf">1.06535405</span><span class="p">,</span> <span class="mf">1.08545507</span><span class="p">,</span>
+        <span class="mf">1.10555609</span><span class="p">,</span> <span class="mf">1.12565711</span><span class="p">,</span> <span class="mf">1.14575813</span><span class="p">,</span> <span class="mf">1.16585915</span><span class="p">,</span> <span class="mf">1.18596017</span><span class="p">,</span>
+        <span class="mf">1.20606119</span><span class="p">,</span> <span class="mf">1.22616221</span><span class="p">,</span> <span class="mf">1.24626322</span><span class="p">,</span> <span class="mf">1.26636424</span><span class="p">,</span> <span class="mf">1.28646526</span><span class="p">,</span>
+        <span class="mf">1.30656628</span><span class="p">,</span> <span class="mf">1.3266673</span> <span class="p">,</span> <span class="mf">1.34676832</span><span class="p">,</span> <span class="mf">1.36686934</span><span class="p">,</span> <span class="mf">1.38697036</span><span class="p">,</span>
+        <span class="mf">1.40707138</span><span class="p">,</span> <span class="mf">1.4271724</span> <span class="p">,</span> <span class="mf">1.44727342</span><span class="p">,</span> <span class="mf">1.46737444</span><span class="p">,</span> <span class="mf">1.48747546</span><span class="p">,</span>
+        <span class="mf">1.50757648</span><span class="p">,</span> <span class="mf">1.5276775</span> <span class="p">,</span> <span class="mf">1.54777852</span><span class="p">,</span> <span class="mf">1.56787954</span><span class="p">,</span> <span class="mf">1.58798056</span><span class="p">,</span>
+        <span class="mf">1.60808158</span><span class="p">,</span> <span class="mf">1.6281826</span> <span class="p">,</span> <span class="mf">1.64828362</span><span class="p">,</span> <span class="mf">1.66838464</span><span class="p">,</span> <span class="mf">1.68848566</span><span class="p">,</span>
+        <span class="mf">1.70858668</span><span class="p">,</span> <span class="mf">1.7286877</span> <span class="p">,</span> <span class="mf">1.74878872</span><span class="p">,</span> <span class="mf">1.76888974</span><span class="p">,</span> <span class="mf">1.78899076</span><span class="p">,</span>
+        <span class="mf">1.80909178</span><span class="p">,</span> <span class="mf">1.8291928</span> <span class="p">,</span> <span class="mf">1.84929382</span><span class="p">,</span> <span class="mf">1.86939484</span><span class="p">,</span> <span class="mf">1.88949586</span><span class="p">,</span>
+        <span class="mf">1.90959688</span><span class="p">,</span> <span class="mf">1.9296979</span> <span class="p">,</span> <span class="mf">1.94979892</span><span class="p">,</span> <span class="mf">1.96989994</span><span class="p">,</span> <span class="mf">1.99000096</span><span class="p">,</span>
+        <span class="mf">2.01010198</span><span class="p">])}</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
@@ -294,24 +320,29 @@ stored in the <code class="docutils literal notranslate"><span class="pre">pzpdf
 <b>GCData</b>
 <br> <b>defined by:</b> cosmo=None
 <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, pzpdf, id
-<br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.95 1.97 1.99 2.01 2.03]
+<br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.93 1.95 1.97 1.99 2.01]
 <br> 5 objects
 <br>
-<table id="table23455184190288" class="table-striped table-bordered table-condensed">
+<table id="table140156884915600" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>int64</th></tr></thead>
-<tr><td>52.841858204488055</td><td>86.89754406267971</td><td>-0.019804232336813544</td><td>0.018758072467907817</td><td>0.8130718133403707</td><td>0.8</td><td>8.396164075501283e-18 .. 7.617356270794303e-40</td><td>0</td></tr>
-<tr><td>52.73303076554426</td><td>86.79087138047893</td><td>-0.09845605603186636</td><td>-0.09707537241897056</td><td>0.6378176413827824</td><td>0.8</td><td>5.504862328419829e-11 .. 4.114187997533234e-52</td><td>1</td></tr>
-<tr><td>49.145636493730734</td><td>86.99763514436867</td><td>-0.06720542389736725</td><td>0.09738725910222829</td><td>0.7662925215088182</td><td>0.8</td><td>8.030075766395566e-16 .. 5.86736816961973e-43</td><td>2</td></tr>
-<tr><td>45.33619828577285</td><td>87.17593196925363</td><td>0.0784418087127538</td><td>-0.009942333365466158</td><td>0.7497356074409485</td><td>0.8</td><td>3.781186032443505e-15 .. 4.349082777490159e-44</td><td>3</td></tr>
-<tr><td>46.718193149625286</td><td>87.21634408787365</td><td>0.004171100989364179</td><td>-0.02086000860305693</td><td>0.8608203080824607</td><td>0.8</td><td>6.0451238503524e-20 .. 8.682982194606625e-37</td><td>4</td></tr>
+<tr><td>46.024271204904984</td><td>87.12415084509054</td><td>0.05532947826871328</td><td>0.01922409925243582</td><td>0.830882529747833</td><td>0.8</td><td>1.3776336115668105e-18 .. 2.334297518677807e-37</td><td>0</td></tr>
+<tr><td>46.59154140045528</td><td>86.94481077279868</td><td>-0.1031198705358412</td><td>0.006944236018523485</td><td>0.6534327294723785</td><td>0.8</td><td>1.585663378055366e-11 .. 2.016553815168471e-49</td><td>1</td></tr>
+<tr><td>53.12635251656326</td><td>87.03922071589238</td><td>-0.008673499385743667</td><td>-0.016308296551964474</td><td>0.7169627909374777</td><td>0.8</td><td>7.349285474174153e-14 .. 6.570313386148236e-45</td><td>2</td></tr>
+<tr><td>52.18453739034647</td><td>87.13273958791184</td><td>-0.04575080665169042</td><td>0.08613713421900841</td><td>0.645663086033894</td><td>0.8</td><td>2.9566566109121113e-11 .. 5.467989068571349e-50</td><td>3</td></tr>
+<tr><td>53.28699559841387</td><td>86.77018133727904</td><td>-0.05234835111198638</td><td>0.01520148560002627</td><td>0.6744044552919288</td><td>0.8</td><td>2.8423609397170465e-12 .. 6.581159566513934e-48</td><td>4</td></tr>
 </table></div><p>It is also possible to generate individual binning of the PDF with
 <code class="docutils literal notranslate"><span class="pre">pzpdf_type='individual_bins'</span></code>. In this case, both the bin values and
 the PDF are added to the <code class="docutils literal notranslate"><span class="pre">pzpdf</span></code> column:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span> <span class="n">pzpdf_type</span><span class="o">=</span><span class="s1">&#39;individual_bins&#39;</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">pzpdf_type</span><span class="o">=</span><span class="s2">&quot;individual_bins&quot;</span>
+<span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
 </div>
 <b>GCData</b>
@@ -320,19 +351,24 @@ the PDF are added to the <code class="docutils literal notranslate"><span class=
 <br> <b>and pzpdf:</b> individual_bins
 <br> 5 objects
 <br>
-<table id="table23455185017936" class="table-striped table-bordered table-condensed">
+<table id="table140156884890704" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>float64[101]</th><th>int64</th></tr></thead>
-<tr><td>54.59644638534904</td><td>87.07526191402499</td><td>0.048958242246936054</td><td>-0.030265474325131363</td><td>0.8435054671163636</td><td>0.8</td><td>0.0 .. 1.7435054671163637</td><td>3.7369875785239874e-19 .. 8.54955402967386e-22</td><td>0</td></tr>
-<tr><td>54.6027535708398</td><td>87.10324304043611</td><td>0.01816139737320581</td><td>0.02503566377463366</td><td>1.0478715356321469</td><td>0.8</td><td>0.14787153563214672 .. 1.947871535632147</td><td>8.549554029673739e-22 .. 8.549554029673739e-22</td><td>1</td></tr>
-<tr><td>45.781721267526585</td><td>86.99375395269337</td><td>0.02049106534188096</td><td>0.0645746509456644</td><td>0.7790329055962879</td><td>0.8</td><td>0.0 .. 1.679032905596288</td><td>2.3818628324198813e-16 .. 8.549554029673739e-22</td><td>2</td></tr>
-<tr><td>47.57443948134704</td><td>87.0591997204818</td><td>-0.04589118552065931</td><td>-0.0028848769979725906</td><td>0.7144791999989415</td><td>0.8</td><td>0.0 .. 1.6144791999989416</td><td>9.152753116886493e-14 .. 8.549554029673739e-22</td><td>3</td></tr>
-<tr><td>48.7220356257719</td><td>86.83296298318626</td><td>-0.04846101638122205</td><td>-0.03262761788353309</td><td>0.8637292268724595</td><td>0.8</td><td>0.0 .. 1.7637292268724596</td><td>4.435262828976264e-20 .. 8.549554029673739e-22</td><td>4</td></tr>
+<tr><td>49.90068048154564</td><td>86.80550586210887</td><td>0.006776372254203618</td><td>-0.056443346031055115</td><td>0.7384447556113741</td><td>0.8</td><td>0.0 .. 1.6384447556113741</td><td>1.0668005075516611e-14 .. 8.54955402967386e-22</td><td>0</td></tr>
+<tr><td>49.84807334598397</td><td>87.09989284150305</td><td>0.0626176620519528</td><td>0.006618553955043878</td><td>0.7890225583322611</td><td>0.8</td><td>0.0 .. 1.6890225583322613</td><td>9.056964810523246e-17 .. 8.549554029673677e-22</td><td>1</td></tr>
+<tr><td>46.0111841553351</td><td>87.08025957868881</td><td>0.052596163918858276</td><td>-0.110084409925105</td><td>0.7987521935963867</td><td>0.8</td><td>0.0 .. 1.6987521935963867</td><td>3.490080643864716e-17 .. 8.54955402967386e-22</td><td>2</td></tr>
+<tr><td>50.31272507231808</td><td>87.1546032279247</td><td>0.019113930437658577</td><td>0.016503292230688475</td><td>0.8175078771887231</td><td>0.8</td><td>0.0 .. 1.7175078771887233</td><td>5.372382672260738e-18 .. 8.549554029673677e-22</td><td>3</td></tr>
+<tr><td>46.96549350177882</td><td>86.79148752301168</td><td>-0.009398885086943403</td><td>-0.020027456296304834</td><td>0.7907510391787148</td><td>0.8</td><td>0.0 .. 1.690751039178715</td><td>7.652083622185505e-17 .. 8.549554029673677e-22</td><td>4</td></tr>
 </table></div><p>Note that if <code class="docutils literal notranslate"><span class="pre">pzpdf_type=None</span></code>, the pdf is not stored:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span> <span class="n">pzpdf_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="n">src_z</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">pzpdf_type</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
 </div>
 <b>GCData</b>
@@ -340,14 +376,14 @@ the PDF are added to the <code class="docutils literal notranslate"><span class=
 <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, id
 <br> 5 objects
 <br>
-<table id="table23455193110416" class="table-striped table-bordered table-condensed">
+<table id="table140156808395536" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-<tr><td>53.55162375500477</td><td>87.23085108554464</td><td>0.14524934916773688</td><td>0.01031942124392834</td><td>0.9318715064655025</td><td>0.8</td><td>0</td></tr>
-<tr><td>53.88704204924513</td><td>86.94414326880965</td><td>0.014936880433884034</td><td>-0.04775846613112262</td><td>0.7395856221355515</td><td>0.8</td><td>1</td></tr>
-<tr><td>51.96077690819076</td><td>86.98562788350445</td><td>-0.047685052183697806</td><td>-0.0602269701314612</td><td>0.9464221814674415</td><td>0.8</td><td>2</td></tr>
-<tr><td>46.14702202331457</td><td>87.1587624316356</td><td>-0.0020605344109630086</td><td>0.06975281559772473</td><td>0.837010033435752</td><td>0.8</td><td>3</td></tr>
-<tr><td>52.76294877445691</td><td>86.93072311521142</td><td>0.030072829496200857</td><td>-0.04409052960121885</td><td>0.7363462441721306</td><td>0.8</td><td>4</td></tr>
+<tr><td>45.63953153227059</td><td>86.7618656264434</td><td>0.07469710637080207</td><td>0.016895146066059588</td><td>0.8767940368293706</td><td>0.8</td><td>0</td></tr>
+<tr><td>52.67355068259027</td><td>86.80697457031367</td><td>-0.004677747154520466</td><td>0.04098143019427342</td><td>0.8406804697538622</td><td>0.8</td><td>1</td></tr>
+<tr><td>54.37060933361849</td><td>87.1265389263517</td><td>0.08055032373482954</td><td>-0.04232511899646986</td><td>0.8128773339495362</td><td>0.8</td><td>2</td></tr>
+<tr><td>49.06694258122998</td><td>86.8099717758908</td><td>0.060868783737722705</td><td>-0.044573536651355314</td><td>0.7727759976711482</td><td>0.8</td><td>3</td></tr>
+<tr><td>49.92654192390971</td><td>86.94749959460441</td><td>-0.044762367376333975</td><td>0.06064029812457947</td><td>0.8940638927639172</td><td>0.8</td><td>4</td></tr>
 </table></div><ul class="simple">
 <li><p>Clean data: source galaxy redshifts drawn from a redshift
 distribution instead of fixed <code class="docutils literal notranslate"><span class="pre">src_z</span></code> value. Options are
@@ -356,8 +392,8 @@ distribution given in the DESC Science Requirement Document. No shape
 noise or photoz errors.</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_with_src_dist</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -368,29 +404,38 @@ shape noise</p></li>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
     <span class="n">pz_bins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
-    <span class="n">pz_bins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;desc_srd&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">pz_bins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>Sanity check: checking that no galaxies were originally drawn below
 zsrc_min, before photoz errors are applied (when relevant)</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Number of galaxies below zsrc_min:</span>
-<span class="s1">    ideal_data          : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s1">5,</span><span class="si">}</span><span class="s1"></span>
-<span class="s1">    noisy_data_src_z    : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s1">5,</span><span class="si">}</span><span class="s1"></span>
-<span class="s1">    noisy_data_photoz   : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s1">5,</span><span class="si">}</span><span class="s1"></span>
-<span class="s1">    ideal_with_src_dist : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s1">5,</span><span class="si">}</span><span class="s1"></span>
-<span class="s1">    allsystematics      : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s1">5,</span><span class="si">}</span><span class="s1"></span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Number of galaxies below zsrc_min:</span>
+<span class="s2">    ideal_data          : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s2">5,</span><span class="si">}</span>
+<span class="s2">    noisy_data_src_z    : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s2">5,</span><span class="si">}</span>
+<span class="s2">    noisy_data_photoz   : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s2">5,</span><span class="si">}</span>
+<span class="s2">    ideal_with_src_dist : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s2">5,</span><span class="si">}</span>
+<span class="s2">    allsystematics      : </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">)</span><span class="si">:</span><span class="s2">5,</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="n">below</span> <span class="n">zsrc_min</span><span class="p">:</span>
@@ -402,23 +447,23 @@ zsrc_min, before photoz errors are applied (when relevant)</p>
 </pre></div>
 </div>
 <section id="inspect-the-catalog-data">
-<h3>Inspect the catalog data<a class="headerlink" href="#inspect-the-catalog-data" title="Permalink to this heading"></a></h3>
+<h3>Inspect the catalog data<a class="headerlink" href="#inspect-the-catalog-data" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Ideal catalog first entries: no noise on the shape measurement, all
 galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ideal_data</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">n</span><span class="o">!=</span><span class="s1">&#39;id&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span>
         <span class="n">ideal_data</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
 <span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table23455184967120-562700" class="table-striped table-bordered table-condensed">
+<table id="table140156808578640-257980" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-<tr><td>0</td><td>5.127e+01</td><td>8.701e+01</td><td>-3.087e-02</td><td>1.040e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-<tr><td>1</td><td>4.561e+01</td><td>8.715e+01</td><td>-2.412e-03</td><td>-6.750e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-<tr><td>2</td><td>4.996e+01</td><td>8.707e+01</td><td>2.950e-02</td><td>-1.637e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+<tr><td>0</td><td>4.748e+01</td><td>8.690e+01</td><td>-4.381e-03</td><td>1.214e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+<tr><td>1</td><td>5.081e+01</td><td>8.696e+01</td><td>-8.951e-04</td><td>-3.574e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+<tr><td>2</td><td>5.470e+01</td><td>8.706e+01</td><td>-6.717e-03</td><td>4.013e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -442,14 +487,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23455184967120-562700').dataTable()");
+    console.log("$('#table140156808578640-257980').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23455184967120-562700').dataTable({
+    $('#table140156808578640-257980').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -461,17 +506,17 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 <li><p>With photo-z errors</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">noisy_data_photoz</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">n</span><span class="o">!=</span><span class="s1">&#39;id&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span>
         <span class="n">noisy_data_photoz</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
 <span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table23455174798736-116188" class="table-striped table-bordered table-condensed">
+<table id="table140156884054096-95202" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
-<tr><td>0</td><td>5.284e+01</td><td>8.690e+01</td><td>-1.980e-02</td><td>1.876e-02</td><td>8.131e-01</td><td>8.000e-01</td><td>8.396e-18 .. 7.617e-40</td><td>0</td></tr>
-<tr><td>1</td><td>5.273e+01</td><td>8.679e+01</td><td>-9.846e-02</td><td>-9.708e-02</td><td>6.378e-01</td><td>8.000e-01</td><td>5.505e-11 .. 4.114e-52</td><td>1</td></tr>
-<tr><td>2</td><td>4.915e+01</td><td>8.700e+01</td><td>-6.721e-02</td><td>9.739e-02</td><td>7.663e-01</td><td>8.000e-01</td><td>8.030e-16 .. 5.867e-43</td><td>2</td></tr>
+<tr><td>0</td><td>4.602e+01</td><td>8.712e+01</td><td>5.533e-02</td><td>1.922e-02</td><td>8.309e-01</td><td>8.000e-01</td><td>1.378e-18 .. 2.334e-37</td><td>0</td></tr>
+<tr><td>1</td><td>4.659e+01</td><td>8.694e+01</td><td>-1.031e-01</td><td>6.944e-03</td><td>6.534e-01</td><td>8.000e-01</td><td>1.586e-11 .. 2.017e-49</td><td>1</td></tr>
+<tr><td>2</td><td>5.313e+01</td><td>8.704e+01</td><td>-8.673e-03</td><td>-1.631e-02</td><td>7.170e-01</td><td>8.000e-01</td><td>7.349e-14 .. 6.570e-45</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -495,14 +540,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23455174798736-116188').dataTable()");
+    console.log("$('#table140156884054096-95202').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23455174798736-116188').dataTable({
+    $('#table140156884054096-95202').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -517,37 +562,42 @@ errors have been added, and the stacked pdf. By construction no true
 redshift occurs below zsrc_min, but some ‘observed’ redshifts
 (i.e. including photoz errors) might be.</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;measured z (i.e. including photoz error)&#39;</span><span class="p">);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">)</span>
-<span class="n">stacked_pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allsystematics</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">],</span> <span class="n">stacked_pdf</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;stacked pdf&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;requested zmin&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Source Redshift&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;n(z)&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+    <span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">],</span>
+    <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;measured z (i.e. including photoz error)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;ztrue&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true z&quot;</span><span class="p">)</span>
+<span class="n">stacked_pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;pzpdf&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allsystematics</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s2">&quot;zbins&quot;</span><span class="p">],</span> <span class="n">stacked_pdf</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;stacked pdf&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;requested zmin&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Source Redshift&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;n(z)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="k">pass</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_46_0.png" src="../_images/demo_mock_cluster_46_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">);</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">);</span>
+<img alt="../_images/demo_mock_cluster_47_0.png" src="../_images/demo_mock_cluster_47_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;ztrue&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true z&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s2">&quot;ztrue&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true z&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_47_0.png" src="../_images/demo_mock_cluster_47_0.png" />
+<img alt="../_images/demo_mock_cluster_48_0.png" src="../_images/demo_mock_cluster_48_0.png" />
 </section>
 </section>
 <section id="populate-a-galaxy-cluster-object">
-<h2>Populate a galaxy cluster object<a class="headerlink" href="#populate-a-galaxy-cluster-object" title="Permalink to this heading"></a></h2>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
-                               <span class="n">cluster_z</span><span class="p">,</span> <span class="n">allsystematics</span><span class="p">)</span>
+<h2>Populate a galaxy cluster object<a class="headerlink" href="#populate-a-galaxy-cluster-object" title="Link to this heading"></a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">allsystematics</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From a <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code> object that has photoz information,
 <code class="docutils literal notranslate"><span class="pre">draw_gal_z_from_pdz</span></code> allows to generate <code class="docutils literal notranslate"><span class="pre">nobj</span></code> random redshifts of
 each galaxy in <code class="docutils literal notranslate"><span class="pre">galcat</span></code>, from its photoz pdf, and store the result in
 a new <code class="docutils literal notranslate"><span class="pre">zcol_out</span></code> column.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z_random</span> <span class="o">=</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">draw_gal_z_from_pdz</span><span class="p">(</span><span class="n">zcol_out</span><span class="o">=</span><span class="s1">&#39;z_random&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z_random</span> <span class="o">=</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">draw_gal_z_from_pdz</span><span class="p">(</span><span class="n">zcol_out</span><span class="o">=</span><span class="s2">&quot;z_random&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The plot below shows the “observed photoz pdf” (blue), centered on the
@@ -555,46 +605,39 @@ a new <code class="docutils literal notranslate"><span class="pre">zcol_out</spa
 computed (green) and a random redshift (orange) computed from the pdf</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># p(z) for one of the galaxies in the catalog,</span>
 <span class="n">galid</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">],</span>
-         <span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">],</span>
-         <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span>
-         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Photoz pdf&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s2">&quot;zbins&quot;</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;pzpdf&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s2">&quot;zbins&quot;</span><span class="p">],</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;pzpdf&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Photoz pdf&quot;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span>
-            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Observed z&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span>
-            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;True z&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z_random&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span>
-            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random z from pdf&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Observed z&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;ztrue&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;True z&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z_random&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Random z from pdf&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Redshift&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Photo-z Probability Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Redshift&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Photo-z Probability Distribution&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span>
-         <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mf">1.4286375789064634</span><span class="p">,</span> <span class="mf">2.4286375789064634</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mf">0.5970784022224711</span><span class="p">,</span> <span class="mf">1.597078402222471</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_53_1.png" src="../_images/demo_mock_cluster_53_1.png" />
+<img alt="../_images/demo_mock_cluster_54_1.png" src="../_images/demo_mock_cluster_54_1.png" />
 <p>Plot source galaxy ellipticities</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;e1&quot;</span><span class="p">],</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;e2&quot;</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Ellipticity 1&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;x-large&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Ellipticity 2&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;x-large&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Ellipticity 1&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;x-large&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Ellipticity 2&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;x-large&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Ellipticity 2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_55_1.png" src="../_images/demo_mock_cluster_55_1.png" />
+<img alt="../_images/demo_mock_cluster_56_1.png" src="../_images/demo_mock_cluster_56_1.png" />
 </section>
 <section id="generate-the-mock-data-catalog-with-different-field-of-view-options">
-<h2>Generate the mock data catalog with different field-of-view options<a class="headerlink" href="#generate-the-mock-data-catalog-with-different-field-of-view-options" title="Permalink to this heading"></a></h2>
+<h2>Generate the mock data catalog with different field-of-view options<a class="headerlink" href="#generate-the-mock-data-catalog-with-different-field-of-view-options" title="Link to this heading"></a></h2>
 <p>In the examples above, <code class="docutils literal notranslate"><span class="pre">ngals=1000</span></code> galaxies were simulated in a field
 corresponding to a 8 Mpc x 8 Mpc (proper distance) square box at the
 cluster redshift (this is the default). The user may however vary the
@@ -606,21 +649,26 @@ example.</p>
 galaxies in a smaller field of view yields high galaxy density</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">field_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">field_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;default 8 x 8 Mpc FoV&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;user-defined FoV&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;default 8 x 8 Mpc FoV&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">allsystematics2</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;user-defined FoV&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1555162934d0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f78cca2c590</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_60_1.png" src="../_images/demo_mock_cluster_60_1.png" />
+<img alt="../_images/demo_mock_cluster_61_1.png" src="../_images/demo_mock_cluster_61_1.png" />
 <ul class="simple">
 <li><p>Alternatively, the user may provide a galaxy density (here ~1
 gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
@@ -628,41 +676,52 @@ and the number of galaxies to draw will automatically be adjusted to
 the box size.</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics3</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">989</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics4</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics4</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;desc_srd&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">1020</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
-            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;ngals = 1000&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics3</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">allsystematics3</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
-            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;ngal_density = 1 gal / arcmin2&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ngals = 1000&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">allsystematics3</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span>
+    <span class="n">allsystematics3</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;ngal_density = 1 gal / arcmin2&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1555150e3610</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f78cc8b7010</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_cluster_64_1.png" src="../_images/demo_mock_cluster_64_1.png" />
+<img alt="../_images/demo_mock_cluster_65_1.png" src="../_images/demo_mock_cluster_65_1.png" />
 </section>
 <section id="generate-mock-data-with-different-galaxy-cluster-options">
-<h2>Generate mock data with different galaxy cluster options<a class="headerlink" href="#generate-mock-data-with-different-galaxy-cluster-options" title="Permalink to this heading"></a></h2>
+<h2>Generate mock data with different galaxy cluster options<a class="headerlink" href="#generate-mock-data-with-different-galaxy-cluster-options" title="Link to this heading"></a></h2>
 <p>WARNING: Available options depend on the modeling backend: -
 Cluster-toolkit allows for other values of the overdensity parameter,
 but is retricted to working with the mean mass definition - Both CCL and
@@ -671,30 +730,50 @@ work with both the mean and critical mass definition - Numcosmo further
 allows for the Einasto or Burkert density profiles to be used instead of
 the NFW profile</p>
 <section id="changing-the-overdensity-parameter-all-backend-delta-so-keyword-default-200">
-<h3>Changing the overdensity parameter (all backend) - <code class="docutils literal notranslate"><span class="pre">delta_so</span></code> keyword (default = 200)<a class="headerlink" href="#changing-the-overdensity-parameter-all-backend-delta-so-keyword-default-200" title="Permalink to this heading"></a></h3>
+<h3>Changing the overdensity parameter (all backend) - <code class="docutils literal notranslate"><span class="pre">delta_so</span></code> keyword (default = 200)<a class="headerlink" href="#changing-the-overdensity-parameter-all-backend-delta-so-keyword-default-200" title="Link to this heading"></a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_500mean</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">delta_so</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">delta_so</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="using-the-critical-mass-definition-numcosmo-and-ccl-only-massdef-keyword-default-mean">
-<h3>Using the critical mass definition (Numcosmo and CCL only) - <code class="docutils literal notranslate"><span class="pre">massdef</span></code> keyword (default = ‘mean’)<a class="headerlink" href="#using-the-critical-mass-definition-numcosmo-and-ccl-only-massdef-keyword-default-mean" title="Permalink to this heading"></a></h3>
+<h3>Using the critical mass definition (Numcosmo and CCL only) - <code class="docutils literal notranslate"><span class="pre">massdef</span></code> keyword (default = ‘mean’)<a class="headerlink" href="#using-the-critical-mass-definition-numcosmo-and-ccl-only-massdef-keyword-default-mean" title="Link to this heading"></a></h3>
 <p>WARNING: error will be raised if using the cluster-toolkit backend</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_200critical</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="changing-the-halo-density-profile-numcosmo-and-ccl-only-halo-profile-model-keyword-default-nfw">
-<h3>Changing the halo density profile (Numcosmo and CCL only) - <code class="docutils literal notranslate"><span class="pre">halo_profile_model</span></code> keyword (default = ‘nfw’)<a class="headerlink" href="#changing-the-halo-density-profile-numcosmo-and-ccl-only-halo-profile-model-keyword-default-nfw" title="Permalink to this heading"></a></h3>
+<h3>Changing the halo density profile (Numcosmo and CCL only) - <code class="docutils literal notranslate"><span class="pre">halo_profile_model</span></code> keyword (default = ‘nfw’)<a class="headerlink" href="#changing-the-halo-density-profile-numcosmo-and-ccl-only-halo-profile-model-keyword-default-nfw" title="Link to this heading"></a></h3>
 <p>WARNING: error will be raised if using the cluster-toolkit or CCL
 backends</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_200m_einasto</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span> <span class="n">zsrc</span><span class="o">=</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
+    <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;einasto&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>

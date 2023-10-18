@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.clusterensemble module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.clusterensemble module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -100,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -124,7 +138,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
       <li class="breadcrumb-item active">clmm.clusterensemble module</li>
       <li class="wy-breadcrumbs-aside">
@@ -137,30 +151,41 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.clusterensemble">
-<span id="clmm-clusterensemble-module"></span><h1>clmm.clusterensemble module<a class="headerlink" href="#module-clmm.clusterensemble" title="Permalink to this heading"></a></h1>
+<span id="clmm-clusterensemble-module"></span><h1>clmm.clusterensemble module<a class="headerlink" href="#module-clmm.clusterensemble" title="Link to this heading"></a></h1>
 <p>&#64;file clusterensemble.py
 The Cluster Ensemble class</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.clusterensemble.</span></span><span class="sig-name descname"><span class="pre">ClusterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unique_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gc_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.clusterensemble.</span></span><span class="sig-name descname"><span class="pre">ClusterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unique_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gc_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object that contains a list of GalaxyCluster objects</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>unique_id</strong> (<em>int</em><em> or </em><em>string</em>) -- Unique identifier of the galaxy cluster ensemble</p></li>
 <li><p><strong>data</strong> (<a class="reference internal" href="clmm.gcdata.html#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a>) -- Table with galaxy clusters data (i. e. ids, profiles, redshifts).</p></li>
 <li><p><strong>id_dict</strong> (<em>dict</em>) -- Dictionary of indices given the cluster id</p></li>
+<li><p><strong>stacked_data</strong> (<a class="reference internal" href="clmm.gcdata.html#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a><em>, </em><em>None</em>) -- Stacked cluster profiles</p></li>
+<li><p><strong>cov</strong> (<em>dict</em>) -- <p>Dictionary with the covariances:</p>
+<ul>
+<li><p>&quot;tan_sc&quot; : tangential component computed with sample covariance</p></li>
+<li><p>&quot;cross_sc&quot; : cross component computed with sample covariance</p></li>
+<li><p>&quot;tan_jk&quot; : tangential component computed with bootstrap</p></li>
+<li><p>&quot;cross_bs&quot; : cross component computed with bootstrap</p></li>
+<li><p>&quot;tan_jk&quot; : tangential component computed with jackknife</p></li>
+<li><p>&quot;cross_jk&quot; : cross component computed with jackknife</p></li>
+</ul>
+</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.add_individual_radial_profile">
-<span class="sig-name descname"><span class="pre">add_individual_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">galaxycluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.add_individual_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.add_individual_radial_profile" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_individual_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">galaxycluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.add_individual_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.add_individual_radial_profile" title="Link to this definition"></a></dt>
 <dd><p>Compute the individual shear profile from a single GalaxyCluster object
 and adds the averaged data in the data attribute.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>galaxycluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a>) -- GalaxyCluster object with cluster metadata and background galaxy data</p></li>
 <li><p><strong>profile_table</strong> (<a class="reference internal" href="clmm.gcdata.html#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a>) -- Table containing the radius grid points, the tangential, cross shear and weights
@@ -177,12 +202,11 @@ Default: 'gx'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance">
-<span class="sig-name descname"><span class="pre">compute_bootstrap_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_bootstrap_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_bootstrap_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_bootstrap_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance" title="Link to this definition"></a></dt>
 <dd><p>Compute the bootstrap covariance matrix, add boostrap covariance matrix for
-tangential and cross profiles as attributes: <cite>cov_tan_bs</cite>,
-<cite>cov_cross_bs</cite>.</p>
+tangential and cross stacked profiles and updates .cov dict (<cite>tan_jk</cite>, <cite>cross_bs</cite>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tan_component</strong> (<em>string</em><em>, </em><em>optional</em>) -- Name of the tangential component column in <cite>data</cite>.
 Default: 'gt'</p></li>
@@ -196,13 +220,12 @@ Default: 'gx'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance">
-<span class="sig-name descname"><span class="pre">compute_jackknife_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_jackknife_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_jackknife_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_jackknife_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance" title="Link to this definition"></a></dt>
 <dd><p>Compute the jackknife covariance matrix, add boostrap covariance matrix for
-tangential and cross profiles as attributes: <cite>cov_tan_jk</cite>,
-<cite>cov_cross_jk</cite>.
-Uses healpix sky area sub-division : <a class="reference external" href="https://healpix.sourceforge.io">https://healpix.sourceforge.io</a></p>
+tangential and cross stacked profiles and updates .cov dict (<cite>tan_jk</cite>, <cite>cross_jk</cite>).</p>
+<p>Uses healpix sky area sub-division : <a class="reference external" href="https://healpix.sourceforge.io">https://healpix.sourceforge.io</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tan_component</strong> (<em>string</em><em>, </em><em>optional</em>) -- Name of the tangential component column in <cite>data</cite>.
 Default: 'gt'</p></li>
@@ -216,11 +239,11 @@ Default: 'gx'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance">
-<span class="sig-name descname"><span class="pre">compute_sample_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_sample_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_sample_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.compute_sample_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance" title="Link to this definition"></a></dt>
 <dd><p>Compute Sample covariance matrix for cross and tangential and cross
-stacked profiles adds as attributes: <cite>cov_tan_sv</cite>, <cite>cov_cross_sv</cite>.</p>
+stacked profiles and updates .cov dict (<cite>tan_sc</cite>, <cite>cross_sc</cite>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tan_component</strong> (<em>string</em><em>, </em><em>optional</em>) -- Name of the tangential component column in <cite>data</cite>.
 Default: 'gt'</p></li>
@@ -233,17 +256,17 @@ Default: 'gx'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.load" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.load" title="Link to this definition"></a></dt>
 <dd><p>Loads GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile">
-<span class="sig-name descname"><span class="pre">make_individual_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">galaxycluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.make_individual_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_individual_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">galaxycluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.make_individual_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile" title="Link to this definition"></a></dt>
 <dd><p>Compute the individual shear profile from a single GalaxyCluster object
 and adds the averaged data in the data attribute.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>galaxycluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a>) -- GalaxyCluster object with cluster metadata and background galaxy data</p></li>
 <li><p><strong>bin_units</strong> (<em>str</em>) -- Units to use for the radial bins of the shear profile
@@ -283,11 +306,11 @@ Default: None</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile">
-<span class="sig-name descname"><span class="pre">make_stacked_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.make_stacked_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_stacked_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.make_stacked_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile" title="Link to this definition"></a></dt>
 <dd><p>Computes stacked profile and mean separation distances and add it internally
 to <cite>stacked_data</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tan_component</strong> (<em>string</em><em>, </em><em>optional</em>) -- Name of the tangential component column in <cite>data</cite>.
 Default: 'gt'</p></li>
@@ -301,7 +324,7 @@ Default: 'gx'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.clusterensemble.ClusterEnsemble.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clusterensemble.html#ClusterEnsemble.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.clusterensemble.ClusterEnsemble.save" title="Link to this definition"></a></dt>
 <dd><p>Saves GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 

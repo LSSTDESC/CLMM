@@ -1,7 +1,20 @@
-clmm.utils module
-=================
+clmm.utils package
+==================
 
 .. automodule:: clmm.utils
    :members:
    :undoc-members:
    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   clmm.utils.beta_lens
+   clmm.utils.boost
+   clmm.utils.ellipticity
+   clmm.utils.statistic
+   clmm.utils.units
+   clmm.utils.validation

@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.gcdata module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.gcdata module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.theory package" href="clmm.theory.html" />
+    <link rel="next" title="clmm.redshift package" href="clmm.redshift.html" />
     <link rel="prev" title="clmm.galaxycluster module" href="clmm.galaxycluster.html" /> 
 </head>
 
@@ -29,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -100,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -124,7 +138,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
       <li class="breadcrumb-item active">clmm.gcdata module</li>
       <li class="wy-breadcrumbs-aside">
@@ -137,18 +151,18 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.gcdata">
-<span id="clmm-gcdata-module"></span><h1>clmm.gcdata module<a class="headerlink" href="#module-clmm.gcdata" title="Permalink to this heading"></a></h1>
+<span id="clmm-gcdata-module"></span><h1>clmm.gcdata module<a class="headerlink" href="#module-clmm.gcdata" title="Link to this heading"></a></h1>
 <p>Define the custom data type</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.gcdata.</span></span><span class="sig-name descname"><span class="pre">GCData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.gcdata.</span></span><span class="sig-name descname"><span class="pre">GCData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
 <p>GCData: A data objetc for gcdata. Right now it behaves as an astropy table, with the following
 modifications: <cite>__getitem__</cite> is case independent;
 The attribute .meta['cosmo'] is protected and
 can only be changed via update_cosmo or update_cosmo_ext_valid methods;</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>meta</strong> (<em>dict</em>) -- Dictionary with metadata for this object</p></li>
 <li><p><strong>tables</strong> (<em>Same as astropy</em>) -- </p></li>
@@ -157,10 +171,10 @@ can only be changed via update_cosmo or update_cosmo_ext_valid methods;</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.get_pzpdfs">
-<span class="sig-name descname"><span class="pre">get_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.get_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.get_pzpdfs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.get_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.get_pzpdfs" title="Link to this definition"></a></dt>
 <dd><p>Get pzbins and pzpdfs of galaxies</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>pzbins</strong> (<em>array</em>) -- zbins of PDF. 1D if <cite>shared_bins</cite>,
 zbins of each object in data if <cite>individual_bins</cite>.</p></li>
@@ -173,10 +187,10 @@ zbins of each object in data if <cite>individual_bins</cite>.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.has_pzpdfs">
-<span class="sig-name descname"><span class="pre">has_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.has_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.has_pzpdfs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">has_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.has_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.has_pzpdfs" title="Link to this definition"></a></dt>
 <dd><p>Get pzbins and pzpdfs of galaxies</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>pzbins</strong> (<em>array</em>) -- zbins of each object in data</p></li>
 <li><p><strong>pzpdfs</strong> (<em>array</em>) -- PDF of each object in data</p></li>
@@ -188,17 +202,17 @@ zbins of each object in data if <cite>individual_bins</cite>.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.update_cosmo">
-<span class="sig-name descname"><span class="pre">update_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_cosmo" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_cosmo" title="Link to this definition"></a></dt>
 <dd><p>Updates cosmo metadata if not present</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- Cosmology</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) -- Overwrites the current cosmo metadata. If false raises Error when cosmologies are
 different.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -206,10 +220,10 @@ different.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.update_cosmo_ext_valid">
-<span class="sig-name descname"><span class="pre">update_cosmo_ext_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gcdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_cosmo_ext_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_cosmo_ext_valid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_cosmo_ext_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gcdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_cosmo_ext_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_cosmo_ext_valid" title="Link to this definition"></a></dt>
 <dd><p>Updates cosmo metadata if the same as in gcdata</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gcdata</strong> (<a class="reference internal" href="#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a>) -- Table to check if same cosmology</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- Cosmology</p></li>
@@ -217,7 +231,7 @@ different.</p></li>
 different.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -225,10 +239,10 @@ different.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.update_info_ext_valid">
-<span class="sig-name descname"><span class="pre">update_info_ext_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gcdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_info_ext_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_info_ext_valid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_info_ext_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gcdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_info_ext_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_info_ext_valid" title="Link to this definition"></a></dt>
 <dd><p>Updates cosmo metadata if the same as in gcdata</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) -- Name of key to compare and update.</p></li>
 <li><p><strong>gcdata</strong> (<a class="reference internal" href="#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a>) -- Table to check if same cosmology.</p></li>
@@ -236,7 +250,7 @@ different.</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) -- Overwrites the current metadata. If false raises Error when values are different.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -246,11 +260,11 @@ different.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="clmm.gcdata.GCMetaData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.gcdata.</span></span><span class="sig-name descname"><span class="pre">GCMetaData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCMetaData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.gcdata.</span></span><span class="sig-name descname"><span class="pre">GCMetaData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCMetaData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCMetaData" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></p>
 <p>Object to store metadata, it always has a cosmo key with protective changes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>protected</strong> (<em>bool</em>) -- Protect cosmo key</p></li>
 <li><p><strong>attributes</strong> (<em>OrderedDict</em>) -- </p></li>

@@ -1,0 +1,7 @@
+clmm.utils.beta\_lens module
+============================
+
+.. automodule:: clmm.utils.beta_lens
+   :members:
+   :undoc-members:
+   :show-inheritance:

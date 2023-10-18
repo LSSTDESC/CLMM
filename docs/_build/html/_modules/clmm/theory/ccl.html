@@ -3,19 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.ccl &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.theory.ccl &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,14 +25,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -86,8 +89,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -97,8 +104,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -121,8 +135,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../theory.html">clmm.theory</a></li>
       <li class="breadcrumb-item active">clmm.theory.ccl</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -137,39 +152,41 @@
 <span class="sd">Modeling using CCL</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Functions to model halo profiles</span>
+<span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">parse</span>
 
 <span class="kn">import</span> <span class="nn">pyccl</span> <span class="k">as</span> <span class="nn">ccl</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">parse</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">func_layer</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="n">func_layer</span> <span class="kn">import</span> <span class="o">*</span>
-
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">_patch_rho_crit_to_cd2018</span>
+<span class="kn">from</span> <span class="nn">..cosmology.ccl</span> <span class="kn">import</span> <span class="n">CCLCosmology</span>
 <span class="kn">from</span> <span class="nn">.parent_class</span> <span class="kn">import</span> <span class="n">CLMModeling</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">utils</span> <span class="kn">import</span> <span class="nn">_patch_rho_crit_to_cd2018</span>
+<span class="c1"># Check which versions of ccl are currently supported</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_ccl_supported_versions</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span> <span class="kn">import</span> <span class="nn">CCLCosmology</span>
-<span class="n">Cosmology</span> <span class="o">=</span> <span class="n">CCLCosmology</span>
+<span class="k">if</span> <span class="n">parse</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">parse</span><span class="p">(</span><span class="n">_ccl_supported_versions</span><span class="o">.</span><span class="n">VMIN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">parse</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">parse</span><span class="p">(</span>
+    <span class="n">_ccl_supported_versions</span><span class="o">.</span><span class="n">VMAX</span>
+<span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Current CCL version (</span><span class="si">{</span><span class="n">ccl</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">) not supported by CLMM. &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;It must be between </span><span class="si">{</span><span class="n">_ccl_supported_versions</span><span class="o">.</span><span class="n">VMIN</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">_ccl_supported_versions</span><span class="o">.</span><span class="n">VMAX</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CCLCLMModeling&#39;</span><span class="p">,</span> <span class="s1">&#39;Modeling&#39;</span><span class="p">,</span> <span class="s1">&#39;Cosmology&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">func_layer</span><span class="o">.</span><span class="n">__all__</span>
 
-
-<div class="viewcode-block" id="CCLCLMModeling"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.CCLCLMModeling">[docs]</a><span class="k">class</span> <span class="nc">CCLCLMModeling</span><span class="p">(</span><span class="n">CLMModeling</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Object with functions for halo mass modeling</span>
+<div class="viewcode-block" id="CCLCLMModeling">
+<a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling">[docs]</a>
+<span class="k">class</span> <span class="nc">CCLCLMModeling</span><span class="p">(</span><span class="n">CLMModeling</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Object with functions for halo mass modeling</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    backend: str</span>
 <span class="sd">        Name of the backend being used</span>
 <span class="sd">    massdef : str</span>
-<span class="sd">        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)</span>
+<span class="sd">        Profile mass definition (&quot;mean&quot;, &quot;critical&quot;, &quot;virial&quot; - letter case independent)</span>
 <span class="sd">    delta_mdef : int</span>
 <span class="sd">        Mass overdensity definition.</span>
 <span class="sd">    halo_profile_model : str</span>
-<span class="sd">        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)</span>
+<span class="sd">        Profile model parameterization (&quot;nfw&quot;, &quot;einasto&quot;, &quot;hernquist&quot; - letter case independent)</span>
 <span class="sd">    cosmo: Cosmology</span>
 <span class="sd">        Cosmology object</span>
 <span class="sd">    hdpm: Object</span>
@@ -185,29 +202,43 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span>
-                 <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;nfw&quot;</span><span class="p">,</span>
+        <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">CLMModeling</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate_input</span><span class="p">)</span>
         <span class="c1"># Update class attributes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;ccl&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;ccl&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="s1">&#39;matter&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="s1">&#39;critical&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;virial&#39;</span><span class="p">:</span> <span class="s1">&#39;critical&#39;</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfw&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileNFW</span><span class="p">,</span>
-                          <span class="s1">&#39;einasto&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileEinasto</span><span class="p">,</span>
-                          <span class="s1">&#39;hernquist&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileHernquist</span><span class="p">}</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="s2">&quot;matter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;critical&quot;</span><span class="p">:</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;virial&quot;</span><span class="p">:</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;nfw&quot;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileNFW</span><span class="p">,</span>
+            <span class="s2">&quot;einasto&quot;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileEinasto</span><span class="p">,</span>
+            <span class="s2">&quot;hernquist&quot;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileHernquist</span><span class="p">,</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_class</span> <span class="o">=</span> <span class="n">CCLCosmology</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;truncated&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                  <span class="s1">&#39;projected_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                                  <span class="s1">&#39;cumul2d_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-                          <span class="s1">&#39;einasto&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;truncated&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-                          <span class="s1">&#39;hernquist&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;truncated&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                        <span class="s1">&#39;projected_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                                        <span class="s1">&#39;cumul2d_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;nfw&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;projected_analytic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;cumul2d_analytic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;einasto&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="s2">&quot;hernquist&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;projected_analytic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;cumul2d_analytic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span> <span class="o">=</span> <span class="n">_patch_rho_crit_to_cd2018</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">physical_constants</span><span class="o">.</span><span class="n">RHO_CRITICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1">## mass with corretion for input</span>
-        <span class="c1">#self.hdpm_opts[&#39;einasto&#39;].update({&#39;alpha&#39;: 0.25}) # same as NC default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1">## mass with corretion for input</span>
+        <span class="c1"># self.hdpm_opts[&#39;einasto&#39;].update({&#39;alpha&#39;: 0.25}) # same as NC default</span>
 
         <span class="c1"># Set halo profile and cosmology</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span> <span class="o">=</span> <span class="kc">None</span>
@@ -215,105 +246,127 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_set_projected_quad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_projected_quad</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="s2">&quot;projected_quad&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span><span class="p">[</span><span class="s2">&quot;einasto&quot;</span><span class="p">][</span><span class="s2">&quot;projected_quad&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_projected_quad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_halo_density_profile</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;projected_quad is not available on this version of CCL.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Functions implemented by child class</span>
 
-
     <span class="k">def</span> <span class="nf">_update_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;updates halo density profile with set internal properties&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;updates halo density profile with set internal properties&quot;&quot;&quot;</span>
         <span class="c1"># prepare mdef object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">MassDef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">])</span>
-        <span class="c1"># adjust it for ccl version &gt; 2.6.1</span>
-        <span class="k">if</span> <span class="n">parse</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">&#39;2.6.2dev7&#39;</span><span class="p">):</span>
-            <span class="n">ccl</span><span class="o">.</span><span class="n">UnlockInstance</span><span class="o">.</span><span class="n">Funlock</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">),</span> <span class="s2">&quot;_concentration_init&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span> <span class="o">==</span> <span class="s2">&quot;virial&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">MassDef</span><span class="p">(</span><span class="s2">&quot;vir&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">MassDef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">])</span>
         <span class="c1"># setting concentration (also updates hdpm)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="k">else</span> <span class="mf">4.0</span> <span class="c1"># ccl always needs an input concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="k">else</span> <span class="mf">4.0</span>  <span class="c1"># ccl always needs an input concentration</span>
 
     <span class="k">def</span> <span class="nf">_get_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;get concentration&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get concentration&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="o">.</span><span class="n">c</span>
 
     <span class="k">def</span> <span class="nf">_get_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;get mass&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get mass&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span>
 
     <span class="k">def</span> <span class="nf">_set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;set concentration. Also sets/updates hdpm&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conc</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">ConcentrationConstant</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">cdelta</span><span class="p">,</span> <span class="n">mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="o">.</span><span class="n">_concentration_init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set concentration. Also sets/updates hdpm&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conc</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">ConcentrationConstant</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">cdelta</span><span class="p">,</span> <span class="n">mass_def</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">](</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">update_precision_fftlog</span><span class="p">(</span>
-            <span class="n">padding_lo_fftlog</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">padding_hi_fftlog</span><span class="o">=</span><span class="mf">1e3</span><span class="p">)</span>
+            <span class="n">concentration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="p">,</span> <span class="n">mass_def</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">update_precision_fftlog</span><span class="p">(</span><span class="n">padding_lo_fftlog</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">padding_hi_fftlog</span><span class="o">=</span><span class="mf">1e3</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot; set mass&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span> <span class="o">=</span> <span class="n">mdelta</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set mass&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span> <span class="o">=</span> <span class="n">mdelta</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span>
 
     <span class="k">def</span> <span class="nf">_set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">update_parameters</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="s1">&#39;cosmo&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">update_parameters</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="s2">&quot;cosmo&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">update_parameters</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;get the value of the Einasto slope&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">alpha</span><span class="o">!=</span><span class="s1">&#39;cosmo&#39;</span><span class="p">:</span>
-            <span class="n">a_cl</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># a_cl does not matter in this case</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get the value of the Einasto slope&quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">alpha</span> <span class="o">!=</span> <span class="s2">&quot;cosmo&quot;</span><span class="p">:</span>
+            <span class="n">a_cl</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># a_cl does not matter in this case</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">a_cl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">_get_alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span> <span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">_get_alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span> <span class="n">a_cl</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval 3d density&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval 3d density&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;eval surface density&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval surface density&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">projected</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval mean surface density&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval mean surface density&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">cumul2d</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval excess surface density&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_mean_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span> \
-               <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval excess surface density&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_mean_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_surface_density</span><span class="p">(</span>
+            <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_convergence_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;eval convergence&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval convergence&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">convergence</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;eval tangential shear&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval tangential shear&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">shear</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;eval reduced tangential shear with all background sources at the same plane&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval reduced tangential shear with all background sources at the same plane&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">reduced_shear</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_magnification_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;eval magnification&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eval magnification&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_ccl_profile_lens_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">magnification</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
     <span class="c1"># Helper functions unique to this class</span>
 
     <span class="k">def</span> <span class="nf">_call_ccl_profile_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ccl_hdpm_func</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;call ccl profile functions that depend on the lens only&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;call ccl profile functions that depend on the lens only&quot;&quot;&quot;</span>
         <span class="n">a_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_a_from_z</span><span class="p">(</span><span class="n">z_lens</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ccl_hdpm_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">radius</span><span class="o">/</span><span class="n">a_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span>
-                             <span class="n">a_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span><span class="o">/</span><span class="n">a_lens</span><span class="o">**</span><span class="n">ndim</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">ccl_hdpm_func</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span>
+                <span class="n">radius</span> <span class="o">/</span> <span class="n">a_lens</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span>
+                <span class="n">a_lens</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span>
+            <span class="o">/</span> <span class="n">a_lens</span><span class="o">**</span><span class="n">ndim</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_call_ccl_profile_lens_src</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ccl_hdpm_func</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;call ccl profile functions that depend on the lens and the sources&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;call ccl profile functions that depend on the lens and the sources&quot;&quot;&quot;</span>
         <span class="n">a_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_a_from_z</span><span class="p">(</span><span class="n">z_lens</span><span class="p">)</span>
         <span class="n">a_src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_a_from_z</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ccl_hdpm_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">radius</span><span class="o">/</span><span class="n">a_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span>
-                             <span class="n">a_lens</span><span class="p">,</span> <span class="n">a_src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ccl_hdpm_func</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span>
+            <span class="n">radius</span> <span class="o">/</span> <span class="n">a_lens</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__mdelta_cor</span><span class="p">,</span>
+            <span class="n">a_lens</span><span class="o">=</span><span class="n">a_lens</span><span class="p">,</span>
+            <span class="n">a_source</span><span class="o">=</span><span class="n">a_src</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
+
+
+<span class="n">Cosmology</span> <span class="o">=</span> <span class="n">CCLCosmology</span>
 <span class="n">Modeling</span> <span class="o">=</span> <span class="n">CCLCLMModeling</span>
 </pre></div>
 

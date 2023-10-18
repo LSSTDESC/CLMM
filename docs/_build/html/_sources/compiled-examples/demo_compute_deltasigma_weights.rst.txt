@@ -60,6 +60,8 @@ the background probability :math:`P(z > z_l)` for each galaxy
     from clmm import GalaxyCluster
     from clmm.dataops import compute_galaxy_weights, compute_background_probability
     from clmm.support import mock_data as mock
+    from clmm.theory import compute_critical_surface_density_eff
+    
     clmm.__version__
 
 
@@ -67,7 +69,7 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -82,43 +84,47 @@ the background probability :math:`P(z > z_l)` for each galaxy
 .. code:: ipython3
 
     cluster_z = 0.4
-    cluster_m = 1.e14
+    cluster_m = 1.0e14
     cluster_c = 4
-    cluster_ra = 0.
-    cluster_dec = 0.
+    cluster_ra = 0.0
+    cluster_dec = 0.0
 
 .. code:: ipython3
 
     noisy_data_z = mock.generate_galaxy_catalog(
-        cluster_m, cluster_z, cluster_c, cosmo,
-        cluster_ra=cluster_ra, cluster_dec=cluster_dec,
-        delta_so=200, massdef='critical', halo_profile_model='nfw', 
-        zsrc='chang13', zsrc_min=0.15, zsrc_max=3., 
+        cluster_m,
+        cluster_z,
+        cluster_c,
+        cosmo,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+        delta_so=200,
+        massdef="critical",
+        halo_profile_model="nfw",
+        zsrc="chang13",
+        zsrc_min=0.15,
+        zsrc_max=3.0,
         photoz_sigma_unscaled=0.05,
-        shapenoise=0.05, mean_e_err=0.1,
-        field_size=10., ngals=3000)
-    z_gal = noisy_data_z['ztrue']
-    #add redshift dependency on shape measurement error
-    noisy_data_z['e_err'] = noisy_data_z['e_err'] * (1 + 0.4 * noisy_data_z['ztrue'])
-    cl0 = GalaxyCluster('mock_cluster', cluster_ra, cluster_dec, cluster_z, noisy_data_z)
+        shapenoise=0.05,
+        mean_e_err=0.1,
+        field_size=10.0,
+        ngals=3000,
+    )
+    z_gal = noisy_data_z["ztrue"]
+    # add redshift dependency on shape measurement error
+    noisy_data_z["e_err"] = noisy_data_z["e_err"] * (1 + 0.4 * noisy_data_z["ztrue"])
+    cluster = GalaxyCluster("mock_cluster", cluster_ra, cluster_dec, cluster_z, noisy_data_z)
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:785: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:912: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:880: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1024: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Convergence = 0 for those galaxies.
 
-
-.. code:: ipython3
-
-    args = ('mock_cluster', cluster_ra, cluster_dec, cluster_z, noisy_data_z)
-    cl1 = GalaxyCluster(*args)
-    cl2 = GalaxyCluster(*args)
-    cl3 = GalaxyCluster(*args)
 
 Compute the WL weights
 ----------------------
@@ -131,32 +137,34 @@ redshift point estimate + no shape error
 
    w_{\rm ls} = \Sigma_{\rm crit}(z_l, z_s)^{-2}
 
-using the functional interface
+Using the functional interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here, we use the true source redshifts stored in ``z_gal``
+First, we need to compute :math:`\Sigma_{\rm crit}`. Here, we use the
+true source redshifts stored in ``z_gal``
 
 .. code:: ipython3
 
-    w_ls_true = compute_galaxy_weights(
-        cluster_z, cosmo,z_source=z_gal, 
-        shape_component1=noisy_data_z['e1'],
-        shape_component2=noisy_data_z['e2'], 
-        shape_component1_err=noisy_data_z['e_err'],
-        shape_component2_err=noisy_data_z['e_err'], 
-        use_pdz=False, pzpdf=None, pzbins=None,
-        use_shape_noise=False, is_deltasigma=True)
+    sigma_c = cosmo.eval_sigma_crit(cluster_z, z_gal)
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
 
-or as a method of the ``GalaxyCluster`` object
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code:: ipython3
+
+    w_ls_true = compute_galaxy_weights(
+        sigma_c=sigma_c,
+        is_deltasigma=True,
+        use_shape_noise=False,
+    )
+
+As a method of the ``GalaxyCluster`` object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As a method of the ``GalaxyCluster`` object, ``compute_galaxy_weights``
 uses the content of the ``z`` column of the object’s ``galcat`` table as
@@ -166,13 +174,14 @@ redshift used in the cell above.
 
 .. code:: ipython3
 
-    w_ls_point = cl0.compute_galaxy_weights(use_pdz=False, weight_name='w_ls_point', 
-                                            cosmo=cosmo, is_deltasigma=True, add=True)
+    w_ls_point = cluster.compute_galaxy_weights(
+        use_pdz=False, weight_name="w_ls_point", cosmo=cosmo, is_deltasigma=True, add=True
+    )
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -180,10 +189,54 @@ redshift used in the cell above.
 photoz + no shape errors
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+When considering the photo-z distribution, we can compute the weight
+based on an effective critical surface density:
+
 .. math::
 
 
-   w_{\rm ls} = \left(\int_{z_l}^{+\infty}\Sigma_{\rm crit}(z_l, z)^{-1}p(z) dz\right)^2
+   w_{\rm ls} = \Sigma_{\rm crit}^{\rm eff}(z_l)^{-2},
+
+where
+
+.. math::
+
+
+   \Sigma_{\rm crit}^{\rm eff}(z_l) = \left(\int_{z_l}^{+\infty}\Sigma_{\rm crit}(z_l, z)^{-1}p(z) dz\right)^{-1}.
+
+Using the functional interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+First, we need to compute :math:`\Sigma_{\rm crit}^{\rm eff}`. Here, we
+use the true source redshifts stored in ``z_gal``
+
+.. code:: ipython3
+
+    sigma_c_eff = compute_critical_surface_density_eff(
+        cosmo=cosmo,
+        z_cluster=cluster_z,
+        pzbins=noisy_data_z.pzpdf_info["zbins"],
+        pzpdf=noisy_data_z["pzpdf"],
+    )
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Sigma_crit = np.inf for those galaxies.
+
+
+.. code:: ipython3
+
+    w_ls_photoz = compute_galaxy_weights(
+        sigma_c=sigma_c_eff,
+        is_deltasigma=True,
+        use_shape_noise=False,
+    )
+
+As a method of the ``GalaxyCluster`` object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When used as a method of the ``GalaxyCluster`` object, with
 ``use_pdz=True``, ``compute_galaxy_weights`` uses the content of the
@@ -192,8 +245,17 @@ an error if those do not exist.
 
 .. code:: ipython3
 
-    w_ls_photoz = cl1.compute_galaxy_weights(use_pdz=True, weight_name='w_ls_photoz', 
-                                             cosmo=cosmo, is_deltasigma=True, add=True)
+    w_ls_photoz = cluster.compute_galaxy_weights(
+        use_pdz=True, weight_name="w_ls_photoz", cosmo=cosmo, is_deltasigma=True, add=True
+    )
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Sigma_crit = np.inf for those galaxies.
+
 
 redshift point estimate + shape error
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -205,12 +267,19 @@ redshift point estimate + shape error
 
 .. code:: ipython3
 
-    w_ls_shape = cl2.compute_galaxy_weights(
-        use_pdz=False, 
-        use_shape_noise=True, shape_component1='e1', shape_component2='e2', 
-        use_shape_error=True, shape_component1_err='e_err', shape_component2_err='e_err', 
-        weight_name='w_ls_shape', cosmo=cosmo,
-        is_deltasigma=True, add=True)
+    w_ls_shape = cluster.compute_galaxy_weights(
+        use_pdz=False,
+        use_shape_noise=True,
+        shape_component1="e1",
+        shape_component2="e2",
+        use_shape_error=True,
+        shape_component1_err="e_err",
+        shape_component2_err="e_err",
+        weight_name="w_ls_shape",
+        cosmo=cosmo,
+        is_deltasigma=True,
+        add=True,
+    )
 
 photoz + shape error
 ~~~~~~~~~~~~~~~~~~~~
@@ -218,16 +287,23 @@ photoz + shape error
 .. math::
 
 
-   w_{\rm ls} = \frac{\left(\int_{z_l}^{+\infty}\Sigma_{\rm crit}(z_l, z)^{-1}p(z) dz\right)^2}{\sigma_{\rm shapenoise}^2 + \sigma^2_{\rm shape\ error}}
+   w_{\rm ls} = \frac{\Sigma_{\rm crit}^{\rm eff}(z_l, z)^{-2}}{\sigma_{\rm shapenoise}^2 + \sigma^2_{\rm shape\ error}}
 
 .. code:: ipython3
 
-    w_ls_photoz_shape = cl3.compute_galaxy_weights(
-        use_pdz=True, 
-        use_shape_noise=True, shape_component1='e1', shape_component2='e2', 
-        use_shape_error=True, shape_component1_err='e_err', shape_component2_err='e_err', 
-        weight_name='w_ls_photoz_shape', cosmo=cosmo,
-        is_deltasigma=True, add=True)
+    w_ls_photoz_shape = cluster.compute_galaxy_weights(
+        use_pdz=True,
+        use_shape_noise=True,
+        shape_component1="e1",
+        shape_component2="e2",
+        use_shape_error=True,
+        shape_component1_err="e_err",
+        shape_component2_err="e_err",
+        weight_name="w_ls_photoz_shape",
+        cosmo=cosmo,
+        is_deltasigma=True,
+        add=True,
+    )
 
 With ``add=True``, the weights have been added as new columns in the
 ``cl.galcat`` Table. A new ``sigma_c`` column is also automatically
@@ -235,7 +311,7 @@ added.
 
 .. code:: ipython3
 
-    cl0.galcat.colnames
+    cluster.galcat.colnames
 
 
 
@@ -253,39 +329,56 @@ added.
      'id',
      'sigma_c',
      'w_ls_point',
+     'sigma_c_eff',
      'w_ls_photoz',
      'w_ls_shape',
      'w_ls_photoz_shape']
 
 
 
-:math:`\Sigma_c` metadata
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:math:`\Sigma_{\rm crit}` metadata
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As seen above, the weights are computed either using the standard
-definition of :math:`\Sigma_c^{\rm std}`, using point estimate redshift,
-or the effective definition based on the inverse
+definition of :math:`\Sigma_{\rm crit}^{\rm std}`, using point estimate
+redshift, or the effective definition based on the inverse
 :math:`\Sigma_c^{\rm eff}` averaged over the redshift PDF :math:`p(z)`:
 
 .. math::
 
     
-   \Sigma_c^{\rm std}\equiv\Sigma_{\rm crit}(z_l, z_s) \;\;{\rm and}\;\; \Sigma_c^{\rm eff}\equiv\left( \int \Sigma_{\rm crit}(z_l, z)^{-1} p(z) dz\right)^{-1}
+   \Sigma_{\rm crit}^{\rm std}\equiv\Sigma_{\rm crit}(z_l, z_s) \;\;{\rm and}\;\; \Sigma_{\rm crit}^{\rm eff}\equiv\left( \int \Sigma_{\rm crit}(z_l, z)^{-1} p(z) dz\right)^{-1}
 
-To keep track of what definition of :math:`\Sigma_c` was used,
+To keep track of what definition of :math:`\Sigma_{\rm crit}` was used,
 ``standard`` or ``effective`` the user may look into the ``galcat``
 metadata
 
 .. code:: ipython3
 
-    print(f"For cluster 0: {cl0.galcat.meta['sigmac_type']}")
-    print(f"For cluster 1: {cl1.galcat.meta['sigmac_type']}")
+    print(
+        "For cluster w_ls_point column        :",
+        cluster.galcat.meta["w_ls_point_sigmac_type"],
+    )
+    print(
+        "For cluster w_ls_photoz column       :",
+        cluster.galcat.meta["w_ls_photoz_sigmac_type"],
+    )
+    print(
+        "For cluster w_ls_shape column        :",
+        cluster.galcat.meta["w_ls_shape_sigmac_type"],
+    )
+    print(
+        "For cluster w_ls_photoz_shape column :",
+        cluster.galcat.meta["w_ls_photoz_shape_sigmac_type"],
+    )
 
 
 .. parsed-literal::
 
-    For cluster 0: standard
-    For cluster 1: standard
+    For cluster w_ls_point column        : standard
+    For cluster w_ls_photoz column       : effective
+    For cluster w_ls_shape column        : standard
+    For cluster w_ls_photoz_shape column : effective
 
 
 Vizualizing the results
@@ -296,25 +389,51 @@ The figure below shows the normalized weight per galaxy
 
 .. code:: ipython3
 
-    plt.rcParams['axes.linewidth'] = 1
-    fig, ax = plt.subplots(1,2, figsize = (10,5), sharey = True)
+    plt.rcParams["axes.linewidth"] = 1
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
     fig.subplots_adjust(wspace=0, hspace=0)
-    ax[0].tick_params(axis='both', which = 'major', labelsize= 10)
-    ax[1].tick_params(axis='both', which = 'major', labelsize= 10)
+    ax[0].tick_params(axis="both", which="major", labelsize=10)
+    ax[1].tick_params(axis="both", which="major", labelsize=10)
     
-    ax[0].axvline(cluster_z, color='black', linestyle=':')
-    ax[1].axvline(cluster_z, color='black', linestyle=':')
+    ax[0].axvline(cluster_z, color="black", linestyle=":")
+    ax[1].axvline(cluster_z, color="black", linestyle=":")
     
-    ax[0].scatter(z_gal, 1e3*cl0.galcat['w_ls_point']/np.sum(cl0.galcat['w_ls_point']), c='r', label = 'point estimate z', s=5)
-    ax[0].scatter(z_gal, 1e3*cl1.galcat['w_ls_photoz']/np.sum(cl1.galcat['w_ls_photoz']), c='orange', label = 'photoz pdf', marker='+', s=5)
-    ax[0].scatter(z_gal, 1e3*w_ls_true/np.sum(w_ls_true), c='g', label = 'true z', marker='x', s=5)
-    ax[1].scatter(z_gal, 1e3*cl2.galcat['w_ls_shape']/np.sum(cl2.galcat['w_ls_shape']), c='blue', label = r'shape_error, point z', s=5)
-    ax[1].scatter(z_gal, 1e3*cl3.galcat['w_ls_photoz_shape']/np.sum(cl3.galcat['w_ls_photoz_shape']), c='cyan', label ='shape_error + photoz pdf', s=5, marker='+')
-    ax[0].legend(frameon = False, fontsize = 13)
-    ax[1].legend(frameon = False, fontsize = 13)
-    ax[0].set_ylabel(r'$\widehat{w}_{ls} (\times 10^{-3})$', fontsize = 20)
-    ax[0].set_xlabel('true redshift', fontsize = 14)
-    ax[1].set_xlabel('true redshift', fontsize = 14)
+    ax[0].scatter(
+        z_gal,
+        1e3 * cluster.galcat["w_ls_point"] / cluster.galcat["w_ls_point"].sum(),
+        c="r",
+        label="point estimate z",
+        s=5,
+    )
+    ax[0].scatter(
+        z_gal,
+        1e3 * cluster.galcat["w_ls_photoz"] / cluster.galcat["w_ls_photoz"].sum(),
+        c="orange",
+        label="photoz pdf",
+        marker="+",
+        s=5,
+    )
+    ax[0].scatter(z_gal, 1e3 * w_ls_true / w_ls_true.sum(), c="g", label="true z", marker="x", s=5)
+    ax[1].scatter(
+        z_gal,
+        1e3 * cluster.galcat["w_ls_shape"] / cluster.galcat["w_ls_shape"].sum(),
+        c="blue",
+        label=r"shape_error, point z",
+        s=5,
+    )
+    ax[1].scatter(
+        z_gal,
+        1e3 * cluster.galcat["w_ls_photoz_shape"] / cluster.galcat["w_ls_photoz_shape"].sum(),
+        c="cyan",
+        label="shape_error + photoz pdf",
+        s=5,
+        marker="+",
+    )
+    ax[0].legend(frameon=False, fontsize=13)
+    ax[1].legend(frameon=False, fontsize=13)
+    ax[0].set_ylabel(r"$\widehat{w}_{ls} (\times 10^{-3})$", fontsize=20)
+    ax[0].set_xlabel("true redshift", fontsize=14)
+    ax[1].set_xlabel("true redshift", fontsize=14)
 
 
 
@@ -326,7 +445,7 @@ The figure below shows the normalized weight per galaxy
 
 
 
-.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_28_1.png
+.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_31_1.png
 
 
 -  The galaxy weights increase with the true galaxy redshift (left
@@ -368,79 +487,120 @@ background of the cluster is given by
 
     # Generate new GC object with smaller photoz dispersion for comparison with cl0.
     noisy_data_z_2 = mock.generate_galaxy_catalog(
-        1e14, cluster_z, 4, cosmo,
-        delta_so=200, massdef='critical', halo_profile_model='nfw', 
-        zsrc = 'chang13', zsrc_min=0.1, zsrc_max=3., 
+        1e14,
+        cluster_z,
+        4,
+        cosmo,
+        delta_so=200,
+        massdef="critical",
+        halo_profile_model="nfw",
+        zsrc="chang13",
+        zsrc_min=0.1,
+        zsrc_max=3.0,
         photoz_sigma_unscaled=0.02,
-        shapenoise=0.05, mean_e_err=0.1,
-        field_size=10., ngals=3000)
-    cl0_new = clmm.GalaxyCluster('mock_cluster', 0, 0, cluster_z, noisy_data_z_2)
+        shapenoise=0.05,
+        mean_e_err=0.1,
+        field_size=10.0,
+        ngals=3000,
+    )
+    cluster_new = clmm.GalaxyCluster("mock_cluster", 0, 0, cluster_z, noisy_data_z_2)
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:785: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:912: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:880: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1024: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Convergence = 0 for those galaxies.
 
 
 .. code:: ipython3
 
-    p_background_true = compute_background_probability(cluster_z, z_gal) #based on cl0 generation
+    p_background_true = compute_background_probability(cluster_z, z_gal)  # based on cl0 generation
 
 .. code:: ipython3
 
-    p_background_photoz_1 = cl0.compute_background_probability(
-        use_pdz=True, p_background_name='p_background_photoz_1', add=True)
+    p_background_photoz_1 = cluster.compute_background_probability(
+        use_pdz=True, p_background_name="p_background_photoz_1", add=True
+    )
 
 .. code:: ipython3
 
-    p_background_photoz_2 = cl0_new.compute_background_probability(
-        use_pdz=True, p_background_name='p_background_photoz_2',add=True)
+    p_background_photoz_2 = cluster_new.compute_background_probability(
+        use_pdz=True, p_background_name="p_background_photoz_2", add=True
+    )
 
 .. code:: ipython3
 
-    #plt.rcParams['axes.linewidth'] = 1
+    # plt.rcParams['axes.linewidth'] = 1
     fig = plt.figure(figsize=(8, 5))
     
-    plt.tick_params(axis='both', which='major', labelsize=10)
-    plt.scatter(cl0_new.galcat['ztrue'], p_background_photoz_2,
-                c='darkorange', label = r'$\sigma_z = 0.02$',
-                marker='x', s=10, alpha=0.5)
-    plt.scatter(cl0.galcat['ztrue'], p_background_photoz_1,
-                c='blue', label = r'$\sigma_z = 0.05$',
-                marker='+', s=10, alpha=0.5)
-    plt.scatter(z_gal, p_background_true, c='green',
-                s=3, zorder=110, label='True z')
-        
-    plt.vlines(cluster_z, -0.1,1.1, color='k', linestyle=':')
-    plt.xlim([0., 1])
+    plt.tick_params(axis="both", which="major", labelsize=10)
+    plt.scatter(
+        cluster_new.galcat["ztrue"],
+        p_background_photoz_2,
+        c="darkorange",
+        label=r"$\sigma_z = 0.02$",
+        marker="x",
+        s=10,
+        alpha=0.5,
+    )
+    plt.scatter(
+        cluster.galcat["ztrue"],
+        p_background_photoz_1,
+        c="blue",
+        label=r"$\sigma_z = 0.05$",
+        marker="+",
+        s=10,
+        alpha=0.5,
+    )
+    plt.scatter(z_gal, p_background_true, c="green", s=3, zorder=110, label="True z")
+    
+    plt.vlines(cluster_z, -0.1, 1.1, color="k", linestyle=":")
+    plt.xlim([0.0, 1])
     plt.ylim([-0.1, 1.1])
     
-    plt.xlabel('true source redshift', fontsize=15)
-    plt.ylabel(r'$P(z_s > z_l)$', fontsize=15)
-    plt.legend(frameon=True, fontsize=15)
+    plt.xlabel("true source redshift", fontsize=15)
+    plt.ylabel(r"$P(z_s > z_l)$", fontsize=15)
+    plt.legend(frameon=True, fontsize=15, loc=4)
     
     
-    ax2 = fig.add_axes([.155, .65, .17, .18])
-    ax2.scatter(cl0_new.galcat['z'], p_background_photoz_2,
-                c='darkorange', label = r'$\sigma_z = 0.02$',
-                marker='x', s=1, alpha=0.5, lw=.1)
-    ax2.scatter(cl0.galcat['z'], p_background_photoz_1,
-                c='blue', label = r'$\sigma_z = 0.05$',
-                marker='+', s=1, alpha=0.5, lw=.1)
+    ax2 = fig.add_axes([0.155, 0.65, 0.17, 0.18])
+    ax2.scatter(
+        cluster_new.galcat["z"],
+        p_background_photoz_2,
+        c="darkorange",
+        label=r"$\sigma_z = 0.02$",
+        marker="x",
+        s=1,
+        alpha=0.5,
+        lw=0.1,
+    )
+    ax2.scatter(
+        cluster.galcat["z"],
+        p_background_photoz_1,
+        c="blue",
+        label=r"$\sigma_z = 0.05$",
+        marker="+",
+        s=1,
+        alpha=0.5,
+        lw=0.1,
+    )
     for item in (
-        ax2.title, ax2.xaxis.label, ax2.yaxis.label,
-        *ax2.get_xticklabels(), *ax2.get_yticklabels()):
+        ax2.title,
+        ax2.xaxis.label,
+        ax2.yaxis.label,
+        *ax2.get_xticklabels(),
+        *ax2.get_yticklabels(),
+    ):
         item.set_fontsize(5)
     ax2.set_yticklabels([])
-    ax2.vlines(cluster_z, -0.1,1.1, color='k', linestyle=':')
-    ax2.set_xlim([0., 1])
+    ax2.vlines(cluster_z, -0.1, 1.1, color="k", linestyle=":")
+    ax2.set_xlim([0.0, 1])
     ax2.set_ylim([-0.1, 1.1])
-    ax2.set_xlabel('obs. source redshift', fontsize=10)
+    ax2.set_xlabel("obs. source redshift", fontsize=10)
 
 
 
@@ -452,7 +612,7 @@ background of the cluster is given by
 
 
 
-.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_36_1.png
+.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_39_1.png
 
 
 The figure above shows the background probability :math:`P(z > z_l)` for

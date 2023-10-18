@@ -36,11 +36,7 @@ First, we import some standard packages.
 
 .. code:: ipython3
 
-    try: import clmm
-    except:
-        import notebook_install
-        notebook_install.install_clmm_pipeline(upgrade=False)
-        import clmm
+    import clmm
     import matplotlib.pyplot as plt
     import numpy as np
     from numpy import random
@@ -53,7 +49,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -87,14 +83,14 @@ To create mock data, we need to define a true cosmology.
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 We now set some parameters for a mock galaxy cluster.
 
 .. code:: ipython3
 
     cosmo = mock_cosmo
-    cluster_m = 1.e15 # M200,m [Msun]
+    cluster_m = 1.0e15  # M200,m [Msun]
     cluster_z = 0.3
     concentration = 4
     ngals = 10000
@@ -110,14 +106,38 @@ Chang et al. (2013) redshift distribution. - ``noisy_data_z``:
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 0.8, ngals=ngals, 
-                                              cluster_ra=cluster_ra, cluster_dec=cluster_dec)
-    ideal_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo,'chang13', ngals=ngals,
-                                                cluster_ra=cluster_ra, cluster_dec=cluster_dec)
-    noisy_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', 
-                                                shapenoise=0.05, 
-                                                photoz_sigma_unscaled=0.05, ngals=ngals,
-                                                cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+    ideal_data = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        0.8,
+        ngals=ngals,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
+    ideal_data_z = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        "chang13",
+        ngals=ngals,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
+    noisy_data_z = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        "chang13",
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
@@ -125,27 +145,26 @@ may be saved for later use.
 .. code:: ipython3
 
     cluster_id = "CL_ideal"
-    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec,
-                                   cluster_z, ideal_data)
-    gc_object.save('ideal_GC.pkl')
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, ideal_data)
+    gc_object.save("ideal_GC.pkl")
     
     cluster_id = "CL_ideal_z"
-    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec,
-                                   cluster_z, ideal_data_z)
-    gc_object.save('ideal_GC_z.pkl')
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, ideal_data_z)
+    gc_object.save("ideal_GC_z.pkl")
     
     cluster_id = "CL_noisy_z"
-    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec,
-                                   cluster_z, noisy_data_z)
-    gc_object.save('noisy_GC_z.pkl')
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, noisy_data_z)
+    gc_object.save("noisy_GC_z.pkl")
 
 Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
 .. code:: ipython3
 
-    cl1 = clmm.GalaxyCluster.load('ideal_GC.pkl') # all background galaxies at the same redshift
-    cl2 = clmm.GalaxyCluster.load('ideal_GC_z.pkl') # background galaxies distributed according to Chang et al. (2013)
-    cl3 = clmm.GalaxyCluster.load('noisy_GC_z.pkl') # same as cl2 but with photoz error and shape noise
+    cl1 = clmm.GalaxyCluster.load("ideal_GC.pkl")  # all background galaxies at the same redshift
+    cl2 = clmm.GalaxyCluster.load(
+        "ideal_GC_z.pkl"
+    )  # background galaxies distributed according to Chang et al. (2013)
+    cl3 = clmm.GalaxyCluster.load("noisy_GC_z.pkl")  # same as cl2 but with photoz error and shape noise
     
     print("Cluster info = ID:", cl2.unique_id, "; ra:", cl2.ra, "; dec:", cl2.dec, "; z_l :", cl2.z)
     print("The number of source galaxies is :", len(cl2.galcat))
@@ -159,7 +178,7 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
 .. code:: ipython3
 
-    h = plt.hist(cl2.galcat['z'], bins=50)
+    h = plt.hist(cl2.galcat["z"], bins=50)
 
 
 
@@ -186,21 +205,21 @@ Radially binning the data
 
 .. code:: ipython3
 
-    bin_edges = da.make_bins(0.7, 4, 15, method='evenlog10width')
+    bin_edges = da.make_bins(0.7, 4, 15, method="evenlog10width")
 
 ``clmm.dataops.make_radial_profile`` evaluates the average shear of the
 galaxy catalog in bins of radius.
 
 .. code:: ipython3
 
-    profile1 = cl1.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
-    profile2 = cl2.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
-    profile3 = cl3.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
+    profile1 = cl1.make_radial_profile("Mpc", bins=bin_edges, cosmo=cosmo)
+    profile2 = cl2.make_radial_profile("Mpc", bins=bin_edges, cosmo=cosmo)
+    profile3 = cl3.make_radial_profile("Mpc", bins=bin_edges, cosmo=cosmo)
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/utils.py:182: RuntimeWarning: invalid value encountered in sqrt
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/utils/statistic.py:97: RuntimeWarning: invalid value encountered in sqrt
 
 
 After running ``clmm.dataops.make_radial_profile`` on a
@@ -209,7 +228,8 @@ After running ``clmm.dataops.make_radial_profile`` on a
 
 .. code:: ipython3
 
-    for n in cl1.profile.colnames: cl1.profile[n].format = "%6.3e"
+    for n in cl1.profile.colnames:
+        cl1.profile[n].format = "%6.3e"
     cl1.profile.pprint(max_width=-1)
 
 
@@ -217,21 +237,21 @@ After running ``clmm.dataops.make_radial_profile`` on a
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src      W_l   
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- --------- ---------
-     7.000e-01 7.446e-01  7.863e-01 4.359e-02 1.313e-04 -1.811e-17 1.032e-18 8.000e-01       nan 5.800e+01 5.800e+01
-     7.863e-01 8.403e-01  8.831e-01 3.990e-02 1.101e-04 -1.570e-17 9.028e-19 8.000e-01 6.427e-09 8.600e+01 8.600e+01
-     8.831e-01 9.395e-01  9.920e-01 3.659e-02 1.003e-04 -1.248e-17 8.460e-19 8.000e-01       nan 9.500e+01 9.500e+01
-     9.920e-01 1.052e+00  1.114e+00 3.337e-02 8.507e-05 -1.260e-17 6.275e-19 8.000e-01       nan 1.320e+02 1.320e+02
-     1.114e+00 1.187e+00  1.251e+00 3.007e-02 7.161e-05 -1.018e-17 5.653e-19 8.000e-01 3.321e-09 1.510e+02 1.510e+02
-     1.251e+00 1.331e+00  1.406e+00 2.711e-02 6.612e-05 -1.010e-17 4.324e-19 8.000e-01       nan 1.670e+02 1.670e+02
-     1.406e+00 1.495e+00  1.579e+00 2.428e-02 5.252e-05 -8.977e-18 3.297e-19 8.000e-01 3.367e-09 2.350e+02 2.350e+02
-     1.579e+00 1.677e+00  1.773e+00 2.167e-02 3.915e-05 -8.740e-18 2.328e-19 8.000e-01       nan 3.430e+02 3.430e+02
-     1.773e+00 1.887e+00  1.992e+00 1.918e-02 3.437e-05 -6.748e-18 2.145e-19 8.000e-01       nan 4.010e+02 4.010e+02
-     1.992e+00 2.119e+00  2.237e+00 1.694e-02 2.755e-05 -6.158e-18 1.642e-19 8.000e-01 4.245e-09 4.990e+02 4.990e+02
-     2.237e+00 2.377e+00  2.513e+00 1.490e-02 2.161e-05 -5.481e-18 1.269e-19 8.000e-01 4.009e-09 6.630e+02 6.630e+02
-     2.513e+00 2.672e+00  2.823e+00 1.302e-02 1.846e-05 -4.767e-18 1.029e-19 8.000e-01       nan 7.800e+02 7.800e+02
-     2.823e+00 2.999e+00  3.171e+00 1.136e-02 1.422e-05 -4.126e-18 7.787e-20 8.000e-01       nan 1.042e+03 1.042e+03
-     3.171e+00 3.369e+00  3.561e+00 9.847e-03 1.131e-05 -3.657e-18 5.952e-20 8.000e-01 6.299e-09 1.301e+03 1.301e+03
-     3.561e+00 3.781e+00  4.000e+00 8.514e-03 8.968e-06 -3.054e-18 4.708e-20 8.000e-01 4.246e-09 1.644e+03 1.644e+03
+     7.000e-01 7.446e-01  7.863e-01 4.359e-02 1.313e-04 -1.791e-17 1.058e-18 8.000e-01       nan 5.800e+01 5.800e+01
+     7.863e-01 8.403e-01  8.831e-01 3.990e-02 1.101e-04 -1.573e-17 9.259e-19 8.000e-01 6.427e-09 8.600e+01 8.600e+01
+     8.831e-01 9.395e-01  9.920e-01 3.659e-02 1.003e-04 -1.245e-17 8.502e-19 8.000e-01       nan 9.500e+01 9.500e+01
+     9.920e-01 1.052e+00  1.114e+00 3.337e-02 8.507e-05 -1.269e-17 6.310e-19 8.000e-01       nan 1.320e+02 1.320e+02
+     1.114e+00 1.187e+00  1.251e+00 3.007e-02 7.161e-05 -1.018e-17 5.609e-19 8.000e-01 3.321e-09 1.510e+02 1.510e+02
+     1.251e+00 1.331e+00  1.406e+00 2.711e-02 6.612e-05 -1.023e-17 4.313e-19 8.000e-01       nan 1.670e+02 1.670e+02
+     1.406e+00 1.495e+00  1.579e+00 2.428e-02 5.252e-05 -8.955e-18 3.321e-19 8.000e-01 3.367e-09 2.350e+02 2.350e+02
+     1.579e+00 1.677e+00  1.773e+00 2.167e-02 3.915e-05 -8.762e-18 2.340e-19 8.000e-01       nan 3.430e+02 3.430e+02
+     1.773e+00 1.887e+00  1.992e+00 1.918e-02 3.437e-05 -6.828e-18 2.168e-19 8.000e-01       nan 4.010e+02 4.010e+02
+     1.992e+00 2.119e+00  2.237e+00 1.694e-02 2.755e-05 -6.239e-18 1.655e-19 8.000e-01 4.245e-09 4.990e+02 4.990e+02
+     2.237e+00 2.377e+00  2.513e+00 1.490e-02 2.161e-05 -5.460e-18 1.265e-19 8.000e-01 4.009e-09 6.630e+02 6.630e+02
+     2.513e+00 2.672e+00  2.823e+00 1.302e-02 1.846e-05 -4.757e-18 1.027e-19 8.000e-01       nan 7.800e+02 7.800e+02
+     2.823e+00 2.999e+00  3.171e+00 1.136e-02 1.422e-05 -4.126e-18 7.797e-20 8.000e-01       nan 1.042e+03 1.042e+03
+     3.171e+00 3.369e+00  3.561e+00 9.847e-03 1.131e-05 -3.659e-18 5.939e-20 8.000e-01 6.299e-09 1.301e+03 1.301e+03
+     3.561e+00 3.781e+00  4.000e+00 8.514e-03 8.968e-06 -3.057e-18 4.728e-20 8.000e-01 4.246e-09 1.644e+03 1.644e+03
 
 
 We visualize the radially binned shear for the 3 configurations
@@ -242,15 +262,27 @@ We visualize the radially binned shear for the 3 configurations
     
     
     fsize = 14
-    fig.gca().errorbar(profile1['radius'], profile1['gt'], yerr=profile1['gt_err'], marker='o', label='z_src = 0.8')
-    fig.gca().errorbar(profile2['radius'], profile2['gt'], yerr=profile2['gt_err'], marker='o', 
-                       label='z_src = Chang et al. (2013)')
-    fig.gca().errorbar(profile3['radius'], profile3['gt'], yerr=profile3['gt_err'], marker='o', 
-                       label='z_src = Chang et al. (2013) + photoz err  + shape noise')
+    fig.gca().errorbar(
+        profile1["radius"], profile1["gt"], yerr=profile1["gt_err"], marker="o", label="z_src = 0.8"
+    )
+    fig.gca().errorbar(
+        profile2["radius"],
+        profile2["gt"],
+        yerr=profile2["gt_err"],
+        marker="o",
+        label="z_src = Chang et al. (2013)",
+    )
+    fig.gca().errorbar(
+        profile3["radius"],
+        profile3["gt"],
+        yerr=profile3["gt_err"],
+        marker="o",
+        label="z_src = Chang et al. (2013) + photoz err  + shape noise",
+    )
     
-    plt.gca().set_title(r'Binned shear of source galaxies', fontsize=fsize)
-    plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
-    plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
+    plt.gca().set_title(r"Binned shear of source galaxies", fontsize=fsize)
+    plt.gca().set_xlabel(r"$r\;[Mpc]$", fontsize=fsize)
+    plt.gca().set_ylabel(r"$g_t$", fontsize=fsize)
     plt.legend()
 
 
@@ -258,7 +290,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155515ee9e10>
+    <matplotlib.legend.Legend at 0x7f3f8e693050>
 
 
 
@@ -273,12 +305,10 @@ Create the halo model
 
     # model definition to be used with scipy.optimize.curve_fit
     def shear_profile_model(r, logm, z_src):
-        m = 10.**logm
-        gt_model = clmm.compute_reduced_tangential_shear(r,
-                                                         m, concentration,
-                                                         cluster_z, z_src, cosmo,
-                                                         delta_mdef=200,
-                                                         halo_profile_model='nfw')    
+        m = 10.0**logm
+        gt_model = clmm.compute_reduced_tangential_shear(
+            r, m, concentration, cluster_z, z_src, cosmo, delta_mdef=200, halo_profile_model="nfw"
+        )
         return gt_model
 
 Fitting a halo mass - highlighting bias when not accounting for the source redshift distribution in the model
@@ -298,41 +328,49 @@ distribution.
 .. code:: ipython3
 
     # Cluster 1:  ideal data
-    popt1,pcov1 = fitters['curve_fit'](lambda r, logm:shear_profile_model(r, logm, profile1['z']), 
-                        profile1['radius'], 
-                        profile1['gt'], 
-                        profile1['gt_err'], bounds=[13.,17.])
-    #popt1,pcov1 = spo.curve_fit(lambda r, logm:shear_profile_model(r, logm, profile1['z']), 
-    #                    profile1['radius'], 
-    #                    profile1['gt'], 
+    popt1, pcov1 = fitters["curve_fit"](
+        lambda r, logm: shear_profile_model(r, logm, profile1["z"]),
+        profile1["radius"],
+        profile1["gt"],
+        profile1["gt_err"],
+        bounds=[13.0, 17.0],
+    )
+    # popt1,pcov1 = spo.curve_fit(lambda r, logm:shear_profile_model(r, logm, profile1['z']),
+    #                    profile1['radius'],
+    #                    profile1['gt'],
     #                    sigma=profile1['gt_err'], bounds=[13.,17.])
     
-    m_est1 = 10.**popt1[0]
-    m_est_err1 =  m_est1 * np.sqrt(pcov1[0][0]) * np.log(10) # convert the error on logm to error on m
+    m_est1 = 10.0 ** popt1[0]
+    m_est_err1 = m_est1 * np.sqrt(pcov1[0][0]) * np.log(10)  # convert the error on logm to error on m
     
     # Cluster 2:  ideal data with redshift distribution
-    popt2,pcov2 = fitters['curve_fit'](lambda r, logm:shear_profile_model(r, logm, profile2['z']), 
-                        profile2['radius'], 
-                        profile2['gt'], 
-                        profile2['gt_err'], bounds=[13.,17.])
+    popt2, pcov2 = fitters["curve_fit"](
+        lambda r, logm: shear_profile_model(r, logm, profile2["z"]),
+        profile2["radius"],
+        profile2["gt"],
+        profile2["gt_err"],
+        bounds=[13.0, 17.0],
+    )
     
-    m_est2 = 10.**popt2[0]
-    m_est_err2 =  m_est2 * np.sqrt(pcov2[0][0]) * np.log(10) # convert the error on logm to error on m
+    m_est2 = 10.0 ** popt2[0]
+    m_est_err2 = m_est2 * np.sqrt(pcov2[0][0]) * np.log(10)  # convert the error on logm to error on m
     
     # Cluster 3:  noisy data with redshift distribution
-    popt3,pcov3 = fitters['curve_fit'](lambda r, logm:shear_profile_model(r, logm, profile3['z']), 
-                        profile3['radius'], 
-                        profile3['gt'], 
-                        profile3['gt_err'], bounds=[13.,17.])
+    popt3, pcov3 = fitters["curve_fit"](
+        lambda r, logm: shear_profile_model(r, logm, profile3["z"]),
+        profile3["radius"],
+        profile3["gt"],
+        profile3["gt_err"],
+        bounds=[13.0, 17.0],
+    )
     
-    m_est3 = 10.**popt3[0]
-    m_est_err3 =  m_est3 * np.sqrt(pcov3[0][0]) * np.log(10) # convert the error on logm to error on m
+    m_est3 = 10.0 ** popt3[0]
+    m_est_err3 = m_est3 * np.sqrt(pcov3[0][0]) * np.log(10)  # convert the error on logm to error on m
     
     
-    
-    print(f'Best fit mass for cluster 1 = {m_est1:.2e} +/- {m_est_err1:.2e} Msun')
-    print(f'Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun')
-    print(f'Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun')
+    print(f"Best fit mass for cluster 1 = {m_est1:.2e} +/- {m_est_err1:.2e} Msun")
+    print(f"Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun")
+    print(f"Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun")
 
 
 .. parsed-literal::
@@ -355,23 +393,38 @@ predicted by the model when using the average redshift of the catalog.
 .. code:: ipython3
 
     rr = np.logspace(-0.5, np.log10(5), 100)
-    gt_model1 = clmm.compute_reduced_tangential_shear(rr,
-                                                      m_est1, concentration,
-                                                      cluster_z, np.mean(cl1.galcat['z']), cosmo,
-                                                      delta_mdef=200,
-                                                      halo_profile_model='nfw')
+    gt_model1 = clmm.compute_reduced_tangential_shear(
+        rr,
+        m_est1,
+        concentration,
+        cluster_z,
+        np.mean(cl1.galcat["z"]),
+        cosmo,
+        delta_mdef=200,
+        halo_profile_model="nfw",
+    )
     
-    gt_model2 = clmm.compute_reduced_tangential_shear(rr,
-                                                      m_est2, concentration,
-                                                      cluster_z, np.mean(cl2.galcat['z']), cosmo,
-                                                      delta_mdef=200,
-                                                      halo_profile_model='nfw')
+    gt_model2 = clmm.compute_reduced_tangential_shear(
+        rr,
+        m_est2,
+        concentration,
+        cluster_z,
+        np.mean(cl2.galcat["z"]),
+        cosmo,
+        delta_mdef=200,
+        halo_profile_model="nfw",
+    )
     
-    gt_model3 = clmm.compute_reduced_tangential_shear(rr,
-                                                      m_est3, concentration,
-                                                      cluster_z, np.mean(cl3.galcat['z']), cosmo,
-                                                      delta_mdef=200,
-                                                      halo_profile_model='nfw')
+    gt_model3 = clmm.compute_reduced_tangential_shear(
+        rr,
+        m_est3,
+        concentration,
+        cluster_z,
+        np.mean(cl3.galcat["z"]),
+        cosmo,
+        delta_mdef=200,
+        halo_profile_model="nfw",
+    )
 
 We visualize that prediction of reduced tangential shear along with the
 data
@@ -380,33 +433,63 @@ data
 
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(16, 6))
     
-    axes[0].errorbar(profile1['radius'], profile1['gt'],profile1['gt_err'], color='red',
-                     label='ideal_data, M_input = %.3e Msun' % cluster_m, fmt='.')
-    axes[0].plot(rr, gt_model1,color='red',
-                 label='best fit model 1, M_fit = %.2e +/- %.2e' % (m_est1, m_est_err1))
+    axes[0].errorbar(
+        profile1["radius"],
+        profile1["gt"],
+        profile1["gt_err"],
+        color="red",
+        label="ideal_data, M_input = %.3e Msun" % cluster_m,
+        fmt=".",
+    )
+    axes[0].plot(
+        rr,
+        gt_model1,
+        color="red",
+        label="best fit model 1, M_fit = %.2e +/- %.2e" % (m_est1, m_est_err1),
+    )
     
     
-    axes[0].errorbar(profile2['radius'], profile2['gt'],profile2['gt_err'], color='green',
-                      label='ideal_data_z, M_input = %.3e Msun' % cluster_m, fmt='.')
-    axes[0].plot(rr, gt_model2, color='green',
-                   label='best fit model 2, M_fit = %.2e +/- %.2e' % (m_est2, m_est_err2))
-    axes[0].set_title('Ideal data w/wo src redshift distribution',fontsize=fsize)
+    axes[0].errorbar(
+        profile2["radius"],
+        profile2["gt"],
+        profile2["gt_err"],
+        color="green",
+        label="ideal_data_z, M_input = %.3e Msun" % cluster_m,
+        fmt=".",
+    )
+    axes[0].plot(
+        rr,
+        gt_model2,
+        color="green",
+        label="best fit model 2, M_fit = %.2e +/- %.2e" % (m_est2, m_est_err2),
+    )
+    axes[0].set_title("Ideal data w/wo src redshift distribution", fontsize=fsize)
     axes[0].semilogx()
     axes[0].semilogy()
     axes[0].legend(fontsize=fsize)
-    axes[0].set_xlabel('R [Mpc]', fontsize=fsize)
-    axes[0].set_ylabel('reduced tangential shear', fontsize=fsize)
+    axes[0].set_xlabel("R [Mpc]", fontsize=fsize)
+    axes[0].set_ylabel("reduced tangential shear", fontsize=fsize)
     
-    axes[1].errorbar(profile3['radius'], profile3['gt'],profile3['gt_err'], color='red',
-                    label='noisy_data_z, M_input = %.3e Msun' % cluster_m, fmt='.')
-    axes[1].plot(rr, gt_model3,color='red',
-                 label='best fit model 3, M_fit = %.2e +/- %.2e' % (m_est3, m_est_err3))
-    axes[1].set_title('Noisy data with src redshift distribution',fontsize=fsize)
+    axes[1].errorbar(
+        profile3["radius"],
+        profile3["gt"],
+        profile3["gt_err"],
+        color="red",
+        label="noisy_data_z, M_input = %.3e Msun" % cluster_m,
+        fmt=".",
+    )
+    axes[1].plot(
+        rr,
+        gt_model3,
+        color="red",
+        label="best fit model 3, M_fit = %.2e +/- %.2e" % (m_est3, m_est_err3),
+    )
+    axes[1].set_title("Noisy data with src redshift distribution", fontsize=fsize)
     axes[1].semilogx()
     axes[1].semilogy()
     axes[1].legend(fontsize=fsize)
-    axes[1].set_xlabel('R [Mpc]', fontsize=fsize)
-    axes[1].set_ylabel('reduced tangential shear', fontsize=fsize)
+    axes[1].set_xlabel("R [Mpc]", fontsize=fsize)
+    axes[1].set_ylabel("reduced tangential shear", fontsize=fsize)
     
     fig.tight_layout()
 

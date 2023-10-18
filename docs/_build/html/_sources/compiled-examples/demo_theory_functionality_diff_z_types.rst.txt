@@ -13,28 +13,25 @@ value of the mean beta parameters :
 
 .. code:: ipython3
 
-    import warnings
-    warnings.filterwarnings("ignore", message='.*(!).*')
     import os
+    
     ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ccl'
-    #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
+    # os.environ['CLMM_MODELING_BACKEND'] = 'nc'
 
 .. code:: ipython3
 
-    try: import clmm
-    except:
-        import notebook_install
-        notebook_install.install_clmm_pipeline(upgrade=False)
-        import clmm
+    import clmm
     import numpy as np
     import matplotlib.pyplot as plt
     from IPython.display import display, Math
+    
     %matplotlib inline
 
 .. code:: ipython3
 
     import matplotlib
-    matplotlib.rcParams.update({'font.size': 16})
+    
+    matplotlib.rcParams.update({"font.size": 16})
 
 Make sure we know which version we’re using
 
@@ -47,7 +44,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -58,13 +55,13 @@ Import mock data module and setup the configuration
 
     from clmm.support import mock_data as mock
     from clmm import Cosmology
-    from clmm.z_distributions import *
+    from clmm.redshift.distributions import *
 
 Mock data generation requires a defined cosmology
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 Mock data generation requires some cluster information
 
@@ -74,17 +71,19 @@ Mock data generation requires some cluster information
     
     # cluster properties from https://arxiv.org/pdf/1611.03866.pdf
     cluster_id = "SPT-CL J0000−5748"
-    cluster_m = 4.56e14 # M500,c
+    cluster_m = 4.56e14  # M500,c
     cluster_z = 0.702
-    cluster_ra = 0.2499 
+    cluster_ra = 0.2499
     cluster_dec = -57.8064
-    concentration = 5 # (arbitrary value, not from the paper)
+    concentration = 5  # (arbitrary value, not from the paper)
     
-    #source redshift distribution properties
+    # source redshift distribution properties
     cluster_beta_s_mean = 0.466
     cluster_beta_s2_mean = 0.243
-    ngal_density= 26. *100 # density of source galaxies per arcmin^2 # (arbitrary value, not from the paper)
-    model_z_distrib_dict = {'func':desc_srd, 'name':"desc_srd"}
+    ngal_density = (
+        26.0 * 100
+    )  # density of source galaxies per arcmin^2 # (arbitrary value, not from the paper)
+    model_z_distrib_dict = {"func": desc_srd, "name": "desc_srd"}
     delta_z_cut = 0.1
     zsrc_min = cluster_z + delta_z_cut
     zsrc_max = 3.0
@@ -106,10 +105,19 @@ distribution given by ``model_z_distrib_dict``.
 
     np.random.seed(0)
     source_catalog = mock.generate_galaxy_catalog(
-        cluster_m, cluster_z, concentration, cosmo, model_z_distrib_dict['name'], delta_so=500,
-        massdef='critical', zsrc_min=zsrc_min, zsrc_max=zsrc_max, ngal_density=ngal_density, 
-        cluster_ra=cluster_ra, cluster_dec=cluster_dec)
-
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        model_z_distrib_dict["name"],
+        delta_so=500,
+        massdef="critical",
+        zsrc_min=zsrc_min,
+        zsrc_max=zsrc_max,
+        ngal_density=ngal_density,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
 
 Beta parameters
 ~~~~~~~~~~~~~~~
@@ -120,19 +128,31 @@ average :math:`\langle\beta_s\rangle` and
 
 .. code:: ipython3
 
-    beta_label = lambda beta: rf'\langle\beta_s\rangle = {beta:.3f}'
-    beta_sq_label = lambda beta_sq: rf'\langle\beta_s^2\rangle = {beta_sq:.3f}'
+    beta_label = lambda beta: rf"\langle\beta_s\rangle = {beta:.3f}"
+    beta_sq_label = lambda beta_sq: rf"\langle\beta_s^2\rangle = {beta_sq:.3f}"
 
 .. code:: ipython3
 
     z_inf = 1000
     
     beta_s_mean = clmm.utils.compute_beta_s_mean(
-        cluster_z, z_inf, cosmo, zmax=zsrc_max, delta_z_cut=delta_z_cut,
-        zmin=None, z_distrib_func=model_z_distrib_dict['func'])
+        cluster_z,
+        z_inf,
+        cosmo,
+        zmax=zsrc_max,
+        delta_z_cut=delta_z_cut,
+        zmin=None,
+        z_distrib_func=model_z_distrib_dict["func"],
+    )
     beta_s_square_mean = clmm.utils.compute_beta_s_square_mean(
-        cluster_z, z_inf, cosmo, zmax=zsrc_max, delta_z_cut=delta_z_cut,
-        zmin=None, z_distrib_func=model_z_distrib_dict['func'])
+        cluster_z,
+        z_inf,
+        cosmo,
+        zmax=zsrc_max,
+        delta_z_cut=delta_z_cut,
+        zmin=None,
+        z_distrib_func=model_z_distrib_dict["func"],
+    )
     
     display(Math(beta_label(beta_s_mean)))
     display(Math(beta_sq_label(beta_s_square_mean)))
@@ -155,18 +175,22 @@ Visualisation
 
 .. code:: ipython3
 
-    z = np.linspace(0,zsrc_max,1000)
+    z = np.linspace(0, zsrc_max, 1000)
     
-    matplotlib.rcParams.update({'figure.figsize': (20, 6)})
+    matplotlib.rcParams.update({"figure.figsize": (20, 6)})
     
-    plt.hist(source_catalog['z'], bins=50, alpha=0.3, density=True, label='mock source redshift');
-    plt.axvline(zsrc_min, color='red', label='requested zmin')
-    plt.text(2.5, 0.6, f'${beta_label(beta_s_mean)}$\n${beta_sq_label(beta_s_square_mean)}$')
-    #here we multiply by a constant for visualisation purposes
-    plt.plot(z,model_z_distrib_dict['func'](z)*25, linestyle='dashed',
-             label='redshift distribution fct (arbitrary normalisation)')
-    plt.xlabel('$z_s$')
-    plt.ylabel('pdf')
+    plt.hist(source_catalog["z"], bins=50, alpha=0.3, density=True, label="mock source redshift")
+    plt.axvline(zsrc_min, color="red", label="requested zmin")
+    plt.text(2.5, 0.6, f"${beta_label(beta_s_mean)}$\n${beta_sq_label(beta_s_square_mean)}$")
+    # here we multiply by a constant for visualisation purposes
+    plt.plot(
+        z,
+        model_z_distrib_dict["func"](z) * 25,
+        linestyle="dashed",
+        label="redshift distribution fct (arbitrary normalisation)",
+    )
+    plt.xlabel("$z_s$")
+    plt.ylabel("pdf")
     plt.legend()
 
 
@@ -174,7 +198,7 @@ Visualisation
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155515fe9250>
+    <matplotlib.legend.Legend at 0x7fc0c3d93350>
 
 
 
@@ -199,8 +223,7 @@ produced in the previous section.
 
 .. code:: ipython3
 
-    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
-                                   cluster_z, source_catalog)
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, source_catalog)
 
 .. code:: ipython3
 
@@ -215,14 +238,14 @@ produced in the previous section.
             0.00032859]),
      array([0.00898515, 0.01455188, 0.086497  , ..., 0.00915508, 0.0164856 ,
             0.13692621]),
-     array([-4.33680869e-18, -7.80625564e-18, -4.16333634e-17, ...,
+     array([-4.33680869e-18, -7.80625564e-18, -4.85722573e-17, ...,
             -5.20417043e-18, -7.80625564e-18, -6.93889390e-17]))
 
 
 
 .. code:: ipython3
 
-    gc_object.make_radial_profile('Mpc', bins=10, cosmo=cosmo)
+    gc_object.make_radial_profile("Mpc", bins=10, cosmo=cosmo)
     pass
 
 Different ways of modeling the reduced shear
@@ -230,7 +253,7 @@ Different ways of modeling the reduced shear
 
 .. code:: ipython3
 
-    #define radius
+    # define radius
     rr = np.logspace(np.log10(0.2), np.log10(5), 10)
 
 **Case 1 : Discrete redshift and exact formula**
@@ -245,20 +268,33 @@ catalog and number of radius points.
 .. code:: ipython3
 
     %%time
-    #in case we know the discrete source redshift, we can compute the reduced shear for each source galaxy
+    # in case we know the discrete source redshift, we can compute the reduced shear for each source galaxy
     # and take the average at a given radius.
-    gt_discrete = np.array([
-        np.mean(clmm.theory.compute_reduced_tangential_shear(_r, cluster_m, concentration, cluster_z, 
-                                                             source_catalog['z'], cosmo, delta_mdef=500,
-                                                             massdef='critical', z_src_info='discrete',
-                                                             approx=None))
-        for _r in rr])
+    gt_discrete = np.array(
+        [
+            np.mean(
+                clmm.theory.compute_reduced_tangential_shear(
+                    _r,
+                    cluster_m,
+                    concentration,
+                    cluster_z,
+                    source_catalog["z"],
+                    cosmo,
+                    delta_mdef=500,
+                    massdef="critical",
+                    z_src_info="discrete",
+                    approx=None,
+                )
+            )
+            for _r in rr
+        ]
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 3.09 s, sys: 415 ms, total: 3.5 s
-    Wall time: 3.5 s
+    CPU times: user 1.96 s, sys: 77.4 ms, total: 2.04 s
+    Wall time: 2.04 s
 
 
 Case 2 : Redshift distribution and exact formula
@@ -274,16 +310,24 @@ may be quite slow.
 
     %%time
     gt_distribution_no_approx = clmm.theory.compute_reduced_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        beta_kwargs={'zmax':zsrc_max}, approx=None)
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        beta_kwargs={"zmax": zsrc_max},
+        approx=None,
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 268 ms, sys: 4.78 ms, total: 273 ms
-    Wall time: 268 ms
+    CPU times: user 136 ms, sys: 6.44 ms, total: 142 ms
+    Wall time: 139 ms
 
 
 Cases 3 : Redshift distribution and approximation
@@ -297,32 +341,48 @@ reduced shear.
 
     %%time
     gt_distribution_order1 = clmm.theory.compute_reduced_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        beta_kwargs={'zmax':zsrc_max},  approx="order1")
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        beta_kwargs={"zmax": zsrc_max},
+        approx="order1",
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 8.45 ms, sys: 0 ns, total: 8.45 ms
-    Wall time: 7.86 ms
+    CPU times: user 4.75 ms, sys: 0 ns, total: 4.75 ms
+    Wall time: 4.59 ms
 
 
 .. code:: ipython3
 
     %%time
     gt_distribution_order2 = clmm.theory.compute_reduced_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        beta_kwargs={'zmax':zsrc_max},  approx="order2")
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        beta_kwargs={"zmax": zsrc_max},
+        approx="order2",
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 14.7 ms, sys: 0 ns, total: 14.7 ms
-    Wall time: 14.3 ms
+    CPU times: user 7.75 ms, sys: 0 ns, total: 7.75 ms
+    Wall time: 7.71 ms
 
 
 Cases 4 : Mean lensing efficiencies and approximation
@@ -339,32 +399,48 @@ Cases 4 : Mean lensing efficiencies and approximation
 
     %%time
     gt_beta_1 = clmm.theory.compute_reduced_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        beta_kwargs={'zmax':zsrc_max}, approx="order1")
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        beta_kwargs={"zmax": zsrc_max},
+        approx="order1",
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 1.67 ms, sys: 0 ns, total: 1.67 ms
-    Wall time: 1.34 ms
+    CPU times: user 1.18 ms, sys: 0 ns, total: 1.18 ms
+    Wall time: 1.1 ms
 
 
 .. code:: ipython3
 
     %%time
     gt_beta_2 = clmm.theory.compute_reduced_tangential_shear(
-        rr, cluster_m, concentration, cluster_z,
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        beta_kwargs={'zmax':zsrc_max}, approx="order2")
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        beta_kwargs={"zmax": zsrc_max},
+        approx="order2",
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 109 µs, sys: 1.81 ms, total: 1.92 ms
-    Wall time: 1.49 ms
+    CPU times: user 1.08 ms, sys: 147 µs, total: 1.23 ms
+    Wall time: 1.11 ms
 
 
 3 - Comparison of the four cases for the reduced tangnetial shear
@@ -373,42 +449,43 @@ Cases 4 : Mean lensing efficiencies and approximation
 .. code:: ipython3
 
     def plot_cases(radius, base, others, ylabel=None, data=None):
-        matplotlib.rcParams.update({'figure.figsize': (8, 8)})
+        matplotlib.rcParams.update({"figure.figsize": (8, 8)})
         fig, axes = plt.subplots(2, sharex=True, height_ratios=[4, 1])
     
         if data is not None:
             axes[0].loglog(*data[:-1], **data[-1])
-            
+    
         axes[0].loglog(radius, *base[:-1], **base[-1])
         for case in others:
             axes[0].loglog(radius, *case[:-1], **case[-1])
-            axes[1].plot(radius, 100*(case[0]/base[0]-1), *case[1:-1], **case[-1])
-        
+            axes[1].plot(radius, 100 * (case[0] / base[0] - 1), *case[1:-1], **case[-1])
+    
         axes[0].legend(fontsize=12)
         axes[0].set_ylabel(ylabel)
-        axes[1].set_ylabel('%')
-        axes[1].set_xlabel('radius [Mpc]')
+        axes[1].set_ylabel("%")
+        axes[1].set_xlabel("radius [Mpc]")
     
         plt.subplots_adjust(hspace=0)
         for ax in axes:
             ax.minorticks_on()
-            ax.grid(lw=.5)
-            ax.grid(which='minor', lw=.2)
+            ax.grid(lw=0.5)
+            ax.grid(which="minor", lw=0.2)
 
 .. code:: ipython3
 
     plot_cases(
-        rr, base=(gt_discrete, 'k.-', dict(label = 'discrete')),
+        rr,
+        base=(gt_discrete, "k.-", dict(label="discrete")),
         others=(
-            (gt_distribution_no_approx, 'r.-', dict(label = 'distribution, no approx')),
-            (gt_distribution_order1, 'ro-', dict(label = 'distribution, order 1 approx')),
-            (gt_distribution_order2, 'rd-', dict(label = 'distribution, order 2 approx')),
-            (gt_beta_1, 'b--', dict(label = 'beta, order 1 approx')),
-            (gt_beta_2, 'bx-', dict(label = 'beta, order 2 approx')),
+            (gt_distribution_no_approx, "r.-", dict(label="distribution, no approx")),
+            (gt_distribution_order1, "ro-", dict(label="distribution, order 1 approx")),
+            (gt_distribution_order2, "rd-", dict(label="distribution, order 2 approx")),
+            (gt_beta_1, "b--", dict(label="beta, order 1 approx")),
+            (gt_beta_2, "bx-", dict(label="beta, order 2 approx")),
         ),
-        data=(gc_object.profile['radius'], gc_object.profile['gt'],
-              'gs-', dict(label = 'data', lw=.5)),
-        ylabel='$g_t$')
+        data=(gc_object.profile["radius"], gc_object.profile["gt"], "gs-", dict(label="data", lw=0.5)),
+        ylabel="$g_t$",
+    )
 
 
 
@@ -434,33 +511,62 @@ convergence there is no need for an approximated formula.
 
 .. code:: ipython3
 
-    gammat_discrete = np.array([
-        np.mean(clmm.theory.compute_tangential_shear(_r, cluster_m, concentration, cluster_z, 
-                                                     source_catalog['z'], cosmo, delta_mdef=500,
-                                                     massdef='critical', z_src_info='discrete'))
-        for _r in rr])
-        
+    gammat_discrete = np.array(
+        [
+            np.mean(
+                clmm.theory.compute_tangential_shear(
+                    _r,
+                    cluster_m,
+                    concentration,
+                    cluster_z,
+                    source_catalog["z"],
+                    cosmo,
+                    delta_mdef=500,
+                    massdef="critical",
+                    z_src_info="discrete",
+                )
+            )
+            for _r in rr
+        ]
+    )
+    
     gammat_distribution = clmm.theory.compute_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        beta_kwargs={'zmax':zsrc_max})
-        
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        beta_kwargs={"zmax": zsrc_max},
+    )
+    
     gammat_beta = clmm.theory.compute_tangential_shear(
-        rr, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        beta_kwargs={'zmax':zsrc_max})
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        beta_kwargs={"zmax": zsrc_max},
+    )
 
 .. code:: ipython3
 
     plot_cases(
-        rr, base=(gammat_discrete, 'k.-', dict(label = 'discrete')),
+        rr,
+        base=(gammat_discrete, "k.-", dict(label="discrete")),
         others=(
-            (gammat_distribution, 'rx-', dict(label = 'distribution, no approx')),
-            (gammat_beta, 'b--', dict(label = 'beta, no approx')),
+            (gammat_distribution, "rx-", dict(label="distribution, no approx")),
+            (gammat_beta, "b--", dict(label="beta, no approx")),
         ),
-        ylabel='$\gamma_t$')
+        ylabel="$\gamma_t$",
+    )
 
 
 
@@ -469,33 +575,62 @@ convergence there is no need for an approximated formula.
 
 .. code:: ipython3
 
-    kappa_discrete = np.array([
-        np.mean(clmm.theory.compute_convergence(_r, cluster_m, concentration, cluster_z, 
-                                                source_catalog['z'], cosmo, delta_mdef=500,
-                                                massdef='critical', z_src_info='discrete'))
-        for _r in rr])
-        
+    kappa_discrete = np.array(
+        [
+            np.mean(
+                clmm.theory.compute_convergence(
+                    _r,
+                    cluster_m,
+                    concentration,
+                    cluster_z,
+                    source_catalog["z"],
+                    cosmo,
+                    delta_mdef=500,
+                    massdef="critical",
+                    z_src_info="discrete",
+                )
+            )
+            for _r in rr
+        ]
+    )
+    
     kappa_distribution = clmm.theory.compute_convergence(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        beta_kwargs={'zmax':zsrc_max})
-        
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        beta_kwargs={"zmax": zsrc_max},
+    )
+    
     kappa_beta = clmm.theory.compute_convergence(
-        rr, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        beta_kwargs={'zmax':zsrc_max})
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        beta_kwargs={"zmax": zsrc_max},
+    )
 
 .. code:: ipython3
 
     plot_cases(
-        rr, base=(kappa_discrete, 'k.-', dict(label = 'discrete')),
+        rr,
+        base=(kappa_discrete, "k.-", dict(label="discrete")),
         others=(
-            (kappa_distribution, 'rx-', dict(label = 'distribution, no approx')),
-            (kappa_beta, 'b--', dict(label = 'beta, no approx')),
+            (kappa_distribution, "rx-", dict(label="distribution, no approx")),
+            (kappa_beta, "b--", dict(label="beta, no approx")),
         ),
-        ylabel='$\kappa_t$')
+        ylabel="$\kappa_t$",
+    )
 
 
 
@@ -504,40 +639,79 @@ convergence there is no need for an approximated formula.
 
 .. code:: ipython3
 
-    mu_discrete = np.array([
-        np.mean(clmm.theory.compute_magnification(_r, cluster_m, concentration, cluster_z, 
-                                                  source_catalog['z'], cosmo, delta_mdef=500,
-                                                  massdef='critical', z_src_info='discrete'))
-        for _r in rr])
-        
+    mu_discrete = np.array(
+        [
+            np.mean(
+                clmm.theory.compute_magnification(
+                    _r,
+                    cluster_m,
+                    concentration,
+                    cluster_z,
+                    source_catalog["z"],
+                    cosmo,
+                    delta_mdef=500,
+                    massdef="critical",
+                    z_src_info="discrete",
+                )
+            )
+            for _r in rr
+        ]
+    )
+    
     mu_distribution = clmm.theory.compute_magnification(
-        rr, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        approx=None, beta_kwargs={'zmax':zsrc_max})
-        
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        approx=None,
+        beta_kwargs={"zmax": zsrc_max},
+    )
+    
     mu_beta_1 = clmm.theory.compute_magnification(
-        rr, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        approx="order1", beta_kwargs={'zmax':zsrc_max})
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        approx="order1",
+        beta_kwargs={"zmax": zsrc_max},
+    )
     
     mu_beta_2 = clmm.theory.compute_magnification(
-        rr, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        approx="order2", beta_kwargs={'zmax':zsrc_max})
+        rr,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        approx="order2",
+        beta_kwargs={"zmax": zsrc_max},
+    )
 
 .. code:: ipython3
 
     plot_cases(
-        rr, base=(mu_discrete, 'k.-', dict(label = 'discrete')),
+        rr,
+        base=(mu_discrete, "k.-", dict(label="discrete")),
         others=(
-            (mu_distribution, 'rs-', dict(label = 'distribution, no approx')),
-            (mu_beta_1, 'bx-', dict(label = 'beta, order 1 approx')),
-            (mu_beta_2, 'b--', dict(label = 'beta, order 2 approx')),
+            (mu_distribution, "rs-", dict(label="distribution, no approx")),
+            (mu_beta_1, "bx-", dict(label="beta, order 1 approx")),
+            (mu_beta_2, "b--", dict(label="beta, order 2 approx")),
         ),
-        ylabel='$\mu_t$')
+        ylabel="$\mu_t$",
+    )
 
 
 
@@ -546,42 +720,85 @@ convergence there is no need for an approximated formula.
 
 .. code:: ipython3
 
-    alpha = 2.7 #arbitrary value for the slope of the number density
+    alpha = 2.7  # arbitrary value for the slope of the number density
     
-    mu_bias_discrete = np.array([
-        np.mean(clmm.theory.compute_magnification_bias(_r, alpha, cluster_m, concentration, cluster_z, 
-                                                       source_catalog['z'], cosmo, delta_mdef=500,
-                                                       massdef='critical', z_src_info='discrete'))
-        for _r in rr])
-        
+    mu_bias_discrete = np.array(
+        [
+            np.mean(
+                clmm.theory.compute_magnification_bias(
+                    _r,
+                    alpha,
+                    cluster_m,
+                    concentration,
+                    cluster_z,
+                    source_catalog["z"],
+                    cosmo,
+                    delta_mdef=500,
+                    massdef="critical",
+                    z_src_info="discrete",
+                )
+            )
+            for _r in rr
+        ]
+    )
+    
     mu_bias_distribution = clmm.theory.compute_magnification_bias(
-        rr, alpha, cluster_m, concentration, cluster_z, 
-        model_z_distrib_dict['func'], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='distribution',
-        approx=None, beta_kwargs={'zmax':zsrc_max})
-        
+        rr,
+        alpha,
+        cluster_m,
+        concentration,
+        cluster_z,
+        model_z_distrib_dict["func"],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="distribution",
+        approx=None,
+        beta_kwargs={"zmax": zsrc_max},
+    )
+    
     mu_bias_beta_1 = clmm.theory.compute_magnification_bias(
-        rr, alpha, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        approx="order1", beta_kwargs={'zmax':zsrc_max})
+        rr,
+        alpha,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        approx="order1",
+        beta_kwargs={"zmax": zsrc_max},
+    )
     
     mu_bias_beta_2 = clmm.theory.compute_magnification_bias(
-        rr, alpha, cluster_m, concentration, cluster_z, 
-        [beta_s_mean, beta_s_square_mean], cosmo, delta_mdef=500,
-        massdef='critical', z_src_info='beta',
-        approx="order2", beta_kwargs={'zmax':zsrc_max})
+        rr,
+        alpha,
+        cluster_m,
+        concentration,
+        cluster_z,
+        [beta_s_mean, beta_s_square_mean],
+        cosmo,
+        delta_mdef=500,
+        massdef="critical",
+        z_src_info="beta",
+        approx="order2",
+        beta_kwargs={"zmax": zsrc_max},
+    )
 
 .. code:: ipython3
 
     plot_cases(
-        rr, base=(mu_bias_discrete, 'k.-', dict(label = 'discrete')),
+        rr,
+        base=(mu_bias_discrete, "k.-", dict(label="discrete")),
         others=(
-            (mu_bias_distribution, 'rs-', dict(label = 'distribution, no approx')),
-            (mu_bias_beta_1, 'bx-', dict(label = 'beta, order 1 approx')),
-            (mu_bias_beta_2, 'b--', dict(label = 'beta, order 2 approx')),
+            (mu_bias_distribution, "rs-", dict(label="distribution, no approx")),
+            (mu_bias_beta_1, "bx-", dict(label="beta, order 1 approx")),
+            (mu_bias_beta_2, "b--", dict(label="beta, order 2 approx")),
         ),
-        ylabel='$\delta_{\mu} + 1$')
+        ylabel="$\delta_{\mu} + 1$",
+    )
 
 
 

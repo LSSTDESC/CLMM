@@ -1,7 +1,0 @@
-clmm.theory.be\_setup module
-============================
-
-.. automodule:: clmm.theory.be_setup
-   :members:
-   :undoc-members:
-   :show-inheritance:

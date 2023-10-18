@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clmm.utils.statistic &mdash; CLMM 1.10.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CLMM
+          </a>
+              <div class="version">
+                1.10.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Using and citing CLMM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_ensemble_realistic.html">Generate “realistic” mock data for a cluster ensemble</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CLMM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">clmm.utils.statistic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for clmm.utils.statistic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;General utility functions that are used in multiple modules&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binned_statistic</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumulative_trapezoid</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+
+
+<div class="viewcode-block" id="compute_weighted_bin_sum">
+<a class="viewcode-back" href="../../../api/clmm.utils.statistic.html#clmm.utils.statistic.compute_weighted_bin_sum">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add `yvals * weights` in `xbins`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xvals : array_like</span>
+<span class="sd">        Values to be binned</span>
+<span class="sd">    yvals : array_like</span>
+<span class="sd">        Values to compute statistics on</span>
+<span class="sd">    xbins: array_like</span>
+<span class="sd">        Bin edges to sort into</span>
+<span class="sd">    weights: array_like, None, optional</span>
+<span class="sd">        Weights for sum.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Sum of `yvals * weights` in `xbins`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span> <span class="o">*</span> <span class="n">weights</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="compute_radial_averages">
+<a class="viewcode-back" href="../../../api/clmm.utils.statistic.html#clmm.utils.statistic.compute_radial_averages">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_radial_averages</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s2">&quot;ste&quot;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`</span>
+<span class="sd">    contain non-finite values, these are filtered.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xvals : array_like</span>
+<span class="sd">        Values to be binned</span>
+<span class="sd">    yvals : array_like</span>
+<span class="sd">        Values to compute statistics on</span>
+<span class="sd">    xbins: array_like</span>
+<span class="sd">        Bin edges to sort into</span>
+<span class="sd">    yerr : array_like, None, optional</span>
+<span class="sd">        Errors of `yvals`. Default: None</span>
+<span class="sd">    error_model : str, optional</span>
+<span class="sd">        Statistical error model to use for y uncertainties. (letter case independent)</span>
+
+<span class="sd">            * &#39;ste&#39; - Standard error [=std/sqrt(n) in unweighted computation] (Default).</span>
+<span class="sd">            * &#39;std&#39; - Standard deviation.</span>
+
+<span class="sd">    weights: array_like, None, optional</span>
+<span class="sd">        Weights for averages. Default: None</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_x : numpy.ndarray</span>
+<span class="sd">        Mean x value in each bin</span>
+<span class="sd">    mean_y : numpy.ndarray</span>
+<span class="sd">        Mean y value in each bin</span>
+<span class="sd">    err_y: numpy.ndarray</span>
+<span class="sd">        Error on the mean y value in each bin. Specified by `error_model`</span>
+<span class="sd">    num_objects : numpy.ndarray</span>
+<span class="sd">        Number of objects in each bin</span>
+<span class="sd">    binnumber: 1-D ndarray of ints</span>
+<span class="sd">        Indices of the bins (corresponding to `xbins`) in which each value</span>
+<span class="sd">        of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the</span>
+<span class="sd">        corresponding value is between (xbins[i-1], xbins[i]).</span>
+<span class="sd">    wts_sum: numpy.ndarray</span>
+<span class="sd">        Sum of individual weights in each bin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make case independent</span>
+    <span class="n">error_model</span> <span class="o">=</span> <span class="n">error_model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="c1"># binned_statics throus an error in case of non-finite values, so filtering those out</span>
+    <span class="n">filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span>
+    <span class="n">xfilt</span><span class="p">,</span> <span class="n">yfilt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xvals</span><span class="p">)[</span><span class="n">filt</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yvals</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span>
+    <span class="c1"># normalize weights (and computers binnumber)</span>
+    <span class="n">wts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">xfilt</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span>
+    <span class="n">wts_sum</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">wts</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[:</span><span class="mi">3</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">objs_in_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">binnumber</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">binnumber</span> <span class="o">&lt;=</span> <span class="n">wts_sum</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>  <span class="c1"># mask for binnumber in range</span>
+    <span class="n">wts</span><span class="p">[</span><span class="n">objs_in_bins</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">wts_sum</span><span class="p">[</span><span class="n">binnumber</span><span class="p">[</span><span class="n">objs_in_bins</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># norm weights in each bin</span>
+    <span class="c1"># means</span>
+    <span class="n">mean_x</span> <span class="o">=</span> <span class="n">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">xfilt</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
+    <span class="n">mean_y</span> <span class="o">=</span> <span class="n">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">yfilt</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
+    <span class="c1"># errors</span>
+    <span class="n">data_yerr2</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">yerr</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yerr</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">wts</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">stat_yerr2</span> <span class="o">=</span> <span class="n">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">yfilt</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span> <span class="o">-</span> <span class="n">mean_y</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s2">&quot;ste&quot;</span><span class="p">:</span>
+        <span class="c1"># sum(wts^2)=1/n for not weighted</span>
+        <span class="n">stat_yerr2</span> <span class="o">*=</span> <span class="n">compute_weighted_bin_sum</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">wts</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">wts</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">error_model</span> <span class="o">!=</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_model</span><span class="si">}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
+    <span class="n">err_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">stat_yerr2</span> <span class="o">+</span> <span class="n">data_yerr2</span><span class="p">)</span>
+    <span class="c1"># number of objects</span>
+    <span class="n">num_objects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xfilt</span><span class="p">,</span> <span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">mean_x</span><span class="p">,</span> <span class="n">mean_y</span><span class="p">,</span> <span class="n">err_y</span><span class="p">,</span> <span class="n">num_objects</span><span class="p">,</span> <span class="n">binnumber</span><span class="p">,</span> <span class="n">wts_sum</span></div>
+
+
+
+<div class="viewcode-block" id="make_bins">
+<a class="viewcode-back" href="../../../api/clmm.utils.statistic.html#clmm.utils.statistic.make_bins">[docs]</a>
+<span class="k">def</span> <span class="nf">make_bins</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;evenwidth&quot;</span><span class="p">,</span> <span class="n">source_seps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define bin edges</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rmin : float, None</span>
+<span class="sd">        Minimum bin edges wanted. If None, min(`source_seps`) is used.</span>
+<span class="sd">    rmax : float, None</span>
+<span class="sd">        Maximum bin edges wanted. If None, max(`source_seps`) is used.</span>
+<span class="sd">    nbins : float, optional</span>
+<span class="sd">        Number of bins you want to create, default to 10.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Binning method to use (letter case independent):</span>
+
+<span class="sd">            * &#39;evenwidth&#39; - Default, evenly spaced bins between `rmin` and `rmax`</span>
+<span class="sd">            * &#39;evenlog10width&#39; - Logspaced bins with even width in log10 between `rmin` and `rmax`</span>
+<span class="sd">            * &#39;equaloccupation&#39; - Bins with equal occupation numbers</span>
+
+<span class="sd">    source_seps : array_like, None, optional</span>
+<span class="sd">        Radial distance of source separations. Needed if `method=&#39;equaloccupation&#39;`. Default: None</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    binedges: numpy.ndarray</span>
+<span class="sd">        array with `nbins` +1 elements that defines bin edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make case independent</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;equaloccupation&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">source_seps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; requires source separations array&quot;</span><span class="p">)</span>
+        <span class="n">seps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span>
+        <span class="n">rmin</span> <span class="o">=</span> <span class="n">seps</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rmin</span>
+        <span class="n">rmax</span> <span class="o">=</span> <span class="n">seps</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">if</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rmax</span>
+        <span class="c1"># Need to filter source_seps to only keep galaxies in the [rmin, rmax] with a mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">seps</span> <span class="o">&gt;=</span> <span class="n">rmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">seps</span> <span class="o">&lt;=</span> <span class="n">rmax</span><span class="p">)</span>
+        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">seps</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Check consistency</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmax</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid bin endpoints in make_bins, </span><span class="si">{</span><span class="n">rmin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">rmax</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nbins</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid nbins=</span><span class="si">{</span><span class="n">nbins</span><span class="si">}</span><span class="s2">. Must be integer greater than 0.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;evenwidth&quot;</span><span class="p">:</span>
+            <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;evenlog10width&quot;</span><span class="p">:</span>
+            <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmax</span><span class="p">),</span> <span class="n">nbins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; is not currently supported&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">binedges</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_draw_random_points_from_distribution</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">nobj</span><span class="p">,</span> <span class="n">dist_func</span><span class="p">,</span> <span class="n">xstep</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw random points with a given distribution.</span>
+
+<span class="sd">    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xmin : float</span>
+<span class="sd">        The minimum source redshift allowed.</span>
+<span class="sd">    xmax : float, optional</span>
+<span class="sd">        If source redshifts are drawn, the maximum source redshift</span>
+<span class="sd">    nobj : float</span>
+<span class="sd">        Number of galaxies to generate</span>
+<span class="sd">    dist_func : function</span>
+<span class="sd">        Function of the required distribution</span>
+<span class="sd">    xstep : float, optional</span>
+<span class="sd">        Size of the step to interpolate the culmulative distribution. Default: 0.001</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Random points with dist_func distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">xstep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">xdomain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span>
+    <span class="c1"># Cumulative probability function of the redshift distribution</span>
+    <span class="c1"># probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)</span>
+    <span class="n">probdist</span> <span class="o">=</span> <span class="n">dist_func</span><span class="p">(</span><span class="n">xdomain</span><span class="p">,</span> <span class="n">is_cdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-</span> <span class="n">dist_func</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">is_cdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Get random values for probdist</span>
+    <span class="n">uniform_deviate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">probdist</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">probdist</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">nobj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">probdist</span><span class="p">,</span> <span class="n">xdomain</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)(</span><span class="n">uniform_deviate</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_draw_random_points_from_tab_distribution</span><span class="p">(</span><span class="n">x_tab</span><span class="p">,</span> <span class="n">pdf_tab</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw random points from a tabulated distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_tab : array-like</span>
+<span class="sd">        Values for which the tabulated pdf is provided</span>
+<span class="sd">    pdf_tab : array-like</span>
+<span class="sd">        Value of the pdf at the x_tab locations</span>
+<span class="sd">    nobj : int, optional</span>
+<span class="sd">        Number of random samples to generate. Default is 1.</span>
+<span class="sd">    xmin : float, optional</span>
+<span class="sd">        Lower bound to draw redshift. Default is the min(x_tab)</span>
+<span class="sd">    xmax : float, optional</span>
+<span class="sd">        Upper bound to draw redshift. Default is the max(x_tab)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : numpy.ndarray</span>
+<span class="sd">        Random points following the pdf_tab distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_tab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_tab</span><span class="p">)</span>
+    <span class="n">pdf_tab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pdf_tab</span><span class="p">)</span>
+    <span class="c1"># cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">pdf_tab</span><span class="p">,</span> <span class="n">x_tab</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Normalise it</span>
+    <span class="n">cdf</span> <span class="o">/=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">cdf_xmin</span><span class="p">,</span> <span class="n">cdf_xmax</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="c1"># Interpolate cdf at xmin and xmax</span>
+    <span class="k">if</span> <span class="n">xmin</span> <span class="ow">or</span> <span class="n">xmax</span><span class="p">:</span>
+        <span class="n">cdf_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">x_tab</span><span class="p">,</span> <span class="n">cdf</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">xmin</span> <span class="o">&lt;</span> <span class="n">x_tab</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`xmin` is less than the minimum value of `x_tab`. &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;Using min(x_tab)=</span><span class="si">{</span><span class="n">x_tab</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cdf_xmin</span> <span class="o">=</span> <span class="n">cdf_interp</span><span class="p">(</span><span class="n">xmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">xmax</span> <span class="o">&gt;</span> <span class="n">x_tab</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`xmax` is greater than the maximum value of `x_tab`. &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;Using max(x_tab)=</span><span class="si">{</span><span class="n">x_tab</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cdf_xmax</span> <span class="o">=</span> <span class="n">cdf_interp</span><span class="p">(</span><span class="n">xmax</span><span class="p">)</span>
+    <span class="c1"># Interpolate the inverse CDF</span>
+    <span class="n">inv_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">x_tab</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># Finally generate sample from uniform distribution and</span>
+    <span class="c1"># get the corresponding samples</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">inv_cdf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nobj</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">cdf_xmax</span> <span class="o">-</span> <span class="n">cdf_xmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">cdf_xmin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">samples</span>
+
+
+<div class="viewcode-block" id="gaussian">
+<a class="viewcode-back" href="../../../api/clmm.utils.statistic.html#clmm.utils.statistic.gaussian">[docs]</a>
+<span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">scatter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normal distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : array-like</span>
+<span class="sd">        Values for which to evaluate gaussian.</span>
+<span class="sd">    mean : float</span>
+<span class="sd">        Mean value of normal distribution</span>
+<span class="sd">    scatter : float</span>
+<span class="sd">        Scatter of normal distribution</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Gaussian values at `value`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">scatter</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">scatter</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

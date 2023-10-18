@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.utils module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.utils package &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.z_distributions module" href="clmm.z_distributions.html" />
+    <link rel="next" title="clmm.utils.beta_lens module" href="clmm.utils.beta_lens.html" />
     <link rel="prev" title="clmm.plotting package" href="clmm.plotting.html" /> 
 </head>
 
@@ -30,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,9 +138,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
-      <li class="breadcrumb-item active">clmm.utils module</li>
+      <li class="breadcrumb-item active">clmm.utils package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/clmm.utils.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -138,558 +151,53 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.utils">
-<span id="clmm-utils-module"></span><h1>clmm.utils module<a class="headerlink" href="#module-clmm.utils" title="Permalink to this heading"></a></h1>
+<span id="clmm-utils-package"></span><h1>clmm.utils package<a class="headerlink" href="#module-clmm.utils" title="Link to this heading"></a></h1>
 <p>General utility functions that are used in multiple modules</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.arguments_consistency">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">arguments_consistency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arguments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#arguments_consistency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.arguments_consistency" title="Permalink to this definition"></a></dt>
-<dd><p>Make sure all arguments have the same length (or are scalars)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>arguments</strong> (<em>list</em><em>, </em><em>arrays</em><em>, </em><em>tuple</em>) -- Group of arguments to be checked</p></li>
-<li><p><strong>names</strong> (<em>list</em><em>, </em><em>tuple</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Names for each array. Default: None</p></li>
-<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>optional</em>) -- Customized prefix for error message. Default: ''</p></li>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta"><code class="docutils literal notranslate"><span class="pre">compute_beta()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s"><code class="docutils literal notranslate"><span class="pre">compute_beta_s()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_func"><code class="docutils literal notranslate"><span class="pre">compute_beta_s_func()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_s_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_square_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_s_square_mean()</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Group of arguments, converted to numpy arrays if they have length</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list, arrays, tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.build_ellipticities">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">build_ellipticities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#build_ellipticities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.build_ellipticities" title="Permalink to this definition"></a></dt>
-<dd><p>Build ellipticties from second moments. See, e.g., Schneider et al. (2006)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>q11</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Second brightness moment tensor, component (1,1)</p></li>
-<li><p><strong>q22</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Second brightness moment tensor, component (2,2)</p></li>
-<li><p><strong>q12</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Second brightness moment tensor, component (1,2)</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.boost.html#clmm.utils.boost.compute_nfw_boost"><code class="docutils literal notranslate"><span class="pre">compute_nfw_boost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.boost.html#clmm.utils.boost.compute_powerlaw_boost"><code class="docutils literal notranslate"><span class="pre">compute_powerlaw_boost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.boost.html#clmm.utils.boost.correct_sigma_with_boost_model"><code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.boost.html#clmm.utils.boost.correct_sigma_with_boost_values"><code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_values()</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>chi1, chi2</strong> (<em>float, numpy.ndarray</em>) -- Ellipticities using the &quot;chi definition&quot;</p></li>
-<li><p><strong>epsilon1, epsilon2</strong> (<em>float, numpy.ndarray</em>) -- Ellipticities using the &quot;epsilon definition&quot;</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.ellipticity.html#clmm.utils.ellipticity.build_ellipticities"><code class="docutils literal notranslate"><span class="pre">build_ellipticities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.ellipticity.html#clmm.utils.ellipticity.compute_lensed_ellipticity"><code class="docutils literal notranslate"><span class="pre">compute_lensed_ellipticity()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.ellipticity.html#clmm.utils.ellipticity.convert_shapes_to_epsilon"><code class="docutils literal notranslate"><span class="pre">convert_shapes_to_epsilon()</span></code></a></li>
 </ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta" title="Permalink to this definition"></a></dt>
-<dd><p>Geometric lensing efficicency</p>
-<div class="math notranslate nohighlight">
-\[\beta = max(0, D_{a,\ ls}/D_{a,\ s})\]</div>
-<p>Eq.2 in <a class="reference external" href="https://arxiv.org/pdf/1611.03866.pdf">https://arxiv.org/pdf/1611.03866.pdf</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.statistic.html#clmm.utils.statistic.compute_radial_averages"><code class="docutils literal notranslate"><span class="pre">compute_radial_averages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.statistic.html#clmm.utils.statistic.compute_weighted_bin_sum"><code class="docutils literal notranslate"><span class="pre">compute_weighted_bin_sum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.statistic.html#clmm.utils.statistic.gaussian"><code class="docutils literal notranslate"><span class="pre">gaussian()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.statistic.html#clmm.utils.statistic.make_bins"><code class="docutils literal notranslate"><span class="pre">make_bins()</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Geometric lensing efficicency</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_mean" title="Permalink to this definition"></a></dt>
-<dd><p>Mean value of the geometric lensing efficicency</p>
-<div class="math notranslate nohighlight">
-\[\left&lt;\beta\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}
-{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>zmax</strong> (<em>float</em><em>, </em><em>optional</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
-Default: 10</p></li>
-<li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
-This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
-<li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
-Default: None</p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.units.html#clmm.utils.units.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Mean value of the geometric lensing efficicency</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta_s">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s" title="Permalink to this definition"></a></dt>
-<dd><p>Geometric lensing efficicency ratio</p>
-<div class="math notranslate nohighlight">
-\[\beta_s = \beta(z_{src})/\beta(z_{inf})\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.validation.html#clmm.utils.validation.arguments_consistency"><code class="docutils literal notranslate"><span class="pre">arguments_consistency()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.validation.html#clmm.utils.validation.validate_argument"><code class="docutils literal notranslate"><span class="pre">validate_argument()</span></code></a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta_s_func">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_func" title="Permalink to this definition"></a></dt>
-<dd><p>Geometric lensing efficicency ratio times a value of a function</p>
-<div class="math notranslate nohighlight">
-\[\beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
-\times\text{func}(*args,\ **kwargs)\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>func</strong> (<em>callable</em>) -- A scalar function</p></li>
-<li><p><strong>*args</strong> (<em>positional arguments</em>) -- args to be passed to <cite>func</cite></p></li>
-<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) -- kwargs to be passed to <cite>func</cite></p></li>
+</li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta_s_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_mean" title="Permalink to this definition"></a></dt>
-<dd><p>Mean value of the geometric lensing efficicency ratio</p>
-<div class="math notranslate nohighlight">
-\[\left&lt;\beta_s\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
-{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>zmax</strong> (<em>float</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
-Default: 10</p></li>
-<li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
-This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
-<li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
-Default: None</p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Mean value of the geometric lensing efficicency ratio</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_beta_s_square_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_square_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_square_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_square_mean" title="Permalink to this definition"></a></dt>
-<dd><p>Mean square value of the geometric lensing efficiency ratio</p>
-<div class="math notranslate nohighlight">
-\[\left&lt;\beta_s^2\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}
-{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>zmax</strong> (<em>float</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
-Default: 10</p></li>
-<li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
-This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
-<li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
-Default: None</p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Mean square value of the geometric lensing efficicency ratio.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_for_good_redshifts">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_for_good_redshifts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1_arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2_arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_for_good_redshifts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_for_good_redshifts" title="Permalink to this definition"></a></dt>
-<dd><p>Computes function only for <cite>z1</cite> &lt; <cite>z2</cite>, the rest is filled with <cite>bad_value</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>function</strong> (<em>function</em>) -- Function to be executed</p></li>
-<li><p><strong>z1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift lower</p></li>
-<li><p><strong>z2</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift higher</p></li>
-<li><p><strong>bad_value</strong> (<em>any</em>) -- Value to fill when <cite>z1</cite> &gt;= <cite>z2</cite></p></li>
-<li><p><strong>warning_message</strong> (<em>str</em>) -- Warning message to be displayed when <cite>z1</cite> &gt;= <cite>z2</cite></p></li>
-<li><p><strong>z1_arg_name</strong> (<em>str</em><em>, </em><em>optional</em>) -- Name of the keyword argument that <cite>z1</cite> is passed to. Default: 'z1'</p></li>
-<li><p><strong>z2_arg_name</strong> (<em>str</em><em>, </em><em>optional</em>) -- Name of the keyword argument that <cite>z2</cite> is passed to. Default: 'z2'</p></li>
-<li><p><strong>r_proj</strong> (<em>float</em><em>, </em><em>array_like</em><em>, </em><em>optional</em>) -- Value to be passed to keyword argument <cite>r_proj</cite> of <cite>function</cite>. Default: None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Output of <cite>function</cite> with value for <cite>z1</cite> &gt;= <cite>z2</cite> replaced by <cite>bad_value</cite></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Return type of <cite>function</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_lensed_ellipticity">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_lensed_ellipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ellipticity1_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipticity2_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_lensed_ellipticity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_lensed_ellipticity" title="Permalink to this definition"></a></dt>
-<dd><p>Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
-Following Schneider et al. (2006)</p>
-<div class="math notranslate nohighlight">
-\[\epsilon^{\text{lensed}}=\epsilon^{\text{lensed}}_1+i\epsilon^{\text{lensed}}_2=
-\frac{\epsilon^{\text{true}}+g}{1+g^\ast\epsilon^{\text{true}}},\]</div>
-<p>where, the complex reduced shear <span class="math notranslate nohighlight">\(g\)</span> is obtained from the shear
-<span class="math notranslate nohighlight">\(\gamma=\gamma_1+i\gamma_2\)</span> and convergence <span class="math notranslate nohighlight">\(\kappa\)</span> as <span class="math notranslate nohighlight">\(g =
-\gamma/(1-\kappa)\)</span>, and the complex intrinsic ellipticity is <span class="math notranslate nohighlight">\(\epsilon^{\text{
-true}}=\epsilon^{\text{true}}_1+i\epsilon^{\text{true}}_2\)</span></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ellipticity1_true</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Intrinsic ellipticity of the sources along the principal axis</p></li>
-<li><p><strong>ellipticity2_true</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Intrinsic ellipticity of the sources along the second axis</p></li>
-<li><p><strong>shear1</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Shear component (not reduced shear) along the principal axis at the source location</p></li>
-<li><p><strong>shear2</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Shear component (not reduced shear) along the 45-degree axis at the source location</p></li>
-<li><p><strong>convergence</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Convergence at the source location</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>e1, e2</strong> -- Lensed ellipicity along both reference axes.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float, numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_nfw_boost">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_nfw_boost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_nfw_boost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_nfw_boost" title="Permalink to this definition"></a></dt>
-<dd><p>Given a list of <cite>rvals</cite>, and optional <cite>rs</cite> and <cite>b0</cite>, return the corresponding boost factor
-at each rval</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rvals</strong> (<em>array_like</em>) -- radii</p></li>
-<li><p><strong>rs</strong> (<em>float</em><em>, </em><em>optional</em>) -- scale radius for NFW in same units as rvals (default 2000 kpc)</p></li>
-<li><p><strong>b0</strong> (<em>float</em><em>, </em><em>optional</em>) -- </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>boost_factors</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_powerlaw_boost">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_powerlaw_boost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_powerlaw_boost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_powerlaw_boost" title="Permalink to this definition"></a></dt>
-<dd><p>Given a list of <cite>rvals</cite>, and optional <cite>rs</cite> and <cite>b0</cite>, and <cite>alpha</cite>,
-return the corresponding boost factor at each <cite>rval</cite></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rvals</strong> (<em>array_like</em>) -- radii</p></li>
-<li><p><strong>rs</strong> (<em>float</em><em>, </em><em>optional</em>) -- scale radius for NFW in same units as rvals (default 2000 kpc)</p></li>
-<li><p><strong>b0</strong> (<em>float</em><em>, </em><em>optional</em>) -- Default: 0.1</p></li>
-<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) -- exponent from Melchior+16. Default: -1.0</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>boost_factors</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.compute_radial_averages">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_radial_averages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xbins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_radial_averages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_radial_averages" title="Permalink to this definition"></a></dt>
-<dd><p>Given a list of <cite>xvals</cite>, <cite>yvals</cite> and <cite>xbins</cite>, sort into bins. If <cite>xvals</cite> or <cite>yvals</cite>
-contain non-finite values, these are filtered.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xvals</strong> (<em>array_like</em>) -- Values to be binned</p></li>
-<li><p><strong>yvals</strong> (<em>array_like</em>) -- Values to compute statistics on</p></li>
-<li><p><strong>xbins</strong> (<em>array_like</em>) -- Bin edges to sort into</p></li>
-<li><p><strong>yerr</strong> (<em>array_like</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Errors of <cite>yvals</cite>. Default: None</p></li>
-<li><p><strong>error_model</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Statistical error model to use for y uncertainties. (letter case independent)</p>
-<blockquote>
-<div><ul>
-<li><p>'ste' - Standard error [=std/sqrt(n) in unweighted computation] (Default).</p></li>
-<li><p>'std' - Standard deviation.</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>weights</strong> (<em>array_like</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Weights for averages. Default: None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>mean_x</strong> (<em>numpy.ndarray</em>) -- Mean x value in each bin</p></li>
-<li><p><strong>mean_y</strong> (<em>numpy.ndarray</em>) -- Mean y value in each bin</p></li>
-<li><p><strong>err_y</strong> (<em>numpy.ndarray</em>) -- Error on the mean y value in each bin. Specified by <cite>error_model</cite></p></li>
-<li><p><strong>num_objects</strong> (<em>numpy.ndarray</em>) -- Number of objects in each bin</p></li>
-<li><p><strong>binnumber</strong> (<em>1-D ndarray of ints</em>) -- Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
-of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the
-corresponding value is between (xbins[i-1], xbins[i]).</p></li>
-<li><p><strong>wts_sum</strong> (<em>numpy.ndarray</em>) -- Sum of individual weights in each bin.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.convert_shapes_to_epsilon">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">convert_shapes_to_epsilon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_definition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epsilon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_shapes_to_epsilon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.convert_shapes_to_epsilon" title="Permalink to this definition"></a></dt>
-<dd><p>Convert shape components 1 and 2 appropriately to make them estimators of the
-reduced shear once averaged.  The shape 1 and 2 components may correspond to ellipticities
-according the <span class="math notranslate nohighlight">\(\epsilon\)</span>- or <span class="math notranslate nohighlight">\(\chi\)</span>-definition, but also to the 1 and 2 components
-of the shear. See Bartelmann &amp; Schneider 2001 for details
-(<a class="reference external" href="https://arxiv.org/pdf/astro-ph/9912508.pdf">https://arxiv.org/pdf/astro-ph/9912508.pdf</a>).</p>
-<p>The <span class="math notranslate nohighlight">\(\epsilon\)</span>-ellipticity is a direct estimator of
-the reduced shear. The shear <span class="math notranslate nohighlight">\(\gamma\)</span> may be converted to reduced shear <span class="math notranslate nohighlight">\(g\)</span> if the
-convergence <span class="math notranslate nohighlight">\(\kappa\)</span> is known. The conversions are given below.</p>
-<div class="math notranslate nohighlight">
-\[\epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}\]</div>
-<div class="math notranslate nohighlight">
-\[g=\frac{\gamma}{1-\kappa}\]</div>
-<ul class="simple">
-<li><p>If <cite>shape_definition = 'chi'</cite>, this function returns the corresponding <cite>epsilon</cite>
-ellipticities</p></li>
-<li><p>If <cite>shape_definition = 'shear'</cite>, it returns the corresponding reduced shear, given the
-convergence <cite>kappa</cite></p></li>
-<li><p>If <cite>shape_definition = 'epsilon'</cite> or <cite>'reduced_shear'</cite>, it returns them as is as no
-conversion is needed.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>shape_1</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Input shapes or shears along principal axis (g1 or e1)</p></li>
-<li><p><strong>shape_2</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em>) -- Input shapes or shears along secondary axis (g2 or e2)</p></li>
-<li><p><strong>shape_definition</strong> (<em>str</em><em>, </em><em>optional</em>) -- Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
-or 'reduced_shear'. Defaut: 'epsilon'</p></li>
-<li><p><strong>kappa</strong> (<em>float</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>optional</em>) -- Convergence for transforming to a reduced shear. Default is 0</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>epsilon_1</strong> (<em>float, numpy.ndarray</em>) -- Epsilon ellipticity (or reduced shear) along principal axis (epsilon1)</p></li>
-<li><p><strong>epsilon_2</strong> (<em>float, numpy.ndarray</em>) -- Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.convert_units">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">convert_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.convert_units" title="Permalink to this definition"></a></dt>
-<dd><p>Convenience wrapper to convert between a combination of angular and physical units.</p>
-<p>Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
-(letter case independent)</p>
-<p>To convert between angular and physical units you must provide both
-<cite>redshift</cite> and a CLMM Cosmology object <cite>cosmo</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dist1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Input distances</p></li>
-<li><p><strong>unit1</strong> (<em>str</em>) -- Unit for the input distances</p></li>
-<li><p><strong>unit2</strong> (<em>str</em>) -- Unit for the output distances</p></li>
-<li><p><strong>redshift</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Redshift used to convert between angular and physical units. Default: None</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- CLMM Cosmology object to compute angular diameter distance to
-convert between physical and angular units. Default: None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dist2</strong> -- Input distances converted to unit2</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float, numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.correct_sigma_with_boost_model">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">correct_sigma_with_boost_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boost_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw_boost'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">boost_model_kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#correct_sigma_with_boost_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.correct_sigma_with_boost_model" title="Permalink to this definition"></a></dt>
-<dd><p>Given a boost model and sigma profile, compute corrected sigma</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rvals</strong> (<em>array_like</em>) -- radii</p></li>
-<li><p><strong>sigma_vals</strong> (<em>array_like</em>) -- uncorrected sigma with cluster member dilution</p></li>
-<li><p><strong>boost_model</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Boost model to use for correcting sigma</p>
-<blockquote>
-<div><ul>
-<li><p>'nfw_boost' - NFW profile model (Default)</p></li>
-<li><p>'powerlaw_boost' - Powerlaw profile</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigma_corrected</strong> -- correted radial profile</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.correct_sigma_with_boost_values">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">correct_sigma_with_boost_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boost_factors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#correct_sigma_with_boost_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.correct_sigma_with_boost_values" title="Permalink to this definition"></a></dt>
-<dd><p>Given a list of boost values and sigma profile, compute corrected sigma</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sigma_vals</strong> (<em>array_like</em>) -- uncorrected sigma with cluster member dilution</p></li>
-<li><p><strong>boost_factors</strong> (<em>array_like</em>) -- Boost values pre-computed</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigma_corrected</strong> -- correted radial profile</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.gaussian">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.gaussian" title="Permalink to this definition"></a></dt>
-<dd><p>Normal distribution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<em>array-like</em>) -- Values for which to evaluate gaussian.</p></li>
-<li><p><strong>mean</strong> (<em>float</em>) -- Mean value of normal distribution</p></li>
-<li><p><strong>scatter</strong> (<em>float</em>) -- Scatter of normal distribution</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Gaussian values at <cite>value</cite></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.make_bins">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">make_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'evenwidth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_seps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#make_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.make_bins" title="Permalink to this definition"></a></dt>
-<dd><p>Define bin edges</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rmin</strong> (<em>float</em><em>, </em><em>None</em>) -- Minimum bin edges wanted. If None, min(<cite>source_seps</cite>) is used.</p></li>
-<li><p><strong>rmax</strong> (<em>float</em><em>, </em><em>None</em>) -- Maximum bin edges wanted. If None, max(<cite>source_seps</cite>) is used.</p></li>
-<li><p><strong>nbins</strong> (<em>float</em><em>, </em><em>optional</em>) -- Number of bins you want to create, default to 10.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Binning method to use (letter case independent):</p>
-<blockquote>
-<div><ul>
-<li><p>'evenwidth' - Default, evenly spaced bins between <cite>rmin</cite> and <cite>rmax</cite></p></li>
-<li><p>'evenlog10width' - Logspaced bins with even width in log10 between <cite>rmin</cite> and <cite>rmax</cite></p></li>
-<li><p>'equaloccupation' - Bins with equal occupation numbers</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>source_seps</strong> (<em>array_like</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Radial distance of source separations. Needed if <cite>method='equaloccupation'</cite>. Default: None</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>binedges</strong> -- array with <cite>nbins</cite> +1 elements that defines bin edges</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.validate_argument">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">validate_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eqmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eqmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#validate_argument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.validate_argument" title="Permalink to this definition"></a></dt>
-<dd><p>Validate argument type and raise errors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>loc</strong> (<em>dict</em>) -- Dictionary with all input arguments. Should be locals().</p></li>
-<li><p><strong>argname</strong> (<em>str</em>) -- Name of argument to be tested.</p></li>
-<li><p><strong>valid_type</strong> (<em>str</em><em>, </em><em>type</em>) -- <p>Valid types for argument, options are object types, list/tuple of types, or:</p>
-<blockquote>
-<div><ul>
-<li><p>'int_array' - interger, interger array</p></li>
-<li><p>'float_array' - float, float array</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>none_ok</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, accepts None as a valid type. Default: False</p></li>
-<li><p><strong>argmin</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum value allowed. Default: None</p></li>
-<li><p><strong>argmax</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Maximum value allowed. Default: None</p></li>
-<li><p><strong>eqmin</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, accepts min(arg)==argmin. Default: False</p></li>
-<li><p><strong>eqmax</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, accepts max(arg)==argmax. Default: False</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+</div>
+</section>
 </section>
 
 

@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using the cosmoDC2 catalog &mdash; CLMM 1.7.1 documentation</title>
+  <title>Using the cosmoDC2 catalog &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Using the cosmoDC2 catalog</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/data_and_model_demo_DC2.rst.txt" rel="nofollow"> View page source</a>
@@ -137,9 +151,10 @@
            <div itemprop="articleBody">
              
   <section id="using-the-cosmodc2-catalog">
-<h1>Using the cosmoDC2 catalog<a class="headerlink" href="#using-the-cosmodc2-catalog" title="Permalink to this heading"></a></h1>
+<h1>Using the cosmoDC2 catalog<a class="headerlink" href="#using-the-cosmodc2-catalog" title="Link to this heading"></a></h1>
+<p><em>Note: this notebook was produced using a previous version of CLMM (v1.5.1)</em></p>
 <section id="basic-usage-of-the-cosmodc2-extragalactic-catalog-with-clmm">
-<h2>Basic usage of the cosmoDC2 extragalactic catalog with CLMM<a class="headerlink" href="#basic-usage-of-the-cosmodc2-extragalactic-catalog-with-clmm" title="Permalink to this heading"></a></h2>
+<h2>Basic usage of the cosmoDC2 extragalactic catalog with CLMM<a class="headerlink" href="#basic-usage-of-the-cosmodc2-extragalactic-catalog-with-clmm" title="Link to this heading"></a></h2>
 <p>This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
 products are stored. You need to be a DESC member to be able to access
 those.</p>
@@ -158,13 +173,13 @@ those.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.1&#39;</span>
 </pre></div>
 </div>
 <section id="prepare-a-clmm-galaxycluster-object-from-cosmodc2">
-<h3>1. Prepare a CLMM GalaxyCluster object from cosmoDC2<a class="headerlink" href="#prepare-a-clmm-galaxycluster-object-from-cosmodc2" title="Permalink to this heading"></a></h3>
+<h3>1. Prepare a CLMM GalaxyCluster object from cosmoDC2<a class="headerlink" href="#prepare-a-clmm-galaxycluster-object-from-cosmodc2" title="Link to this heading"></a></h3>
 <section id="read-in-the-extragalactic-catalog-cosmodc2">
-<h4>Read in the extragalactic catalog cosmoDC2<a class="headerlink" href="#read-in-the-extragalactic-catalog-cosmodc2" title="Permalink to this heading"></a></h4>
+<h4>Read in the extragalactic catalog cosmoDC2<a class="headerlink" href="#read-in-the-extragalactic-catalog-cosmodc2" title="Link to this heading"></a></h4>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extragalactic_cat</span> <span class="o">=</span> <span class="n">GCRCatalogs</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="s1">&#39;cosmoDC2_v1.1.4_small&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -174,12 +189,12 @@ those.</p>
 <span class="n">cosmo</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span><span class="o">.</span><span class="n">CCLCosmology</span> <span class="n">at</span> <span class="mh">0x155514cc31d0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span><span class="o">.</span><span class="n">CCLCosmology</span> <span class="n">at</span> <span class="mh">0x15551392c850</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
 <section id="get-the-list-of-halos-with-m-mmin-in-the-redshift-range-zmin-zmax">
-<h4>Get the list of halos with <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">&gt;</span> <span class="pre">mmin</span></code> in the redshift range <code class="docutils literal notranslate"><span class="pre">[zmin,</span> <span class="pre">zmax]</span></code><a class="headerlink" href="#get-the-list-of-halos-with-m-mmin-in-the-redshift-range-zmin-zmax" title="Permalink to this heading"></a></h4>
+<h4>Get the list of halos with <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">&gt;</span> <span class="pre">mmin</span></code> in the redshift range <code class="docutils literal notranslate"><span class="pre">[zmin,</span> <span class="pre">zmax]</span></code><a class="headerlink" href="#get-the-list-of-halos-with-m-mmin-in-the-redshift-range-zmin-zmax" title="Link to this heading"></a></h4>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
 <span class="c1"># get list of massive halos in a given redshift and mass range</span>
 <span class="n">mmin</span> <span class="o">=</span> <span class="mf">5.e14</span> <span class="c1"># Msun</span>
@@ -195,13 +210,13 @@ those.</p>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">are</span> <span class="mi">4</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">mass</span> <span class="ow">and</span> <span class="n">redshift</span> <span class="nb">range</span>
-<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.92</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">8.25</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">10.2</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">58.5</span> <span class="n">s</span>
+<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">2.26</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">9.63</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">11.9</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">1</span><span class="nb">min</span> <span class="mi">54</span><span class="n">s</span>
 </pre></div>
 </div>
 </section>
 <section id="check-the-units-of-halo-masses-in-the-catalog">
-<h4>Check the units of halo masses in the catalog<a class="headerlink" href="#check-the-units-of-halo-masses-in-the-catalog" title="Permalink to this heading"></a></h4>
+<h4>Check the units of halo masses in the catalog<a class="headerlink" href="#check-the-units-of-halo-masses-in-the-catalog" title="Link to this heading"></a></h4>
 <p>We have filtered the catalog using the <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> field. There are
 two related fields in the catalog: <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> and <code class="docutils literal notranslate"><span class="pre">hostHaloMass</span></code>.
 In the <a class="reference external" href="https://arxiv.org/abs/1907.06530">cosmoDC2 preprint</a>, Table 2
@@ -225,7 +240,7 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 <p>Below, we use <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code>.</p>
 </section>
 <section id="select-the-most-massive-one">
-<h4>Select the most massive one<a class="headerlink" href="#select-the-most-massive-one" title="Permalink to this heading"></a></h4>
+<h4>Select the most massive one<a class="headerlink" href="#select-the-most-massive-one" title="Link to this heading"></a></h4>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selecting the most massive one</span>
 
 <span class="n">select</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">])</span>
@@ -244,7 +259,7 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 </div>
 </section>
 <section id="apply-coordinates-redshift-and-magnitude-cuts-to-select-backgroud-galaxies-around-the-cluster">
-<h4>Apply coordinates, redshift and magnitude cuts to select backgroud galaxies around the cluster<a class="headerlink" href="#apply-coordinates-redshift-and-magnitude-cuts-to-select-backgroud-galaxies-around-the-cluster" title="Permalink to this heading"></a></h4>
+<h4>Apply coordinates, redshift and magnitude cuts to select backgroud galaxies around the cluster<a class="headerlink" href="#apply-coordinates-redshift-and-magnitude-cuts-to-select-backgroud-galaxies-around-the-cluster" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>Box of 0.6 deg around the cluster center</p></li>
 <li><p>Galaxies with z &gt; z_cluster + 0.1</p></li>
@@ -275,13 +290,13 @@ including intrinsic and shear components.</p>
     <span class="n">filters</span><span class="o">=</span><span class="p">(</span><span class="n">coord_filters</span> <span class="o">+</span> <span class="n">z_filters</span> <span class="o">+</span> <span class="n">mag_filters</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">20.5</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">18.9</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">39.4</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">1</span><span class="nb">min</span> <span class="mi">26</span><span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">23.1</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">25.6</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">48.7</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">2</span><span class="nb">min</span> <span class="mi">56</span><span class="n">s</span>
 </pre></div>
 </div>
 </section>
 <section id="to-compute-a-reduced-tangential-shear-profile-using-clmm-we-first-need-to-transform-the-shear-into-ellipticities">
-<h4>To compute a reduced tangential shear profile using CLMM, we first need to transform the shear into ellipticities.<a class="headerlink" href="#to-compute-a-reduced-tangential-shear-profile-using-clmm-we-first-need-to-transform-the-shear-into-ellipticities" title="Permalink to this heading"></a></h4>
+<h4>To compute a reduced tangential shear profile using CLMM, we first need to transform the shear into ellipticities.<a class="headerlink" href="#to-compute-a-reduced-tangential-shear-profile-using-clmm-we-first-need-to-transform-the-shear-into-ellipticities" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>The CLMM function <code class="docutils literal notranslate"><span class="pre">convert_shapes_to_epsilon</span></code> convert any shape
 measurements into the corresponding ellipticities (<span class="math notranslate nohighlight">\(\epsilon\)</span>
@@ -318,9 +333,9 @@ used to instantiate a CLMM GalaxyCluster object.</p></li>
 </section>
 </section>
 <section id="use-clmm-to-compute-the-reduced-tangential-shear-profile">
-<h3>2. Use CLMM to compute the reduced tangential shear profile<a class="headerlink" href="#use-clmm-to-compute-the-reduced-tangential-shear-profile" title="Permalink to this heading"></a></h3>
+<h3>2. Use CLMM to compute the reduced tangential shear profile<a class="headerlink" href="#use-clmm-to-compute-the-reduced-tangential-shear-profile" title="Link to this heading"></a></h3>
 <section id="compute-the-tangential-and-cross-shear-profiles">
-<h4>Compute the tangential and cross shear profiles<a class="headerlink" href="#compute-the-tangential-and-cross-shear-profiles" title="Permalink to this heading"></a></h4>
+<h4>Compute the tangential and cross shear profiles<a class="headerlink" href="#compute-the-tangential-and-cross-shear-profiles" title="Link to this heading"></a></h4>
 <p>NB: Check out the <code class="docutils literal notranslate"><span class="pre">demo_dataops</span></code> notebook to see examples of all
 available options of the functions below.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">dataops</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span> <span class="c1"># in Mpc</span>
@@ -332,7 +347,7 @@ available options of the functions below.</p>
 </section>
 </section>
 <section id="sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass">
-<h3>3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass<a class="headerlink" href="#sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass" title="Permalink to this heading"></a></h3>
+<h3>3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass<a class="headerlink" href="#sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>The mass definition used in cosmoDC2 is the friend-of-friend mass
 with linking length b=0.168. In CLMM, the default mass definition is
