@@ -1,6 +1,8 @@
 Example 5: Using a real datasets (DES)
 ======================================
 
+*Note: this notebook was produced using a previous version of CLMM (v1.5.1)*
+
 Fit halo mass to shear profile using DES data
 ---------------------------------------------
 
@@ -24,7 +26,8 @@ DES data: https://des.ncsa.illinois.edu/thanks
 
 Astro Data Lab: https://datalab.noirlab.edu/acknowledgements.php
 
-## 1. Setup
+1. Setup
+--------
 
 We import packages.
 
@@ -36,7 +39,8 @@ We import packages.
     import pickle as pkl
     from pathlib import Path
 
-## 2. Selecting a cluster
+2. Selecting a cluster
+----------------------
 
 We use the DES Y1 redMaPPer Catalogs
 (https://des.ncsa.illinois.edu/releases/y1a1/key-catalogs/key-redmapper)
@@ -56,7 +60,8 @@ have high masses.
 | 443106.3    |             |             |             |             |
 +-------------+-------------+-------------+-------------+-------------+
 
-## 3. Downloading the catalog at the cluster field
+3. Downloading the catalog at the cluster field
+-----------------------------------------------
 
 We consider RMJ051637.4-543001.6 (ACO S520) as an example. We can access
 the DES catalog from NOIRLab Data Lab
@@ -82,7 +87,8 @@ take a few minutes and the size of the catalog is about 1.4 MB (.csv).
    AND P.z_sigma<0.1
    AND C.flags_select=0
 
-## 4. Loading the catalog into CLMM
+4. Loading the catalog into CLMM
+--------------------------------
 
 Once we have the catalog, we read in the catalog, make cuts on the
 catalog, and adjust column names to prepare for the analysis in CLMM.
@@ -221,8 +227,8 @@ Basic visualization
 .. image:: Example5_Fit_Halo_mass_to_DES_data_files/Example5_Fit_Halo_mass_to_DES_data_13_2.png
 
 
-## 5. Running CLMM on the dataset We use the functions similar to
-``examples/Paper_v1.0/gt_and_use_case.ipynb``.
+5. Running CLMM on the dataset We use the functions similar to examples/Paper_v1.0/gt_and_use_case.ipynb
+--------------------------------------------------------------------------------------------------------
 
 Make a galaxy cluster object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

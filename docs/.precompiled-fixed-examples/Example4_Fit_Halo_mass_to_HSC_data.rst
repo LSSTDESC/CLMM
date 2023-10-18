@@ -1,6 +1,8 @@
 Example 4: Using a real dataset (HSC)
 =====================================
 
+*Note: this notebook was produced using a previous version of CLMM (v1.5.1)*
+
 Fit halo mass to shear profile using HSC data
 ---------------------------------------------
 
@@ -36,7 +38,8 @@ https://hsc-release.mtk.nao.ac.jp/doc/index.php/photometric-redshifts/
 Cluster catalog:
 https://hsc-release.mtk.nao.ac.jp/doc/index.php/camira_pdr2/
 
-## 1. Setup
+1. Setup
+--------
 
 We import packages.
 
@@ -49,7 +52,8 @@ We import packages.
     import pickle as pkl
     from pathlib import Path
 
-## 2. Selecting a cluster
+2. Selecting a cluster
+----------------------
 
 We use the HSC SSP publications
 (https://hsc.mtk.nao.ac.jp/ssp/publications/) to select a list of
@@ -169,7 +173,8 @@ unless otherwise specified, and we assume h=0.7.
 |         |         |         |         |         | act>`__ |         |
 +---------+---------+---------+---------+---------+---------+---------+
 
-## 3. Downloading the catalog at the cluster field
+3. Downloading the catalog at the cluster field
+-----------------------------------------------
 
 The 3 most massive cluster-candidates are MaxBCG.J140.53188+03.76632 (in
 the GAMA09H field), Miyazaki+2018 (M18 hearafter) rank 48 and 62 (in the
@@ -235,7 +240,8 @@ webpage. To unpress the file “.gz”, use “gunzip” or “gzip -d”.
     --AND e.iclassification_extendedness>0.5
     --LIMIT 5
 
-## 4. Loading the catalog into CLMM
+4. Loading the catalog into CLMM
+--------------------------------
 
 Once we have the catalog, we read in the catalog, make cuts on the
 catalog, and adjust column names to prepare for the analysis in CLMM.
@@ -391,8 +397,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.
     
     #make_plots(data_2)
 
-## 5. Running CLMM on the dataset We use the functions similar to
-``examples/Paper_v1.0/gt_and_use_case.ipynb``.
+5. Running CLMM on the dataset We use the functions similar to examples/Paper_v1.0/gt_and_use_case.ipynb
+--------------------------------------------------------------------------------------------------------
 
 .. code:: ipython3
 

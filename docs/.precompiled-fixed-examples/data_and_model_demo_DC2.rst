@@ -1,6 +1,8 @@
 Using the cosmoDC2 catalog
 ==========================
 
+*Note: this notebook was produced using a previous version of CLMM (v1.5.1)*
+
 Basic usage of the cosmoDC2 extragalactic catalog with CLMM
 -----------------------------------------------------------
 
