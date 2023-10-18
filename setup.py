@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import sys
 
 version = sys.version_info
-required_py_version = 3.6
+required_py_version = 3.8
 if version[0] < int(required_py_version) or (
     version[0] == int(required_py_version)
     and version[1] < required_py_version - int(required_py_version)
@@ -41,5 +41,5 @@ setup(
         "Programming Language :: Python",
     ],
     install_requires=["astropy>=4.0", "numpy", "scipy", "healpy"],
-    python_requires=">" + str(required_py_version),
+    python_requires=">=" + str(required_py_version),
 )

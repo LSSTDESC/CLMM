@@ -20,7 +20,7 @@ for mod_name in MOCK_MODULES:
 
 # Fix for ccl
 sys.modules["pyccl"].Cosmology = MagicMock
-sys.modules["pyccl"].__version__ = "2.6"
+sys.modules["pyccl"].__version__ = "3"
 
 # Fix for numcosmo
 sys.modules["gi.repository"].NumCosmo.Distance = MagicMock

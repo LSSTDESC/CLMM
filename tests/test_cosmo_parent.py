@@ -269,7 +269,7 @@ def test_eval_sigma_crit(modeling_data):
     cosmo, testcase, _ = load_validation_config()
 
     assert_allclose(
-        cosmo.eval_sigma_crit(testcase["z_cluster"], testcase["z_source"]),
+        cosmo.eval_sigma_crit(testcase["z_cluster"], testcase["z_src"]),
         testcase["nc_Sigmac"],
         reltol,
     )
@@ -278,7 +278,7 @@ def test_eval_sigma_crit(modeling_data):
     assert_raises(ValueError, cosmo.eval_sigma_crit, 0.2, -0.3)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
-    z_source = 0.2
-    assert_allclose(cosmo.eval_sigma_crit(z_cluster, z_source), np.inf, 1.0e-10)
-    z_source = [0.2, 0.12, 0.25]
-    assert_allclose(cosmo.eval_sigma_crit(z_cluster, z_source), [np.inf, np.inf, np.inf], 1.0e-10)
+    z_src = 0.2
+    assert_allclose(cosmo.eval_sigma_crit(z_cluster, z_src), np.inf, 1.0e-10)
+    z_src = [0.2, 0.12, 0.25]
+    assert_allclose(cosmo.eval_sigma_crit(z_cluster, z_src), [np.inf, np.inf, np.inf], 1.0e-10)
