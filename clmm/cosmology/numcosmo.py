@@ -63,7 +63,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
         # pylint: disable=arguments-differ
-        self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
+        self.be_cosmo = Nc.HICosmoDECpl(massnu_length=1)
         self.be_cosmo.omega_x2omega_k()
         self.be_cosmo.param_set_by_name("w0", -1.0)
         self.be_cosmo.param_set_by_name("w1", 0.0)
