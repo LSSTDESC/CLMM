@@ -23,7 +23,7 @@ def test_cluster_ensemble():
     ra_source = [120.1, 119.9]
     dec_source = [41.9, 42.2]
     theta_source = [0.0025, 0.015]
-    z_source = [1.0, 2.0]
+    z_src = [1.0, 2.0]
     shear1 = [0.2, 0.4]
     shear2 = [0.3, 0.5]
     w_ls = [1.0e-30, 1.0e-31]
@@ -33,7 +33,7 @@ def test_cluster_ensemble():
     names = ("ra", "dec", "theta", "w_ls", "e1", "e2", "z")
 
     galcat = clmm.GCData(
-        [ra_source, dec_source, theta_source, w_ls, shear1, shear2, z_source], names=names
+        [ra_source, dec_source, theta_source, w_ls, shear1, shear2, z_src], names=names
     )
     # create cluster
     cluster = clmm.GalaxyCluster(

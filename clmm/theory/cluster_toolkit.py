@@ -25,7 +25,7 @@ def _assert_correct_type_ct(arg):
 
     Returns
     -------
-    scale_factor : array_like
+    scale_factor : numpy.ndarray
         Scale factor
     """
     if np.isscalar(arg):
@@ -41,11 +41,11 @@ class CTCLMModeling(CLMModeling):
     backend: str
         Name of the backend being used
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
+        Profile mass definition ("mean", "critical" - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
+        Profile model parameterization ("nfw" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -85,7 +85,6 @@ class CTCLMModeling(CLMModeling):
         self.mdef_dict = {
             "mean": self.cosmo.get_E2Omega_m,
             "critical": self.cosmo.get_E2,
-            "virial": self.cosmo.get_E2,
         }
 
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
@@ -145,7 +144,7 @@ class CTCLMModeling(CLMModeling):
         )  # pc**-2 to Mpc**-2
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
-        r"""Computes the mean value of surface density inside radius r_proj
+        r"""Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
         ----------
@@ -156,7 +155,7 @@ class CTCLMModeling(CLMModeling):
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
 
         Note
