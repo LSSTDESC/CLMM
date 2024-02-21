@@ -193,6 +193,7 @@ class NumCosmoCLMModeling(CLMModeling):
 
         self.hdpm = mset.get(Nc.HaloDensityProfile.id())
         self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
+        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 
 Cosmology = NumCosmoCosmology
