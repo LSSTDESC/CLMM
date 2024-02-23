@@ -33,6 +33,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def __init__(self, dist=None, dist_zmax=15.0, **kwargs):
         self.dist = None
+        self.smd = None
 
         super().__init__(**kwargs)
 
@@ -54,6 +55,7 @@ class NumCosmoCosmology(CLMMCosmology):
         self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
         self.smd.prepare_if_needed(self.be_cosmo)
 
+
     def _init_from_cosmo(self, be_cosmo):
         assert isinstance(be_cosmo, Nc.HICosmo)
         assert isinstance(be_cosmo, Nc.HICosmoDECpl)
@@ -63,7 +65,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
         # pylint: disable=arguments-differ
-        self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
+        self.be_cosmo = Nc.HICosmoDECpl(massnu_length=1)
         self.be_cosmo.omega_x2omega_k()
         self.be_cosmo.param_set_by_name("w0", -1.0)
         self.be_cosmo.param_set_by_name("w1", 0.0)
@@ -136,6 +138,10 @@ class NumCosmoCosmology(CLMMCosmology):
         self._eval_sigma_crit_core = np.vectorize(
             lambda z_len, z_src: (self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len))
         )
+        if self.dist is not None:
+            self.dist.prepare_if_needed(self.be_cosmo)
+        if self.smd is not None:
+            self.smd.prepare_if_needed(self.be_cosmo)
 
     def _get_rho_c(self, z):
         return (
