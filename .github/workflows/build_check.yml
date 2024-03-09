@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
@@ -36,7 +36,6 @@ jobs:
         conda install -c conda-forge cmake swig --override-channels
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        git checkout v3.0.0
         pip install .
     - name: Analysing the code with pylint
       run: |
