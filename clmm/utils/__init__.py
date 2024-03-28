@@ -4,9 +4,10 @@ from .beta_lens import (
     compute_beta,
     compute_beta_s,
     compute_beta_s_func,
-    compute_beta_mean,
-    compute_beta_s_mean,
-    compute_beta_s_square_mean,
+    compute_beta_s_mean_from_distribution,
+    compute_beta_s_square_mean_from_distribution,
+    compute_beta_s_mean_from_weights,
+    compute_beta_s_square_mean_from_weights,
 )
 
 from .boost import (

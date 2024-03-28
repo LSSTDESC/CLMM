@@ -41,7 +41,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pip install pylint
-        pylint clmm
+        pylint clmm --ignored-classes=astropy.units
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
