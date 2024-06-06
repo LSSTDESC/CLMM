@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model WL Profiles (Object Oriented) &mdash; CLMM 1.10.0 documentation</title>
+  <title>Model WL Profiles (Object Oriented) &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,7 +36,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -182,7 +182,7 @@ notebook we use the OO interface to theory.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.12.0&#39;</span>
 </pre></div>
 </div>
 <p>Define a cosmology using astropy</p>
@@ -217,16 +217,27 @@ choose a distribution that follows an NFW profile.</p>
 
 <span class="n">gt</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 <span class="c1"># Lensing quantities assuming sources follow a given redshift distribution.</span>
+
+<span class="c1"># Compute first beta</span>
+<span class="n">beta_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;z_cl&quot;</span><span class="p">:</span> <span class="n">z_cl</span><span class="p">,</span>
+    <span class="s2">&quot;z_inf&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
+    <span class="s2">&quot;cosmo&quot;</span><span class="p">:</span> <span class="n">cosmo</span><span class="p">,</span>
+    <span class="s2">&quot;z_distrib_func&quot;</span><span class="p">:</span> <span class="n">z_distrib_func</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_mean_from_distribution</span><span class="p">(</span><span class="o">**</span><span class="n">beta_kwargs</span><span class="p">)</span>
+<span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_square_mean_from_distribution</span><span class="p">(</span><span class="o">**</span><span class="n">beta_kwargs</span><span class="p">)</span>
+
 <span class="n">gt_z</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span>
-    <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
+    <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="p">[</span><span class="n">beta_s_mean</span><span class="p">,</span> <span class="n">beta_s_square_mean</span><span class="p">],</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
 <span class="p">)</span>
 
 <span class="n">mu</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 <span class="n">mu_bias</span> <span class="o">=</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_magnification_bias</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">66</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Magnification</span> <span class="ow">is</span> <span class="n">negative</span> <span class="k">for</span> <span class="n">certain</span> <span class="n">radii</span><span class="p">,</span>                     <span class="n">returning</span> <span class="n">nan</span> <span class="k">for</span> <span class="n">magnification</span> <span class="n">bias</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="o">.</span>
-<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">70</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">power</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">66</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Magnification</span> <span class="ow">is</span> <span class="n">negative</span> <span class="k">for</span> <span class="n">certain</span> <span class="n">radii</span><span class="p">,</span>                     <span class="n">returning</span> <span class="n">nan</span> <span class="k">for</span> <span class="n">magnification</span> <span class="n">bias</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">case</span><span class="o">.</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">generic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">70</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">power</span>
 </pre></div>
 </div>
 <p>Plot the predicted profiles</p>

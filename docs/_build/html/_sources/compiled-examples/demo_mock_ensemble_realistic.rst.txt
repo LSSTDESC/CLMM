@@ -642,8 +642,8 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    CPU times: user 1.63 s, sys: 252 ms, total: 1.88 s
-    Wall time: 1.88 s
+    CPU times: user 1.68 s, sys: 280 ms, total: 1.96 s
+    Wall time: 1.96 s
 
 
 .. code:: ipython3
@@ -699,7 +699,7 @@ to compute
 .. parsed-literal::
 
     CPU times: user 280 ms, sys: 0 ns, total: 280 ms
-    Wall time: 279 ms
+    Wall time: 280 ms
 
 
 There is also the option to create an ``ClusterEnsemble`` object without

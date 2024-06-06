@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.func_layer module &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.theory.func_layer module &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,7 +36,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -215,7 +215,7 @@ and use another structure to take the arguments necessary for specific models</p
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.func_layer.compute_convergence">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_convergence" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_convergence" title="Link to this definition"></a></dt>
 <dd><p>Computes the mass convergence</p>
 <div class="math notranslate nohighlight">
 \[\kappa = \frac{\Sigma}{\Sigma_{crit}}\]</div>
@@ -278,19 +278,6 @@ the galaxy redshift distribution repectively.</p>
 {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
 </div></blockquote>
 </li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
-Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
-<blockquote>
-<div><ul>
-<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-when performing the sum. (default=None)</p></li>
-<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-when performing the sum. (default=10.0)</p></li>
-<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
-<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
 </ul>
 </div></blockquote>
 </p></li>
@@ -427,7 +414,7 @@ backends.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.func_layer.compute_magnification">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_magnification" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integ_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_magnification" title="Link to this definition"></a></dt>
 <dd><p>Computes the magnification</p>
 <div class="math notranslate nohighlight">
 \[\mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}\]</div>
@@ -470,9 +457,10 @@ The following supported options are:</p>
 <div><ul>
 <li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
 It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an array
-or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+or all sources are at the same redshift when <cite>z_src</cite> is a float
+(Used for <cite>approx=None</cite>).</p></li>
 <li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
-<cite>z_src</cite> must be a one dimensional function.</p></li>
+<cite>z_src</cite> must be a one dimensional function (Used when <cite>approx=None</cite>).</p></li>
 <li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
 <cite>z_src</cite> must be a tuple containing
 ( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
@@ -507,16 +495,14 @@ at each value of <cite>r_proj</cite> is calculated as</p>
 {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\]</div>
 </li>
 <li><p>'order1' : Uses the weak lensing approximation of the magnification with up to
-first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
-<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
-compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>
+(<cite>z_src_info</cite> must be 'beta'):</p>
 <div class="math notranslate nohighlight">
 \[\mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\]</div>
 </li>
 <li><p>'order2' : Uses the weak lensing approximation of the magnification with up to
-second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
-<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
-compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span> and <span class="math notranslate nohighlight">\(\langle \beta_s^2 \rangle\)</span>)</p>
+second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>
+(<cite>z_src_info</cite> must be 'beta'):</p>
 <div class="math notranslate nohighlight">
 \[\mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}
 + 3 \left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2
@@ -525,8 +511,8 @@ compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
-Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<li><p><strong>integ_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the redshift integration (when
+<cite>approx=None, z_src_info='distribution'</cite>). Possible keys are:</p>
 <blockquote>
 <div><ul>
 <li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
@@ -554,7 +540,7 @@ backends.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.func_layer.compute_magnification_bias">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_magnification_bias" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integ_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_magnification_bias" title="Link to this definition"></a></dt>
 <dd><p>Computes magnification bias from magnification <span class="math notranslate nohighlight">\(\mu\)</span>
 and slope parameter <span class="math notranslate nohighlight">\(\alpha\)</span> as :</p>
 <div class="math notranslate nohighlight">
@@ -607,9 +593,10 @@ The following supported options are:</p>
 <div><ul>
 <li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
 It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an array
-or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+or all sources are at the same redshift when <cite>z_src</cite> is a float
+(Used for <cite>approx=None</cite>).</p></li>
 <li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
-<cite>z_src</cite> must be a one dimensional function.</p></li>
+<cite>z_src</cite> must be a one dimensional function (Used when <cite>approx=None</cite>).</p></li>
 <li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
 <cite>z_src</cite> must be a tuple containing
 ( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
@@ -645,17 +632,15 @@ bias at each value of <cite>r_proj</cite> is calculated as</p>
 {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\end{split}\]</div>
 </li>
 <li><p>'order1' : Uses the weak lensing approximation of the magnification bias with up
-to first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
-<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
-compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+to first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>
+(<cite>z_src_info</cite> must be 'beta'):</p>
 <div class="math notranslate nohighlight">
 \[\mu^{\alpha-1} \approx
 1 + \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)\]</div>
 </li>
 <li><p>'order2' : Uses the weak lensing approximation of the magnification bias with up
-to second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
-<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
-compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span> and <span class="math notranslate nohighlight">\(\langle \beta_s^2 \rangle\)</span>)</p>
+to second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>
+<cite>z_src_info</cite> must be 'beta':</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\mu^{\alpha-1} \approx
 1 &amp;+ \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)
@@ -668,8 +653,8 @@ compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
-Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<li><p><strong>integ_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the redshift integration (when
+<cite>approx=None, z_src_info='distribution'</cite>). Possible keys are:</p>
 <blockquote>
 <div><ul>
 <li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
@@ -747,7 +732,7 @@ another structure to take the arguments necessary for specific models.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.func_layer.compute_reduced_tangential_shear">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_reduced_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_reduced_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_reduced_tangential_shear" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_reduced_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integ_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_reduced_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_reduced_tangential_shear" title="Link to this definition"></a></dt>
 <dd><p>Computes the reduced tangential shear</p>
 <div class="math notranslate nohighlight">
 \[g_t = \frac{\gamma_t}{1-\kappa}\]</div>
@@ -790,9 +775,10 @@ The following supported options are:</p>
 <div><ul>
 <li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
 It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an array
-or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+or all sources are at the same redshift when <cite>z_src</cite> is a float
+(Used for <cite>approx=None</cite>).</p></li>
 <li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
-<cite>z_src</cite> must be a one dimensional function.</p></li>
+<cite>z_src</cite> must be a one dimensional function (Used when <cite>approx=None</cite>).</p></li>
 <li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
 <cite>z_src</cite> must be a tuple containing
 ( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
@@ -825,9 +811,8 @@ tangential shear at each value of <cite>r_proj</cite> is calculated as</p>
 {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\]</div>
 </li>
 <li><p>'order1' : Same approach as in Weighing the Giants - III (equation 6 in
-Applegate et al. 2014; <a class="reference external" href="https://arxiv.org/abs/1208.0605">https://arxiv.org/abs/1208.0605</a>). <cite>z_src_info</cite> must be
-either 'beta', or 'distribution' (that will be used to compute
-<span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+Applegate et al. 2014; <a class="reference external" href="https://arxiv.org/abs/1208.0605">https://arxiv.org/abs/1208.0605</a>).
+<cite>z_src_info</cite> must be 'beta':</p>
 <div class="math notranslate nohighlight">
 \[g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}
 {1-\left&lt;\beta_s\right&gt;\kappa_{\infty}}\]</div>
@@ -835,8 +820,7 @@ either 'beta', or 'distribution' (that will be used to compute
 <li><p>'order2' : Same approach as in Cluster Mass Calibration at High
 Redshift (equation 12 in Schrabback et al. 2017;
 <a class="reference external" href="https://arxiv.org/abs/1611.03866">https://arxiv.org/abs/1611.03866</a>).
-<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used
-to compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span> and <span class="math notranslate nohighlight">\(\langle \beta_s^2 \rangle\)</span>)</p>
+<cite>z_src_info</cite> must be 'beta':</p>
 <div class="math notranslate nohighlight">
 \[g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}
 {1-\left&lt;\beta_s\right&gt;\kappa_{\infty}}
@@ -846,8 +830,8 @@ to compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
-Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<li><p><strong>integ_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the redshift integration (when
+<cite>approx=None, z_src_info='distribution'</cite>). Possible keys are:</p>
 <blockquote>
 <div><ul>
 <li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
@@ -971,7 +955,7 @@ another structure to take the arguments necessary for specific models.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.func_layer.compute_tangential_shear">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_tangential_shear" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.func_layer.</span></span><span class="sig-name descname"><span class="pre">compute_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.func_layer.compute_tangential_shear" title="Link to this definition"></a></dt>
 <dd><p>Computes the tangential shear</p>
 <div class="math notranslate nohighlight">
 \[\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}\]</div>
@@ -1034,19 +1018,6 @@ the galaxy redshift distribution repectively.</p>
 {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
 </div></blockquote>
 </li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
-Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
-<blockquote>
-<div><ul>
-<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-when performing the sum. (default=None)</p></li>
-<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-when performing the sum. (default=10.0)</p></li>
-<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
-<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
 </ul>
 </div></blockquote>
 </p></li>

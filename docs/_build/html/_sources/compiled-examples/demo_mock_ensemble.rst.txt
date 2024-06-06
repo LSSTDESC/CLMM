@@ -28,7 +28,7 @@ Generate cluster ensemble with random masses and redshifts
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -251,7 +251,38 @@ and we just add those to the ``ClusterEnsemble`` object:
             bins=bins,
             bin_units="Mpc",
             cosmo=cosmo,
+            use_weights=True,
         )
+
+.. code:: ipython3
+
+    cluster.profile
+
+
+
+
+.. raw:: html
+
+    <b>GCData</b>
+    <br> <b>defined by:</b> cosmo='CCLCosmology(H0=71.0, Omega_dm0=0.2202, Omega_b0=0.0448, Omega_k0=0.0)', bin_units='Mpc'
+    <br> <b>with columns:</b> radius_min, radius, radius_max, DS_t, DS_t_err, DS_x, DS_x_err, z, z_err, n_src, W_l
+    <br> 9 objects
+    <br> 
+    <table id="table140511464415888" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>DS_t</th><th>DS_t_err</th><th>DS_x</th><th>DS_x_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th><th>float64</th></tr></thead>
+    <tr><td>0.29999999999999993</td><td>0.3553888808485904</td><td>0.4100928778589602</td><td>47114109394812.89</td><td>74981653954774.03</td><td>71725831060887.97</td><td>70821817988064.0</td><td>1.2294188552708238</td><td>0.1254222511654474</td><td>29</td><td>6.36216161623601e-29</td></tr>
+    <tr><td>0.4100928778589602</td><td>0.4971275421239857</td><td>0.5605872282354804</td><td>28407616591812.977</td><td>42764109085226.86</td><td>-57071960817478.72</td><td>46736076941033.97</td><td>1.377144531885036</td><td>0.09702952618749792</td><td>49</td><td>1.15161521880834e-28</td></tr>
+    <tr><td>0.5605872282354804</td><td>0.6712361227940055</td><td>0.7663094323935532</td><td>74964576073867.19</td><td>38525941380754.64</td><td>56308907913134.02</td><td>42228781968987.93</td><td>1.4005388323178487</td><td>0.06709616391264094</td><td>86</td><td>2.113338478541802e-28</td></tr>
+    <tr><td>0.7663094323935532</td><td>0.9063818034287909</td><td>1.0475268015357952</td><td>31222548973785.86</td><td>28953248329270.203</td><td>4403827566750.543</td><td>30962934549207.242</td><td>1.357185274715219</td><td>0.054794861435771995</td><td>158</td><td>3.639913884168516e-28</td></tr>
+    <tr><td>1.0475268015357952</td><td>1.2573762610803276</td><td>1.4319442689206874</td><td>43299578835108.54</td><td>21990385325328.957</td><td>150722770699.83386</td><td>20759010434230.527</td><td>1.3451641041042115</td><td>0.03497735694036869</td><td>296</td><td>7.038287482539166e-28</td></tr>
+    <tr><td>1.4319442689206874</td><td>1.7043857764046686</td><td>1.9574338205844326</td><td>9749022992700.264</td><td>15940514809587.195</td><td>-8821468381838.701</td><td>15585239988553.379</td><td>1.3306378739615503</td><td>0.02681950361641807</td><td>535</td><td>1.270287908236562e-27</td></tr>
+    <tr><td>1.9574338205844326</td><td>2.339049853316992</td><td>2.6757655623397656</td><td>26294486206933.47</td><td>10815129177769.555</td><td>-29746134079554.895</td><td>10982086708852.97</td><td>1.3595192146604755</td><td>0.01957031696068926</td><td>1051</td><td>2.521188293741188e-27</td></tr>
+    <tr><td>2.6757655623397656</td><td>3.194399428042595</td><td>3.6577079997860453</td><td>4645975281894.578</td><td>7782221363303.094</td><td>-6755554338437.702</td><td>7744746597065.146</td><td>1.3679035365281018</td><td>0.014534053109116193</td><td>1951</td><td>4.719527212638533e-27</td></tr>
+    <tr><td>3.6577079997860453</td><td>4.368455348815572</td><td>5.000000000000001</td><td>3195312396468.3667</td><td>5740366240659.977</td><td>-1692230857239.375</td><td>5890154465299.272</td><td>1.3496089726931957</td><td>0.010516912111932255</td><td>3644</td><td>8.730103338179242e-27</td></tr>
+    </table></div>
+
+
 
 .. code:: ipython3
 
@@ -356,7 +387,7 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_21_1.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_22_1.png
 
 
 .. code:: ipython3
@@ -380,7 +411,7 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_22_0.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_23_0.png
 
 
 Visualizing the stacked profiles and corresponding model
@@ -495,7 +526,7 @@ mass, concentration and redshift in the stack (dashed black)
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_26_0.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_27_0.png
 
 
 Saving/Loading ClusterEnsemble

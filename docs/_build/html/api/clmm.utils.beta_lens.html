@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.utils.beta_lens module &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.utils.beta_lens module &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,7 +36,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -165,7 +165,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
+<li><p><strong>z_src</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Source galaxy redshift</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
 </ul>
@@ -174,22 +174,76 @@
 <dd class="field-even"><p>Geometric lensing efficicency</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>float, array</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_mean" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s" title="Link to this definition"></a></dt>
+<dd><p>Geometric lensing efficicency ratio</p>
+<div class="math notranslate nohighlight">
+\[\beta_s = \beta(z_{src})/\beta(z_{inf})\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Source galaxy redshift</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_func">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_func" title="Link to this definition"></a></dt>
+<dd><p>Geometric lensing efficicency ratio times a value of a function</p>
+<div class="math notranslate nohighlight">
+\[\beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
+\times\text{func}(*args,\ **kwargs)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) -- A scalar function</p></li>
+<li><p><strong>*args</strong> (<em>positional arguments</em>) -- args to be passed to <cite>func</cite></p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) -- kwargs to be passed to <cite>func</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Geometric lensing efficicency ratio for each source</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_mean_from_distribution">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_mean_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_mean_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_mean_from_distribution" title="Link to this definition"></a></dt>
 <dd><p>Mean value of the geometric lensing efficicency</p>
 <div class="math notranslate nohighlight">
-\[\left&lt;\beta\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}
+\[\left&lt;\beta_s\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
 {\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
 <li><p><strong>zmax</strong> (<em>float</em><em>, </em><em>optional</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
 Default: 10</p></li>
@@ -210,22 +264,24 @@ Default: None</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s" title="Link to this definition"></a></dt>
-<dd><p>Geometric lensing efficicency ratio</p>
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_mean_from_weights">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_mean_from_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_mean_from_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_mean_from_weights" title="Link to this definition"></a></dt>
+<dd><p>Mean square value of the geometric lensing efficicency ratio</p>
 <div class="math notranslate nohighlight">
-\[\beta_s = \beta(z_{src})/\beta(z_{inf})\]</div>
+\[\left&lt;\beta_s\right&gt; =\frac{\sum_i \beta_s(z_i)w_i}
+{\sum_i w_i}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
+<li><p><strong>z_src</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Invididual source galaxies redshift.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift.</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity.</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+<li><p><strong>shape_weights</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Individual source galaxies shape weights.If not None, the function uses Eq.(13) from<a class="reference external" href="https://arxiv.org/pdf/1611.03866.pdf">https://arxiv.org/pdf/1611.03866.pdf</a> with evenly distributedweights summing to one.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
+<dd class="field-even"><p>Mean value of the geometric lensing efficicency ratio.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -234,68 +290,9 @@ Default: None</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_func">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_func" title="Link to this definition"></a></dt>
-<dd><p>Geometric lensing efficicency ratio times a value of a function</p>
-<div class="math notranslate nohighlight">
-\[\beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
-\times\text{func}(*args,\ **kwargs)\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>func</strong> (<em>callable</em>) -- A scalar function</p></li>
-<li><p><strong>*args</strong> (<em>positional arguments</em>) -- args to be passed to <cite>func</cite></p></li>
-<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) -- kwargs to be passed to <cite>func</cite></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_mean" title="Link to this definition"></a></dt>
-<dd><p>Mean value of the geometric lensing efficicency ratio</p>
-<div class="math notranslate nohighlight">
-\[\left&lt;\beta_s\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
-{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>zmax</strong> (<em>float</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
-Default: 10</p></li>
-<li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
-This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
-<li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
-Default: None</p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Mean value of the geometric lensing efficicency ratio</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_square_mean">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_square_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_square_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_square_mean" title="Link to this definition"></a></dt>
-<dd><p>Mean square value of the geometric lensing efficiency ratio</p>
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_square_mean_from_distribution">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_square_mean_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_square_mean_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_square_mean_from_distribution" title="Link to this definition"></a></dt>
+<dd><p>Mean square value of the geometric lensing efficicency ratio</p>
 <div class="math notranslate nohighlight">
 \[\left&lt;\beta_s^2\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}
 {\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
@@ -305,13 +302,37 @@ Default: None</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
 <li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
-<li><p><strong>zmax</strong> (<em>float</em>) -- Maximum redshift to be set as the source of the galaxy when performing the sum.
-Default: 10</p></li>
-<li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
-This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
+<li><p><strong>zmax</strong> (<em>float</em>) -- Minimum redshift to be set as the source of the galaxywhen performing the sum.</p></li>
+<li><p><strong>delta_z_cut</strong> (<em>float</em>) -- Redshift interval to be summed with $z_cl$ to return$zmin$. This feature is not used if $z_min$ is provided by the user.</p></li>
 <li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
 Default: None</p></li>
 <li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mean square value of the geometric lensing efficicency ratio.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.beta_lens.compute_beta_s_square_mean_from_weights">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.beta_lens.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_square_mean_from_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/beta_lens.html#compute_beta_s_square_mean_from_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.beta_lens.compute_beta_s_square_mean_from_weights" title="Link to this definition"></a></dt>
+<dd><p>Mean square value of the geometric lensing efficicency ratio</p>
+<div class="math notranslate nohighlight">
+\[\left&lt;\beta_s^2\right&gt; =\frac{\sum_i \beta_s^2(z_i)w_i}
+{\sum_i w_i}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Invididual source galaxies redshift.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift.</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity.</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+<li><p><strong>shape_weights</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Individual source galaxies shape weights.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

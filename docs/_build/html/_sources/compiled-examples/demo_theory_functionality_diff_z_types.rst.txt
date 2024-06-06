@@ -16,7 +16,7 @@ value of the mean beta parameters :
     import os
     
     ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ccl'
-    # os.environ['CLMM_MODELING_BACKEND'] = 'nc'
+    #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
 
 .. code:: ipython3
 
@@ -44,7 +44,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -135,7 +135,7 @@ average :math:`\langle\beta_s\rangle` and
 
     z_inf = 1000
     
-    beta_s_mean = clmm.utils.compute_beta_s_mean(
+    beta_s_mean = clmm.utils.compute_beta_s_mean_from_distribution(
         cluster_z,
         z_inf,
         cosmo,
@@ -144,7 +144,7 @@ average :math:`\langle\beta_s\rangle` and
         zmin=None,
         z_distrib_func=model_z_distrib_dict["func"],
     )
-    beta_s_square_mean = clmm.utils.compute_beta_s_square_mean(
+    beta_s_square_mean = clmm.utils.compute_beta_s_square_mean_from_distribution(
         cluster_z,
         z_inf,
         cosmo,
@@ -156,6 +156,44 @@ average :math:`\langle\beta_s\rangle` and
     
     display(Math(beta_label(beta_s_mean)))
     display(Math(beta_sq_label(beta_s_square_mean)))
+
+
+
+.. math::
+
+    \displaystyle \langle\beta_s\rangle = 0.440
+
+
+
+.. math::
+
+    \displaystyle \langle\beta_s^2\rangle = 0.220
+
+
+It is also possible to compute :math:`\langle\beta_s\rangle` and
+:math:`\langle\beta_s^2\rangle` using galaxy shape weights:
+
+.. code:: ipython3
+
+    z_inf = 1000
+    
+    beta_s_mean_wts = clmm.utils.compute_beta_s_mean_from_weights(
+        source_catalog['z'],
+        cluster_z,
+        z_inf,
+        cosmo,
+        shape_weights=None,
+    )
+    beta_s_square_mean_wts = clmm.utils.compute_beta_s_square_mean_from_weights(
+        source_catalog['z'],
+        cluster_z,
+        z_inf,
+        cosmo,
+        shape_weights=None,
+    )
+    
+    display(Math(beta_label(beta_s_mean_wts)))
+    display(Math(beta_sq_label(beta_s_square_mean_wts)))
 
 
 
@@ -198,12 +236,12 @@ Visualisation
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc0c3d93350>
+    <matplotlib.legend.Legend at 0x7fbba04a9190>
 
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_21_1.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_23_1.png
 
 
 Here we use a zmax=3 (different from default values) to highlight the
@@ -293,8 +331,8 @@ catalog and number of radius points.
 
 .. parsed-literal::
 
-    CPU times: user 1.96 s, sys: 77.4 ms, total: 2.04 s
-    Wall time: 2.04 s
+    CPU times: user 2.09 s, sys: 124 ms, total: 2.22 s
+    Wall time: 2.22 s
 
 
 Case 2 : Redshift distribution and exact formula
@@ -319,73 +357,17 @@ may be quite slow.
         delta_mdef=500,
         massdef="critical",
         z_src_info="distribution",
-        beta_kwargs={"zmax": zsrc_max},
         approx=None,
     )
 
 
 .. parsed-literal::
 
-    CPU times: user 136 ms, sys: 6.44 ms, total: 142 ms
-    Wall time: 139 ms
+    CPU times: user 324 ms, sys: 778 µs, total: 325 ms
+    Wall time: 320 ms
 
 
-Cases 3 : Redshift distribution and approximation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If we want a faster approach we can use an approximation for the reduced
-shear, using 1 or 2 order of Taylor expansion for the expression of the
-reduced shear.
-
-.. code:: ipython3
-
-    %%time
-    gt_distribution_order1 = clmm.theory.compute_reduced_tangential_shear(
-        rr,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        beta_kwargs={"zmax": zsrc_max},
-        approx="order1",
-    )
-
-
-.. parsed-literal::
-
-    CPU times: user 4.75 ms, sys: 0 ns, total: 4.75 ms
-    Wall time: 4.59 ms
-
-
-.. code:: ipython3
-
-    %%time
-    gt_distribution_order2 = clmm.theory.compute_reduced_tangential_shear(
-        rr,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        beta_kwargs={"zmax": zsrc_max},
-        approx="order2",
-    )
-
-
-.. parsed-literal::
-
-    CPU times: user 7.75 ms, sys: 0 ns, total: 7.75 ms
-    Wall time: 7.71 ms
-
-
-Cases 4 : Mean lensing efficiencies and approximation
+Cases 3 : Mean lensing efficiencies and approximation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | Finally, we can also model the reduced shear if the only information
@@ -393,7 +375,8 @@ Cases 4 : Mean lensing efficiencies and approximation
   lensing efficiency parameters :math:`\langle\beta_s\rangle` and
   :math:`\langle\beta_s^2\rangle`.
 | In this case, we need to use an approximation for the formula. This is
-  the fastest approach.
+  the fastest approach. Bear in mind that the user has to pre compute
+  the beta parameters and pass them as an argument of the function.
 
 .. code:: ipython3
 
@@ -408,15 +391,14 @@ Cases 4 : Mean lensing efficiencies and approximation
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        beta_kwargs={"zmax": zsrc_max},
-        approx="order1",
+        approx="order1"
     )
 
 
 .. parsed-literal::
 
-    CPU times: user 1.18 ms, sys: 0 ns, total: 1.18 ms
-    Wall time: 1.1 ms
+    CPU times: user 1.02 ms, sys: 338 µs, total: 1.36 ms
+    Wall time: 1.2 ms
 
 
 .. code:: ipython3
@@ -432,19 +414,18 @@ Cases 4 : Mean lensing efficiencies and approximation
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        beta_kwargs={"zmax": zsrc_max},
-        approx="order2",
+        approx="order2"
     )
 
 
 .. parsed-literal::
 
-    CPU times: user 1.08 ms, sys: 147 µs, total: 1.23 ms
-    Wall time: 1.11 ms
+    CPU times: user 1.09 ms, sys: 0 ns, total: 1.09 ms
+    Wall time: 1.02 ms
 
 
-3 - Comparison of the four cases for the reduced tangnetial shear
------------------------------------------------------------------
+3 - Comparison of the three cases for the reduced tangnetial shear
+------------------------------------------------------------------
 
 .. code:: ipython3
 
@@ -478,8 +459,6 @@ Cases 4 : Mean lensing efficiencies and approximation
         base=(gt_discrete, "k.-", dict(label="discrete")),
         others=(
             (gt_distribution_no_approx, "r.-", dict(label="distribution, no approx")),
-            (gt_distribution_order1, "ro-", dict(label="distribution, order 1 approx")),
-            (gt_distribution_order2, "rd-", dict(label="distribution, order 2 approx")),
             (gt_beta_1, "b--", dict(label="beta, order 1 approx")),
             (gt_beta_2, "bx-", dict(label="beta, order 2 approx")),
         ),
@@ -489,7 +468,7 @@ Cases 4 : Mean lensing efficiencies and approximation
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_48_0.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_46_0.png
 
 
 All modeled profiles give similar results. They do not correspond to the
@@ -500,13 +479,13 @@ shear at a given radius).
 
 The profiles computed using an approximation for the reduced shear
 formula are lower by a few percents, especially in the inner region. The
-profiles computed from a redshift distribution or a known source
-redshift differ at the subpercent level.
+profile computed from a redshift distribution differs at the subpercent
+level.
 
 4- Modeling and plotting the other quantities
 ---------------------------------------------
 
-Here we will just compute models for cases 1, 2 and 4. For the shear and
+Here we will just compute models for cases 1, 2 and 3. For the shear and
 convergence there is no need for an approximated formula.
 
 .. code:: ipython3
@@ -523,25 +502,13 @@ convergence there is no need for an approximated formula.
                     cosmo,
                     delta_mdef=500,
                     massdef="critical",
-                    z_src_info="discrete",
+                    z_src_info="discrete"
                 )
             )
             for _r in rr
         ]
     )
     
-    gammat_distribution = clmm.theory.compute_tangential_shear(
-        rr,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        beta_kwargs={"zmax": zsrc_max},
-    )
     
     gammat_beta = clmm.theory.compute_tangential_shear(
         rr,
@@ -552,8 +519,7 @@ convergence there is no need for an approximated formula.
         cosmo,
         delta_mdef=500,
         massdef="critical",
-        z_src_info="beta",
-        beta_kwargs={"zmax": zsrc_max},
+        z_src_info="beta"
     )
 
 .. code:: ipython3
@@ -562,7 +528,6 @@ convergence there is no need for an approximated formula.
         rr,
         base=(gammat_discrete, "k.-", dict(label="discrete")),
         others=(
-            (gammat_distribution, "rx-", dict(label="distribution, no approx")),
             (gammat_beta, "b--", dict(label="beta, no approx")),
         ),
         ylabel="$\gamma_t$",
@@ -570,7 +535,7 @@ convergence there is no need for an approximated formula.
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_53_0.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_51_0.png
 
 
 .. code:: ipython3
@@ -594,18 +559,6 @@ convergence there is no need for an approximated formula.
         ]
     )
     
-    kappa_distribution = clmm.theory.compute_convergence(
-        rr,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        beta_kwargs={"zmax": zsrc_max},
-    )
     
     kappa_beta = clmm.theory.compute_convergence(
         rr,
@@ -616,8 +569,7 @@ convergence there is no need for an approximated formula.
         cosmo,
         delta_mdef=500,
         massdef="critical",
-        z_src_info="beta",
-        beta_kwargs={"zmax": zsrc_max},
+        z_src_info="beta"
     )
 
 .. code:: ipython3
@@ -626,7 +578,6 @@ convergence there is no need for an approximated formula.
         rr,
         base=(kappa_discrete, "k.-", dict(label="discrete")),
         others=(
-            (kappa_distribution, "rx-", dict(label="distribution, no approx")),
             (kappa_beta, "b--", dict(label="beta, no approx")),
         ),
         ylabel="$\kappa_t$",
@@ -634,7 +585,7 @@ convergence there is no need for an approximated formula.
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_55_0.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_53_0.png
 
 
 .. code:: ipython3
@@ -658,19 +609,6 @@ convergence there is no need for an approximated formula.
         ]
     )
     
-    mu_distribution = clmm.theory.compute_magnification(
-        rr,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        approx=None,
-        beta_kwargs={"zmax": zsrc_max},
-    )
     
     mu_beta_1 = clmm.theory.compute_magnification(
         rr,
@@ -682,8 +620,7 @@ convergence there is no need for an approximated formula.
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        approx="order1",
-        beta_kwargs={"zmax": zsrc_max},
+        approx="order1"
     )
     
     mu_beta_2 = clmm.theory.compute_magnification(
@@ -696,8 +633,7 @@ convergence there is no need for an approximated formula.
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        approx="order2",
-        beta_kwargs={"zmax": zsrc_max},
+        approx="order2"
     )
 
 .. code:: ipython3
@@ -706,7 +642,6 @@ convergence there is no need for an approximated formula.
         rr,
         base=(mu_discrete, "k.-", dict(label="discrete")),
         others=(
-            (mu_distribution, "rs-", dict(label="distribution, no approx")),
             (mu_beta_1, "bx-", dict(label="beta, order 1 approx")),
             (mu_beta_2, "b--", dict(label="beta, order 2 approx")),
         ),
@@ -715,7 +650,7 @@ convergence there is no need for an approximated formula.
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_57_0.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_55_0.png
 
 
 .. code:: ipython3
@@ -742,20 +677,6 @@ convergence there is no need for an approximated formula.
         ]
     )
     
-    mu_bias_distribution = clmm.theory.compute_magnification_bias(
-        rr,
-        alpha,
-        cluster_m,
-        concentration,
-        cluster_z,
-        model_z_distrib_dict["func"],
-        cosmo,
-        delta_mdef=500,
-        massdef="critical",
-        z_src_info="distribution",
-        approx=None,
-        beta_kwargs={"zmax": zsrc_max},
-    )
     
     mu_bias_beta_1 = clmm.theory.compute_magnification_bias(
         rr,
@@ -768,8 +689,7 @@ convergence there is no need for an approximated formula.
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        approx="order1",
-        beta_kwargs={"zmax": zsrc_max},
+        approx="order1"
     )
     
     mu_bias_beta_2 = clmm.theory.compute_magnification_bias(
@@ -783,8 +703,7 @@ convergence there is no need for an approximated formula.
         delta_mdef=500,
         massdef="critical",
         z_src_info="beta",
-        approx="order2",
-        beta_kwargs={"zmax": zsrc_max},
+        approx="order2"
     )
 
 .. code:: ipython3
@@ -793,7 +712,6 @@ convergence there is no need for an approximated formula.
         rr,
         base=(mu_bias_discrete, "k.-", dict(label="discrete")),
         others=(
-            (mu_bias_distribution, "rs-", dict(label="distribution, no approx")),
             (mu_bias_beta_1, "bx-", dict(label="beta, order 1 approx")),
             (mu_bias_beta_2, "b--", dict(label="beta, order 2 approx")),
         ),
@@ -802,7 +720,7 @@ convergence there is no need for an approximated formula.
 
 
 
-.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_59_0.png
+.. image:: demo_theory_functionality_diff_z_types_files/demo_theory_functionality_diff_z_types_57_0.png
 
 
 When making approximation, there may be large differences (~few 10%

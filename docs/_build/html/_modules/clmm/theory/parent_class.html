@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.parent_class &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.theory.parent_class &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,7 +12,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -32,7 +32,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -170,8 +170,6 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">validate_argument</span><span class="p">,</span>
-    <span class="n">compute_beta_s_mean</span><span class="p">,</span>
-    <span class="n">compute_beta_s_square_mean</span><span class="p">,</span>
     <span class="n">compute_beta_s_func</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..redshift</span> <span class="kn">import</span> <span class="p">(</span>
@@ -218,6 +216,10 @@
 <span class="sd">        The value used as infinite redshift</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+    <span class="c1"># The disable below is added to avoid a pylint error where it thinks CLMMCosmlogy</span>
+    <span class="c1"># has duplicates since both have many NotImplementedError functions</span>
+    <span class="c1"># description of bug at https://github.com/pylint-dev/pylint/issues/7213</span>
+    <span class="c1"># pylint: disable=duplicate-code</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">z_inf</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
@@ -899,142 +901,9 @@
         <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_beta_s_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get mean value of the geometric lensing efficicency ratio from typical class function.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        z_cl : float</span>
-<span class="sd">            Galaxy cluster redshift</span>
-<span class="sd">        z_src : array_like, float, function</span>
-<span class="sd">            Information on the background source galaxy redshift(s). Value required depends on</span>
-<span class="sd">            `z_src_info` (see below).</span>
-<span class="sd">        z_src_info : str, optional</span>
-<span class="sd">            Type of redshift information provided by the `z_src` argument.</span>
-<span class="sd">            The following supported options are:</span>
-
-<span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
-<span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  arrayor all sources are at the same redshift when `z_src` is a float.</span>
-
-<span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
-
-<span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a tuple containing</span>
-<span class="sd">                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),</span>
-<span class="sd">                  the lensing efficiency and square of the lensing efficiency averaged over</span>
-<span class="sd">                  the galaxy redshift distribution repectively.</span>
-
-<span class="sd">                    .. math::</span>
-<span class="sd">                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}</span>
-<span class="sd">                        {D_{L,\infty}}\right\rangle</span>
-
-<span class="sd">                    .. math::</span>
-<span class="sd">                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
-<span class="sd">                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
-
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=None)</span>
-<span class="sd">                * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=10.0)</span>
-<span class="sd">                * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
-<span class="sd">            The averaged lensing efficiency.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
-            <span class="c1"># z_src (tuple) is (beta_s_mean, beta_s_square_mean)</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;distribution&quot;</span><span class="p">:</span>
-            <span class="c1"># z_src (function) if PDZ</span>
-            <span class="n">beta_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">beta_kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">beta_kwargs</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">compute_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="n">z_src</span><span class="p">,</span> <span class="o">**</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">beta_s_mean</span>
-
-    <span class="k">def</span> <span class="nf">_get_beta_s_square_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get mean value of the square geometric lensing efficicency ratio from typical class</span>
-<span class="sd">        function.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        z_cl : float</span>
-<span class="sd">            Galaxy cluster redshift</span>
-<span class="sd">        z_src : array_like, float, function</span>
-<span class="sd">            Information on the background source galaxy redshift(s). Value required depends on</span>
-<span class="sd">            `z_src_info` (see below).</span>
-<span class="sd">        z_src_info : str, optional</span>
-<span class="sd">            Type of redshift information provided by the `z_src` argument.</span>
-<span class="sd">            The following supported options are:</span>
-
-<span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
-<span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  arrayor all sources are at the same redshift when `z_src` is a float.</span>
-
-<span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
-
-<span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a tuple containing</span>
-<span class="sd">                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),</span>
-<span class="sd">                  the lensing efficiency and square of the lensing efficiency averaged over</span>
-<span class="sd">                  the galaxy redshift distribution repectively.</span>
-
-<span class="sd">                    .. math::</span>
-<span class="sd">                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}</span>
-<span class="sd">                        {D_{L,\infty}}\right\rangle</span>
-
-<span class="sd">                    .. math::</span>
-<span class="sd">                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
-<span class="sd">                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
-
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=None)</span>
-<span class="sd">                * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=10.0)</span>
-<span class="sd">                * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
-<span class="sd">            The square averaged lensing efficiency.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
-            <span class="c1"># z_src (tuple) is (beta_s_mean, beta_s_square_mean)</span>
-            <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;distribution&quot;</span><span class="p">:</span>
-            <span class="c1"># z_src (function) if PDZ</span>
-            <span class="n">beta_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">beta_kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">beta_kwargs</span>
-            <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">compute_beta_s_square_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="n">z_src</span><span class="p">,</span> <span class="o">**</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">beta_s_square_mean</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_tangential_shear">
 <a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_tangential_shear">[docs]</a>
-    <span class="k">def</span> <span class="nf">eval_tangential_shear</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">r_proj</span><span class="p">,</span>
-        <span class="n">z_cl</span><span class="p">,</span>
-        <span class="n">z_src</span><span class="p">,</span>
-        <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the tangential shear</span>
 
 <span class="sd">        Parameters</span>
@@ -1052,10 +921,7 @@
 
 <span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  arrayor all sources are at the same redshift when `z_src` is a float.</span>
-
-<span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
+<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float.</span>
 
 <span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">                  `z_src` must be a tuple containing</span>
@@ -1071,17 +937,6 @@
 <span class="sd">                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
 <span class="sd">                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
 
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=None)</span>
-<span class="sd">                * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=10.0)</span>
-<span class="sd">                * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
-
 <span class="sd">        verbose : bool, optional</span>
 <span class="sd">            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and</span>
 <span class="sd">            CCL backends.</span>
@@ -1091,6 +946,7 @@
 <span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            tangential shear</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;r_proj&quot;</span><span class="p">,</span> <span class="s2">&quot;float_array&quot;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_cl&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1099,7 +955,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="s2">&quot;einasto&quot;</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+        <span class="n">gammat</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;discrete&quot;</span><span class="p">:</span>
             <span class="n">warning_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Some source redshifts are lower than the cluster redshift.&quot;</span>
@@ -1115,33 +971,19 @@
                 <span class="s2">&quot;z_src&quot;</span><span class="p">,</span>
                 <span class="n">r_proj</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">):</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
-
+        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
+            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span>
                 <span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span>
             <span class="p">)</span>
-
             <span class="n">gammat</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported z_src_info (=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">gammat</span></div>
 
 
 <div class="viewcode-block" id="CLMModeling.eval_convergence">
 <a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_convergence">[docs]</a>
-    <span class="k">def</span> <span class="nf">eval_convergence</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">r_proj</span><span class="p">,</span>
-        <span class="n">z_cl</span><span class="p">,</span>
-        <span class="n">z_src</span><span class="p">,</span>
-        <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the mass convergence</span>
 
 <span class="sd">        .. math::</span>
@@ -1169,9 +1011,6 @@
 <span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
 <span class="sd">                  array or all sources are at the same redshift when `z_src` is a float.</span>
 
-<span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
-
 <span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">                  `z_src` must be a tuple containing</span>
 <span class="sd">                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),</span>
@@ -1185,17 +1024,6 @@
 <span class="sd">                    .. math::</span>
 <span class="sd">                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
 <span class="sd">                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
-
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=None)</span>
-<span class="sd">                * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">                  when performing the sum. (default=10.0)</span>
-<span class="sd">                * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
 
 <span class="sd">        verbose : bool, optional</span>
 <span class="sd">            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and</span>
@@ -1230,16 +1058,10 @@
                 <span class="s2">&quot;z_src&quot;</span><span class="p">,</span>
                 <span class="n">r_proj</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">):</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
-
+        <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
+            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
-
             <span class="n">kappa</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported z_src_info (=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">kappa</span></div>
 
@@ -1258,7 +1080,8 @@
 <span class="sd">        z_cl : float</span>
 <span class="sd">            Galaxy cluster redshift</span>
 <span class="sd">        integ_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the redshift integration. Possible keys are:</span>
+<span class="sd">            Extra arguments for the redshift integration (when</span>
+<span class="sd">            `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">                  when performing the sum. (default=None)</span>
@@ -1301,6 +1124,7 @@
             <span class="k">return</span> <span class="n">pdz_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">core</span><span class="p">(</span><span class="n">tfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span> <span class="n">kfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span>
 
         <span class="n">_integ_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s2">&quot;delta_z_cut&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+
         <span class="n">_integ_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({}</span> <span class="k">if</span> <span class="n">integ_kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">integ_kwargs</span><span class="p">)</span>
 
         <span class="n">zmax</span> <span class="o">=</span> <span class="n">_integ_kwargs</span><span class="p">[</span><span class="s2">&quot;zmax&quot;</span><span class="p">]</span>
@@ -1319,7 +1143,7 @@
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the reduced tangential shear</span>
@@ -1342,10 +1166,11 @@
 
 <span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">                  (Used for `approx=None`).</span>
 
 <span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
+<span class="sd">                  `z_src` must be a one dimentional function (Used when `approx=None`).</span>
 
 <span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">                  `z_src` must be a tuple containing</span>
@@ -1378,8 +1203,7 @@
 
 <span class="sd">                * &#39;order1&#39; : Same approach as in Weighing the Giants - III (equation 6 in</span>
 <span class="sd">                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be</span>
-<span class="sd">                  either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to compute</span>
-<span class="sd">                  :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">                  &#39;beta&#39;:</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}</span>
@@ -1388,8 +1212,7 @@
 <span class="sd">                * &#39;order2&#39; : Same approach as in Cluster Mass Calibration at High</span>
 <span class="sd">                  Redshift (equation 12 in Schrabback et al. 2017;</span>
 <span class="sd">                  https://arxiv.org/abs/1611.03866).</span>
-<span class="sd">                  `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used</span>
-<span class="sd">                  to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)</span>
+<span class="sd">                  `z_src_info` must be &#39;beta&#39;:</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}</span>
@@ -1397,9 +1220,9 @@
 <span class="sd">                      \left(1+\left(\frac{\left&lt;\beta_s^2\right&gt;}</span>
 <span class="sd">                      {\left&lt;\beta_s\right&gt;^2}-1\right)\left&lt;\beta_s\right&gt;\kappa_{\infty}\right)</span>
 
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">        integ_kwargs: None, dict</span>
+<span class="sd">            Extra arguments for the redshift integration (when</span>
+<span class="sd">            `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">                  when performing the sum. (default=None)</span>
@@ -1426,6 +1249,7 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_cl&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_src_info&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;approx&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_approx_z_src_info</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_z_src</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="s2">&quot;einasto&quot;</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
@@ -1438,7 +1262,7 @@
                     <span class="n">z_src</span><span class="p">,</span>
                     <span class="n">r_proj</span><span class="p">,</span>
                     <span class="n">z_cl</span><span class="p">,</span>
-                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;discrete&quot;</span><span class="p">:</span>
                 <span class="n">warning_msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -1455,16 +1279,8 @@
                     <span class="s2">&quot;z_src&quot;</span><span class="p">,</span>
                     <span class="n">r_proj</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
-                <span class="p">)</span>
-
         <span class="k">elif</span> <span class="n">approx</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span> <span class="s2">&quot;order2&quot;</span><span class="p">):</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
+            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
             <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
@@ -1472,18 +1288,13 @@
             <span class="n">gt</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">approx</span> <span class="o">==</span> <span class="s2">&quot;order2&quot;</span><span class="p">:</span>
-                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_square_mean</span><span class="p">(</span>
-                    <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-                <span class="p">)</span>
-
+                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">gt</span> <span class="o">*=</span> <span class="p">(</span>
                     <span class="mf">1.0</span>
                     <span class="o">+</span> <span class="p">(</span><span class="n">beta_s_square_mean</span> <span class="o">/</span> <span class="p">(</span><span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">beta_s_mean</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
                     <span class="o">*</span> <span class="n">beta_s_mean</span>
                     <span class="o">*</span> <span class="n">kappa_inf</span>
                 <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported approx (=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">gt</span></div>
 
@@ -1497,8 +1308,8 @@
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the magnification</span>
 
@@ -1520,10 +1331,11 @@
 
 <span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">                  (Used for `approx=None`).</span>
 
 <span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
+<span class="sd">                  `z_src` must be a one dimentional function (Used when `approx=None`).</span>
 
 <span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">                  `z_src` must be a tuple containing</span>
@@ -1557,26 +1369,24 @@
 <span class="sd">                      {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}</span>
 
 <span class="sd">                * &#39;order1&#39; : Uses the weak lensing approximation of the magnification with up to</span>
-<span class="sd">                  first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">                  `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">                  compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">                  first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">                  (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      \mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}</span>
 
 <span class="sd">                * &#39;order2&#39; : Uses the weak lensing approximation of the magnification with up to</span>
-<span class="sd">                  second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">                  `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">                  compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">                  second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">                  (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      \mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}</span>
 <span class="sd">                      + 3 \left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2</span>
 <span class="sd">                      + \left&lt;\beta_s^2\right&gt;\gamma_{\infty}^2</span>
 
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">        integ_kwargs: None, dict</span>
+<span class="sd">            Extra arguments for the redshift integration (when</span>
+<span class="sd">            `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">                  when performing the sum. (default=None)</span>
@@ -1600,6 +1410,7 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_cl&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_src_info&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;approx&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_approx_z_src_info</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_z_src</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="s2">&quot;einasto&quot;</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
@@ -1612,7 +1423,7 @@
                     <span class="n">z_src</span><span class="p">,</span>
                     <span class="n">r_proj</span><span class="p">,</span>
                     <span class="n">z_cl</span><span class="p">,</span>
-                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;discrete&quot;</span><span class="p">:</span>
                 <span class="n">warning_msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -1629,16 +1440,8 @@
                     <span class="s2">&quot;z_src&quot;</span><span class="p">,</span>
                     <span class="n">r_proj</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
-                <span class="p">)</span>
-
         <span class="k">elif</span> <span class="n">approx</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span> <span class="s2">&quot;order2&quot;</span><span class="p">):</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
+            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
             <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
@@ -1646,14 +1449,10 @@
             <span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span>
 
             <span class="k">if</span> <span class="n">approx</span> <span class="o">==</span> <span class="s2">&quot;order2&quot;</span><span class="p">:</span>
-                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_square_mean</span><span class="p">(</span>
-                    <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-                <span class="p">)</span>
+                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="c1"># Taylor expansion with up to second-order terms</span>
                 <span class="n">mu</span> <span class="o">+=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">beta_s_square_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">beta_s_square_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span><span class="o">**</span><span class="mi">2</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported approx (=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mu</span></div>
 
 
@@ -1667,7 +1466,7 @@
         <span class="n">alpha</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the magnification bias</span>
@@ -1692,10 +1491,11 @@
 
 <span class="sd">                * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">                  It can be individual redshifts for each source galaxy when `z_src` is an</span>
-<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">                  array or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">                  (Used for `approx=None`).</span>
 
 <span class="sd">                * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">                  `z_src` must be a one dimentional function.</span>
+<span class="sd">                  `z_src` must be a one dimentional function (Used when `approx=None`).</span>
 
 <span class="sd">                * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">                  `z_src` must be a tuple containing</span>
@@ -1730,18 +1530,16 @@
 <span class="sd">                      {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}</span>
 
 <span class="sd">                * &#39;order1&#39; : Uses the weak lensing approximation of the magnification bias with up</span>
-<span class="sd">                  to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">                  `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">                  compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">                  to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">                  (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      \mu^{\alpha-1} \approx</span>
 <span class="sd">                      1 + \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)</span>
 
 <span class="sd">                * &#39;order2&#39; : Uses the weak lensing approximation of the magnification bias with up</span>
-<span class="sd">                  to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">                  `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">                  compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">                  to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">                  (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">                  .. math::</span>
 <span class="sd">                      \mu^{\alpha-1} \approx</span>
@@ -1752,9 +1550,9 @@
 <span class="sd">                      &amp;+ \left(2\alpha-1\right)\left(\alpha-1\right)</span>
 <span class="sd">                      \left(\left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2\right)</span>
 
-<span class="sd">        beta_kwargs: None, dict</span>
-<span class="sd">            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">            Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">        integ_kwargs: None, dict</span>
+<span class="sd">            Extra arguments for the redshift integration (when</span>
+<span class="sd">            `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">                * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">                  when performing the sum. (default=None)</span>
@@ -1779,6 +1577,7 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;z_src_info&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;float_array&quot;</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s2">&quot;approx&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_approx_z_src_info</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_z_src</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="s2">&quot;einasto&quot;</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
@@ -1792,7 +1591,7 @@
                     <span class="n">z_src</span><span class="p">,</span>
                     <span class="n">r_proj</span><span class="p">,</span>
                     <span class="n">z_cl</span><span class="p">,</span>
-                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+                    <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span> <span class="o">==</span> <span class="s2">&quot;discrete&quot;</span><span class="p">:</span>
                 <span class="n">warning_msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -1810,16 +1609,9 @@
                     <span class="n">r_proj</span><span class="p">,</span>
                     <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
-                <span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">approx</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span> <span class="s2">&quot;order2&quot;</span><span class="p">):</span>
-            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
-                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-            <span class="p">)</span>
+            <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
             <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
@@ -1827,16 +1619,11 @@
             <span class="n">mu_bias</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">approx</span> <span class="o">==</span> <span class="s2">&quot;order2&quot;</span><span class="p">:</span>
-                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_square_mean</span><span class="p">(</span>
-                    <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span>
-                <span class="p">)</span>
+                <span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">z_src</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="c1"># Taylor expansion with up to second-order terms</span>
                 <span class="n">mu_bias</span> <span class="o">+=</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta_s_square_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span>
                     <span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span>
                 <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">beta_s_square_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span><span class="o">**</span><span class="mi">2</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported approx (=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">mu_bias</span></div>
 
@@ -1982,8 +1769,6 @@
 <span class="sd">            * z_src_info=&#39;beta&#39; : z_src must be a tuple containing</span>
 <span class="sd">              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`).</span>
 
-<span class="sd">        Also, if approx is provided and not None, z_src_info must be &#39;distribution&#39; or &#39;beta&#39;.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        locals_dict: dict</span>
@@ -1993,12 +1778,12 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="n">loc_dict</span><span class="p">,</span> <span class="s2">&quot;z_src&quot;</span><span class="p">,</span> <span class="s2">&quot;float_array&quot;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;z_src_info&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;distribution&quot;</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="n">loc_dict</span><span class="p">,</span> <span class="s2">&quot;z_src&quot;</span><span class="p">,</span> <span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">beta_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;beta_kwargs&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;beta_kwargs&quot;</span><span class="p">]</span>
+            <span class="n">integ_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;integ_kwargs&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;integ_kwargs&quot;</span><span class="p">]</span>
             <span class="n">_def_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;zmin&quot;</span><span class="p">,</span> <span class="s2">&quot;zmax&quot;</span><span class="p">,</span> <span class="s2">&quot;delta_z_cut&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_def_keys</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">beta_kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_def_keys</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">integ_kwargs</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;beta_kwargs must contain only </span><span class="si">{</span><span class="n">_def_keys</span><span class="si">}</span><span class="s2"> keys, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">beta_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2"> provided.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;integ_kwargs must contain only </span><span class="si">{</span><span class="n">_def_keys</span><span class="si">}</span><span class="s2"> keys, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">integ_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2"> provided.&quot;</span>
                 <span class="p">)</span>
         <span class="k">elif</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;z_src_info&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="n">loc_dict</span><span class="p">,</span> <span class="s2">&quot;z_src&quot;</span><span class="p">,</span> <span class="s2">&quot;array&quot;</span><span class="p">)</span>
@@ -2008,15 +1793,37 @@
             <span class="p">}</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="n">beta_info</span><span class="p">,</span> <span class="s2">&quot;beta_s_mean&quot;</span><span class="p">,</span> <span class="s2">&quot;float_array&quot;</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="n">beta_info</span><span class="p">,</span> <span class="s2">&quot;beta_s_square_mean&quot;</span><span class="p">,</span> <span class="s2">&quot;float_array&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">loc_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approx&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;z_src_info&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="n">approx</span><span class="p">,</span> <span class="n">z_src_info</span> <span class="o">=</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;approx&quot;</span><span class="p">],</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;z_src_info&quot;</span><span class="p">]</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;approx=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39; requires z_src_info=&#39;distribution&#39; or &#39;beta&#39;, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
-            <span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported z_src_info (=&#39;</span><span class="si">{</span><span class="n">loc_dict</span><span class="p">[</span><span class="s1">&#39;z_src_info&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_approx_z_src_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Validation for compatility between approx and z_src_info. The conditions are:</span>
+
+<span class="sd">            * approx=None: z_src_info must be &#39;discrete&#39; or &#39;distribution&#39;</span>
+<span class="sd">            * approx=&#39;order1&#39; or &#39;order2&#39;: z_src_info must be &#39;beta&#39;</span>
+<span class="sd">            * approx=other: raises error</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        locals_dict: dict</span>
+<span class="sd">            Should be the call locals()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check compatility between approx and z_src_info</span>
+        <span class="n">z_src_info</span><span class="p">,</span> <span class="n">approx</span> <span class="o">=</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;z_src_info&quot;</span><span class="p">],</span> <span class="n">loc_dict</span><span class="p">[</span><span class="s2">&quot;approx&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">approx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">z_src_info</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span> <span class="s2">&quot;distribution&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">approx</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span> <span class="s2">&quot;order2&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">z_src_info</span> <span class="o">!=</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;approx=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39; requires z_src_info=&#39;beta&#39;, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;z_src_info=&#39;</span><span class="si">{</span><span class="n">z_src_info</span><span class="si">}</span><span class="s2">&#39; was provided.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported approx (=&#39;</span><span class="si">{</span><span class="n">approx</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

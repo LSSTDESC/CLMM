@@ -69,7 +69,7 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -118,10 +118,10 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:912: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:768: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1024: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:852: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Convergence = 0 for those galaxies.
 
@@ -150,7 +150,7 @@ true source redshifts stored in ``z_gal``
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -181,7 +181,7 @@ redshift used in the cell above.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -222,7 +222,7 @@ use the true source redshifts stored in ``z_gal``
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -252,7 +252,7 @@ an error if those do not exist.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -508,10 +508,10 @@ background of the cluster is given by
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:912: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:768: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1024: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:852: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Convergence = 0 for those galaxies.
 

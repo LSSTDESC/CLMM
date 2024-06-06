@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.func_layer &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.theory.func_layer &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,7 +12,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -32,7 +32,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -712,7 +712,6 @@
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
     <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
@@ -787,17 +786,6 @@
 <span class="sd">                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
 <span class="sd">                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
 
-<span class="sd">    beta_kwargs: None, dict</span>
-<span class="sd">        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">        Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">            * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">              when performing the sum. (default=None)</span>
-<span class="sd">            * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">              when performing the sum. (default=10.0)</span>
-<span class="sd">            * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
-
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL</span>
 <span class="sd">        backends.</span>
@@ -830,7 +818,6 @@
         <span class="n">z_cluster</span><span class="p">,</span>
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -853,7 +840,6 @@
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
     <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
@@ -928,17 +914,6 @@
 <span class="sd">                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}</span>
 <span class="sd">                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
 
-<span class="sd">    beta_kwargs: None, dict</span>
-<span class="sd">        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">        Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
-
-<span class="sd">            * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
-<span class="sd">              when performing the sum. (default=None)</span>
-<span class="sd">            * &#39;zmax&#39; (float) : Maximum redshift to be set as the source of the galaxy</span>
-<span class="sd">              when performing the sum. (default=10.0)</span>
-<span class="sd">            * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
-<span class="sd">              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
-
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL</span>
 <span class="sd">        backends.</span>
@@ -967,7 +942,6 @@
         <span class="n">z_cluster</span><span class="p">,</span>
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -990,7 +964,7 @@
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
     <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1042,10 +1016,11 @@
 
 <span class="sd">            * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">              It can be individual redshifts for each source galaxy when `z_src` is an array</span>
-<span class="sd">              or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">              or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">              (Used for `approx=None`).</span>
 
 <span class="sd">            * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">              `z_src` must be a one dimensional function.</span>
+<span class="sd">              `z_src` must be a one dimensional function (Used when `approx=None`).</span>
 
 <span class="sd">            * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">              `z_src` must be a tuple containing</span>
@@ -1077,9 +1052,8 @@
 <span class="sd">                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}</span>
 
 <span class="sd">            * &#39;order1&#39; : Same approach as in Weighing the Giants - III (equation 6 in</span>
-<span class="sd">              Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be</span>
-<span class="sd">              either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to compute</span>
-<span class="sd">              :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">              Applegate et al. 2014; https://arxiv.org/abs/1208.0605).</span>
+<span class="sd">              `z_src_info` must be &#39;beta&#39;:</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}</span>
@@ -1088,8 +1062,7 @@
 <span class="sd">            * &#39;order2&#39; : Same approach as in Cluster Mass Calibration at High</span>
 <span class="sd">              Redshift (equation 12 in Schrabback et al. 2017;</span>
 <span class="sd">              https://arxiv.org/abs/1611.03866).</span>
-<span class="sd">              `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used</span>
-<span class="sd">              to compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)</span>
+<span class="sd">              `z_src_info` must be &#39;beta&#39;:</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}</span>
@@ -1097,9 +1070,9 @@
 <span class="sd">                  \left(1+\left(\frac{\left&lt;\beta_s^2\right&gt;}</span>
 <span class="sd">                  {\left&lt;\beta_s\right&gt;^2}-1\right)\left&lt;\beta_s\right&gt;\kappa_{\infty}\right)</span>
 
-<span class="sd">    beta_kwargs: None, dict</span>
-<span class="sd">        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">        Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">    integ_kwargs: None, dict</span>
+<span class="sd">        Extra arguments for the redshift integration (when</span>
+<span class="sd">        `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">            * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">              when performing the sum. (default=None)</span>
@@ -1141,7 +1114,7 @@
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="n">approx</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1165,7 +1138,7 @@
     <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
     <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
@@ -1216,10 +1189,11 @@
 
 <span class="sd">            * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">              It can be individual redshifts for each source galaxy when `z_src` is an array</span>
-<span class="sd">              or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">              or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">              (Used for `approx=None`).</span>
 
 <span class="sd">            * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">              `z_src` must be a one dimensional function.</span>
+<span class="sd">              `z_src` must be a one dimensional function (Used when `approx=None`).</span>
 
 <span class="sd">            * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">              `z_src` must be a tuple containing</span>
@@ -1253,26 +1227,24 @@
 <span class="sd">                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}</span>
 
 <span class="sd">            * &#39;order1&#39; : Uses the weak lensing approximation of the magnification with up to</span>
-<span class="sd">              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">              `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">              compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">              (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  \mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}</span>
 
 <span class="sd">            * &#39;order2&#39; : Uses the weak lensing approximation of the magnification with up to</span>
-<span class="sd">              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">              `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)</span>
+<span class="sd">              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">              (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  \mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}</span>
 <span class="sd">                  + 3 \left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2</span>
 <span class="sd">                  + \left&lt;\beta_s^2\right&gt;\gamma_{\infty}^2</span>
 
-<span class="sd">    beta_kwargs: None, dict</span>
-<span class="sd">        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">        Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">    integ_kwargs: None, dict</span>
+<span class="sd">        Extra arguments for the redshift integration (when</span>
+<span class="sd">        `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">            * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">              when performing the sum. (default=None)</span>
@@ -1310,7 +1282,7 @@
         <span class="n">z_src</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="n">approx</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1335,7 +1307,7 @@
     <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
     <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">integ_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
@@ -1402,10 +1374,11 @@
 
 <span class="sd">            * &#39;discrete&#39; (default) : The redshift of sources is provided by `z_src`.</span>
 <span class="sd">              It can be individual redshifts for each source galaxy when `z_src` is an array</span>
-<span class="sd">              or all sources are at the same redshift when `z_src` is a float.</span>
+<span class="sd">              or all sources are at the same redshift when `z_src` is a float</span>
+<span class="sd">              (Used for `approx=None`).</span>
 
 <span class="sd">            * &#39;distribution&#39; : A redshift distribution function is provided by `z_src`.</span>
-<span class="sd">              `z_src` must be a one dimensional function.</span>
+<span class="sd">              `z_src` must be a one dimensional function (Used when `approx=None`).</span>
 
 <span class="sd">            * &#39;beta&#39; : The averaged lensing efficiency is provided by `z_src`.</span>
 <span class="sd">              `z_src` must be a tuple containing</span>
@@ -1440,18 +1413,16 @@
 <span class="sd">                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}</span>
 
 <span class="sd">            * &#39;order1&#39; : Uses the weak lensing approximation of the magnification bias with up</span>
-<span class="sd">              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">              `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">              compute :math:`\langle \beta_s \rangle`)</span>
+<span class="sd">              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">              (`z_src_info` must be &#39;beta&#39;):</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  \mu^{\alpha-1} \approx</span>
 <span class="sd">                  1 + \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)</span>
 
 <span class="sd">            * &#39;order2&#39; : Uses the weak lensing approximation of the magnification bias with up</span>
-<span class="sd">              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.</span>
-<span class="sd">              `z_src_info` must be either &#39;beta&#39;, or &#39;distribution&#39; (that will be used to</span>
-<span class="sd">              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)</span>
+<span class="sd">              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`</span>
+<span class="sd">              `z_src_info` must be &#39;beta&#39;:</span>
 
 <span class="sd">              .. math::</span>
 <span class="sd">                  \mu^{\alpha-1} \approx</span>
@@ -1462,9 +1433,9 @@
 <span class="sd">                  &amp;+ \left(2\alpha-1\right)\left(\alpha-1\right)</span>
 <span class="sd">                  \left(\left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2\right)</span>
 
-<span class="sd">    beta_kwargs: None, dict</span>
-<span class="sd">        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.</span>
-<span class="sd">        Only used if `z_src_info=&#39;distribution&#39;`. Possible keys are:</span>
+<span class="sd">    integ_kwargs: None, dict</span>
+<span class="sd">        Extra arguments for the redshift integration (when</span>
+<span class="sd">        `approx=None, z_src_info=&#39;distribution&#39;`). Possible keys are:</span>
 
 <span class="sd">            * &#39;zmin&#39; (None, float) : Minimum redshift to be set as the source of the galaxy</span>
 <span class="sd">              when performing the sum. (default=None)</span>
@@ -1499,7 +1470,7 @@
         <span class="n">alpha</span><span class="p">,</span>
         <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
         <span class="n">approx</span><span class="o">=</span><span class="n">approx</span><span class="p">,</span>
-        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
+        <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">integ_kwargs</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
 

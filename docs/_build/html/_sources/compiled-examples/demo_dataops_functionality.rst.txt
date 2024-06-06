@@ -44,7 +44,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -175,7 +175,7 @@ Loading this into a CLMM cluster object centered on (0,0)
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x7fe9e867d950>
+    <matplotlib.lines.Line2D at 0x7f355b172210>
 
 
 
@@ -241,7 +241,10 @@ Loading this into a CLMM cluster object centered on (0,0)
        0.1197017887991115 -0.00017594425025361377
     -0.022159728710095222  -0.0005741244288848292
        0.2010969697875847     0.07058694279618334
+      -0.0452653271235742    0.005864801263309683
+     0.017705557405416968     0.01299156643524062
                       ...                     ...
+     0.010719332552569169    -0.13640351684318933
      0.009928255198615999    -0.05882170840311077
     -0.015791006414372845   -0.011393464604573304
      0.012215965508645624      0.0049623423240184
@@ -308,7 +311,10 @@ Loading this into a CLMM cluster object centered on (0,0)
        0.1197017887991115 -0.00017594425025361377
     -0.022159728710095222  -0.0005741244288848292
        0.2010969697875847     0.07058694279618334
+      -0.0452653271235742    0.005864801263309683
+     0.017705557405416968     0.01299156643524062
                       ...                     ...
+     0.010719332552569169    -0.13640351684318933
      0.009928255198615999    -0.05882170840311077
     -0.015791006414372845   -0.011393464604573304
      0.012215965508645624      0.0049623423240184
@@ -382,7 +388,7 @@ user may ask for a binned profile in various projected distance units.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table140642573042000-994773" class="table-striped table-bordered table-condensed">
+    <table id="table139867139705424-994773" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>p_0</th><th>p_0_err</th><th>p_1</th><th>p_1_err</th><th>p_2</th><th>p_2_err</th><th>n_src</th><th>weights_sum</th></tr></thead>
     <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
     <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -417,14 +423,14 @@ user may ask for a binned profile in various projected distance units.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140642573042000-994773').dataTable()");
+        console.log("$('#table139867139705424-994773').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140642573042000-994773').dataTable({
+        $('#table139867139705424-994773').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -459,7 +465,7 @@ as a new attribute of the galaxy cluster object.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table140642572834384-685971" class="table-striped table-bordered table-condensed">
+    <table id="table139867110111888-685971" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
     <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
     <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -494,14 +500,14 @@ as a new attribute of the galaxy cluster object.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140642572834384-685971').dataTable()");
+        console.log("$('#table139867110111888-685971').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140642572834384-685971').dataTable({
+        $('#table139867110111888-685971').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -550,7 +556,7 @@ Use function to plot the profiles
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -578,7 +584,7 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -599,7 +605,7 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -628,7 +634,7 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -670,7 +676,7 @@ that have fallen in that bin.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 .. code:: ipython3
@@ -711,7 +717,7 @@ cluster object.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -719,7 +725,7 @@ cluster object.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table140642680452048-511334" class="table-striped table-bordered table-condensed">
+    <table id="table139867260055888-511334" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
     <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
     <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -754,14 +760,14 @@ cluster object.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140642680452048-511334').dataTable()");
+        console.log("$('#table139867260055888-511334').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140642680452048-511334').dataTable({
+        $('#table139867260055888-511334').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -798,7 +804,7 @@ we asked the binned profile to be saved into the
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table140642680432912-436963" class="table-striped table-bordered table-condensed">
+    <table id="table139867139444752-436963" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
     <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
     <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -833,14 +839,14 @@ we asked the binned profile to be saved into the
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140642680432912-436963').dataTable()");
+        console.log("$('#table139867139444752-436963').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140642680432912-436963').dataTable({
+        $('#table139867139444752-436963').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -879,7 +885,7 @@ table.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -916,7 +922,7 @@ stored as an extra columns of the ``galcat`` table (see the
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/cosmology/parent_class.py:110: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -981,7 +987,7 @@ performed using the weights stored in ``galcat``.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table140642603490576-504512" class="table-striped table-bordered table-condensed">
+    <table id="table139867140951120-504512" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
     <tr><td>0</td><td>0.04989926186693261</td><td>0.40181702725631496</td><td>0.6073017710391921</td><td>212624096345828.4</td><td>12655402657482.291</td><td>15732761567739.193</td><td>12296182303656.047</td><td>1.463567191680782</td><td>0.057677669439307994</td><td>166</td><td>3.9434463355203176e-27</td></tr>
     <tr><td>1</td><td>0.6073017710391921</td><td>0.91997828958074</td><td>1.1647042802114518</td><td>107977347608942.44</td><td>7146281284443.765</td><td>7854532242277.562</td><td>6871295327248.187</td><td>1.4877929742814777</td><td>0.03349197273932518</td><td>489</td><td>1.1389768721844858e-26</td></tr>
@@ -1016,14 +1022,14 @@ performed using the weights stored in ``galcat``.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140642603490576-504512').dataTable()");
+        console.log("$('#table139867140951120-504512').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140642603490576-504512').dataTable({
+        $('#table139867140951120-504512').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

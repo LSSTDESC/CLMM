@@ -49,7 +49,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -219,7 +219,7 @@ galaxy catalog in bins of radius.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/utils/statistic.py:97: RuntimeWarning: invalid value encountered in sqrt
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/utils/statistic.py:97: RuntimeWarning: invalid value encountered in sqrt
 
 
 After running ``clmm.dataops.make_radial_profile`` on a
@@ -290,7 +290,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f3f8e693050>
+    <matplotlib.legend.Legend at 0x7f8080861b90>
 
 
 
