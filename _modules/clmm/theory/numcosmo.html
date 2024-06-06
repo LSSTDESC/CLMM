@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.numcosmo &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.theory.numcosmo &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,7 +12,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -32,7 +32,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -349,7 +349,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">set_be_cosmo</span><span class="p">(</span><span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">HICosmo</span><span class="o">.</span><span class="n">id</span><span class="p">()))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfile</span><span class="o">.</span><span class="n">id</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">id</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">id</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span></div>
 </div>
 
 

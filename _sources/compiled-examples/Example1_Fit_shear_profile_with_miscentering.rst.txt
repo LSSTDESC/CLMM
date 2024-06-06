@@ -41,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 

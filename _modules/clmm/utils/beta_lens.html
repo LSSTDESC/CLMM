@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.utils.beta_lens &mdash; CLMM 1.10.0 documentation</title>
+  <title>clmm.utils.beta_lens &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,7 +12,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -32,7 +32,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -166,7 +166,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    z_src:  float</span>
+<span class="sd">    z_src : float, array_like</span>
 <span class="sd">        Source galaxy redshift</span>
 <span class="sd">    z_cl: float</span>
 <span class="sd">        Galaxy cluster redshift</span>
@@ -175,11 +175,14 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float</span>
+<span class="sd">    float, array</span>
 <span class="sd">        Geometric lensing efficicency</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">z_src</span> <span class="o">-</span> <span class="n">z_cl</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span> <span class="o">/</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">beta</span></div>
+    <span class="c1"># pylint: disable-msg=protected-access</span>
+    <span class="n">_z_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">_z_src</span> <span class="o">-</span> <span class="n">z_cl</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_da_z1z2</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">_z_src</span><span class="p">)</span> <span class="o">/</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_da</span><span class="p">(</span><span class="n">_z_src</span><span class="p">)</span>
+    <span class="p">)</span></div>
 
 
 
@@ -193,7 +196,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    z_src: float</span>
+<span class="sd">    z_src : float, array_like</span>
 <span class="sd">        Source galaxy redshift</span>
 <span class="sd">    z_cl: float</span>
 <span class="sd">        Galaxy cluster redshift</span>
@@ -204,7 +207,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float</span>
+<span class="sd">    numpy array</span>
 <span class="sd">        Geometric lensing efficicency ratio</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">beta_s</span> <span class="o">=</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">/</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
@@ -223,8 +226,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    z_src: float</span>
-<span class="sd">        Source galaxy redshift</span>
+<span class="sd">    z_src : array_like, float, function</span>
+<span class="sd">        Information on the background source galaxy redshift(s). Value required depends on</span>
+<span class="sd">        `z_src_info` (see below).</span>
 <span class="sd">    z_cl: float</span>
 <span class="sd">        Galaxy cluster redshift</span>
 <span class="sd">    z_inf: float</span>
@@ -240,8 +244,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        Geometric lensing efficicency ratio</span>
+<span class="sd">    numpy array</span>
+<span class="sd">        Geometric lensing efficicency ratio for each source</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">beta_s</span> <span class="o">=</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">/</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
     <span class="n">beta_s_func</span> <span class="o">=</span> <span class="n">beta_s</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -249,19 +253,23 @@
 
 
 
-<div class="viewcode-block" id="compute_beta_mean">
-<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_mean">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_beta_mean</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_beta_s_mean_from_distribution">
+<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_mean_from_distribution">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_beta_s_mean_from_distribution</span><span class="p">(</span>
+    <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean value of the geometric lensing efficicency</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \left&lt;\beta\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}</span>
+<span class="sd">       \left&lt;\beta_s\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}</span>
 <span class="sd">       {\int_{z = z_{min}}^{z_{max}}N(z)}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    z_cl: float</span>
 <span class="sd">        Galaxy cluster redshift</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">        Redshift at infinity</span>
 <span class="sd">    cosmo: clmm.Cosmology</span>
 <span class="sd">        CLMM Cosmology object</span>
 <span class="sd">    zmax: float, optional</span>
@@ -284,56 +292,7 @@
     <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">zdist</span><span class="o">.</span><span class="n">chang2013</span>
 
-    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">zmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">zmin</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="n">delta_z_cut</span>
-
-    <span class="k">return</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">quad</span><span class="p">(</span><span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="compute_beta_s_mean">
-<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_mean">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_beta_s_mean</span><span class="p">(</span>
-    <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean value of the geometric lensing efficicency ratio</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">       \left&lt;\beta_s\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}</span>
-<span class="sd">       {\int_{z = z_{min}}^{z_{max}}N(z)}</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    z_cl: float</span>
-<span class="sd">        Galaxy cluster redshift</span>
-<span class="sd">    z_inf: float</span>
-<span class="sd">        Redshift at infinity</span>
-<span class="sd">    cosmo: clmm.Cosmology</span>
-<span class="sd">        CLMM Cosmology object</span>
-<span class="sd">    zmax: float</span>
-<span class="sd">        Maximum redshift to be set as the source of the galaxy when performing the sum.</span>
-<span class="sd">        Default: 10</span>
-<span class="sd">    delta_z_cut: float, optional</span>
-<span class="sd">        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.</span>
-<span class="sd">        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1</span>
-<span class="sd">    zmin: float, None, optional</span>
-<span class="sd">        Minimum redshift to be set as the source of the galaxy when performing the sum.</span>
-<span class="sd">        Default: None</span>
-<span class="sd">    z_distrib_func: one-parameter function, optional</span>
-<span class="sd">        Redshift distribution function. Default is Chang et al (2013) distribution function.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        Mean value of the geometric lensing efficicency ratio</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">zdist</span><span class="o">.</span><span class="n">chang2013</span>
-
-    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">zmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -343,12 +302,12 @@
 
 
 
-<div class="viewcode-block" id="compute_beta_s_square_mean">
-<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_square_mean">[docs]</a>
-<span class="k">def</span> <span class="nf">compute_beta_s_square_mean</span><span class="p">(</span>
+<div class="viewcode-block" id="compute_beta_s_square_mean_from_distribution">
+<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_square_mean_from_distribution">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_beta_s_square_mean_from_distribution</span><span class="p">(</span>
     <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square value of the geometric lensing efficiency ratio</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square value of the geometric lensing efficicency ratio</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">       \left&lt;\beta_s^2\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}</span>
@@ -363,17 +322,16 @@
 <span class="sd">    cosmo: clmm.Cosmology</span>
 <span class="sd">        CLMM Cosmology object</span>
 <span class="sd">    zmax: float</span>
-<span class="sd">        Maximum redshift to be set as the source of the galaxy when performing the sum.</span>
-<span class="sd">        Default: 10</span>
-<span class="sd">    delta_z_cut: float, optional</span>
-<span class="sd">        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.</span>
-<span class="sd">        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1</span>
+<span class="sd">        Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">        when performing the sum.</span>
+<span class="sd">    delta_z_cut: float</span>
+<span class="sd">        Redshift interval to be summed with $z_cl$ to return\</span>
+<span class="sd">        $zmin$. This feature is not used if $z_min$ is provided by the user.</span>
 <span class="sd">    zmin: float, None, optional</span>
 <span class="sd">        Minimum redshift to be set as the source of the galaxy when performing the sum.</span>
 <span class="sd">        Default: None</span>
 <span class="sd">    z_distrib_func: one-parameter function, optional</span>
 <span class="sd">        Redshift distribution function. Default is Chang et al (2013) distribution function.</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
@@ -382,13 +340,95 @@
     <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">zdist</span><span class="o">.</span><span class="n">chang2013</span>
 
-    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">zmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">zmin</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="n">delta_z_cut</span>
 
     <span class="k">return</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">quad</span><span class="p">(</span><span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="compute_beta_s_mean_from_weights">
+<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_mean_from_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_beta_s_mean_from_weights</span><span class="p">(</span><span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">shape_weights</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square value of the geometric lensing efficicency ratio</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left&lt;\beta_s\right&gt; =\frac{\sum_i \beta_s(z_i)w_i}</span>
+<span class="sd">       {\sum_i w_i}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_src: float, array_like</span>
+<span class="sd">        Invididual source galaxies redshift.</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">        Galaxy cluster redshift.</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">        Redshift at infinity.</span>
+<span class="sd">    cosmo: clmm.Cosmology</span>
+<span class="sd">        CLMM Cosmology object</span>
+<span class="sd">    shape_weights: float, array_like</span>
+<span class="sd">        Individual source galaxies shape weights.\</span>
+<span class="sd">        If not None, the function uses Eq.(13) from\</span>
+<span class="sd">        https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\</span>
+<span class="sd">        weights summing to one.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean value of the geometric lensing efficicency ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_z_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_shape_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">_z_src</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_shape_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape_weights</span><span class="p">)</span>
+    <span class="n">beta_s</span> <span class="o">=</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">_z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_shape_weights</span> <span class="o">*</span> <span class="n">beta_s</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">_shape_weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="compute_beta_s_square_mean_from_weights">
+<a class="viewcode-back" href="../../../api/clmm.utils.beta_lens.html#clmm.utils.beta_lens.compute_beta_s_square_mean_from_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_beta_s_square_mean_from_weights</span><span class="p">(</span>
+    <span class="n">z_src</span><span class="p">,</span>
+    <span class="n">z_cl</span><span class="p">,</span>
+    <span class="n">z_inf</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">shape_weights</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square value of the geometric lensing efficicency ratio</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left&lt;\beta_s^2\right&gt; =\frac{\sum_i \beta_s^2(z_i)w_i}</span>
+<span class="sd">       {\sum_i w_i}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_src: float, array_like</span>
+<span class="sd">        Invididual source galaxies redshift.</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">        Galaxy cluster redshift.</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">        Redshift at infinity.</span>
+<span class="sd">    cosmo: clmm.Cosmology</span>
+<span class="sd">        CLMM Cosmology object</span>
+<span class="sd">    shape_weights: float, array_like</span>
+<span class="sd">        Individual source galaxies shape weights.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean square value of the geometric lensing efficicency ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_z_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_shape_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">_z_src</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_shape_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape_weights</span><span class="p">)</span>
+    <span class="n">beta_s</span> <span class="o">=</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">_z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">_shape_weights</span> <span class="o">*</span> <span class="n">beta_s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">_shape_weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 </pre></div>
 

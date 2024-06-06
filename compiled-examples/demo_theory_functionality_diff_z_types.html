@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model WL Profiles (different redshift inputs) &mdash; CLMM 1.10.0 documentation</title>
+  <title>Model WL Profiles (different redshift inputs) &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,7 +36,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -163,7 +163,7 @@ value of the mean beta parameters :
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1">## Uncomment the following line if you want to use a specific modeling backend among &#39;ct&#39; (cluster-toolkit), &#39;ccl&#39; (CCL) or &#39;nc&#39; (Numcosmo). Default is &#39;ccl&#39;</span>
-<span class="c1"># os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
+<span class="c1">#os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm</span>
@@ -183,7 +183,7 @@ value of the mean beta parameters :
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.12.0&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -261,7 +261,7 @@ average <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</sp
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z_inf</span> <span class="o">=</span> <span class="mi">1000</span>
 
-<span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_mean</span><span class="p">(</span>
+<span class="n">beta_s_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_mean_from_distribution</span><span class="p">(</span>
     <span class="n">cluster_z</span><span class="p">,</span>
     <span class="n">z_inf</span><span class="p">,</span>
     <span class="n">cosmo</span><span class="p">,</span>
@@ -270,7 +270,7 @@ average <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</sp
     <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">z_distrib_func</span><span class="o">=</span><span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_square_mean</span><span class="p">(</span>
+<span class="n">beta_s_square_mean</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_square_mean_from_distribution</span><span class="p">(</span>
     <span class="n">cluster_z</span><span class="p">,</span>
     <span class="n">z_inf</span><span class="p">,</span>
     <span class="n">cosmo</span><span class="p">,</span>
@@ -282,6 +282,33 @@ average <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</sp
 
 <span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="n">beta_label</span><span class="p">(</span><span class="n">beta_s_mean</span><span class="p">)))</span>
 <span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="n">beta_sq_label</span><span class="p">(</span><span class="n">beta_s_square_mean</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="math notranslate nohighlight">
+\[\displaystyle \langle\beta_s\rangle = 0.440\]</div>
+<div class="math notranslate nohighlight">
+\[\displaystyle \langle\beta_s^2\rangle = 0.220\]</div>
+<p>It is also possible to compute <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</span> and
+<span class="math notranslate nohighlight">\(\langle\beta_s^2\rangle\)</span> using galaxy shape weights:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z_inf</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="n">beta_s_mean_wts</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_mean_from_weights</span><span class="p">(</span>
+    <span class="n">source_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
+    <span class="n">cluster_z</span><span class="p">,</span>
+    <span class="n">z_inf</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">shape_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">beta_s_square_mean_wts</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s_square_mean_from_weights</span><span class="p">(</span>
+    <span class="n">source_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
+    <span class="n">cluster_z</span><span class="p">,</span>
+    <span class="n">z_inf</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">shape_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="n">beta_label</span><span class="p">(</span><span class="n">beta_s_mean_wts</span><span class="p">)))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="n">beta_sq_label</span><span class="p">(</span><span class="n">beta_s_square_mean_wts</span><span class="p">)))</span>
 </pre></div>
 </div>
 <div class="math notranslate nohighlight">
@@ -310,10 +337,10 @@ average <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</sp
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fc0c3d93350</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fbba04a9190</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_21_1.png" src="../_images/demo_theory_functionality_diff_z_types_21_1.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_23_1.png" src="../_images/demo_theory_functionality_diff_z_types_23_1.png" />
 <p>Here we use a zmax=3 (different from default values) to highlight the
 importance of specifying the zmax when computing the modeling.</p>
 </section>
@@ -381,8 +408,8 @@ catalog and number of radius points.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.96</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">77.4</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">2.04</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.04</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">2.09</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">124</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">2.22</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.22</span> <span class="n">s</span>
 </pre></div>
 </div>
 </section>
@@ -403,71 +430,25 @@ may be quite slow.</p>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
     <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">136</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">6.44</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">142</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">139</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">324</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">778</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">325</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">320</span> <span class="n">ms</span>
 </pre></div>
 </div>
 </section>
-<section id="cases-3-redshift-distribution-and-approximation">
-<h4>Cases 3 : Redshift distribution and approximation<a class="headerlink" href="#cases-3-redshift-distribution-and-approximation" title="Link to this heading"></a></h4>
-<p>If we want a faster approach we can use an approximation for the reduced
-shear, using 1 or 2 order of Taylor expansion for the expression of the
-reduced shear.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
-<span class="n">gt_distribution_order1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">4.75</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">4.75</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">4.59</span> <span class="n">ms</span>
-</pre></div>
-</div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
-<span class="n">gt_distribution_order2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">7.75</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">7.75</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">7.71</span> <span class="n">ms</span>
-</pre></div>
-</div>
-</section>
-<section id="cases-4-mean-lensing-efficiencies-and-approximation">
-<h4>Cases 4 : Mean lensing efficiencies and approximation<a class="headerlink" href="#cases-4-mean-lensing-efficiencies-and-approximation" title="Link to this heading"></a></h4>
+<section id="cases-3-mean-lensing-efficiencies-and-approximation">
+<h4>Cases 3 : Mean lensing efficiencies and approximation<a class="headerlink" href="#cases-3-mean-lensing-efficiencies-and-approximation" title="Link to this heading"></a></h4>
 <div class="line-block">
 <div class="line">Finally, we can also model the reduced shear if the only information
 we have about the source redshift distribution is through the mean
 lensing efficiency parameters <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</span> and
 <span class="math notranslate nohighlight">\(\langle\beta_s^2\rangle\)</span>.</div>
 <div class="line">In this case, we need to use an approximation for the formula. This is
-the fastest approach.</div>
+the fastest approach. Bear in mind that the user has to pre compute
+the beta parameters and pass them as an argument of the function.</div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
 <span class="n">gt_beta_1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span>
@@ -480,13 +461,12 @@ the fastest approach.</div>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.18</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.18</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.1</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.02</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">338</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.36</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.2</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
@@ -500,20 +480,19 @@ the fastest approach.</div>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">,</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.08</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">147</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.23</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.11</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.09</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.09</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.02</span> <span class="n">ms</span>
 </pre></div>
 </div>
 </section>
 </section>
 </section>
-<section id="comparison-of-the-four-cases-for-the-reduced-tangnetial-shear">
-<h2>3 - Comparison of the four cases for the reduced tangnetial shear<a class="headerlink" href="#comparison-of-the-four-cases-for-the-reduced-tangnetial-shear" title="Link to this heading"></a></h2>
+<section id="comparison-of-the-three-cases-for-the-reduced-tangnetial-shear">
+<h2>3 - Comparison of the three cases for the reduced tangnetial shear<a class="headerlink" href="#comparison-of-the-three-cases-for-the-reduced-tangnetial-shear" title="Link to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_cases</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">others</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)})</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -543,8 +522,6 @@ the fastest approach.</div>
     <span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">gt_discrete</span><span class="p">,</span> <span class="s2">&quot;k.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)),</span>
     <span class="n">others</span><span class="o">=</span><span class="p">(</span>
         <span class="p">(</span><span class="n">gt_distribution_no_approx</span><span class="p">,</span> <span class="s2">&quot;r.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, no approx&quot;</span><span class="p">)),</span>
-        <span class="p">(</span><span class="n">gt_distribution_order1</span><span class="p">,</span> <span class="s2">&quot;ro-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, order 1 approx&quot;</span><span class="p">)),</span>
-        <span class="p">(</span><span class="n">gt_distribution_order2</span><span class="p">,</span> <span class="s2">&quot;rd-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, order 2 approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">gt_beta_1</span><span class="p">,</span> <span class="s2">&quot;b--&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 1 approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">gt_beta_2</span><span class="p">,</span> <span class="s2">&quot;bx-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 2 approx&quot;</span><span class="p">)),</span>
     <span class="p">),</span>
@@ -553,7 +530,7 @@ the fastest approach.</div>
 <span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_48_0.png" src="../_images/demo_theory_functionality_diff_z_types_48_0.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_46_0.png" src="../_images/demo_theory_functionality_diff_z_types_46_0.png" />
 <p>All modeled profiles give similar results. They do not correspond to the
 profile computed from the data in the inner part, because of different
 ways of constructing the profiles (taking the average radial point and
@@ -561,12 +538,12 @@ reduced shear value in a bin or computing the average expected reduced
 shear at a given radius).</p>
 <p>The profiles computed using an approximation for the reduced shear
 formula are lower by a few percents, especially in the inner region. The
-profiles computed from a redshift distribution or a known source
-redshift differ at the subpercent level.</p>
+profile computed from a redshift distribution differs at the subpercent
+level.</p>
 </section>
 <section id="modeling-and-plotting-the-other-quantities">
 <h2>4- Modeling and plotting the other quantities<a class="headerlink" href="#modeling-and-plotting-the-other-quantities" title="Link to this heading"></a></h2>
-<p>Here we will just compute models for cases 1, 2 and 4. For the shear and
+<p>Here we will just compute models for cases 1, 2 and 3. For the shear and
 convergence there is no need for an approximated formula.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gammat_discrete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="p">[</span>
@@ -580,25 +557,13 @@ convergence there is no need for an approximated formula.</p>
                 <span class="n">cosmo</span><span class="p">,</span>
                 <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
                 <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-                <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">,</span>
+                <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">rr</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">gammat_distribution</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_tangential_shear</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-<span class="p">)</span>
 
 <span class="n">gammat_beta</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_tangential_shear</span><span class="p">(</span>
     <span class="n">rr</span><span class="p">,</span>
@@ -609,8 +574,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">cosmo</span><span class="p">,</span>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -618,14 +582,13 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">rr</span><span class="p">,</span>
     <span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">gammat_discrete</span><span class="p">,</span> <span class="s2">&quot;k.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)),</span>
     <span class="n">others</span><span class="o">=</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">gammat_distribution</span><span class="p">,</span> <span class="s2">&quot;rx-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, no approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">gammat_beta</span><span class="p">,</span> <span class="s2">&quot;b--&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, no approx&quot;</span><span class="p">)),</span>
     <span class="p">),</span>
     <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;$\gamma_t$&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_53_0.png" src="../_images/demo_theory_functionality_diff_z_types_53_0.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_51_0.png" src="../_images/demo_theory_functionality_diff_z_types_51_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa_discrete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="p">[</span>
         <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
@@ -645,18 +608,6 @@ convergence there is no need for an approximated formula.</p>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">kappa_distribution</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_convergence</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-<span class="p">)</span>
 
 <span class="n">kappa_beta</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_convergence</span><span class="p">(</span>
     <span class="n">rr</span><span class="p">,</span>
@@ -667,8 +618,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">cosmo</span><span class="p">,</span>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -676,14 +626,13 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">rr</span><span class="p">,</span>
     <span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">kappa_discrete</span><span class="p">,</span> <span class="s2">&quot;k.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)),</span>
     <span class="n">others</span><span class="o">=</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">kappa_distribution</span><span class="p">,</span> <span class="s2">&quot;rx-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, no approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">kappa_beta</span><span class="p">,</span> <span class="s2">&quot;b--&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, no approx&quot;</span><span class="p">)),</span>
     <span class="p">),</span>
     <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;$\kappa_t$&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_55_0.png" src="../_images/demo_theory_functionality_diff_z_types_55_0.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_53_0.png" src="../_images/demo_theory_functionality_diff_z_types_53_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu_discrete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="p">[</span>
         <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
@@ -703,19 +652,6 @@ convergence there is no need for an approximated formula.</p>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">mu_distribution</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-<span class="p">)</span>
 
 <span class="n">mu_beta_1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification</span><span class="p">(</span>
     <span class="n">rr</span><span class="p">,</span>
@@ -727,8 +663,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span>
 <span class="p">)</span>
 
 <span class="n">mu_beta_2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification</span><span class="p">(</span>
@@ -741,8 +676,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -750,7 +684,6 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">rr</span><span class="p">,</span>
     <span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">mu_discrete</span><span class="p">,</span> <span class="s2">&quot;k.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)),</span>
     <span class="n">others</span><span class="o">=</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">mu_distribution</span><span class="p">,</span> <span class="s2">&quot;rs-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, no approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">mu_beta_1</span><span class="p">,</span> <span class="s2">&quot;bx-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 1 approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">mu_beta_2</span><span class="p">,</span> <span class="s2">&quot;b--&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 2 approx&quot;</span><span class="p">)),</span>
     <span class="p">),</span>
@@ -758,7 +691,7 @@ convergence there is no need for an approximated formula.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_57_0.png" src="../_images/demo_theory_functionality_diff_z_types_57_0.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_55_0.png" src="../_images/demo_theory_functionality_diff_z_types_55_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">2.7</span>  <span class="c1"># arbitrary value for the slope of the number density</span>
 
 <span class="n">mu_bias_discrete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -781,20 +714,6 @@ convergence there is no need for an approximated formula.</p>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">mu_bias_distribution</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification_bias</span><span class="p">(</span>
-    <span class="n">rr</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="p">,</span>
-    <span class="n">cluster_m</span><span class="p">,</span>
-    <span class="n">concentration</span><span class="p">,</span>
-    <span class="n">cluster_z</span><span class="p">,</span>
-    <span class="n">model_z_distrib_dict</span><span class="p">[</span><span class="s2">&quot;func&quot;</span><span class="p">],</span>
-    <span class="n">cosmo</span><span class="p">,</span>
-    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
-    <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;distribution&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
-<span class="p">)</span>
 
 <span class="n">mu_bias_beta_1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification_bias</span><span class="p">(</span>
     <span class="n">rr</span><span class="p">,</span>
@@ -807,8 +726,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span>
 <span class="p">)</span>
 
 <span class="n">mu_bias_beta_2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">theory</span><span class="o">.</span><span class="n">compute_magnification_bias</span><span class="p">(</span>
@@ -822,8 +740,7 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
     <span class="n">z_src_info</span><span class="o">=</span><span class="s2">&quot;beta&quot;</span><span class="p">,</span>
-    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">,</span>
-    <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;zmax&quot;</span><span class="p">:</span> <span class="n">zsrc_max</span><span class="p">},</span>
+    <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -831,7 +748,6 @@ convergence there is no need for an approximated formula.</p>
     <span class="n">rr</span><span class="p">,</span>
     <span class="n">base</span><span class="o">=</span><span class="p">(</span><span class="n">mu_bias_discrete</span><span class="p">,</span> <span class="s2">&quot;k.-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;discrete&quot;</span><span class="p">)),</span>
     <span class="n">others</span><span class="o">=</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">mu_bias_distribution</span><span class="p">,</span> <span class="s2">&quot;rs-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;distribution, no approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">mu_bias_beta_1</span><span class="p">,</span> <span class="s2">&quot;bx-&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 1 approx&quot;</span><span class="p">)),</span>
         <span class="p">(</span><span class="n">mu_bias_beta_2</span><span class="p">,</span> <span class="s2">&quot;b--&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;beta, order 2 approx&quot;</span><span class="p">)),</span>
     <span class="p">),</span>
@@ -839,7 +755,7 @@ convergence there is no need for an approximated formula.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_theory_functionality_diff_z_types_59_0.png" src="../_images/demo_theory_functionality_diff_z_types_59_0.png" />
+<img alt="../_images/demo_theory_functionality_diff_z_types_57_0.png" src="../_images/demo_theory_functionality_diff_z_types_57_0.png" />
 <p>When making approximation, there may be large differences (~few 10%
 level) in the inner regions (compare to when using the exact redshift of
 the sources), especially for magnification and magnification bias.

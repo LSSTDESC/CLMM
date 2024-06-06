@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate mock data for a cluster &mdash; CLMM 1.10.0 documentation</title>
+  <title>Generate mock data for a cluster &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -35,7 +35,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -179,7 +179,7 @@ line below to select your backend.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.12.0&#39;</span>
 </pre></div>
 </div>
 <section id="import-mock-data-module-and-setup-the-configuration">
@@ -291,27 +291,27 @@ stored in the <code class="docutils literal notranslate"><span class="pre">pzpdf
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;shared_bins&#39;</span><span class="p">,</span>
- <span class="s1">&#39;zbins&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.02010102</span><span class="p">,</span> <span class="mf">0.04020204</span><span class="p">,</span> <span class="mf">0.06030306</span><span class="p">,</span> <span class="mf">0.08040408</span><span class="p">,</span>
-        <span class="mf">0.1005051</span> <span class="p">,</span> <span class="mf">0.12060612</span><span class="p">,</span> <span class="mf">0.14070714</span><span class="p">,</span> <span class="mf">0.16080816</span><span class="p">,</span> <span class="mf">0.18090918</span><span class="p">,</span>
-        <span class="mf">0.2010102</span> <span class="p">,</span> <span class="mf">0.22111122</span><span class="p">,</span> <span class="mf">0.24121224</span><span class="p">,</span> <span class="mf">0.26131326</span><span class="p">,</span> <span class="mf">0.28141428</span><span class="p">,</span>
-        <span class="mf">0.3015153</span> <span class="p">,</span> <span class="mf">0.32161632</span><span class="p">,</span> <span class="mf">0.34171734</span><span class="p">,</span> <span class="mf">0.36181836</span><span class="p">,</span> <span class="mf">0.38191938</span><span class="p">,</span>
-        <span class="mf">0.4020204</span> <span class="p">,</span> <span class="mf">0.42212141</span><span class="p">,</span> <span class="mf">0.44222243</span><span class="p">,</span> <span class="mf">0.46232345</span><span class="p">,</span> <span class="mf">0.48242447</span><span class="p">,</span>
-        <span class="mf">0.50252549</span><span class="p">,</span> <span class="mf">0.52262651</span><span class="p">,</span> <span class="mf">0.54272753</span><span class="p">,</span> <span class="mf">0.56282855</span><span class="p">,</span> <span class="mf">0.58292957</span><span class="p">,</span>
-        <span class="mf">0.60303059</span><span class="p">,</span> <span class="mf">0.62313161</span><span class="p">,</span> <span class="mf">0.64323263</span><span class="p">,</span> <span class="mf">0.66333365</span><span class="p">,</span> <span class="mf">0.68343467</span><span class="p">,</span>
-        <span class="mf">0.70353569</span><span class="p">,</span> <span class="mf">0.72363671</span><span class="p">,</span> <span class="mf">0.74373773</span><span class="p">,</span> <span class="mf">0.76383875</span><span class="p">,</span> <span class="mf">0.78393977</span><span class="p">,</span>
-        <span class="mf">0.80404079</span><span class="p">,</span> <span class="mf">0.82414181</span><span class="p">,</span> <span class="mf">0.84424283</span><span class="p">,</span> <span class="mf">0.86434385</span><span class="p">,</span> <span class="mf">0.88444487</span><span class="p">,</span>
-        <span class="mf">0.90454589</span><span class="p">,</span> <span class="mf">0.92464691</span><span class="p">,</span> <span class="mf">0.94474793</span><span class="p">,</span> <span class="mf">0.96484895</span><span class="p">,</span> <span class="mf">0.98494997</span><span class="p">,</span>
-        <span class="mf">1.00505099</span><span class="p">,</span> <span class="mf">1.02515201</span><span class="p">,</span> <span class="mf">1.04525303</span><span class="p">,</span> <span class="mf">1.06535405</span><span class="p">,</span> <span class="mf">1.08545507</span><span class="p">,</span>
-        <span class="mf">1.10555609</span><span class="p">,</span> <span class="mf">1.12565711</span><span class="p">,</span> <span class="mf">1.14575813</span><span class="p">,</span> <span class="mf">1.16585915</span><span class="p">,</span> <span class="mf">1.18596017</span><span class="p">,</span>
-        <span class="mf">1.20606119</span><span class="p">,</span> <span class="mf">1.22616221</span><span class="p">,</span> <span class="mf">1.24626322</span><span class="p">,</span> <span class="mf">1.26636424</span><span class="p">,</span> <span class="mf">1.28646526</span><span class="p">,</span>
-        <span class="mf">1.30656628</span><span class="p">,</span> <span class="mf">1.3266673</span> <span class="p">,</span> <span class="mf">1.34676832</span><span class="p">,</span> <span class="mf">1.36686934</span><span class="p">,</span> <span class="mf">1.38697036</span><span class="p">,</span>
-        <span class="mf">1.40707138</span><span class="p">,</span> <span class="mf">1.4271724</span> <span class="p">,</span> <span class="mf">1.44727342</span><span class="p">,</span> <span class="mf">1.46737444</span><span class="p">,</span> <span class="mf">1.48747546</span><span class="p">,</span>
-        <span class="mf">1.50757648</span><span class="p">,</span> <span class="mf">1.5276775</span> <span class="p">,</span> <span class="mf">1.54777852</span><span class="p">,</span> <span class="mf">1.56787954</span><span class="p">,</span> <span class="mf">1.58798056</span><span class="p">,</span>
-        <span class="mf">1.60808158</span><span class="p">,</span> <span class="mf">1.6281826</span> <span class="p">,</span> <span class="mf">1.64828362</span><span class="p">,</span> <span class="mf">1.66838464</span><span class="p">,</span> <span class="mf">1.68848566</span><span class="p">,</span>
-        <span class="mf">1.70858668</span><span class="p">,</span> <span class="mf">1.7286877</span> <span class="p">,</span> <span class="mf">1.74878872</span><span class="p">,</span> <span class="mf">1.76888974</span><span class="p">,</span> <span class="mf">1.78899076</span><span class="p">,</span>
-        <span class="mf">1.80909178</span><span class="p">,</span> <span class="mf">1.8291928</span> <span class="p">,</span> <span class="mf">1.84929382</span><span class="p">,</span> <span class="mf">1.86939484</span><span class="p">,</span> <span class="mf">1.88949586</span><span class="p">,</span>
-        <span class="mf">1.90959688</span><span class="p">,</span> <span class="mf">1.9296979</span> <span class="p">,</span> <span class="mf">1.94979892</span><span class="p">,</span> <span class="mf">1.96989994</span><span class="p">,</span> <span class="mf">1.99000096</span><span class="p">,</span>
-        <span class="mf">2.01010198</span><span class="p">])}</span>
+ <span class="s1">&#39;zbins&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span>        <span class="p">,</span> <span class="mf">0.01959865</span><span class="p">,</span> <span class="mf">0.0391973</span> <span class="p">,</span> <span class="mf">0.05879595</span><span class="p">,</span> <span class="mf">0.0783946</span> <span class="p">,</span>
+        <span class="mf">0.09799325</span><span class="p">,</span> <span class="mf">0.1175919</span> <span class="p">,</span> <span class="mf">0.13719055</span><span class="p">,</span> <span class="mf">0.15678921</span><span class="p">,</span> <span class="mf">0.17638786</span><span class="p">,</span>
+        <span class="mf">0.19598651</span><span class="p">,</span> <span class="mf">0.21558516</span><span class="p">,</span> <span class="mf">0.23518381</span><span class="p">,</span> <span class="mf">0.25478246</span><span class="p">,</span> <span class="mf">0.27438111</span><span class="p">,</span>
+        <span class="mf">0.29397976</span><span class="p">,</span> <span class="mf">0.31357841</span><span class="p">,</span> <span class="mf">0.33317706</span><span class="p">,</span> <span class="mf">0.35277571</span><span class="p">,</span> <span class="mf">0.37237436</span><span class="p">,</span>
+        <span class="mf">0.39197301</span><span class="p">,</span> <span class="mf">0.41157166</span><span class="p">,</span> <span class="mf">0.43117031</span><span class="p">,</span> <span class="mf">0.45076896</span><span class="p">,</span> <span class="mf">0.47036762</span><span class="p">,</span>
+        <span class="mf">0.48996627</span><span class="p">,</span> <span class="mf">0.50956492</span><span class="p">,</span> <span class="mf">0.52916357</span><span class="p">,</span> <span class="mf">0.54876222</span><span class="p">,</span> <span class="mf">0.56836087</span><span class="p">,</span>
+        <span class="mf">0.58795952</span><span class="p">,</span> <span class="mf">0.60755817</span><span class="p">,</span> <span class="mf">0.62715682</span><span class="p">,</span> <span class="mf">0.64675547</span><span class="p">,</span> <span class="mf">0.66635412</span><span class="p">,</span>
+        <span class="mf">0.68595277</span><span class="p">,</span> <span class="mf">0.70555142</span><span class="p">,</span> <span class="mf">0.72515007</span><span class="p">,</span> <span class="mf">0.74474872</span><span class="p">,</span> <span class="mf">0.76434737</span><span class="p">,</span>
+        <span class="mf">0.78394603</span><span class="p">,</span> <span class="mf">0.80354468</span><span class="p">,</span> <span class="mf">0.82314333</span><span class="p">,</span> <span class="mf">0.84274198</span><span class="p">,</span> <span class="mf">0.86234063</span><span class="p">,</span>
+        <span class="mf">0.88193928</span><span class="p">,</span> <span class="mf">0.90153793</span><span class="p">,</span> <span class="mf">0.92113658</span><span class="p">,</span> <span class="mf">0.94073523</span><span class="p">,</span> <span class="mf">0.96033388</span><span class="p">,</span>
+        <span class="mf">0.97993253</span><span class="p">,</span> <span class="mf">0.99953118</span><span class="p">,</span> <span class="mf">1.01912983</span><span class="p">,</span> <span class="mf">1.03872848</span><span class="p">,</span> <span class="mf">1.05832713</span><span class="p">,</span>
+        <span class="mf">1.07792578</span><span class="p">,</span> <span class="mf">1.09752444</span><span class="p">,</span> <span class="mf">1.11712309</span><span class="p">,</span> <span class="mf">1.13672174</span><span class="p">,</span> <span class="mf">1.15632039</span><span class="p">,</span>
+        <span class="mf">1.17591904</span><span class="p">,</span> <span class="mf">1.19551769</span><span class="p">,</span> <span class="mf">1.21511634</span><span class="p">,</span> <span class="mf">1.23471499</span><span class="p">,</span> <span class="mf">1.25431364</span><span class="p">,</span>
+        <span class="mf">1.27391229</span><span class="p">,</span> <span class="mf">1.29351094</span><span class="p">,</span> <span class="mf">1.31310959</span><span class="p">,</span> <span class="mf">1.33270824</span><span class="p">,</span> <span class="mf">1.35230689</span><span class="p">,</span>
+        <span class="mf">1.37190554</span><span class="p">,</span> <span class="mf">1.3915042</span> <span class="p">,</span> <span class="mf">1.41110285</span><span class="p">,</span> <span class="mf">1.4307015</span> <span class="p">,</span> <span class="mf">1.45030015</span><span class="p">,</span>
+        <span class="mf">1.4698988</span> <span class="p">,</span> <span class="mf">1.48949745</span><span class="p">,</span> <span class="mf">1.5090961</span> <span class="p">,</span> <span class="mf">1.52869475</span><span class="p">,</span> <span class="mf">1.5482934</span> <span class="p">,</span>
+        <span class="mf">1.56789205</span><span class="p">,</span> <span class="mf">1.5874907</span> <span class="p">,</span> <span class="mf">1.60708935</span><span class="p">,</span> <span class="mf">1.626688</span>  <span class="p">,</span> <span class="mf">1.64628665</span><span class="p">,</span>
+        <span class="mf">1.6658853</span> <span class="p">,</span> <span class="mf">1.68548395</span><span class="p">,</span> <span class="mf">1.70508261</span><span class="p">,</span> <span class="mf">1.72468126</span><span class="p">,</span> <span class="mf">1.74427991</span><span class="p">,</span>
+        <span class="mf">1.76387856</span><span class="p">,</span> <span class="mf">1.78347721</span><span class="p">,</span> <span class="mf">1.80307586</span><span class="p">,</span> <span class="mf">1.82267451</span><span class="p">,</span> <span class="mf">1.84227316</span><span class="p">,</span>
+        <span class="mf">1.86187181</span><span class="p">,</span> <span class="mf">1.88147046</span><span class="p">,</span> <span class="mf">1.90106911</span><span class="p">,</span> <span class="mf">1.92066776</span><span class="p">,</span> <span class="mf">1.94026641</span><span class="p">,</span>
+        <span class="mf">1.95986506</span><span class="p">])}</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
@@ -320,17 +320,17 @@ stored in the <code class="docutils literal notranslate"><span class="pre">pzpdf
 <b>GCData</b>
 <br> <b>defined by:</b> cosmo=None
 <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, pzpdf, id
-<br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.93 1.95 1.97 1.99 2.01]
+<br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.88 1.9  1.92 1.94 1.96]
 <br> 5 objects
 <br>
-<table id="table140156884915600" class="table-striped table-bordered table-condensed">
+<table id="table140168562981008" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>int64</th></tr></thead>
-<tr><td>46.024271204904984</td><td>87.12415084509054</td><td>0.05532947826871328</td><td>0.01922409925243582</td><td>0.830882529747833</td><td>0.8</td><td>1.3776336115668105e-18 .. 2.334297518677807e-37</td><td>0</td></tr>
-<tr><td>46.59154140045528</td><td>86.94481077279868</td><td>-0.1031198705358412</td><td>0.006944236018523485</td><td>0.6534327294723785</td><td>0.8</td><td>1.585663378055366e-11 .. 2.016553815168471e-49</td><td>1</td></tr>
-<tr><td>53.12635251656326</td><td>87.03922071589238</td><td>-0.008673499385743667</td><td>-0.016308296551964474</td><td>0.7169627909374777</td><td>0.8</td><td>7.349285474174153e-14 .. 6.570313386148236e-45</td><td>2</td></tr>
-<tr><td>52.18453739034647</td><td>87.13273958791184</td><td>-0.04575080665169042</td><td>0.08613713421900841</td><td>0.645663086033894</td><td>0.8</td><td>2.9566566109121113e-11 .. 5.467989068571349e-50</td><td>3</td></tr>
-<tr><td>53.28699559841387</td><td>86.77018133727904</td><td>-0.05234835111198638</td><td>0.01520148560002627</td><td>0.6744044552919288</td><td>0.8</td><td>2.8423609397170465e-12 .. 6.581159566513934e-48</td><td>4</td></tr>
+<tr><td>46.25728808233552</td><td>86.8922305424305</td><td>0.08236207803522719</td><td>-0.05411854076714888</td><td>0.6987103181997064</td><td>0.8</td><td>3.622089304592751e-13 .. 1.0180322952717169e-42</td><td>0</td></tr>
+<tr><td>50.07778715623189</td><td>87.10740150490655</td><td>-0.01475225297133639</td><td>0.03882800844119587</td><td>0.7392962132175859</td><td>0.8</td><td>9.870794333079776e-15 .. 5.1047370592912794e-40</td><td>1</td></tr>
+<tr><td>48.40809879885119</td><td>86.87728907171557</td><td>-1.2575884722892804e-05</td><td>0.02096267636736204</td><td>0.9009303274293756</td><td>0.8</td><td>7.709520397996465e-22 .. 3.849218150728941e-30</td><td>2</td></tr>
+<tr><td>53.014368911831866</td><td>86.9440239760556</td><td>-0.011911350886457556</td><td>-0.05893011144277411</td><td>0.8447969829350334</td><td>0.8</td><td>3.2663820149084725e-19 .. 2.0599039175494822e-33</td><td>3</td></tr>
+<tr><td>53.435230187909205</td><td>87.09017457767816</td><td>-0.01999543117339179</td><td>0.02354367773663435</td><td>0.6191383565693703</td><td>0.8</td><td>2.345198551898936e-10 .. 2.86718907682299e-48</td><td>4</td></tr>
 </table></div><p>It is also possible to generate individual binning of the PDF with
 <code class="docutils literal notranslate"><span class="pre">pzpdf_type='individual_bins'</span></code>. In this case, both the bin values and
 the PDF are added to the <code class="docutils literal notranslate"><span class="pre">pzpdf</span></code> column:</p>
@@ -351,14 +351,14 @@ the PDF are added to the <code class="docutils literal notranslate"><span class=
 <br> <b>and pzpdf:</b> individual_bins
 <br> 5 objects
 <br>
-<table id="table140156884890704" class="table-striped table-bordered table-condensed">
+<table id="table140168561873488" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>float64[101]</th><th>int64</th></tr></thead>
-<tr><td>49.90068048154564</td><td>86.80550586210887</td><td>0.006776372254203618</td><td>-0.056443346031055115</td><td>0.7384447556113741</td><td>0.8</td><td>0.0 .. 1.6384447556113741</td><td>1.0668005075516611e-14 .. 8.54955402967386e-22</td><td>0</td></tr>
-<tr><td>49.84807334598397</td><td>87.09989284150305</td><td>0.0626176620519528</td><td>0.006618553955043878</td><td>0.7890225583322611</td><td>0.8</td><td>0.0 .. 1.6890225583322613</td><td>9.056964810523246e-17 .. 8.549554029673677e-22</td><td>1</td></tr>
-<tr><td>46.0111841553351</td><td>87.08025957868881</td><td>0.052596163918858276</td><td>-0.110084409925105</td><td>0.7987521935963867</td><td>0.8</td><td>0.0 .. 1.6987521935963867</td><td>3.490080643864716e-17 .. 8.54955402967386e-22</td><td>2</td></tr>
-<tr><td>50.31272507231808</td><td>87.1546032279247</td><td>0.019113930437658577</td><td>0.016503292230688475</td><td>0.8175078771887231</td><td>0.8</td><td>0.0 .. 1.7175078771887233</td><td>5.372382672260738e-18 .. 8.549554029673677e-22</td><td>3</td></tr>
-<tr><td>46.96549350177882</td><td>86.79148752301168</td><td>-0.009398885086943403</td><td>-0.020027456296304834</td><td>0.7907510391787148</td><td>0.8</td><td>0.0 .. 1.690751039178715</td><td>7.652083622185505e-17 .. 8.549554029673677e-22</td><td>4</td></tr>
+<tr><td>51.71809588955455</td><td>86.79418499898124</td><td>0.04517177528103273</td><td>0.007954419566760369</td><td>0.7115192931034046</td><td>0.8</td><td>0.0 .. 1.6115192931034046</td><td>1.1876947502964896e-13 .. 8.54955402967386e-22</td><td>0</td></tr>
+<tr><td>46.708001638011126</td><td>86.88819976612274</td><td>-0.012879815467979831</td><td>-0.08175448050969202</td><td>0.6945681551460963</td><td>0.8</td><td>0.0 .. 1.5945681551460964</td><td>5.172194687003747e-13 .. 8.549554029673739e-22</td><td>1</td></tr>
+<tr><td>49.39451998685305</td><td>87.20677909110817</td><td>-0.0039628583975751495</td><td>0.0174994506167209</td><td>0.8315805078776208</td><td>0.8</td><td>0.0 .. 1.731580507877621</td><td>1.2824084572051592e-18 .. 8.549554029673739e-22</td><td>2</td></tr>
+<tr><td>46.860634504940194</td><td>86.93654387908563</td><td>-0.046259792137662965</td><td>0.005322896799894367</td><td>0.6917814486066362</td><td>0.8</td><td>0.0 .. 1.5917814486066364</td><td>6.565150731239997e-13 .. 8.549554029673677e-22</td><td>3</td></tr>
+<tr><td>51.265622797606405</td><td>86.8664662837592</td><td>0.031668628429442</td><td>0.050725273846685515</td><td>0.7563730258487964</td><td>0.8</td><td>0.0 .. 1.6563730258487965</td><td>2.0400190276050062e-15 .. 8.549554029673739e-22</td><td>4</td></tr>
 </table></div><p>Note that if <code class="docutils literal notranslate"><span class="pre">pzpdf_type=None</span></code>, the pdf is not stored:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="o">**</span><span class="n">cluster_kwargs</span><span class="p">,</span>
@@ -376,14 +376,14 @@ the PDF are added to the <code class="docutils literal notranslate"><span class=
 <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, id
 <br> 5 objects
 <br>
-<table id="table140156808395536" class="table-striped table-bordered table-condensed">
+<table id="table140168561983568" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-<tr><td>45.63953153227059</td><td>86.7618656264434</td><td>0.07469710637080207</td><td>0.016895146066059588</td><td>0.8767940368293706</td><td>0.8</td><td>0</td></tr>
-<tr><td>52.67355068259027</td><td>86.80697457031367</td><td>-0.004677747154520466</td><td>0.04098143019427342</td><td>0.8406804697538622</td><td>0.8</td><td>1</td></tr>
-<tr><td>54.37060933361849</td><td>87.1265389263517</td><td>0.08055032373482954</td><td>-0.04232511899646986</td><td>0.8128773339495362</td><td>0.8</td><td>2</td></tr>
-<tr><td>49.06694258122998</td><td>86.8099717758908</td><td>0.060868783737722705</td><td>-0.044573536651355314</td><td>0.7727759976711482</td><td>0.8</td><td>3</td></tr>
-<tr><td>49.92654192390971</td><td>86.94749959460441</td><td>-0.044762367376333975</td><td>0.06064029812457947</td><td>0.8940638927639172</td><td>0.8</td><td>4</td></tr>
+<tr><td>49.481245279211514</td><td>86.88497246906974</td><td>-0.04639901705475107</td><td>0.016810643634124524</td><td>0.6562799312782062</td><td>0.8</td><td>0</td></tr>
+<tr><td>46.76580446202989</td><td>87.11740891509298</td><td>0.008967332934760024</td><td>-0.04736707598002053</td><td>0.7566021959253701</td><td>0.8</td><td>1</td></tr>
+<tr><td>47.67683451367938</td><td>87.09593810890625</td><td>-1.6856807502580002e-06</td><td>-0.038785443779489344</td><td>0.7427555109960904</td><td>0.8</td><td>2</td></tr>
+<tr><td>45.25894486510976</td><td>87.0819953631451</td><td>0.010890284110664075</td><td>-0.002194000734056742</td><td>0.9292500730723824</td><td>0.8</td><td>3</td></tr>
+<tr><td>53.47006170976472</td><td>86.89370333944125</td><td>-0.12053390035191411</td><td>0.06970042860558802</td><td>0.7672613734120534</td><td>0.8</td><td>4</td></tr>
 </table></div><ul class="simple">
 <li><p>Clean data: source galaxy redshifts drawn from a redshift
 distribution instead of fixed <code class="docutils literal notranslate"><span class="pre">src_z</span></code> value. Options are
@@ -459,11 +459,11 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table140156808578640-257980" class="table-striped table-bordered table-condensed">
+<table id="table140168562672400-443876" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-<tr><td>0</td><td>4.748e+01</td><td>8.690e+01</td><td>-4.381e-03</td><td>1.214e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-<tr><td>1</td><td>5.081e+01</td><td>8.696e+01</td><td>-8.951e-04</td><td>-3.574e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-<tr><td>2</td><td>5.470e+01</td><td>8.706e+01</td><td>-6.717e-03</td><td>4.013e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+<tr><td>0</td><td>5.278e+01</td><td>8.690e+01</td><td>-4.495e-03</td><td>-1.083e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+<tr><td>1</td><td>5.095e+01</td><td>8.702e+01</td><td>-2.997e-02</td><td>2.582e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+<tr><td>2</td><td>4.637e+01</td><td>8.703e+01</td><td>-1.019e-02</td><td>-3.995e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -487,14 +487,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140156808578640-257980').dataTable()");
+    console.log("$('#table140168562672400-443876').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140156808578640-257980').dataTable({
+    $('#table140168562672400-443876').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -512,11 +512,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table140156884054096-95202" class="table-striped table-bordered table-condensed">
+<table id="table140168562672400-735054" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
-<tr><td>0</td><td>4.602e+01</td><td>8.712e+01</td><td>5.533e-02</td><td>1.922e-02</td><td>8.309e-01</td><td>8.000e-01</td><td>1.378e-18 .. 2.334e-37</td><td>0</td></tr>
-<tr><td>1</td><td>4.659e+01</td><td>8.694e+01</td><td>-1.031e-01</td><td>6.944e-03</td><td>6.534e-01</td><td>8.000e-01</td><td>1.586e-11 .. 2.017e-49</td><td>1</td></tr>
-<tr><td>2</td><td>5.313e+01</td><td>8.704e+01</td><td>-8.673e-03</td><td>-1.631e-02</td><td>7.170e-01</td><td>8.000e-01</td><td>7.349e-14 .. 6.570e-45</td><td>2</td></tr>
+<tr><td>0</td><td>4.626e+01</td><td>8.689e+01</td><td>8.236e-02</td><td>-5.412e-02</td><td>6.987e-01</td><td>8.000e-01</td><td>3.622e-13 .. 1.018e-42</td><td>0</td></tr>
+<tr><td>1</td><td>5.008e+01</td><td>8.711e+01</td><td>-1.475e-02</td><td>3.883e-02</td><td>7.393e-01</td><td>8.000e-01</td><td>9.871e-15 .. 5.105e-40</td><td>1</td></tr>
+<tr><td>2</td><td>4.841e+01</td><td>8.688e+01</td><td>-1.258e-05</td><td>2.096e-02</td><td>9.009e-01</td><td>8.000e-01</td><td>7.710e-22 .. 3.849e-30</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -540,14 +540,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140156884054096-95202').dataTable()");
+    console.log("$('#table140168562672400-735054').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140156884054096-95202').dataTable({
+    $('#table140168562672400-735054').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -618,7 +618,7 @@ computed (green) and a random redshift (orange) computed from the pdf</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">gc_object</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">][</span><span class="n">galid</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mf">0.5970784022224711</span><span class="p">,</span> <span class="mf">1.597078402222471</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mf">1.328538487022893</span><span class="p">,</span> <span class="mf">2.328538487022893</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_54_1.png" src="../_images/demo_mock_cluster_54_1.png" />
@@ -665,7 +665,7 @@ galaxies in a smaller field of view yields high galaxy density</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f78cca2c590</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f7b82455550</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_61_1.png" src="../_images/demo_mock_cluster_61_1.png" />
@@ -715,7 +715,7 @@ the box size.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f78cc8b7010</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f7b8210a350</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_65_1.png" src="../_images/demo_mock_cluster_65_1.png" />

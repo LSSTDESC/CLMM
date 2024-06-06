@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Measure WL Profiles &mdash; CLMM 1.10.0 documentation</title>
+  <title>Measure WL Profiles &mdash; CLMM 1.12.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/documentation_options.js?v=fe8e256b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,7 +36,7 @@
             CLMM
           </a>
               <div class="version">
-                1.10.0
+                1.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -181,7 +181,7 @@ used as such. They are just explicitely used here for clarity.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.12.0&#39;</span>
 </pre></div>
 </div>
 <p>Define random seed for reproducibility</p>
@@ -290,7 +290,7 @@ mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
 <span class="n">ax1</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dotted&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x7fe9e867d950</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x7f355b172210</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_19_1.png" src="../_images/demo_dataops_functionality_19_1.png" />
@@ -346,7 +346,10 @@ named <code class="docutils literal notranslate"><span class="pre">e1</span></co
    <span class="mf">0.1197017887991115</span> <span class="o">-</span><span class="mf">0.00017594425025361377</span>
 <span class="o">-</span><span class="mf">0.022159728710095222</span>  <span class="o">-</span><span class="mf">0.0005741244288848292</span>
    <span class="mf">0.2010969697875847</span>     <span class="mf">0.07058694279618334</span>
+  <span class="o">-</span><span class="mf">0.0452653271235742</span>    <span class="mf">0.005864801263309683</span>
+ <span class="mf">0.017705557405416968</span>     <span class="mf">0.01299156643524062</span>
                   <span class="o">...</span>                     <span class="o">...</span>
+ <span class="mf">0.010719332552569169</span>    <span class="o">-</span><span class="mf">0.13640351684318933</span>
  <span class="mf">0.009928255198615999</span>    <span class="o">-</span><span class="mf">0.05882170840311077</span>
 <span class="o">-</span><span class="mf">0.015791006414372845</span>   <span class="o">-</span><span class="mf">0.011393464604573304</span>
  <span class="mf">0.012215965508645624</span>      <span class="mf">0.0049623423240184</span>
@@ -410,7 +413,10 @@ output, e.g. Below we’re storing the results in <code class="docutils literal
    <span class="mf">0.1197017887991115</span> <span class="o">-</span><span class="mf">0.00017594425025361377</span>
 <span class="o">-</span><span class="mf">0.022159728710095222</span>  <span class="o">-</span><span class="mf">0.0005741244288848292</span>
    <span class="mf">0.2010969697875847</span>     <span class="mf">0.07058694279618334</span>
+  <span class="o">-</span><span class="mf">0.0452653271235742</span>    <span class="mf">0.005864801263309683</span>
+ <span class="mf">0.017705557405416968</span>     <span class="mf">0.01299156643524062</span>
                   <span class="o">...</span>                     <span class="o">...</span>
+ <span class="mf">0.010719332552569169</span>    <span class="o">-</span><span class="mf">0.13640351684318933</span>
  <span class="mf">0.009928255198615999</span>    <span class="o">-</span><span class="mf">0.05882170840311077</span>
 <span class="o">-</span><span class="mf">0.015791006414372845</span>   <span class="o">-</span><span class="mf">0.011393464604573304</span>
  <span class="mf">0.012215965508645624</span>      <span class="mf">0.0049623423240184</span>
@@ -471,7 +477,7 @@ user may ask for a binned profile in various projected distance units.
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table140642573042000-994773" class="table-striped table-bordered table-condensed">
+<table id="table139867139705424-994773" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>p_0</th><th>p_0_err</th><th>p_1</th><th>p_1_err</th><th>p_2</th><th>p_2_err</th><th>n_src</th><th>weights_sum</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -506,14 +512,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140642573042000-994773').dataTable()");
+    console.log("$('#table139867139705424-994773').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140642573042000-994773').dataTable({
+    $('#table139867139705424-994773').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -534,7 +540,7 @@ as a new attribute of the galaxy cluster object.</p>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table140642572834384-685971" class="table-striped table-bordered table-condensed">
+<table id="table139867110111888-685971" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -569,14 +575,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140642572834384-685971').dataTable()");
+    console.log("$('#table139867110111888-685971').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140642572834384-685971').dataTable({
+    $('#table139867110111888-685971').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -606,7 +612,7 @@ comology and bin units</p>
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_40_1.png" src="../_images/demo_dataops_functionality_40_1.png" />
@@ -627,7 +633,7 @@ function is provided in <code class="docutils literal notranslate"><span class="
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_42_1.png" src="../_images/demo_dataops_functionality_42_1.png" />
@@ -642,7 +648,7 @@ space.</p></li>
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_44_1.png" src="../_images/demo_dataops_functionality_44_1.png" />
@@ -663,7 +669,7 @@ number of galaxies</p></li>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">each</span> <span class="nb">bin</span><span class="p">:</span> <span class="p">[</span><span class="mi">477</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">477</span><span class="p">,</span> <span class="mi">477</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_46_2.png" src="../_images/demo_dataops_functionality_46_2.png" />
@@ -693,7 +699,7 @@ that have fallen in that bin.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here the list of galaxy IDs that are in the first bin of the tangential shear profile</span>
@@ -725,11 +731,11 @@ cluster object.</p>
 <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">613</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table140642680452048-511334" class="table-striped table-bordered table-condensed">
+<table id="table139867260055888-511334" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -764,14 +770,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140642680452048-511334').dataTable()");
+    console.log("$('#table139867260055888-511334').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140642680452048-511334').dataTable({
+    $('#table139867260055888-511334').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -796,7 +802,7 @@ we asked the binned profile to be saved into the
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table140642680432912-436963" class="table-striped table-bordered table-condensed">
+<table id="table139867139444752-436963" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
@@ -831,14 +837,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140642680432912-436963').dataTable()");
+    console.log("$('#table139867139444752-436963').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140642680432912-436963').dataTable({
+    $('#table139867139444752-436963').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -867,7 +873,7 @@ table.</p>
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">454</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">110</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
 <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span>
 <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
@@ -894,7 +900,7 @@ stored as an extra columns of the <code class="docutils literal notranslate"><sp
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">454</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.12.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">110</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
 <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span>
 <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
@@ -938,7 +944,7 @@ performed using the weights stored in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table140642603490576-504512" class="table-striped table-bordered table-condensed">
+<table id="table139867140951120-504512" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
 <tr><td>0</td><td>0.04989926186693261</td><td>0.40181702725631496</td><td>0.6073017710391921</td><td>212624096345828.4</td><td>12655402657482.291</td><td>15732761567739.193</td><td>12296182303656.047</td><td>1.463567191680782</td><td>0.057677669439307994</td><td>166</td><td>3.9434463355203176e-27</td></tr>
 <tr><td>1</td><td>0.6073017710391921</td><td>0.91997828958074</td><td>1.1647042802114518</td><td>107977347608942.44</td><td>7146281284443.765</td><td>7854532242277.562</td><td>6871295327248.187</td><td>1.4877929742814777</td><td>0.03349197273932518</td><td>489</td><td>1.1389768721844858e-26</td></tr>
@@ -973,14 +979,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table140642603490576-504512').dataTable()");
+    console.log("$('#table139867140951120-504512').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table140642603490576-504512').dataTable({
+    $('#table139867140951120-504512').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

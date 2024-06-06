@@ -43,7 +43,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -86,8 +86,19 @@ Quick test of all theory functionality
     
     gt = moo.eval_reduced_tangential_shear(r3d, z_cl, z_src)
     # Lensing quantities assuming sources follow a given redshift distribution.
+    
+    # Compute first beta
+    beta_kwargs = {
+        "z_cl": z_cl,
+        "z_inf": 10.0,
+        "cosmo": cosmo,
+        "z_distrib_func": z_distrib_func,
+    }
+    beta_s_mean = clmm.utils.compute_beta_s_mean_from_distribution(**beta_kwargs)
+    beta_s_square_mean = clmm.utils.compute_beta_s_square_mean_from_distribution(**beta_kwargs)
+    
     gt_z = moo.eval_reduced_tangential_shear(
-        r3d, z_cl, z_distrib_func, z_src_info="distribution", approx="order2"
+        r3d, z_cl, [beta_s_mean, beta_s_square_mean], z_src_info="beta", approx="order2"
     )
     
     mu = moo.eval_magnification(r3d, z_cl, z_src)
@@ -96,8 +107,8 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/generic.py:66: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/generic.py:70: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/generic.py:66: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/generic.py:70: RuntimeWarning: invalid value encountered in power
 
 
 Plot the predicted profiles

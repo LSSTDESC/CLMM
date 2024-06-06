@@ -50,7 +50,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.10.0'
+    '1.12.0'
 
 
 
@@ -303,46 +303,45 @@ The corresponding model is given below.
     # The default mass is M200m; use massdef='critical' for M200c.
     
     
-    def model_reduced_tangential_shear_applegate14(logm, catalog, profile):
-        z_values = catalog.galcat["z"]
-        z_cl = cluster_z
+    def _model_reduced_tangential_shear(logm, catalog, profile, approx):
+        beta_kwargs = {
+            "z_cl": cluster_z,
+            "z_inf": 10.0,
+            "cosmo": cosmo,
+            #'zmax' :zsrc_max,
+            #'delta_z_cut': delta_z_cut,
+            #'zmin': None,
+            # We provide the redshift distribution (default: Chang et al. 2013) for calculating the beta_s statistics
+            "z_distrib_func": clmm.redshift.distributions.chang2013,
+        }
+        beta_s_mean = clmm.utils.compute_beta_s_mean_from_distribution(**beta_kwargs)
+        beta_s_square_mean = clmm.utils.compute_beta_s_square_mean_from_distribution(**beta_kwargs)
+    
         gt_model = clmm.compute_reduced_tangential_shear(
             r_proj=profile["radius"],  # Radial component of the profile
             mdelta=10**logm,  # Mass of the cluster [M_sun]
             cdelta=concentration,  # Concentration of the cluster
             z_cluster=cluster_z,  # Redshift of the cluster
-            z_src=clmm.redshift.distributions.chang2013,  # We provide the redshift distribution (default: Chang et al. 2013) for calculating the beta_s statistics
+            z_src=[beta_s_mean, beta_s_square_mean],
             cosmo=cosmo,
             delta_mdef=200,
             # massdef='critical',
             halo_profile_model="nfw",
-            z_src_info="distribution",
-            approx="order1",
-            # beta_s_mean=None, # beta_s_mean and beta_s_square_mean can be provided (default: None)
-            # beta_s_square_mean=None
-        )
-        return gt_model
-    
-    
-    # Similarly, we also consider the method from Schrabback et al. (2018), called 'order12' in CLMM.
-    def model_reduced_tangential_shear_schrabback18(logm, catalog, profile):
-        z_values = catalog.galcat["z"]
-        gt_model = clmm.compute_reduced_tangential_shear(
-            r_proj=profile["radius"],  # Radial component of the profile
-            mdelta=10**logm,  # Mass of the cluster [M_sun]
-            cdelta=concentration,  # Concentration of the cluster
-            z_cluster=cluster_z,  # Redshift of the cluster
-            z_src=clmm.redshift.distributions.chang2013,  # We provide the redshift distribution (default: Chang et al. 2013) for calculating the beta_s statistics
-            cosmo=cosmo,
-            delta_mdef=200,
-            # massdef='critical',
-            halo_profile_model="nfw",
-            z_src_info="distribution",
-            approx="order2",
+            z_src_info="beta",
+            approx=approx,
             # beta_s_mean=None,
             # beta_s_square_mean=None
         )
         return gt_model
+    
+    
+    def model_reduced_tangential_shear_applegate14(logm, catalog, profile):
+        return _model_reduced_tangential_shear(logm, catalog, profile, approx="order1")
+    
+    
+    # Similarly, we also consider the method from Schrabback et al. (2018), called 'order2' in CLMM.
+    def model_reduced_tangential_shear_schrabback18(logm, catalog, profile):
+        return _model_reduced_tangential_shear(logm, catalog, profile, approx="order2")
 
 Before fitting, let’s first vizualise these models using the known true mass
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -378,25 +377,25 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
 
@@ -422,25 +421,25 @@ Before fitting, let’s first vizualise these models using the known true mass
         r,
         gt_model_ideal_zdistrib,
         "-b",
-        label=r"model w/ zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"w/ zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_ideal_singlez,
         "-y",
-        label=r"model w/o zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"w/o zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_ideal_applegate14,
         ":r",
-        label=r"model applegate14, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"applegate14, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_ideal_schrabback18,
         ":g",
-        label=r"model schrabback18, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"schrabback18, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     
     plt.xlabel("r [Mpc]", fontsize=20)
@@ -465,25 +464,25 @@ Before fitting, let’s first vizualise these models using the known true mass
         r,
         gt_model_noisy_zdistrib,
         "-b",
-        label=r"model w/ zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"w/ zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_noisy_singlez,
         "-y",
-        label=r"model w/o zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"w/o zdistrib, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_noisy_applegate14,
         ":r",
-        label=r"model applegate14, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"applegate14, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     plt.loglog(
         r,
         gt_model_noisy_schrabback18,
         ":g",
-        label=r"model schrabback18, $M_{input}$ = %.2e Msun" % cluster_m,
+        label=r"schrabback18, $M_{input}$ = %.2e Msun" % cluster_m,
     )
     
     plt.xlabel("r [Mpc]", fontsize=20)
@@ -496,7 +495,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f9e8afcced0>
+    <matplotlib.legend.Legend at 0x7fa6d3806c10>
 
 
 
@@ -631,298 +630,298 @@ order of magnitude for the mass to unity. From the associated error
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
 
@@ -931,36 +930,32 @@ order of magnitude for the mass to unity. From the associated error
 
     print(f"The input mass = {cluster_m:.2e} Msun\n")
     
+    _prt_mfit = lambda mass, mass_err: f"{mass*1e-14:.2f} +/- {mass_err*1e-14:.2f} x 10^14 Msun"
+    
     print("Without accounting for the redshift distribution in the model\n")
-    print(
-        f"Best fit mass for ideal data = {m_est_ideal_singlez:.2e} +/- {m_est_err_ideal_singlez:.2e} Msun"
-    )
-    print(
-        f"Best fit mass for noisy data = {m_est_noisy_singlez:.2e} +/- {m_est_err_noisy_singlez:.2e} Msun\n"
-    )
+    print(f"Best fit mass for ideal data = {_prt_mfit(m_est_ideal_singlez, m_est_err_ideal_singlez)}")
+    print(f"Best fit mass for noisy data = {_prt_mfit(m_est_noisy_singlez, m_est_err_noisy_singlez)}\n")
     
     print("Accounting for the redshift distribution in the model\n")
+    print(f"Best fit mass for ideal data = {_prt_mfit(m_est_ideal_zdistrib, m_est_err_ideal_zdistrib)}")
     print(
-        f"Best fit mass for ideal data = {m_est_ideal_zdistrib:.2e} +/- {m_est_err_ideal_zdistrib:.2e} Msun"
-    )
-    print(
-        f"Best fit mass for noisy data = {m_est_noisy_zdistrib:.2e} +/- {m_est_err_noisy_zdistrib:.2e} Msun\n"
+        f"Best fit mass for noisy data = {_prt_mfit(m_est_noisy_zdistrib, m_est_err_noisy_zdistrib)}\n"
     )
     
     print("Using applegate14 (Applegate et al. 2014)\n")
     print(
-        f"Best fit mass for ideal data = {m_est_ideal_applegate14:.2e} +/- {m_est_err_ideal_applegate14:.2e} Msun"
+        f"Best fit mass for ideal data = {_prt_mfit(m_est_ideal_applegate14, m_est_err_ideal_applegate14)}"
     )
     print(
-        f"Best fit mass for noisy data = {m_est_noisy_applegate14:.2e} +/- {m_est_err_noisy_applegate14:.2e} Msun\n"
+        f"Best fit mass for noisy data = {_prt_mfit(m_est_noisy_applegate14, m_est_err_noisy_applegate14)}\n"
     )
     
     print("Using schrabback18 (Schrabback et al. 2018)\n")
     print(
-        f"Best fit mass for ideal data = {m_est_ideal_schrabback18:.2e} +/- {m_est_err_ideal_schrabback18:.2e} Msun"
+        f"Best fit mass for ideal data = {_prt_mfit(m_est_ideal_schrabback18, m_est_err_ideal_schrabback18)}"
     )
     print(
-        f"Best fit mass for noisy data = {m_est_noisy_schrabback18:.2e} +/- {m_est_err_noisy_schrabback18:.2e} Msun\n"
+        f"Best fit mass for noisy data = {_prt_mfit(m_est_noisy_schrabback18, m_est_err_noisy_schrabback18)}\n"
     )
 
 
@@ -970,23 +965,23 @@ order of magnitude for the mass to unity. From the associated error
     
     Without accounting for the redshift distribution in the model
     
-    Best fit mass for ideal data = 8.56e+14 +/- 3.73e+12 Msun
-    Best fit mass for noisy data = 8.32e+14 +/- 3.00e+13 Msun
+    Best fit mass for ideal data = 8.56 +/- 0.04 x 10^14 Msun
+    Best fit mass for noisy data = 8.32 +/- 0.30 x 10^14 Msun
     
     Accounting for the redshift distribution in the model
     
-    Best fit mass for ideal data = 1.01e+15 +/- 4.41e+12 Msun
-    Best fit mass for noisy data = 1.00e+15 +/- 3.62e+13 Msun
+    Best fit mass for ideal data = 10.05 +/- 0.04 x 10^14 Msun
+    Best fit mass for noisy data = 10.00 +/- 0.36 x 10^14 Msun
     
     Using applegate14 (Applegate et al. 2014)
     
-    Best fit mass for ideal data = 1.01e+15 +/- 4.42e+12 Msun
-    Best fit mass for noisy data = 1.01e+15 +/- 3.67e+13 Msun
+    Best fit mass for ideal data = 9.30 +/- 0.04 x 10^14 Msun
+    Best fit mass for noisy data = 9.19 +/- 0.33 x 10^14 Msun
     
     Using schrabback18 (Schrabback et al. 2018)
     
-    Best fit mass for ideal data = 1.01e+15 +/- 4.41e+12 Msun
-    Best fit mass for noisy data = 1.00e+15 +/- 3.64e+13 Msun
+    Best fit mass for ideal data = 9.29 +/- 0.04 x 10^14 Msun
+    Best fit mass for noisy data = 9.15 +/- 0.33 x 10^14 Msun
     
 
 
@@ -1033,25 +1028,25 @@ predicted by the models with estimated masses for noisy and ideal data.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
-    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/parent_class.py:1246: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.12.0-py3.11.egg/clmm/theory/parent_class.py:1070: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Reduced_shear = 0 for those galaxies.
 
@@ -1063,6 +1058,10 @@ the naive approach, with respective best-fit masses.
 
 .. code:: ipython3
 
+    _prt_mfit_lab = (
+        lambda mass, mass_err: rf"${mass*1e-14:.2f} (\pm {mass_err*1e-14:.2f}) \times 10^{{14}}$ $M_\odot$"
+    )
+    
     plt.figure(figsize=(20, 10))
     plt.subplot(1, 2, 1)
     plt.title(r"tangential shear $g_t$ (ideal data)", fontsize=20)
@@ -1073,31 +1072,31 @@ the naive approach, with respective best-fit masses.
         c="k",
         linestyle="",
         marker="o",
-        label=r"ideal data, $M_{input}$ = %.1e Msun" % cluster_m,
+        label=rf"ideal data, $M_{{input}}$ = ${cluster_m*1e-14:.2f} \times 10^{{14}}$ $M_\odot$",
     )
     plt.loglog(
         r,
         gt_est_ideal_zdistrib,
         "-b",
-        label=rf"model w/ zdistrib, M_fit = {m_est_ideal_zdistrib:.2e} $\pm$ {m_est_err_ideal_zdistrib:.2e} Msun",
+        label=rf"w/ zdistrib, M_fit = {_prt_mfit_lab(m_est_ideal_zdistrib, m_est_err_ideal_zdistrib)}",
     )
     plt.loglog(
         r,
         gt_est_ideal_applegate14,
         ":r",
-        label=rf"model applegate14, M_fit = {m_est_ideal_applegate14:.2e} $\pm$ {m_est_err_ideal_applegate14:.2e} Msun",
+        label=rf"applegate14, M_fit = {_prt_mfit_lab(m_est_ideal_applegate14, m_est_err_ideal_applegate14)}",
     )
     plt.loglog(
         r,
         gt_est_ideal_schrabback18,
         ":g",
-        label=rf"model schrabback18, M_fit = {m_est_ideal_schrabback18:.2e} $\pm$ {m_est_err_ideal_schrabback18:.2e} Msun",
+        label=rf"schrabback18, M_fit = {_prt_mfit_lab(m_est_ideal_schrabback18, m_est_err_ideal_schrabback18)}",
     )
     plt.loglog(
         r,
         gt_est_ideal_singlez,
         "-y",
-        label=rf"model w/o zdistrib, M_fit = {m_est_ideal_singlez:.2e} $\pm$ {m_est_err_ideal_singlez:.2e} Msun",
+        label=rf"w/o zdistrib, M_fit = {_prt_mfit_lab(m_est_ideal_singlez, m_est_err_ideal_singlez)}",
     )
     
     plt.xlabel("r [Mpc]", fontsize=20)
@@ -1115,32 +1114,32 @@ the naive approach, with respective best-fit masses.
         c="k",
         linestyle="",
         marker="o",
-        label=r"noisy data, $M_{input}$ = %.1e Msun" % cluster_m,
+        label=rf"noisy data, $M_{{input}}$ = ${cluster_m*1e-14:.2f} \times 10^{{14}}$ $M_\odot$",
     )
     # plt.loglog(r,gt_model_noisy,'-r',  label='model, $M_{input}$ = %.3e Msun' % cluster_m)
     plt.loglog(
         r,
         gt_est_noisy_zdistrib,
         "-b",
-        label=rf"model w/ zdistrib, M_fit = {m_est_noisy_zdistrib:.2e} $\pm$ {m_est_err_noisy_zdistrib:.2e} Msun",
+        label=rf"w/ zdistrib, M_fit = {_prt_mfit_lab(m_est_noisy_zdistrib, m_est_err_noisy_zdistrib)}",
     )
     plt.loglog(
         r,
         gt_est_noisy_applegate14,
         ":r",
-        label=rf"model applegate14, M_fit = {m_est_noisy_applegate14:.2e} $\pm$ {m_est_err_noisy_applegate14:.2e} Msun",
+        label=rf"applegate14, M_fit = {_prt_mfit_lab(m_est_noisy_applegate14, m_est_err_noisy_applegate14)}",
     )
     plt.loglog(
         r,
         gt_est_noisy_schrabback18,
         ":g",
-        label=rf"model schrabback18, M_fit = {m_est_noisy_schrabback18:.2e} $\pm$ {m_est_err_noisy_schrabback18:.2e} Msun",
+        label=rf"schrabback18, M_fit = {_prt_mfit_lab(m_est_noisy_schrabback18, m_est_err_noisy_schrabback18)}",
     )
     plt.loglog(
         r,
         gt_est_noisy_singlez,
         "-y",
-        label=rf"model w/o zdistrib, M_fit = {m_est_noisy_singlez:.2e} $\pm$ {m_est_err_noisy_singlez:.2e} Msun",
+        label=rf"w/o zdistrib, M_fit = {_prt_mfit_lab(m_est_noisy_singlez, m_est_err_noisy_singlez)}",
     )
     
     plt.xlabel("r [Mpc]", fontsize=20)
@@ -1153,7 +1152,7 @@ the naive approach, with respective best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f9e8ab62310>
+    <matplotlib.legend.Legend at 0x7fa6d1a67910>
 
 
 
