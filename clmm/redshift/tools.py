@@ -4,8 +4,15 @@ import numpy as np
 from scipy.integrate import simps
 from scipy.interpolate import interp1d
 
+try:
+    import qp
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000):
+    _HAS_QP = True
+except ImportError:
+    _HAS_QP = False
+
+
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000, use_qp=False):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -25,21 +32,29 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=
         Default: kernel(z)=1
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
+    use_qp : bool
+        Use qp for computations.
 
     Returns
     -------
     numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
-
-    Notes
-    -----
-        Will be replaced by qp at some point.
     """
     # adding these lines to interpolate CLMM redshift grid for each galaxies
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+    if use_qp:
+        if not _HAS_QP:
+            raise ImportError("qp is not installed")
 
-    if hasattr(pzbins[0], "__len__"):
+        qp_ensamble = qp.Ensemble(
+            qp.interp_irregular,
+            data={"xvals": pzbins, "yvals": pzpdf, "check_input": True},
+        )
+        z_grid = pzbins[0][(pzbins[0] >= zmin) * (pzbins[0] <= zmax)]
+        pz_matrix = qp_ensamble.pdf(z_grid)
+        kernel_matrix = kernel(z_grid)
+    elif hasattr(pzbins[0], "__len__"):
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
         pdf_interp_list = [
