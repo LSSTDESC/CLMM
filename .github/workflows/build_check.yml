@@ -50,7 +50,7 @@ jobs:
 #        DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        conda install -c main --force-reinstall --solver=classic libarchive=3.6.2=h6ac8c49_3
+        conda install -c main --force-reinstall --solver=classic libarchive=3.6.2
         conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
