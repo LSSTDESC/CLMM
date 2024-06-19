@@ -16,7 +16,7 @@ jobs:
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge gobject-introspection pygobject sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
@@ -48,10 +48,10 @@ jobs:
 #        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
 #      env:
 #        DISPLAY: test
-    - name: Install Sphinx prereq
-      run: |
-        conda install -c main --force-reinstall --solver=classic libarchive=3.6.2
-        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+#    - name: Install Sphinx prereq
+#      run: |
+#        conda install -c main --force-reinstall --solver=classic libarchive=3.6.2
+#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
         make -C docs/ html
