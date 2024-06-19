@@ -13,12 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v3
-      with:
-        conda-solver: classic
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge conda-libmamba-solver gobject-introspection pygobject
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
