@@ -13,6 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v3
+      with:
+        conda-solver: classic
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
