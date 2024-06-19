@@ -31,10 +31,10 @@ jobs:
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
         pip install .
-    - name: Install CCL from source
+    - name: Install CCL
       run: |
         conda install -c conda-forge cmake swig --override-channels
-        conda install -c conda-forge pyccl=3.0
+        pip install pyccl==3.0
     - name: Analysing the code with pylint
       run: |
         pip install pylint
