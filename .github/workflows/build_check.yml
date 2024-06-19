@@ -38,16 +38,16 @@ jobs:
         cd CCL
         git checkout v3.0.0
         pip install .
-#    - name: Analysing the code with pylint
-#      run: |
-#        pip install pylint
-#        pylint clmm --ignored-classes=astropy.units
-#    - name: Run the unit tests
-#      run: |
-#        pip install pytest pytest-cov
-#        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
-#      env:
-#        DISPLAY: test
+    - name: Analysing the code with pylint
+      run: |
+        pip install pylint
+        pylint clmm --ignored-classes=astropy.units
+    - name: Run the unit tests
+      run: |
+        pip install pytest pytest-cov
+        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+      env:
+        DISPLAY: test
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c main --force-reinstall --solver=classic libarchive=3.6.2
