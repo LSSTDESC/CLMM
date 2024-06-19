@@ -34,7 +34,7 @@ jobs:
     - name: Install CCL from source
       run: |
         conda install -c conda-forge cmake swig --override-channels
-        conda install -c conda-forge pyccl=3.0.0
+        conda install -c conda-forge pyccl=3.0
     - name: Analysing the code with pylint
       run: |
         pip install pylint
