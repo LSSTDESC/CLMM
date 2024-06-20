@@ -12,11 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge gobject-introspection pygobject sphinx sphinx_rtd_theme nbconvert pandoc ipython
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
@@ -33,11 +33,10 @@ jobs:
         pip install .
     - name: Install CCL from source
       run: |
-        conda install -c conda-forge cmake swig --override-channels
+        conda install -c conda-forge cmake swig setuptools_scm
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        git checkout v3.0.0
-        pip install .
+        pip install --no-use-pep517 .
     - name: Analysing the code with pylint
       run: |
         pip install pylint
@@ -48,9 +47,10 @@ jobs:
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
-    - name: Install Sphinx prereq
-      run: |
-        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+# temporarily moved up due to libarchive issue - see PR 620
+#    - name: Install Sphinx prereq
+#      run: |
+#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
         make -C docs/ html
