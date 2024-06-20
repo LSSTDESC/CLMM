@@ -47,7 +47,7 @@ jobs:
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
-# temporarily moved up due to libarchive issue
+# temporarily moved up due to libarchive issue - see PR 620
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
