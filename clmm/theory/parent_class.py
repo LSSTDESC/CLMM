@@ -759,7 +759,10 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
-        gammat = None
+
+        # function _validate_z_src already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
+
         if z_src_info == "discrete":
             warning_msg = (
                 "\nSome source redshifts are lower than the cluster redshift."
@@ -843,6 +846,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # function _validate_z_src already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if z_src_info == "discrete":
             warning_msg = (
@@ -1053,6 +1059,9 @@ class CLMModeling:
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
+
         if approx is None:
             if z_src_info == "distribution":
                 gt = self._pdz_weighted_avg(
@@ -1210,6 +1219,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if approx is None:
             if z_src_info == "distribution":
@@ -1374,6 +1386,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if approx is None:
             # z_src (float or array) is redshift
