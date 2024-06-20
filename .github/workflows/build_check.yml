@@ -36,7 +36,7 @@ jobs:
         conda install -c conda-forge cmake swig
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        pip install .
+        pip install --no-use-pep517 .
     - name: Analysing the code with pylint
       run: |
         pip install pylint
