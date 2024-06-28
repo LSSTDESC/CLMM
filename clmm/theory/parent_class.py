@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simps, quad
+from scipy.integrate import simpson, quad
 from scipy.special import jv
 from scipy.interpolate import splrep, splev
 
@@ -232,7 +232,7 @@ class CLMModeling:
             return l_value * jv(sph_harm_ord, l_value * theta) * splev(k_value, interp_pk)
 
         l_values = np.logspace(loglbounds[0], loglbounds[1], lsteps)
-        kernel = np.array([simps(__integrand__(l_values, t), l_values) for t in theta])
+        kernel = np.array([simpson(__integrand__(l_values, t), x=l_values) for t in theta])
         return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
     def _eval_surface_density_2h(
