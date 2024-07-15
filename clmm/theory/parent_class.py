@@ -205,6 +205,15 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
+    def _eval_miscentered_surface_density(self, r_proj, z_cl, r_mis):
+        return 0.
+
+    def _eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis):
+        return 0.
+
+    def _eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis):
+        return 0.
+
     def _eval_2halo_term_generic(
         self,
         sph_harm_ord,
@@ -566,7 +575,7 @@ class CLMModeling:
         Returns
         -------
         numpy.ndarray, float
-            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+            Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
@@ -600,6 +609,88 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
+
+ 
+     def eval_miscentered_surface_density(self, r_proj, z_cl, r_mis, verbose=False):
+        r"""Computes the surface mass density
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        r_mis : float
+            Projected miscenter distance in :math:`M\!pc`.
+
+        Returns
+        -------
+        numpy.ndarray, float
+            2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
+        """
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "r_mis", float, argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+
+        if self.halo_profile_model == "einasto" and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        return self._eval_miscentered_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
+
+    def eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis, verbose=False):
+        r"""Computes the mean value of surface density inside radius `r_proj`
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        r_mis : float
+            Projected miscenter distance in :math:`M\!pc`.
+
+        Returns
+        -------
+        numpy.ndarray, float
+            Miscentered mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "r_mis", float, argmin=0)
+
+        if self.halo_profile_model == "einasto" and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        return self._eval_miscentered_mean_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis = r_mis)
+
+    def eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis, verbose=False):
+        r"""Computes the excess surface density
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        r_mis : float
+            Projected miscenter distance in :math:`M\!pc`.
+
+        Returns
+        -------
+        numpy.ndarray, float
+            Miscentered excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "r_mis", float, argmin=0)
+
+        if self.halo_profile_model == "einasto" and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        return self._eval_miscentered_excess_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)    
 
     def eval_excess_surface_density_2h(
         self,
