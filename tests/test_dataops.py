@@ -155,6 +155,31 @@ def test_compute_lensing_angles_flatsky():
     )
 
 
+def test_compute_lensing_angles_astropy():
+    """test compute lensing angles astropy"""
+
+    # coordinate_system conversion
+    ra_l, dec_l = 161.32, 51.49
+    ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
+    thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel")
+    thetas_sky, phis_sky = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="sky")
+
+    print(phis_pixel, phis_sky)
+
+    assert_allclose(
+        thetas_sky,
+        thetas_pixel,
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed",
+    )
+
+    assert_allclose(
+        phis_sky,
+        np.pi - phis_pixel,
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for phi failed",
+    )
+
 
 def test_compute_tangential_and_cross_components(modeling_data):
     """test compute tangential and cross components"""

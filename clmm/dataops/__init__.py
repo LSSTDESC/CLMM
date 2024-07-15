@@ -378,13 +378,13 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     # deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
     angsep = np.sqrt(deltax**2 + deltay**2)
     phi = np.arctan2(deltay, -deltax)
-    if coordinate_system == "sky":
-        phi = np.pi - phi
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
     if np.iterable(phi):
         phi[angsep == 0.0] = 0.0
     else:
         phi = 0.0 if angsep == 0.0 else phi
+    if coordinate_system == "sky":
+        phi = np.pi - phi
     if np.any(angsep > np.pi / 180.0):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
@@ -417,14 +417,14 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     angsep, phi = sk_lens.separation(sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
     phi += 0.5 * np.pi
-    if coordinate_system == "sky":
-        phi = np.pi - phi
     if np.iterable(phi):
         phi[phi > np.pi] -= 2 * np.pi
         phi[angsep == 0] = 0
     else:
         phi -= 2 * np.pi if phi > np.pi else 0
         phi = 0 if angsep == 0 else phi
+    if coordinate_system == "sky":
+        phi = np.pi - phi
     return angsep, phi
 
 
