@@ -96,6 +96,9 @@ def compute_tangential_and_cross_components(
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Options are 'pixel' or 'sky'.
+        Default is 'pixel'.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
@@ -354,6 +357,9 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         Right ascensions of each source galaxy in degrees
     dec_source_list: array
         Declinations of each source galaxy in degrees
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Options are 'pixel' or 'sky'.
+        Default is 'pixel'.
 
     Returns
     -------

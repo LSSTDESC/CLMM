@@ -205,11 +205,11 @@ class GalaxyCluster:
 
     def compute_tangential_and_cross_components(
         self,
-        coordinate_system="pixel",
         shape_component1="e1",
         shape_component2="e2",
         tan_component="et",
         cross_component="ex",
+        coordinate_system="pixel",
         geometry="curve",
         is_deltasigma=False,
         use_pdz=False,
@@ -225,6 +225,7 @@ class GalaxyCluster:
         dec_source: `galcat` Dec
         shear1: `galcat` shape_component1
         shear2: `galcat` shape_component2
+        coordinate_system: coordinate system of ellipticity components
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
 
@@ -244,6 +245,9 @@ class GalaxyCluster:
             Name of the column to be added to the `galcat` astropy table that will contain the
             cross component computed from columns `shape_component1` and `shape_component2`.
             Default: `ex`
+        coordinate_system: str, optional
+            Coordinate system of the ellipticity components. Options are 'pixel' or 'sky'.
+            Default: 'pixel'
         geometry: str, optional
             Sky geometry to compute angular separation.
             Options are curve (uses astropy) or flat.
