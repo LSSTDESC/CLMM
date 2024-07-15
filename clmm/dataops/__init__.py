@@ -29,6 +29,7 @@ def compute_tangential_and_cross_components(
     dec_source,
     shear1,
     shear2,
+    coordinate_system="pixel",
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
@@ -147,9 +148,9 @@ def compute_tangential_and_cross_components(
         )
     # Compute the lensing angles
     if geometry == "flat":
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_, dec_source_)
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system)
     elif geometry == "curve":
-        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
+        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
@@ -329,7 +330,7 @@ def compute_galaxy_weights(
     return w_ls
 
 
-def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
+def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
@@ -371,6 +372,8 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     # deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
     angsep = np.sqrt(deltax**2 + deltay**2)
     phi = np.arctan2(deltay, -deltax)
+    if coordinate_system == "sky":
+        phi = np.pi - phi
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
     if np.iterable(phi):
         phi[angsep == 0.0] = 0.0
@@ -381,7 +384,7 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     return angsep, phi
 
 
-def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list):
+def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
@@ -408,6 +411,8 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     angsep, phi = sk_lens.separation(sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
     phi += 0.5 * np.pi
+    if coordinate_system == "sky":
+        phi = np.pi - phi
     if np.iterable(phi):
         phi[phi > np.pi] -= 2 * np.pi
         phi[angsep == 0] = 0

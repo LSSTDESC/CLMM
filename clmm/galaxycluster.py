@@ -1,6 +1,7 @@
 """@file galaxycluster.py
 The GalaxyCluster class
 """
+
 import pickle
 import warnings
 from .gcdata import GCData
@@ -204,6 +205,7 @@ class GalaxyCluster:
 
     def compute_tangential_and_cross_components(
         self,
+        coordinate_system="pixel",
         shape_component1="e1",
         shape_component2="e2",
         tan_component="et",
@@ -276,6 +278,7 @@ class GalaxyCluster:
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
+            coordinate_system=coordinate_system,
             is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
