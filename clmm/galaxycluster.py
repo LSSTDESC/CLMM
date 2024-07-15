@@ -36,6 +36,9 @@ class GalaxyCluster:
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
+    coordinate_system : str
+        Coordinate system of the galaxy cluster center (pixel or sky)
+
     validate_input: bool
         Validade each input argument
     """
@@ -52,13 +55,14 @@ class GalaxyCluster:
             self._check_types()
             self.set_ra_lower(ra_low=0)
 
-    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, galcat: GCData):
+    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, coordinate_system: str, galcat: GCData, c):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
         self.dec = dec
         self.z = z
         self.galcat = galcat
+        self.coordinate_system = coordinate_system
 
     def _check_types(self):
         """Check types of all attributes"""
@@ -209,7 +213,6 @@ class GalaxyCluster:
         shape_component2="e2",
         tan_component="et",
         cross_component="ex",
-        coordinate_system="pixel",
         geometry="curve",
         is_deltasigma=False,
         use_pdz=False,
@@ -225,7 +228,6 @@ class GalaxyCluster:
         dec_source: `galcat` Dec
         shear1: `galcat` shape_component1
         shear2: `galcat` shape_component2
-        coordinate_system: coordinate system of ellipticity components
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
 
@@ -282,7 +284,7 @@ class GalaxyCluster:
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-            coordinate_system=coordinate_system,
+            coordinate_system=self.coordinate_system,
             is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
