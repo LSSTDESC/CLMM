@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simps, quad
+from scipy.integrate import simpson, quad
 from scipy.special import jv
 from scipy.interpolate import splrep, splev
 
@@ -232,7 +232,7 @@ class CLMModeling:
             return l_value * jv(sph_harm_ord, l_value * theta) * splev(k_value, interp_pk)
 
         l_values = np.logspace(loglbounds[0], loglbounds[1], lsteps)
-        kernel = np.array([simps(__integrand__(l_values, t), l_values) for t in theta])
+        kernel = np.array([simpson(__integrand__(l_values, t), x=l_values) for t in theta])
         return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
     def _eval_surface_density_2h(
@@ -759,7 +759,10 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
-        gammat = None
+
+        # function _validate_z_src already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
+
         if z_src_info == "discrete":
             warning_msg = (
                 "\nSome source redshifts are lower than the cluster redshift."
@@ -843,6 +846,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # function _validate_z_src already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if z_src_info == "discrete":
             warning_msg = (
@@ -1053,6 +1059,9 @@ class CLMModeling:
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
+
         if approx is None:
             if z_src_info == "distribution":
                 gt = self._pdz_weighted_avg(
@@ -1210,6 +1219,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if approx is None:
             if z_src_info == "distribution":
@@ -1374,6 +1386,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
+        # pylint: disable=possibly-used-before-assignment
 
         if approx is None:
             # z_src (float or array) is redshift
