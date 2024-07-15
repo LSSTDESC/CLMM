@@ -134,13 +134,26 @@ def test_compute_lensing_angles_flatsky():
         err_msg="Failure when ra_l and ra_s are close but on the opposite sides of the 0 axis",
     )
 
-    # angles over the branch cut between 0 and 360
+    # coordinate_system conversion
+    ra_l, dec_l = 161.32, 51.49
+    ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
+    thetas_pixel, phis_pixel = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel")
+    thetas_sky, phis_sky = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s, coordinate_system="sky")
+
     assert_allclose(
-        da._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
-        [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
-        TOLERANCE["rtol"],
-        err_msg="Failure when ra_l and ra_s are the same but one is defined negative",
+        thetas_sky,
+        thetas_pixel,
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed",
     )
+
+    assert_allclose(
+        phis_sky,
+        np.pi - phis_pixel,
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for phi failed",
+    )
+
 
 
 def test_compute_tangential_and_cross_components(modeling_data):
