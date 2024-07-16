@@ -129,7 +129,9 @@ def test_covariance():
     for i in range(n_catalogs):
         # generate random catalog
         e1, e2 = np.random.randn(ngals) * 0.001, np.random.randn(ngals) * 0.001
-        et, ex = da._compute_tangential_shear(e1, e2, phi), da._compute_cross_shear(e1, e2, phi)
+        et, ex = da.ops._compute_tangential_shear(e1, e2, phi), da.ops._compute_cross_shear(
+            e1, e2, phi
+        )
         z_gal = np.random.random(ngals) * (3 - 1.1) + 1.1
         id_gal = np.arange(ngals)
         theta_gal = np.linspace(0, 1, ngals) * (thetamax - thetamin) + thetamin

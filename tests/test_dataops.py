@@ -15,43 +15,43 @@ def test_compute_cross_shear():
     """test compute cross shear"""
     shear1, shear2, phi = 0.15, 0.08, 0.52
     expected_cross_shear = 0.08886301350787848
-    cross_shear = da._compute_cross_shear(shear1, shear2, phi)
+    cross_shear = da.ops._compute_cross_shear(shear1, shear2, phi)
     assert_allclose(cross_shear, expected_cross_shear)
 
     shear1 = np.array([0.15, 0.40])
     shear2 = np.array([0.08, 0.30])
     phi = np.array([0.52, 1.23])
     expected_cross_shear = [0.08886301350787848, 0.48498333705834484]
-    cross_shear = da._compute_cross_shear(shear1, shear2, phi)
+    cross_shear = da.ops._compute_cross_shear(shear1, shear2, phi)
     assert_allclose(cross_shear, expected_cross_shear)
 
     # Edge case tests
-    assert_allclose(da._compute_cross_shear(100.0, 0.0, 0.0), 0.0, **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(100.0, 0.0, np.pi / 2), 0.0, **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0.0, 100.0, 0.0), -100.0, **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0.0, 100.0, np.pi / 2), 100.0, **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0.0, 100.0, np.pi / 4.0), 0.0, **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(100.0, 0.0, 0.0), 0.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(100.0, 0.0, np.pi / 2), 0.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(0.0, 100.0, 0.0), -100.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(0.0, 100.0, np.pi / 2), 100.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(0.0, 100.0, np.pi / 4.0), 0.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_cross_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
 def test_compute_tangential_shear():
     """test compute tangential shear"""
     shear1, shear2, phi = 0.15, 0.08, 0.52
     expected_tangential_shear = -0.14492537676438383
-    tangential_shear = da._compute_tangential_shear(shear1, shear2, phi)
+    tangential_shear = da.ops._compute_tangential_shear(shear1, shear2, phi)
     assert_allclose(tangential_shear, expected_tangential_shear)
 
     shear1 = np.array([0.15, 0.40])
     shear2 = np.array([0.08, 0.30])
     phi = np.array([0.52, 1.23])
     expected_tangential_shear = [-0.14492537676438383, 0.1216189244145496]
-    tangential_shear = da._compute_tangential_shear(shear1, shear2, phi)
+    tangential_shear = da.ops._compute_tangential_shear(shear1, shear2, phi)
     assert_allclose(tangential_shear, expected_tangential_shear)
 
     # test for reasonable values
-    assert_allclose(da._compute_tangential_shear(100.0, 0.0, 0.0), -100.0, **TOLERANCE)
-    assert_allclose(da._compute_tangential_shear(0.0, 100.0, np.pi / 4.0), -100.0, **TOLERANCE)
-    assert_allclose(da._compute_tangential_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_tangential_shear(100.0, 0.0, 0.0), -100.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_tangential_shear(0.0, 100.0, np.pi / 4.0), -100.0, **TOLERANCE)
+    assert_allclose(da.ops._compute_tangential_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
 def test_compute_lensing_angles_flatsky():
@@ -62,7 +62,7 @@ def test_compute_lensing_angles_flatsky():
     # Ensure that we throw a warning with >1 deg separation
     assert_warns(
         UserWarning,
-        da._compute_lensing_angles_flatsky,
+        da.ops._compute_lensing_angles_flatsky,
         ra_l,
         dec_l,
         np.array([151.32, 161.34]),
@@ -72,7 +72,7 @@ def test_compute_lensing_angles_flatsky():
     # Test outputs for reasonable values
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
-    thetas, phis = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s)
+    thetas, phis = da.ops._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s)
 
     assert_allclose(
         thetas,
@@ -90,7 +90,7 @@ def test_compute_lensing_angles_flatsky():
 
     # lens and source at the same ra
     assert_allclose(
-        da._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
+        da.ops._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
         [
             [0.00069813170079771690, 0.00106951489719733675],
             [-1.57079632679489655800, 1.77544123918164542530],
@@ -101,7 +101,7 @@ def test_compute_lensing_angles_flatsky():
 
     # lens and source at the same dec
     assert_allclose(
-        da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, np.array([51.49, 51.55])),
+        da.ops._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, np.array([51.49, 51.55])),
         [
             [0.00032601941539388962, 0.00106951489719733675],
             [0.00000000000000000000, 1.77544123918164542530],
@@ -112,7 +112,7 @@ def test_compute_lensing_angles_flatsky():
 
     # lens and source at the same ra and dec
     assert_allclose(
-        da._compute_lensing_angles_flatsky(
+        da.ops._compute_lensing_angles_flatsky(
             ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])
         ),
         [
@@ -125,7 +125,7 @@ def test_compute_lensing_angles_flatsky():
 
     # angles over the branch cut between 0 and 360
     assert_allclose(
-        da._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 359.5]), dec_s),
+        da.ops._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 359.5]), dec_s),
         [
             [0.0022828333888309108, 0.006603944760273219],
             [-0.31079754672938664, 0.15924369771830643],
@@ -136,7 +136,7 @@ def test_compute_lensing_angles_flatsky():
 
     # angles over the branch cut between 0 and 360
     assert_allclose(
-        da._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
+        da.ops._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
         [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
         TOLERANCE["rtol"],
         err_msg="Failure when ra_l and ra_s are the same but one is defined negative",
