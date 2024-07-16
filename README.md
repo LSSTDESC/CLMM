@@ -1,4 +1,3 @@
-
 # CLMM
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
 [![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
