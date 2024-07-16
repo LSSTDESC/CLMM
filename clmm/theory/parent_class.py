@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simpson, quad
+from scipy.integrate import simpson, quad, quad_vec
 from scipy.special import jv
 from scipy.interpolate import splrep, splev
 
@@ -209,51 +209,56 @@ class CLMModeling:
         
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
-        r_s = moo.eval_rdelta(z_cl) / c
+        r_s = self.eval_rdelta(z_cl) / c
 
+        def integrand(theta, R, Roff):
         # Analytical solution for NFW
-        if self.halo_profile_model=='nfw':
-            rho_s = moo.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
-            x = np.sqrt(r_proj**2. + r_mis**2. - 2.*r_proj*r_mis*np.cos(theta)) / r_s
-            x2m1 = x**2. - 1.
-            if x < 1:
-                sqrt_x2m1 = np.sqrt(-x2m1)
-                integrand = np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
-            elif x > 1:
-                sqrt_x2m1 = np.sqrt(x2m1)
-                integrand = -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
-            else:
-                res = 1./3.
-            integrand *= 2. * r_s * rho_s
+            if self.halo_profile_model=='nfw':
+                rho_s = self.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
+                x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+                x2m1 = x**2. - 1.
+                print(type(x))
+                if x < 1:
+                    sqrt_x2m1 = np.sqrt(-x2m1)
+                    integrand = np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
+                elif x > 1:
+                    sqrt_x2m1 = np.sqrt(x2m1)
+                    integrand = -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
+                else:
+                    res = 1./3.
+                integrand *= 2. * r_s * rho_s
+                return integrand
 
-        # Einasto
-        elif self.halo_profile_model=='einasto':
-            alpha_ein = self._get_einasto_alpha(z_cl)
-            rho_s = moo.delta_mdef/3.*c**3.*rho_def/(2.**(-3./alpha_ein) * alpha_ein**(-1.+3./alpha_ein) 
-                * np.exp(2./alpha_ein) * gamma(3./alpha_ein) * gammainc(3./alpha_ein, 2./alpha_ein*c**alpha_ein))
+            # Einasto
+            elif self.halo_profile_model=='einasto':
+                alpha_ein = self._get_einasto_alpha(z_cl)
+                rho_s = delta_mdef/3.*c**3.*rho_def/(2.**(-3./alpha_ein) * alpha_ein**(-1.+3./alpha_ein) 
+                    * np.exp(2./alpha_ein) * gamma(3./alpha_ein) * gammainc(3./alpha_ein, 2./alpha_ein*c**alpha_ein))
 
-            def integrand0(z):
-                x = np.sqrt(z**2. + r_proj**2. + r_mis**2. - 2.*r_proj*r_mis*np.cos(theta)) / r_s
-                return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
-            
-            integrand = integrate.quad_vec(integrand0, 0., np.inf)[0] * 2. * rho_s
+                def integrand0(z):
+                    x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+                    return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
+                
+                integrand = quad_vec(integrand, 0., np.inf)[0] * 2. * rho_s
+                return integrand
 
-        # Hernquist
-        elif self.halo_profile_model=='hernquist':
-            rho_s = moo.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
-            x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
-            x2m1 = x**2. - 1.
-            if x < 1:
-                sqrt_x2m1 = np.sqrt(-x2m1)
-                integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsinh(sqrt_x2m1/x) / (-x2m1)**2.5)
-            elif x > 1:
-                sqrt_x2m1 = np.sqrt(x2m1)
-                integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsin(sqrt_x2m1/x) / (x2m1)**2.5)
-            else:
-                integrand = 4./15.
-            integrand *= r_s * rho_s
+            # Hernquist
+            elif self.halo_profile_model=='hernquist':
+                rho_s = self.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
+                x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+                x2m1 = x**2. - 1.
+                if x < 1:
+                    sqrt_x2m1 = np.sqrt(-x2m1)
+                    integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsinh(sqrt_x2m1/x) / (-x2m1)**2.5)
+                elif x > 1:
+                    sqrt_x2m1 = np.sqrt(x2m1)
+                    integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsin(sqrt_x2m1/x) / (x2m1)**2.5)
+                else:
+                    integrand = 4./15.
+                integrand *= r_s * rho_s
+                return integrand
 
-        return integrate.quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis), epsrel=1e-6)[0]/np.pi
+        return quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis), epsrel=1e-6)[0]/np.pi
 
     def _eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis):
         return 0.
