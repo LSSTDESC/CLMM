@@ -1293,18 +1293,22 @@ def compute_magnification_bias(
     _modeling_object.validate_input = True
     return magnification_bias
 
-def compute_delta_sigma_4theta(
+def compute_delta_sigma_4theta_triaxiality(
     ell, 
     r_source, 
     mdelta, 
     cdelta, 
     z_cluster, 
     cosmo, 
-    hpmd='nfw', 
+    halo_profile_model='nfw', 
+    massdef="critical",
     sample_N=10000, 
-    delta_mdef=200
+    delta_mdef=200,
+    alpha_ein=None,
+    verbose=False,
+    validate_input=True,
 ):
-    r"""Compute the "4-theta"-quadrupole moment
+    r"""Compute the "4-theta"-quadrupole value
 
     Parameters
     ----------
@@ -1321,6 +1325,28 @@ def compute_delta_sigma_4theta(
         Redshift of lens cluster
     cosmo: clmm.cosmology.Cosmology object
         CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
 
     Returns
     -------
@@ -1330,8 +1356,8 @@ def compute_delta_sigma_4theta(
     ### DEFINING INTEGRALS:
     r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
     sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
     f = InterpolatedUnivariateSpline(r_arr, (r_arr**3)*sigma_0_arr*eta_0_arr, k=3)  # k=3 order of spline
     integral_vec = np.vectorize(f.integral)
@@ -1340,8 +1366,8 @@ def compute_delta_sigma_4theta(
     ### ACTUAL COMPUTATION:
     I_1 = (3/(r_source**4)) * integral_vec(0, r_source)
     sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=200, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     #eta_0 = np.gradient(np.log(sigma_0),r)
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
     eta_0 = eta_0_interpolation_func(r_source) 
@@ -1349,18 +1375,22 @@ def compute_delta_sigma_4theta(
     ds4theta = np.array((ell/2.0)*(2*I_1 - sigma_0*eta_0))
     return ds4theta
 
-def compute_delta_sigma_const(
+def compute_delta_sigma_const_triaxiality(
     ell, 
     r_source, 
     mdelta, 
     cdelta, 
     z_cluster, 
     cosmo, 
-    hpmd='nfw', 
+    halo_profile_model='nfw', 
+    massdef="critical",
     sample_N=10000,
-    delta_mdef=200
+    delta_mdef=200,
+    alpha_ein=None,
+    verbose=False,
+    validate_input=True,
 ):
-    r"""Compute the excess surface density lensing profile for "const"-quadrupole moment
+    r"""Compute the excess surface density lensing profile for "const"-quadrupole value
 
     Parameters
     ----------
@@ -1377,7 +1407,29 @@ def compute_delta_sigma_const(
         Redshift of lens cluster
     cosmo: clmm.cosmology.Cosmology object
         CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
 
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+        
     Returns
     -------
     ds4theta: array
@@ -1387,8 +1439,8 @@ def compute_delta_sigma_const(
     ### DEFINING INTEGRALS:
     r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
     sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
     f = InterpolatedUnivariateSpline(r_arr, sigma_0_arr*eta_0_arr/r_arr, k=3)  # k=3 order of spline
     integral_vec = np.vectorize(f.integral)
@@ -1397,8 +1449,8 @@ def compute_delta_sigma_const(
     ### ACTUAL COMPUTATION:
     I_2 = integral_vec(r_source, np.inf)
     sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     #eta_0 = np.gradient(np.log(sigma_0), r)*r
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
     eta_0 = eta_0_interpolation_func(r_source) 
@@ -1407,16 +1459,20 @@ def compute_delta_sigma_const(
     return dsconst
 
 
-def compute_delta_sigma_excess(
+def compute_delta_sigma_excess_triaxiality(
     ell, 
     r_source, 
     mdelta, 
     cdelta, 
     z_cluster, 
     cosmo, 
-    hpmd='nfw', 
+    halo_profile_model='nfw', 
+    massdef="critical",
     sample_N=10000, 
-    delta_mdef=200
+    delta_mdef=200,
+    alpha_ein=None,
+    verbose=False,
+    validate_input=True,
 ):
     r"""Compute the excess surface density lensing profile for the monopole component along with second order expansion term (e**2)
 
@@ -1435,6 +1491,28 @@ def compute_delta_sigma_excess(
         Redshift of lens cluster
     cosmo: clmm.cosmology.Cosmology object
         CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
 
     Returns
     -------
@@ -1444,8 +1522,8 @@ def compute_delta_sigma_excess(
     
     r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
     sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr  
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
     eta_0 = eta_0_interpolation_func(r_source) 
@@ -1469,14 +1547,14 @@ def compute_delta_sigma_excess(
     #q=np.sqrt(2/(1+ell) - 1)
     
     s = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True)
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input)
     
     correction_factor = (4*(ell)**2*((1/8)*eta_0 + (1/16)*d_eta_0_by_d_r + (1/16)*eta_0**2))
     ds_ell_square_correction = I - s*correction_factor
 
     
     dsmono = compute_excess_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
-                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
-                                     verbose=False, validate_input=True) + ds_ell_square_correction
+                                     halo_profile_model=halo_profile_model, massdef=massdef, alpha_ein=alpha_ein, 
+                                     verbose=verbose, validate_input=validate_input) + ds_ell_square_correction
     return dsmono
