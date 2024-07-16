@@ -1,7 +1,13 @@
 """Tests for dataops.py"""
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_raises, assert_array_equal, assert_warns
+from numpy.testing import (
+    assert_allclose,
+    assert_equal,
+    assert_raises,
+    assert_array_equal,
+    assert_warns,
+)
 
 import clmm
 from clmm import GCData
@@ -145,17 +151,18 @@ def test_compute_lensing_angles_flatsky():
         ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
     )
 
-    assert_allclose(
+    assert_array_equal(
         thetas_sky,
         thetas_pixel,
-        **TOLERANCE,
         err_msg="Conversion from sky to pixel coordinate system for theta failed",
     )
 
-    assert_allclose(
-        phis_sky,
-        np.pi - phis_pixel,
-        **TOLERANCE,
+    assert_equal(
+        np.all(
+            ((phis_sky > 0) & (np.abs(phis_sky - (np.pi - phis_pixel)) < TOLERANCE["atol"]))
+            | ((phis_sky < 0) & (np.abs(phis_sky - (-np.pi - phis_pixel)) < TOLERANCE["atol"]))
+        ),
+        True,
         err_msg="Conversion from sky to pixel coordinate system for phi failed",
     )
 
@@ -173,10 +180,9 @@ def test_compute_lensing_angles_astropy():
         ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
     )
 
-    assert_allclose(
+    assert_array_equal(
         thetas_sky,
         thetas_pixel,
-        **TOLERANCE,
         err_msg="Conversion from sky to pixel coordinate system for theta failed",
     )
 
