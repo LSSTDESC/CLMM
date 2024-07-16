@@ -164,8 +164,6 @@ def test_compute_lensing_angles_astropy():
     thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel")
     thetas_sky, phis_sky = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="sky")
 
-    print(phis_pixel, phis_sky)
-
     assert_allclose(
         thetas_sky,
         thetas_pixel,
