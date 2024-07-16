@@ -224,3 +224,39 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
         raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
     if not is_deltasigma and sigma_c is not None:
         raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
+
+
+class DiffArray:
+    def __init__(self, array):
+        self.value = np.array(array)
+
+    def _is_valid_operand(self, other):
+        return type(other) == type(self)
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if not self._is_valid_operand(other):
+            raise TypeError(f"other (type={type(other)}) must be a DiffArray object")
+        if self.value.size != other.value.size:
+            return False
+        return (self.value == other.value).all()
+
+    def __repr__(self):
+        out = str(self.value)
+        if self.value.size < 5:
+            return out
+
+        return self._get_lim_str(out) + " ... " + self._get_lim_str(out[::-1])[::-1]
+
+    def _get_lim_str(self, out):
+        # get count starting point
+        for i0, s in enumerate(out):
+            if all(s != _s for _s in "[]() "):
+                break
+        # get str
+        sep = 0
+        for i, s in enumerate(out[i0 + 1 :]):
+            sep += int(s == " " and out[i + i0] != " ")
+            if sep == 2:
+                return out[: i + i0 + 1]
