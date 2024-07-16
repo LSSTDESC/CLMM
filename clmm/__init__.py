@@ -24,6 +24,12 @@ from .theory import (
     Modeling,
     Cosmology,
 )
+from .theory.func_layer import (
+    compute_delta_sigma_4theta,
+    compute_delta_sigma_const,
+    compute_delta_sigma_excess,
+)
+
 from . import support
 
 __version__ = "1.8.2"
