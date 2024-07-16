@@ -372,3 +372,45 @@ def test_plot_profiles():
     cluster.plot_profiles()
     # check it passes missing a component error
     cluster.plot_profiles(cross_component_error="made_up_component")
+
+
+def test_coordinate_system():
+    """test coordinate system"""
+    # Input values
+    ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    ra_source = [120.1, 119.9]
+    dec_source = [41.9, 42.2]
+    z_src = [1.0, 2.0]
+    shear1 = [0.2, 0.4]
+    shear2_pixel = [0.3, 0.5]
+    shear2_sky = [-0.3, -0.5]
+    # Set up radial values
+    bins_radians = [0.002, 0.003, 0.004]
+    bin_units = "radians"
+    # create cluster
+    cl_pixel = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_pixel, z_src], names=("ra", "dec", "e1", "e2", "z")
+        ),
+        coordinate_system="pixel"
+    )
+    cl_sky = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_sky, z_src], names=("ra", "dec", "e1", "e2", "z")
+        ),
+        coordinate_system="sky"
+    )
+
+    cl_pixel.compute_tangential_and_cross_components()
+    cl_sky.compute_tangential_and_cross_components()
+
+    assert_allclose(cl_pixel.galcat["et"], cl_sky.galcat["et"], **TOLERANCE, err_msg="Tangential component conversion between ellipticity coordinate systems failed")
+    assert_allclose(cl_pixel.galcat["ex"], -cl_sky.galcat["ex"], **TOLERANCE, err_msg="Cross component conversion between ellipticity coordinate systems failed")
