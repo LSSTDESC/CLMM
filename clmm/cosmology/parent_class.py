@@ -1,4 +1,5 @@
 """@file parent_class.py
+CLMMCosmology abstract class
 """
 # CLMM Cosmology object abstract superclass
 import numpy as np
@@ -41,11 +42,91 @@ class CLMMCosmology:
         else:
             raise TypeError(f"key input must be str, not {type(key)}")
 
+    # 1. Functions to be implemented by children classes
+
     def _init_from_cosmo(self, be_cosmo):
-        """
-        To be filled in child classes
-        """
         raise NotImplementedError
+
+    def _init_from_params(self, **kwargs):
+        raise NotImplementedError
+
+    def _set_param(self, key, value):
+        raise NotImplementedError
+
+    def _get_param(self, key):
+        raise NotImplementedError
+
+    def _get_Omega_m(self, z):
+        raise NotImplementedError
+
+    def _get_E2(self, z):
+        raise NotImplementedError
+
+    def _get_E2Omega_m(self, z):
+        raise NotImplementedError
+
+    def _get_rho_c(self, z):
+        raise NotImplementedError
+
+    def _eval_da_z1z2_core(self, z1, z2):
+        raise NotImplementedError
+
+    def _eval_sigma_crit_core(self, z_len, z_src):
+        raise NotImplementedError
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+        raise NotImplementedError
+
+    # 2. Functions that can be used by all subclasses
+
+    def _get_rho_m(self, z):
+        rhocrit_cd2018 = (3.0e16 * const.PC_TO_METER.value) / (
+            8.0 * np.pi * const.GNEWT.value * const.SOLAR_MASS.value
+        )
+        return rhocrit_cd2018 * (z + 1) ** 3 * self["Omega_m0"] * self["h"] ** 2
+
+    def _eval_da_z1z2(self, z1, z2):
+        warning_msg = "\nSome values of z2 are lower than z1." + "\nda = np.nan for those."
+        return compute_for_good_redshifts(
+            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg
+        )
+
+    def _eval_da(self, z):
+        return self._eval_da_z1z2(0.0, z)
+
+    def _get_a_from_z(self, z):
+        z = np.array(z)
+        return 1.0 / (1.0 + z)
+
+    def _get_z_from_a(self, a):
+        a = np.array(a)
+        return (1.0 / a) - 1.0
+
+    def _eval_sigma_crit(self, z_len, z_src):
+        warning_msg = (
+            "\nSome source redshifts are lower than the cluster redshift."
+            + "\nSigma_crit = np.inf for those galaxies."
+        )
+        return compute_for_good_redshifts(
+            self._eval_sigma_crit_core,
+            z_len,
+            z_src,
+            np.inf,
+            z1_arg_name="z_len",
+            z2_arg_name="z_src",
+            warning_message=warning_msg,
+        )
+
+    # 3. Wrapper functions for input validation
+
+    def get_desc(self):
+        """
+        Returns the Cosmology description.
+        """
+        return (
+            f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, "
+            f"Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})"
+        )
 
     def init_from_params(self, H0=67.66, Omega_b0=0.049, Omega_dm0=0.262, Omega_k0=0.0):
         """Set the cosmology from parameters
@@ -67,33 +148,6 @@ class CLMMCosmology:
             validate_argument(locals(), "Omega_dm0", float, argmin=0, eqmin=True)
             validate_argument(locals(), "Omega_k0", float, argmin=0, eqmin=True)
         self._init_from_params(H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
-
-    def _init_from_params(self, **kwargs):
-        """
-        To be filled in child classes
-        """
-        raise NotImplementedError
-
-    def _set_param(self, key, value):
-        """
-        To be filled in child classes
-        """
-        raise NotImplementedError
-
-    def _get_param(self, key):
-        """
-        To be filled in child classes
-        """
-        raise NotImplementedError
-
-    def get_desc(self):
-        """
-        Returns the Cosmology description.
-        """
-        return (
-            f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, "
-            f"Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})"
-        )
 
     def set_be_cosmo(self, be_cosmo=None, H0=67.66, Omega_b0=0.049, Omega_dm0=0.262, Omega_k0=0.0):
         """Set the cosmology
@@ -134,9 +188,6 @@ class CLMMCosmology:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
         return self._get_Omega_m(z=z)
 
-    def _get_Omega_m(self, z):
-        raise NotImplementedError
-
     def get_E2(self, z):
         r"""Gets the value of the hubble parameter (normalized at 0)
 
@@ -158,9 +209,6 @@ class CLMMCosmology:
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
         return self._get_E2(z=z)
-
-    def _get_E2(self, z):
-        raise NotImplementedError
 
     def get_E2Omega_m(self, z):
         r"""Gets the value of the dimensionless matter density times the Hubble parameter squared
@@ -187,9 +235,6 @@ class CLMMCosmology:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
         return self._get_E2Omega_m(z=z)
 
-    def _get_E2Omega_m(self, z):
-        raise NotImplementedError
-
     def get_rho_m(self, z):
         r"""Gets physical matter density at a given redshift.
 
@@ -207,12 +252,6 @@ class CLMMCosmology:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
         return self._get_rho_m(z=z)
 
-    def _get_rho_m(self, z):
-        rhocrit_cd2018 = (3.0e16 * const.PC_TO_METER.value) / (
-            8.0 * np.pi * const.GNEWT.value * const.SOLAR_MASS.value
-        )
-        return rhocrit_cd2018 * (z + 1) ** 3 * self["Omega_m0"] * self["h"] ** 2
-
     def get_rho_c(self, z):
         r"""Gets physical critical density at a given redshift.
 
@@ -229,9 +268,6 @@ class CLMMCosmology:
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
         return self._get_rho_c(z=z)
-
-    def _get_rho_c(self, z):
-        raise NotImplementedError
 
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2
@@ -260,15 +296,6 @@ class CLMMCosmology:
             validate_argument(locals(), "z2", "float_array", argmin=0, eqmin=True)
         return self._eval_da_z1z2(z1=z1, z2=z2)
 
-    def _eval_da_z1z2(self, z1, z2):
-        warning_msg = "\nSome values of z2 are lower than z1." + "\nda = np.nan for those."
-        return compute_for_good_redshifts(
-            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg
-        )
-
-    def _eval_da_z1z2_core(self, z1, z2):
-        raise NotImplementedError
-
     def eval_da(self, z):
         r"""Computes the angular diameter distance between 0.0 and z
 
@@ -284,14 +311,10 @@ class CLMMCosmology:
         -------
         float, numpy.ndarray
             Angular diameter distance in units :math:`M\!pc`
-
-        Notes
-        -----
-        Describe the vectorization.
         """
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
-        return self.eval_da_z1z2(0.0, z)
+        return self._eval_da(z)
 
     def eval_da_a1a2(self, a1, a2=1.0):
         r"""This is a function to calculate the angular diameter distance
@@ -340,7 +363,7 @@ class CLMMCosmology:
             )
         z1 = self.get_z_from_a(a2)
         z2 = self.get_z_from_a(a1)
-        return self.eval_da_z1z2(z1, z2)
+        return self._eval_da_z1z2(z1, z2)
 
     def get_a_from_z(self, z):
         """Convert redshift to scale factor
@@ -357,8 +380,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
-        z = np.array(z)
-        return 1.0 / (1.0 + z)
+        return self._get_a_from_z(z)
 
     def get_z_from_a(self, a):
         """Convert scale factor to redshift
@@ -377,8 +399,7 @@ class CLMMCosmology:
             validate_argument(
                 locals(), "a", "float_array", argmin=0, eqmin=True, argmax=1, eqmax=True
             )
-        a = np.array(a)
-        return (1.0 / a) - 1.0
+        return self._get_z_from_a(a)
 
     def rad2mpc(self, dist1, redshift):
         r"""Convert between radians and Mpc using the small angle approximation
@@ -446,24 +467,6 @@ class CLMMCosmology:
             validate_argument(locals(), "z_src", "float_array", argmin=0, eqmin=True)
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
-    def _eval_sigma_crit(self, z_len, z_src):
-        warning_msg = (
-            "\nSome source redshifts are lower than the cluster redshift."
-            + "\nSigma_crit = np.inf for those galaxies."
-        )
-        return compute_for_good_redshifts(
-            self._eval_sigma_crit_core,
-            z_len,
-            z_src,
-            np.inf,
-            z1_arg_name="z_len",
-            z2_arg_name="z_src",
-            warning_message=warning_msg,
-        )
-
-    def _eval_sigma_crit_core(self, z_len, z_src):
-        raise NotImplementedError
-
     def eval_linear_matter_powerspectrum(self, k_vals, redshift):
         r"""Computes the linear matter power spectrum
 
@@ -483,6 +486,3 @@ class CLMMCosmology:
             validate_argument(locals(), "k_vals", "float_array", argmin=0)
             validate_argument(locals(), "redshift", float, argmin=0, eqmin=True)
         return self._eval_linear_matter_powerspectrum(k_vals, redshift)
-
-    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
-        raise NotImplementedError
