@@ -8,6 +8,7 @@ Main functions to encapsule oo calls
 # `_modeling_object'.
 
 import numpy as np
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 if "_modeling_object" not in globals():
     _modeling_object = None
@@ -1313,3 +1314,191 @@ def compute_magnification_bias(
 
     _modeling_object.validate_input = True
     return magnification_bias
+
+def compute_delta_sigma_4theta(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000, 
+    delta_mdef=200
+):
+    r"""Compute the "4-theta"-quadrupole moment
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy in Mpc
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma 4-theta value at a position for the elliptical halo specified
+    """
+    ### DEFINING INTEGRALS:
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
+    f = InterpolatedUnivariateSpline(r_arr, (r_arr**3)*sigma_0_arr*eta_0_arr, k=3)  # k=3 order of spline
+    integral_vec = np.vectorize(f.integral)
+    ###
+    
+    ### ACTUAL COMPUTATION:
+    I_1 = (3/(r_source**4)) * integral_vec(0, r_source)
+    sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=200, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    #eta_0 = np.gradient(np.log(sigma_0),r)
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    ds4theta = np.array((ell/2.0)*(2*I_1 - sigma_0*eta_0))
+    return ds4theta
+
+def compute_delta_sigma_const(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000,
+    delta_mdef=200
+):
+    r"""Compute the excess surface density lensing profile for "const"-quadrupole moment
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma const value at a position for the elliptical halo specified
+    """
+    
+    ### DEFINING INTEGRALS:
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
+    f = InterpolatedUnivariateSpline(r_arr, sigma_0_arr*eta_0_arr/r_arr, k=3)  # k=3 order of spline
+    integral_vec = np.vectorize(f.integral)
+    ###
+    
+    ### ACTUAL COMPUTATION:
+    I_2 = integral_vec(r_source, np.inf)
+    sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    #eta_0 = np.gradient(np.log(sigma_0), r)*r
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    dsconst = np.array((ell/2.0)*(2*I_2 - sigma_0*eta_0))
+    return dsconst
+
+
+def compute_delta_sigma_excess(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000, 
+    delta_mdef=200
+):
+    r"""Compute the excess surface density lensing profile for the monopole component along with second order expansion term (e**2)
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    dsmono: array
+        Delta sigma excess monopole value at a position for the elliptical halo specified
+    """
+    
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr  
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    
+    
+    ## e^2 shenanigans:
+    d_eta_0_arr_by_d_r = np.gradient(eta_0_arr,r_arr)*r_arr
+    d_eta_0_arr_by_d_r_interpolation_func = InterpolatedUnivariateSpline(r_arr, d_eta_0_arr_by_d_r)
+    d_eta_0_by_d_r = d_eta_0_arr_by_d_r_interpolation_func(r_source)
+    
+    correction_factor_arr = (4*(ell)**2*((1/8)*eta_0_arr + (1/16)*d_eta_0_arr_by_d_r + (1/16)*eta_0_arr**2))
+    integrand = InterpolatedUnivariateSpline(r_arr, r_arr*sigma_0_arr*correction_factor_arr)
+    
+    integral_vec = np.vectorize(integrand.integral)
+    ##
+    
+    ### ACTUAL COMPUTATION:
+    I = (2/r_source**2)*integral_vec(0, r_source)
+    
+    #q=np.sqrt(2/(1+ell) - 1)
+    
+    s = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    
+    correction_factor = (4*(ell)**2*((1/8)*eta_0 + (1/16)*d_eta_0_by_d_r + (1/16)*eta_0**2))
+    ds_ell_square_correction = I - s*correction_factor
+
+    
+    dsmono = compute_excess_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True) + ds_ell_square_correction
+    return dsmono
