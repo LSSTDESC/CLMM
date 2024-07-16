@@ -55,7 +55,7 @@ class GalaxyCluster:
             self._check_types()
             self.set_ra_lower(ra_low=0)
 
-    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, coordinate_system: str, galcat: GCData, c):
+    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, galcat: GCData, coordinate_system: str = "pixel"):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
@@ -284,12 +284,12 @@ class GalaxyCluster:
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-            coordinate_system=self.coordinate_system,
             is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
             geometry=geometry,
             validate_input=self.validate_input,
+            coordinate_system=self.coordinate_system,
             **cols,
         )
         if add:
