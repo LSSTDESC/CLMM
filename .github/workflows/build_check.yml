@@ -16,7 +16,7 @@ jobs:
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject sphinx sphinx_rtd_theme nbconvert pandoc ipython cmake swig setuptools_scm
+        conda install -c conda-forge gobject-introspection pygobject sphinx sphinx_rtd_theme nbconvert pandoc ipython
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
@@ -33,7 +33,8 @@ jobs:
         pip install .
     - name: Install CCL from source
       run: |
-        #conda install -c conda-forge cmake swig setuptools_scm
+        conda install -n base libarchive -c main --force-reinstall --solver classic
+        conda install -c conda-forge cmake swig setuptools_scm
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         pip install --no-use-pep517 .
