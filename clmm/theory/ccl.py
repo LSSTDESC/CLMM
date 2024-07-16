@@ -13,9 +13,8 @@ from .parent_class import CLMModeling
 # Check which versions of ccl are currently supported
 from . import _ccl_supported_versions
 
-if parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN) or parse(ccl.__version__) > parse(
-    _ccl_supported_versions.VMAX
-):
+if (parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)
+    or parse(ccl.__version__).major > parse(_ccl_supported_versions.VMAX).major):
     raise EnvironmentError(
         f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
         f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
@@ -30,11 +29,11 @@ class CCLCLMModeling(CLMModeling):
     backend: str
         Name of the backend being used
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
+        Profile mass definition ("mean", "critical", "virial" - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
+        Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -94,12 +93,22 @@ class CCLCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
+    def _set_projected_quad(self, use_projected_quad):
+        if hasattr(self.hdpm, "projected_quad"):
+            self.hdpm_opts["einasto"]["projected_quad"] = use_projected_quad
+            self._update_halo_density_profile()
+        else:
+            raise NotImplementedError("projected_quad is not available on this version of CCL.")
+
     # Functions implemented by child class
 
     def _update_halo_density_profile(self):
         """updates halo density profile with set internal properties"""
         # prepare mdef object
-        self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
+        if self.massdef == "virial":
+            self.mdef = ccl.halos.MassDef("vir", self.mdef_dict[self.massdef])
+        else:
+            self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
         # setting concentration (also updates hdpm)
         self.cdelta = self.cdelta if self.hdpm else 4.0  # ccl always needs an input concentration
 
@@ -113,13 +122,9 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """set concentration. Also sets/updates hdpm"""
-        # pylint: disable=protected-access
-        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-        if hasattr(ccl, 'UnlockInstance'):
-            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
-        self.mdef._concentration_init(self.conc)
+        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mass_def=self.mdef)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
-            self.conc, **self.hdpm_opts[self.halo_profile_model]
+            concentration=self.conc, mass_def=self.mdef, **self.hdpm_opts[self.halo_profile_model]
         )
         self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
@@ -140,7 +145,7 @@ class CCLCLMModeling(CLMModeling):
             a_cl = 1  # a_cl does not matter in this case
         else:
             a_cl = self.cosmo.get_a_from_z(z_cl)
-        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
+        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
         """eval 3d density"""
@@ -188,7 +193,6 @@ class CCLCLMModeling(CLMModeling):
                 radius / a_lens,
                 self.__mdelta_cor,
                 a_lens,
-                self.mdef,
             )
             * self.cor_factor
             / a_lens**ndim
@@ -203,9 +207,8 @@ class CCLCLMModeling(CLMModeling):
             self.cosmo.be_cosmo,
             radius / a_lens,
             self.__mdelta_cor,
-            a_lens,
-            a_src,
-            self.mdef,
+            a_lens=a_lens,
+            a_source=a_src,
         )
 
 

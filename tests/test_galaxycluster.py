@@ -140,12 +140,12 @@ def test_print_gc():
 def test_integrity_of_lensfuncs():
     """test integrity of lensfuncs"""
     ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
-    id_source, z_source = [1, 2, 3], [1, 1, 1]
+    id_source, z_src = [1, 2, 3], [1, 1, 1]
     shape_component1 = np.array([0.143, 0.063, -0.171])
     shape_component2 = np.array([-0.011, 0.012, -0.250])
 
     galcat = GCData(
-        [ra_source, dec_source, z_source, id_source, shape_component1, shape_component2],
+        [ra_source, dec_source, z_src, id_source, shape_component1, shape_component2],
         names=("ra", "dec", "z", "id", "e1", "e2"),
     )
     galcat_noz = GCData([ra_source, dec_source, id_source], names=("ra", "dec", "id"))
@@ -168,8 +168,8 @@ def test_integrity_of_lensfuncs():
     pzbins = np.linspace(0.0001, 5, 100)
     cluster = clmm.GalaxyCluster(unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=galcat)
     cluster.galcat.pzpdf_info["zbins"] = pzbins
-    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_source))]
-    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_source]
+    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
+    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
 
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
@@ -177,21 +177,20 @@ def test_integrity_of_lensfuncs():
         cluster.compute_tangential_and_cross_components(
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
-        assert_equal(cluster.galcat.meta["sigmac_type"], "effective")
+        for comp_name in ("et", "ex"):
+            assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
 
 
 def test_integrity_of_probfuncs():
     """test integrity of prob funcs"""
     ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
-    id_source, z_sources = [1, 2, 3], [1, 1, 1]
+    id_source, z_srcs = [1, 2, 3], [1, 1, 1]
     cluster = clmm.GalaxyCluster(
         unique_id="1",
         ra=161.3,
         dec=34.0,
         z=0.3,
-        galcat=GCData(
-            [ra_source, dec_source, z_sources, id_source], names=("ra", "dec", "z", "id")
-        ),
+        galcat=GCData([ra_source, dec_source, z_srcs, id_source], names=("ra", "dec", "z", "id")),
     )
     # true redshift
     cluster.compute_background_probability(use_pdz=False, p_background_name="p_bkg_true")
@@ -202,8 +201,8 @@ def test_integrity_of_probfuncs():
     assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
     pzbins = np.linspace(0.0001, 5, 1000)
     cluster.galcat.pzpdf_info["zbins"] = pzbins
-    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_sources))]
-    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.01) for z in z_sources]
+    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_srcs))]
+    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.01) for z in z_srcs]
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
@@ -214,7 +213,7 @@ def test_integrity_of_weightfuncs():
     """test integrity of weight funcs"""
     cosmo = clmm.Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
     z_lens = 0.1
-    z_source = [0.22, 0.35, 1.7]
+    z_src = [0.22, 0.35, 1.7]
     shape_component1 = np.array([0.143, 0.063, -0.171])
     shape_component2 = np.array([-0.011, 0.012, -0.250])
     shape_component1_err = np.array([0.11, 0.01, 0.2])
@@ -231,7 +230,7 @@ def test_integrity_of_weightfuncs():
                 shape_component2,
                 shape_component1_err,
                 shape_component2_err,
-                z_source,
+                z_src,
             ],
             names=("e1", "e2", "e1_err", "e2_err", "z"),
         ),
@@ -245,8 +244,8 @@ def test_integrity_of_weightfuncs():
     # photoz + deltasigma
     pzbins = np.linspace(0.0001, 5, 100)
     cluster.galcat.pzpdf_info["zbins"] = pzbins
-    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_source))]
-    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_source]
+    cluster.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
+    cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster.compute_galaxy_weights(
@@ -271,11 +270,11 @@ def test_integrity_of_weightfuncs():
 def test_pzpdf_random_draw():
     """test draw_gal_z_from_pdz"""
     z_lens = 0.1
-    z_source = [0.22, 0.35, 1.7]
+    z_src = [0.22, 0.35, 1.7]
     shape_component1 = np.array([0.143, 0.063, -0.171])
     shape_component2 = np.array([-0.011, 0.012, -0.250])
     cluster_kwargs = dict(unique_id="1", ra=161.3, dec=34.0, z=z_lens)
-    gcat_args = [shape_component1, shape_component2, z_source]
+    gcat_args = [shape_component1, shape_component2, z_src]
     gcat_kwargs = {"names": ("e1", "e2", "z")}
 
     # set up photoz
@@ -288,19 +287,17 @@ def test_pzpdf_random_draw():
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
         cluster.galcat.pzpdf_info["zbins"] = pzbins
-        cluster.galcat["pzbins"] = [pzbins for i in range(len(z_source))]
+        cluster.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
         cluster.galcat.pzpdf_info.pop("zbins")
         cluster.galcat.remove_column("pzbins")
-        cluster.galcat["pzpdf"] = [
-            multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_source
-        ]
+        cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
         # add pzbins back to galcat
         cluster.galcat.pzpdf_info["zbins"] = pzbins
-        cluster.galcat["pzbins"] = [pzbins for i in range(len(z_source))]
+        cluster.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
         # test raising TypeError when the name of the new column is already in cluster.galcat
         # also test default overwrite=False and zcol_out='z'
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
@@ -349,7 +346,7 @@ def test_plot_profiles():
     ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
     ra_source = [120.1, 119.9]
     dec_source = [41.9, 42.2]
-    z_source = [1.0, 2.0]
+    z_src = [1.0, 2.0]
     shear1 = [0.2, 0.4]
     shear2 = [0.3, 0.5]
     # Set up radial values
@@ -362,7 +359,7 @@ def test_plot_profiles():
         dec=dec_lens,
         z=z_lens,
         galcat=GCData(
-            [ra_source, dec_source, shear1, shear2, z_source], names=("ra", "dec", "e1", "e2", "z")
+            [ra_source, dec_source, shear1, shear2, z_src], names=("ra", "dec", "e1", "e2", "z")
         ),
     )
     cluster.compute_tangential_and_cross_components()
