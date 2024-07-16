@@ -1,4 +1,5 @@
 """Tests for dataops.py"""
+
 import numpy as np
 from numpy.testing import assert_allclose, assert_raises, assert_array_equal, assert_warns
 
@@ -137,8 +138,12 @@ def test_compute_lensing_angles_flatsky():
     # coordinate_system conversion
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
-    thetas_pixel, phis_pixel = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel")
-    thetas_sky, phis_sky = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s, coordinate_system="sky")
+    thetas_pixel, phis_pixel = da._compute_lensing_angles_flatsky(
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel"
+    )
+    thetas_sky, phis_sky = da._compute_lensing_angles_flatsky(
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
+    )
 
     assert_allclose(
         thetas_sky,
@@ -161,8 +166,12 @@ def test_compute_lensing_angles_astropy():
     # coordinate_system conversion
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
-    thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel")
-    thetas_sky, phis_sky = da._compute_lensing_angles_astropy(ra_l, dec_l, ra_s, dec_s, coordinate_system="sky")
+    thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel"
+    )
+    thetas_sky, phis_sky = da._compute_lensing_angles_astropy(
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
+    )
 
     assert_allclose(
         thetas_sky,

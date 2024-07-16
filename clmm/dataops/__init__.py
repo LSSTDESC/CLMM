@@ -151,9 +151,13 @@ def compute_tangential_and_cross_components(
         )
     # Compute the lensing angles
     if geometry == "flat":
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system)
+        angsep, phi = _compute_lensing_angles_flatsky(
+            ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system
+        )
     elif geometry == "curve":
-        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system)
+        angsep, phi = _compute_lensing_angles_astropy(
+            ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system
+        )
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
@@ -333,7 +337,9 @@ def compute_galaxy_weights(
     return w_ls
 
 
-def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"):
+def _compute_lensing_angles_flatsky(
+    ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"
+):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
@@ -390,7 +396,9 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     return angsep, phi
 
 
-def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"):
+def _compute_lensing_angles_astropy(
+    ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="pixel"
+):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 

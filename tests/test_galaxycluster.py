@@ -396,7 +396,7 @@ def test_coordinate_system():
         galcat=GCData(
             [ra_source, dec_source, shear1, shear2_pixel, z_src], names=("ra", "dec", "e1", "e2", "z")
         ),
-        coordinate_system="pixel"
+        coordinate_system="pixel",
     )
     cl_sky = clmm.GalaxyCluster(
         unique_id="test",
@@ -406,11 +406,21 @@ def test_coordinate_system():
         galcat=GCData(
             [ra_source, dec_source, shear1, shear2_sky, z_src], names=("ra", "dec", "e1", "e2", "z")
         ),
-        coordinate_system="sky"
+        coordinate_system="sky",
     )
 
     cl_pixel.compute_tangential_and_cross_components()
     cl_sky.compute_tangential_and_cross_components()
 
-    assert_allclose(cl_pixel.galcat["et"], cl_sky.galcat["et"], **TOLERANCE, err_msg="Tangential component conversion between ellipticity coordinate systems failed")
-    assert_allclose(cl_pixel.galcat["ex"], -cl_sky.galcat["ex"], **TOLERANCE, err_msg="Cross component conversion between ellipticity coordinate systems failed")
+    assert_allclose(
+        cl_pixel.galcat["et"],
+        cl_sky.galcat["et"],
+        **TOLERANCE,
+        err_msg="Tangential component conversion between ellipticity coordinate systems failed",
+    )
+    assert_allclose(
+        cl_pixel.galcat["ex"],
+        -cl_sky.galcat["ex"],
+        **TOLERANCE,
+        err_msg="Cross component conversion between ellipticity coordinate systems failed",
+    )

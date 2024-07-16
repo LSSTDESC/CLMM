@@ -298,5 +298,15 @@ def test_coordinate_system():
 
     assert_equal(pixel_data["ra"], sky_data["ra"])
     assert_equal(pixel_data["dec"], sky_data["dec"])
-    assert_allclose(pixel_data["e1"], sky_data["e1"], **TOLERANCE, err_msg="Conversion from sky to pixel coordinate system for theta failed")
-    assert_allclose(pixel_data["e2"], -sky_data["e2"], **TOLERANCE, err_msg="Conversion from sky to pixel coordinate system for theta failed")
+    assert_allclose(
+        pixel_data["e1"],
+        sky_data["e1"],
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+    )
+    assert_allclose(
+        pixel_data["e2"],
+        -sky_data["e2"],
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+    )
