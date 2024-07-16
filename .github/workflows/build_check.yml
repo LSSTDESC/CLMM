@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v3
-    - name: Install prereq using conda
+    - name: Install prereq and NumCosmo using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
         conda install -c conda-forge gobject-introspection pygobject numcosmo cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
@@ -23,10 +23,10 @@ jobs:
     - name: Install the package
       run: |
         pip install .
-    - name: Install NumCosmo from conda-forge
-      run: |
-        # temporarily moved up due to libarchive issue - see PR 620
-        #conda install -c conda-forge numcosmo
+# temporarily moved up due to libarchive issue - see PR 620
+#    - name: Install NumCosmo from conda-forge
+#      run: |
+#        conda install -c conda-forge numcosmo
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
