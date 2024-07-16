@@ -18,6 +18,9 @@ from .generic import (
     compute_profile_mass_in_radius,
     convert_profile_mass_concentration,
 )
+from .func_layer import (
+    compute_surface_density,
+)
 from ..utils import (
     validate_argument,
     compute_beta_s_mean,
@@ -258,6 +261,82 @@ class CLMModeling:
         return self._eval_2halo_term_generic(
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
+
+    def _eval_excess_surface_density_triaxial4theta(
+        self, r_proj, z_cl, ell
+    ):
+
+        sigma = compute_surface_density(
+            r_proj,
+            self.mdelta,
+            self.cdelta,
+            z_cl,
+            self.cosmo,
+            self.delta_mdef,
+            self.halo_profile_model,
+            self.massdef,
+            self.halo_profile_model,
+            )
+
+        eta = r_proj * np.gradient(np.log(sigma), r_proj)
+        f = InterpolatedUnivariateSpline(r_proj, r_proj**3 * sigma * eta, k=5)
+        integral_vec = np.vectorize(f.integral)
+
+        I = 3 / r_proj**4 * integral_vec(0, r_proj)
+
+        return 0.5 * ell * (2 * I - sigma * eta) / 1e12
+
+    def _eval_excess_surface_density_triaxialConst(
+        self, r_proj, z_cl, ell
+    ):
+
+        sigma = compute_surface_density(
+            r_proj,
+            self.mdelta,
+            self.cdelta,
+            z_cl,
+            self.cosmo,
+            self.delta_mdef,
+            self.halo_profile_model,
+            self.massdef,
+            self.halo_profile_model,
+            )
+
+        eta = r_proj * np.gradient(np.log(sigma), r_proj)
+        f = InterpolatedUnivariateSpline(r_proj, sigma * eta / r_proj, k=5)
+        integral_vec = np.vectorize(f.integral)
+
+        I = integral_vec(r_proj, np.inf)
+
+        return 0.5 * ell * (2 * I - sigma * eta) / 1e12
+
+    def _eval_triaxial_corrected_surface_density(
+        self, r_proj, z_cl, ell
+    ):
+
+        sigma = compute_surface_density(
+            r_proj,
+            self.mdelta,
+            self.cdelta,
+            z_cl,
+            self.cosmo,
+            self.delta_mdef,
+            self.halo_profile_model,
+            self.massdef,
+            self.halo_profile_model,
+            )
+        eta = r_proj * np.gradient(np.log(sigma), r_proj)
+        deta_dlnr = r_proj * np.gradient(eta, r_proj)
+
+        return sigma * (1 + ell**2 * (eta + eta**2/2 + deta_dlnr/2) / 2)
+
+    def _eval_triaxial_corrected_excess_surface_density_monopole(
+        self, r_proj, z_cl, ell
+    ):
+        sigma = _eval_triaxial_corrected_surface_density(r_proj, z_cl, ell)
+        integral = np.array([scipy.integrate.simps(r_proj[r_proj <= ri] * sigma[r_proj<=ri], r_proj[r_proj<=ri]) for ri in r_proj])
+
+        return ((2/r_proj**2) * integral - sigma) / sigma_crit
 
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
