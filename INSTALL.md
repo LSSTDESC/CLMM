@@ -13,13 +13,13 @@
 ## Basic procedure <a name="basic_install"></a>
 
 Here we provide a quick guide for a basic instalation, this will install all the packages in your current environment.
-To create a specific conda environment for CLMM, we recommend you to check the begining of section 
+To create a specific conda environment for CLMM, we recommend you to check the begining of section
 [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori).
 
 ### Theory backend installation
 First, choose and install a theory backend for CLMM.
-This can be CCL (versions between 2.6.0 and 2.7.1.dev9+g1a351df6),
-NumCosmo (v0.15 or later),
+This can be CCL (versions between 2.7.1.dev10+gf81b59a4 and 3),
+NumCosmo (v0.19 or later),
 or cluster_toolkit and they are installable as follows.
 
 To install CCL as the theory/cosmology backend, run
@@ -60,7 +60,7 @@ Now, you can install CLMM and its dependencies as
     pip install pytest sphinx sphinx_rtd_theme
     pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
     git clone https://github.com/LSSTDESC/CLMM.git  # If you'd like to contribute but don't have edit permissions to the CLMM repo, see below how to fork the repo instead.
-    cd CLMM   
+    cd CLMM
     python setup.py install     # build from source
 ```
 
@@ -72,9 +72,9 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
     module load python  # Also loads anaconda
     conda create --name clmmenv  # Create an anaconda environment for clmm
     source activate clmmenv  # switch to your newly created environment
-    conda install pip  # need pip to install everything else necessary for clmm 
+    conda install pip  # need pip to install everything else necessary for clmm
     conda install ipython # need to have the ipython tied to this environment
-    conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
+    conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks
 ```
 
 Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.

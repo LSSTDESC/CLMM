@@ -6,6 +6,7 @@ import clmm
 from clmm import GCData
 from scipy.stats import multivariate_normal
 import clmm.dataops as da
+from clmm.theory import compute_critical_surface_density_eff
 
 TOLERANCE = {"rtol": 1.0e-7, "atol": 1.0e-7}
 
@@ -444,85 +445,34 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # Check behaviour for the deltasigma option.
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
 
-    # test missing info for is_deltasigma=True
-    assert_raises(
-        TypeError,
-        da.compute_tangential_and_cross_components,
-        ra_lens=ra_lens,
-        dec_lens=dec_lens,
-        ra_source=gals["ra"],
-        dec_source=gals["dec"],
-        shear1=gals["e1"],
-        shear2=gals["e2"],
-        is_deltasigma=True,
-        cosmo=None,
-        z_lens=z_lens,
-        z_source=gals["z"],
-    )
-    assert_raises(
-        TypeError,
-        da.compute_tangential_and_cross_components,
-        ra_lens=ra_lens,
-        dec_lens=dec_lens,
-        ra_source=gals["ra"],
-        dec_source=gals["dec"],
-        shear1=gals["e1"],
-        shear2=gals["e2"],
-        is_deltasigma=True,
-        cosmo=cosmo,
-        z_lens=None,
-        z_source=gals["z"],
-    )
-    assert_raises(
-        TypeError,
-        da.compute_tangential_and_cross_components,
-        ra_lens=ra_lens,
-        dec_lens=dec_lens,
-        ra_source=gals["ra"],
-        dec_source=gals["dec"],
-        shear1=gals["e1"],
-        shear2=gals["e2"],
-        is_deltasigma=True,
-        cosmo=cosmo,
-        z_lens=z_lens,
-        z_source=None,
-    )
-
-    # test  missing info for use_pdz=True
-    assert_raises(
-        TypeError,
-        da.compute_tangential_and_cross_components,
-        ra_lens=ra_lens,
-        dec_lens=dec_lens,
-        ra_source=gals["ra"],
-        dec_source=gals["dec"],
-        shear1=gals["e1"],
-        shear2=gals["e2"],
-        is_deltasigma=True,
-        use_pdz=True,
-        cosmo=cosmo,
-        z_lens=z_lens,
-        z_source=None,
-    )
-
-    # Trying to got through line 173 of dataops/__init__.py
-    da.compute_tangential_and_cross_components(
-        ra_lens=ra_lens,
-        dec_lens=dec_lens,
-        ra_source=gals["ra"][0],
-        dec_source=gals["dec"][0],
-        shear1=gals["e1"][0],
-        shear2=gals["e2"][0],
-        is_deltasigma=True,
-        use_pdz=True,
-        cosmo=cosmo,
-        z_lens=z_lens,
-        z_source=None,
-        pzbins=[[0.55, 0.6, 0.65, 0.7, 0.75]],
-        pzpdf=[[0.01, 1, 0.01, 0.001, 0.0001]],
-    )
-
     # check values for DeltaSigma
+    sigma_c = cosmo.eval_sigma_crit(z_lens, gals["z"])
+    # check validation between is_deltasigma and sigma_c
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=False,
+        sigma_c=sigma_c,
+    )
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=True,
+        sigma_c=None,
+    )
+    # test values
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -532,9 +482,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear1=gals["e1"],
             shear2=gals["e2"],
             is_deltasigma=True,
-            cosmo=cosmo,
-            z_lens=z_lens,
-            z_source=gals["z"],
+            sigma_c=sigma_c,
             geometry=geometry,
         )
         assert_allclose(
@@ -583,15 +531,20 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
 
+    # test basic weights functionality
+    cluster.compute_galaxy_weights()
+    expected = np.array([1.0, 1.0])
+    assert_allclose(cluster.galcat["w_ls"], expected, **TOLERANCE)
+
 
 def test_compute_background_probability():
     """test for compute background probability"""
     z_lens = 0.1
-    z_source = np.array([0.22, 0.35, 1.7])
+    z_src = np.array([0.22, 0.35, 1.7])
 
     # true redshift
     p_bkg = da.compute_background_probability(
-        z_lens, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
+        z_lens, z_src=z_src, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
     )
     expected = np.array([1.0, 1.0, 1.0])
     assert_allclose(p_bkg, expected, **TOLERANCE)
@@ -599,7 +552,7 @@ def test_compute_background_probability():
         ValueError,
         da.compute_background_probability,
         z_lens,
-        z_source=None,
+        z_src=None,
         use_pdz=False,
         pzpdf=None,
         pzbins=None,
@@ -608,13 +561,13 @@ def test_compute_background_probability():
 
     # photoz + deltasigma
     pzbin = np.linspace(0.0001, 5, 100)
-    pzbins = [pzbin for i in range(z_source.size)]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
+    pzbins = [pzbin for i in range(z_src.size)]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     assert_raises(
         ValueError,
         da.compute_background_probability,
         z_lens,
-        z_source=z_source,
+        z_src=z_src,
         use_pdz=True,
         pzpdf=None,
         pzbins=pzbins,
@@ -626,27 +579,23 @@ def test_compute_galaxy_weights():
     """test for compute galaxy weights"""
     cosmo = clmm.Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
     z_lens = 0.1
-    z_source = [0.22, 0.35, 1.7]
+    z_src = [0.22, 0.35, 1.7]
     shape_component1 = np.array([0.143, 0.063, -0.171])
     shape_component2 = np.array([-0.011, 0.012, -0.250])
     shape_component1_err = np.array([0.11, 0.01, 0.2])
     shape_component2_err = np.array([0.14, 0.16, 0.21])
 
     # true redshift + deltasigma
+    sigma_c = cosmo.eval_sigma_crit(z_lens, z_src)
     weights = da.compute_galaxy_weights(
-        z_lens,
-        cosmo,
-        z_source=z_source,
-        use_pdz=False,
-        pzpdf=None,
-        pzbins=None,
+        is_deltasigma=True,
+        sigma_c=sigma_c,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
         use_shape_error=False,
         shape_component1_err=shape_component1_err,
         shape_component2_err=shape_component2_err,
-        is_deltasigma=True,
         validate_input=True,
     )
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
@@ -654,22 +603,23 @@ def test_compute_galaxy_weights():
 
     # photoz + deltasigma
     pzbin = np.linspace(0.0001, 5, 100)
-    pzbins = [pzbin for i in range(len(z_source))]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
-    weights = da.compute_galaxy_weights(
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
+    pzbins = [pzbin for i in range(len(z_src))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
+    sigma_c_eff = compute_critical_surface_density_eff(
+        cosmo=cosmo,
+        z_cluster=z_lens,
         pzbins=pzbins,
+        pzpdf=pzpdf,
+    )
+    weights = da.compute_galaxy_weights(
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
         use_shape_error=False,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=True,
         validate_input=True,
     )
 
@@ -679,21 +629,16 @@ def test_compute_galaxy_weights():
     # photoz + deltasigma - shared bins
     pzbin = np.linspace(0.0001, 5, 100)
     pzbins = pzbin
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     weights = da.compute_galaxy_weights(
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
         use_shape_error=False,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=True,
         validate_input=True,
     )
 
@@ -702,19 +647,14 @@ def test_compute_galaxy_weights():
 
     # test with noise
     weights = da.compute_galaxy_weights(
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=True,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
         use_shape_error=False,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=True,
         validate_input=True,
     )
 
@@ -723,19 +663,14 @@ def test_compute_galaxy_weights():
 
     # test with is_deltasigma=False and geometric weights only
     weights = da.compute_galaxy_weights(
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
+        is_deltasigma=False,
+        sigma_c=None,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
         use_shape_error=False,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=False,
         validate_input=True,
     )
 
@@ -746,19 +681,14 @@ def test_compute_galaxy_weights():
     assert_raises(
         ValueError,
         da.compute_galaxy_weights,
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=True,
         shape_component1=None,
         shape_component2=None,
         use_shape_error=False,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=False,
         validate_input=True,
     )
 
@@ -766,52 +696,12 @@ def test_compute_galaxy_weights():
     assert_raises(
         ValueError,
         da.compute_galaxy_weights,
-        z_lens,
-        cosmo,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         use_shape_error=True,
         shape_component1_err=None,
         shape_component2_err=None,
-        is_deltasigma=False,
-        validate_input=True,
-    )
-
-    assert_raises(
-        TypeError,
-        da.compute_galaxy_weights,
-        z_lens,
-        cosmo=None,
-        z_source=None,
-        use_pdz=False,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
-        use_shape_noise=True,
-        shape_component1=None,
-        shape_component2=None,
-        use_shape_error=False,
-        shape_component1_err=None,
-        shape_component2_err=None,
-        is_deltasigma=True,
-        validate_input=True,
-    )
-    assert_raises(
-        TypeError,
-        da.compute_galaxy_weights,
-        z_lens,
-        cosmo=None,
-        z_source=None,
-        use_pdz=True,
-        pzpdf=pzpdf,
-        pzbins=pzbins,
-        use_shape_noise=False,
-        use_shape_error=False,
-        shape_component1_err=None,
-        shape_component2_err=None,
-        is_deltasigma=True,
         validate_input=True,
     )
 

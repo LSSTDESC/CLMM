@@ -4,9 +4,10 @@ from .beta_lens import (
     compute_beta,
     compute_beta_s,
     compute_beta_s_func,
-    compute_beta_mean,
-    compute_beta_s_mean,
-    compute_beta_s_square_mean,
+    compute_beta_s_mean_from_distribution,
+    compute_beta_s_square_mean_from_distribution,
+    compute_beta_s_mean_from_weights,
+    compute_beta_s_square_mean_from_weights,
 )
 
 from .boost import (
@@ -38,6 +39,7 @@ from .validation import (
     validate_argument,
     _validate_ra,
     _validate_dec,
+    _validate_is_deltasigma_sigma_c,
 )
 
 from .units import (
