@@ -5,9 +5,10 @@ Main functions to encapsule oo calls
 # pylint: disable=invalid-name
 # Thin functonal layer on top of the class implementation of CLMModeling .
 # The functions expect a global instance of the actual CLMModeling named
-# `_modeling_object'.
+# "_modeling_object".
 
 import numpy as np
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 if "_modeling_object" not in globals():
     _modeling_object = None
@@ -109,6 +110,7 @@ def compute_surface_density(
     massdef="mean",
     alpha_ein=None,
     verbose=False,
+    use_projected_quad=False,
     validate_input=True,
 ):
     r"""Computes the surface mass density
@@ -154,6 +156,10 @@ def compute_surface_density(
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
+    use_projected_quad : bool
+        Only available for Einasto profile with CCL as the backend. If True, CCL will use
+        quad_vec instead of default FFTLog to calculate the surface density profile.
+        Default: False
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -176,6 +182,8 @@ def compute_surface_density(
     _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
+    if halo_profile_model == "einasto" and _modeling_object.backend=="ccl":
+        _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
@@ -358,7 +366,7 @@ def compute_excess_surface_density_2h(
 
     .. math::
         \Delta\Sigma_{\text{2h}}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2}
-        \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_2(l\theta)
+        \int\frac{ldl}{(2\pi)} P_{\text{mm}}(k_l, z)J_2(l\theta)
 
     where
 
@@ -424,13 +432,13 @@ def compute_surface_density_2h(
     r"""Computes the 2-halo term surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
-        \Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)}
-        P_{\rm mm}(k_l, z)J_0(l\theta)
+        \Sigma_{\text{2h}}(R) = \frac{\rho_\text{m}(z)b(M)}{(1 + z)^3D_A(z)^2}
+        \int\frac{ldl}{(2\pi)}P_{\text{mm}}(k_l, z)J_0(l\theta)
 
     where
 
     .. math::
-        k_l = \frac{l}{D_A(z)(1 +z)}
+        k_l = \frac{l}{D_A(z)(1 + z)}
 
     and :math:`b(M)` is the halo bias
 
@@ -481,14 +489,14 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
     r"""Computes the 'effective critical surface density'
 
     .. math::
-        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)}
-        p(z) dz\right)^{-1}
+        \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} =
+        \left(\int \frac{1}{\Sigma_{\text{crit}}(z)}p(z) \mathrm{d}z\right)^{-1}
 
     where :math:`p(z)` is the source photoz probability density function.
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`
     profile.
 
-    For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of
+    For the standard :math:`\Sigma_{\text{crit}}(z)` definition, use the `eval_sigma_crit` method of
     the CLMM cosmology object.
 
     Parameters
@@ -525,14 +533,13 @@ def compute_tangential_shear(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    beta_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -556,7 +563,7 @@ def compute_tangential_shear(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -583,18 +590,18 @@ def compute_tangential_shear(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -606,17 +613,6 @@ def compute_tangential_shear(
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
-
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-              when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-              when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -648,9 +644,8 @@ def compute_tangential_shear(
     tangential_shear = _modeling_object.eval_tangential_shear(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
-        beta_kwargs=beta_kwargs,
         verbose=verbose,
     )
 
@@ -663,14 +658,13 @@ def compute_convergence(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    beta_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -694,7 +688,7 @@ def compute_convergence(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -721,18 +715,18 @@ def compute_convergence(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -744,17 +738,6 @@ def compute_convergence(
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
-
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-              when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-              when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -782,9 +765,8 @@ def compute_convergence(
     convergence = _modeling_object.eval_convergence(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
-        beta_kwargs=beta_kwargs,
         verbose=verbose,
     )
 
@@ -797,14 +779,14 @@ def compute_reduced_tangential_shear(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
     massdef="mean",
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     alpha_ein=None,
     validate_input=True,
     verbose=False,
@@ -824,7 +806,7 @@ def compute_reduced_tangential_shear(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -841,9 +823,9 @@ def compute_reduced_tangential_shear(
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * `mean` (default);
-            * `critical` - not in cluster_toolkit;
-            * `virial` - not in cluster_toolkit;
+            * 'mean' (default);
+            * 'critical' - not in cluster_toolkit;
+            * 'virial' - not in cluster_toolkit;
 
     alpha_ein : float, None, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
@@ -851,18 +833,19 @@ def compute_reduced_tangential_shear(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float
+              (Used for `approx=None`).
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -880,7 +863,7 @@ def compute_reduced_tangential_shear(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, reduced
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
               tangential shear at each value of `r_proj` is calculated as
 
               .. math::
@@ -891,9 +874,8 @@ def compute_reduced_tangential_shear(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
-              Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-              either 'beta', or 'distribution' (that will be used to compute
-              :math:`\langle \beta_s \rangle`)
+              Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
+              `z_src_info` must be 'beta':
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -902,8 +884,7 @@ def compute_reduced_tangential_shear(
             * 'order2' : Same approach as in Cluster Mass Calibration at High
               Redshift (equation 12 in Schrabback et al. 2017;
               https://arxiv.org/abs/1611.03866).
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used
-              to compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              `z_src_info` must be 'beta':
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -911,9 +892,9 @@ def compute_reduced_tangential_shear(
                   \left(1+\left(\frac{\left<\beta_s^2\right>}
                   {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -952,10 +933,10 @@ def compute_reduced_tangential_shear(
     red_tangential_shear = _modeling_object.eval_reduced_tangential_shear(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -968,7 +949,7 @@ def compute_magnification(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -976,7 +957,7 @@ def compute_magnification(
     alpha_ein=None,
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -995,7 +976,7 @@ def compute_magnification(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -1022,18 +1003,19 @@ def compute_magnification(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float
+              (Used for `approx=None`).
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1051,7 +1033,7 @@ def compute_magnification(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
               at each value of `r_proj` is calculated as
 
               .. math::
@@ -1064,26 +1046,24 @@ def compute_magnification(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Uses the weak lensing approximation of the magnification with up to
-              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
             * 'order2' : Uses the weak lensing approximation of the magnification with up to
-              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
                   + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
                   + \left<\beta_s^2\right>\gamma_{\infty}^2
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -1118,10 +1098,10 @@ def compute_magnification(
     magnification = _modeling_object.eval_magnification(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -1135,7 +1115,7 @@ def compute_magnification_bias(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -1143,7 +1123,7 @@ def compute_magnification_bias(
     alpha_ein=None,
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -1178,7 +1158,7 @@ def compute_magnification_bias(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -1205,18 +1185,19 @@ def compute_magnification_bias(
             * 'virial'
 
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float
+              (Used for `approx=None`).
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1234,7 +1215,7 @@ def compute_magnification_bias(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
               bias at each value of `r_proj` is calculated as
 
               .. math::
@@ -1248,18 +1229,16 @@ def compute_magnification_bias(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Uses the weak lensing approximation of the magnification bias with up
-              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu^{\alpha-1} \approx
                   1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
             * 'order2' : Uses the weak lensing approximation of the magnification bias with up
-              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              `z_src_info` must be 'beta':
 
               .. math::
                   \mu^{\alpha-1} \approx
@@ -1270,9 +1249,9 @@ def compute_magnification_bias(
                   &+ \left(2\alpha-1\right)\left(\alpha-1\right)
                   \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -1303,13 +1282,201 @@ def compute_magnification_bias(
     magnification_bias = _modeling_object.eval_magnification_bias(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         alpha,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
     _modeling_object.validate_input = True
     return magnification_bias
+
+def compute_delta_sigma_4theta(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000, 
+    delta_mdef=200
+):
+    r"""Compute the "4-theta"-quadrupole moment
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy in Mpc
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma 4-theta value at a position for the elliptical halo specified
+    """
+    ### DEFINING INTEGRALS:
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
+    f = InterpolatedUnivariateSpline(r_arr, (r_arr**3)*sigma_0_arr*eta_0_arr, k=3)  # k=3 order of spline
+    integral_vec = np.vectorize(f.integral)
+    ###
+    
+    ### ACTUAL COMPUTATION:
+    I_1 = (3/(r_source**4)) * integral_vec(0, r_source)
+    sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=200, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    #eta_0 = np.gradient(np.log(sigma_0),r)
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    ds4theta = np.array((ell/2.0)*(2*I_1 - sigma_0*eta_0))
+    return ds4theta
+
+def compute_delta_sigma_const(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000,
+    delta_mdef=200
+):
+    r"""Compute the excess surface density lensing profile for "const"-quadrupole moment
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma const value at a position for the elliptical halo specified
+    """
+    
+    ### DEFINING INTEGRALS:
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr
+    f = InterpolatedUnivariateSpline(r_arr, sigma_0_arr*eta_0_arr/r_arr, k=3)  # k=3 order of spline
+    integral_vec = np.vectorize(f.integral)
+    ###
+    
+    ### ACTUAL COMPUTATION:
+    I_2 = integral_vec(r_source, np.inf)
+    sigma_0 = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    #eta_0 = np.gradient(np.log(sigma_0), r)*r
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    dsconst = np.array((ell/2.0)*(2*I_2 - sigma_0*eta_0))
+    return dsconst
+
+
+def compute_delta_sigma_excess(
+    ell, 
+    r_source, 
+    mdelta, 
+    cdelta, 
+    z_cluster, 
+    cosmo, 
+    hpmd='nfw', 
+    sample_N=10000, 
+    delta_mdef=200
+):
+    r"""Compute the excess surface density lensing profile for the monopole component along with second order expansion term (e**2)
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    dsmono: array
+        Delta sigma excess monopole value at a position for the elliptical halo specified
+    """
+    
+    r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
+    sigma_0_arr = compute_surface_density(r_arr, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    eta_0_arr = np.gradient(np.log(sigma_0_arr),r_arr)*r_arr  
+    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
+    eta_0 = eta_0_interpolation_func(r_source) 
+    
+    
+    
+    ## e^2 shenanigans:
+    d_eta_0_arr_by_d_r = np.gradient(eta_0_arr,r_arr)*r_arr
+    d_eta_0_arr_by_d_r_interpolation_func = InterpolatedUnivariateSpline(r_arr, d_eta_0_arr_by_d_r)
+    d_eta_0_by_d_r = d_eta_0_arr_by_d_r_interpolation_func(r_source)
+    
+    correction_factor_arr = (4*(ell)**2*((1/8)*eta_0_arr + (1/16)*d_eta_0_arr_by_d_r + (1/16)*eta_0_arr**2))
+    integrand = InterpolatedUnivariateSpline(r_arr, r_arr*sigma_0_arr*correction_factor_arr)
+    
+    integral_vec = np.vectorize(integrand.integral)
+    ##
+    
+    ### ACTUAL COMPUTATION:
+    I = (2/r_source**2)*integral_vec(0, r_source)
+    
+    #q=np.sqrt(2/(1+ell) - 1)
+    
+    s = compute_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    
+    correction_factor = (4*(ell)**2*((1/8)*eta_0 + (1/16)*d_eta_0_by_d_r + (1/16)*eta_0**2))
+    ds_ell_square_correction = I - s*correction_factor
+
+    
+    dsmono = compute_excess_surface_density(r_source, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='critical', alpha_ein=None, 
+                                     verbose=False, validate_input=True) + ds_ell_square_correction
+    return dsmono
