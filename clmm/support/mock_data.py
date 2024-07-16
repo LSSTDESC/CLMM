@@ -38,6 +38,7 @@ def generate_galaxy_catalog(
     ngal_density=None,
     pz_bins=101,
     pzpdf_type="shared_bins",
+    coordinate_system="pixel",
     validate_input=True,
 ):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -156,6 +157,9 @@ def generate_galaxy_catalog(
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and
         user-defined redshift range.  If specified, the ngals argument will be ignored.
+    coordinate_system : str, optional
+        The coordinate system to use for the output catalog. Options are 'pixel' and 'sky'.
+
     validate_input: bool
         Validade each input argument
 
@@ -231,6 +235,7 @@ def generate_galaxy_catalog(
         "pz_bins": pz_bins,
         "field_size": field_size,
         "pzpdf_type": pzpdf_type,
+        "coordinate_system": coordinate_system,
     }
 
     if ngals is None and ngal_density is None:
@@ -361,6 +366,7 @@ def _generate_galaxy_catalog(
     photoz_sigma_unscaled=None,
     pz_bins=101,
     pzpdf_type="shared_bins",
+    coordinate_system="pixel",
     field_size=None,
 ):
     """A private function that skips the sanity checks on derived properties. This
@@ -421,6 +427,9 @@ def _generate_galaxy_catalog(
     # position angle of drawn galaxies w.r.t cluster center
     _, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
     posangle += 0.5 * np.pi  # for right convention
+
+    if coordinate_system == "sky":
+        posangle = np.pi - posangle  # ellipticity coordinate system conversion
 
     # corresponding shear1,2 components
     gam1 = -gamt * np.cos(2 * posangle) + gamx * np.sin(2 * posangle)
