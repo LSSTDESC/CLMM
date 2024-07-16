@@ -786,6 +786,55 @@ class CLMModeling:
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
+    def eval_excess_surface_density_triaxial4theta(
+        self, r_proj, z_cl, ell
+    ):
+        r"""DOCUMENTATION RANCE
+        """
+        ## VALIDATE ARGUMENTS
+        ## VALIDATE BACKEND
+
+        return self._eval_excess_surface_density_triaxial4theta(
+            r_proj, z_cl, ell
+        )
+
+    def eval_excess_surface_density_triaxialConst(
+        self, r_proj, z_cl, ell
+    ):
+        r"""DOCUMENTATION RANCE
+        """
+        ## VALIDATE ARGUMENTS
+        ## VALIDATE BACKEND
+
+        return self._eval_excess_surface_density_triaxialConst(
+            r_proj, z_cl, ell
+        )
+
+    def _eval_triaxial_corrected_surface_density(
+        self, r_proj, z_cl, ell
+    ):
+        r"""DOCUMENTATION RANCE
+        """
+        ## VALIDATE ARGUMENTS
+        ## VALIDATE BACKEND
+
+        return self._eval_triaxial_corrected_surface_density(
+            r_proj, z_cl, ell
+        )
+
+    def _eval_triaxial_corrected_excess_surface_density_monopole(
+        self, r_proj, z_cl, ell
+    ):
+        r"""DOCUMENTATION RANCE
+        """
+        ## VALIDATE ARGUMENTS
+        ## VALIDATE BACKEND
+
+        return self._eval_triaxial_corrected_excess_surface_density_monopole(
+            r_proj, z_cl, ell
+        )
+
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear
 
