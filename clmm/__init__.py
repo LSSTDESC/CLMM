@@ -2,7 +2,7 @@
 from .gcdata import GCData
 from .galaxycluster import GalaxyCluster
 from .clusterensemble import ClusterEnsemble
-from .dataops import compute_tangential_and_cross_components, make_radial_profile
+from .dataops import compute_tangential_and_cross_components, make_radial_profile, make_binned_estimators_triaxiality
 from .utils import compute_radial_averages, make_bins, convert_units
 from .theory import (
     compute_reduced_shear_from_convergence,
