@@ -456,6 +456,30 @@ def test_compute_tangential_and_cross_components(modeling_data):
             **TOLERANCE,
             err_msg="Cross Shear not correct when passing lists",
         )
+    # Test invalid coordinate system name
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s,
+        dec_s + 10.0,
+        shear1,
+        shear2,
+        coordinate_system="crazy",
+    )
+    # Test invalid coordinate system type
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s,
+        dec_s + 10.0,
+        shear1,
+        shear2,
+        coordinate_system=1,
+    )
     # Use the cluster method
     cluster = clmm.GalaxyCluster(
         unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]

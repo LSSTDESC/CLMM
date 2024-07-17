@@ -18,6 +18,7 @@ from .utils import (
     _validate_ra,
     _validate_dec,
     _draw_random_points_from_tab_distribution,
+    _validate_coordinate_system,
 )
 
 
@@ -79,6 +80,7 @@ class GalaxyCluster:
         _validate_dec(vars(self), "dec", False)
         validate_argument(vars(self), "z", (float, str), argmin=0, eqmin=True)
         validate_argument(vars(self), "galcat", GCData)
+        _validate_coordinate_system(vars(self), "coordinate_system", str)
         self.unique_id = str(self.unique_id)
         self.ra = float(self.ra)
         self.dec = float(self.dec)

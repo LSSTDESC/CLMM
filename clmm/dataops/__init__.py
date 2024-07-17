@@ -1,4 +1,5 @@
 """Functions to compute polar/azimuthal averages in radial bins"""
+
 import warnings
 import numpy as np
 import scipy
@@ -14,6 +15,7 @@ from ..utils import (
     _validate_ra,
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
+    _validate_coordinate_system,
 )
 from ..redshift import (
     _integ_pzfuncs,
@@ -132,6 +134,7 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)
         validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
+        _validate_coordinate_system(locals(), "coordinate_system", str)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
             names=("Ra", "Dec", "Shear1", "Shear2"),
