@@ -383,17 +383,14 @@ def _compute_lensing_angles_flatsky(
     # deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
     # deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
     angsep = np.sqrt(deltax**2 + deltay**2)
-    if coordinate_system == "pixel":
-        phi = np.arctan2(deltay, -deltax)
-    elif coordinate_system == "sky":
-        phi = np.arctan2(deltay, deltax)
-    else:
-        raise ValueError("Invalid coordinate_system")
+    phi = np.arctan2(deltay, -deltax)
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
     if np.iterable(phi):
         phi[angsep == 0.0] = 0.0
     else:
         phi = 0.0 if angsep == 0.0 else phi
+    if coordinate_system == "sky":
+        phi = np.pi - phi
     if np.any(angsep > np.pi / 180.0):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
