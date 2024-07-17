@@ -205,7 +205,7 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_miscentered_surface_density(self, r_proj, z_cl, r_mis):
+    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis):
         # pylint: disable=invalid-name, possibly-used-before-assignment
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
@@ -284,7 +284,7 @@ class CLMModeling:
 
         return np.piecewise(x, [x<1, x>1], [f1, f2, 4./15.])
 
-    def _eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis):
+    def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis):
         res = np.zeros_like(r_proj)
         # pylint: disable=invalid-name
         for i, R in enumerate(r_proj):
@@ -296,11 +296,11 @@ class CLMModeling:
 
     def _integrand_mean_surface_density_mis(self, R, z_cl, r_mis):
         # pylint: disable=invalid-name
-        return R * self._eval_miscentered_surface_density(R, z_cl, r_mis)
+        return R * self._eval_surface_density_miscentered(R, z_cl, r_mis)
 
-    def _eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis):
-        return (self._eval_miscentered_surface_density(r_proj, z_cl, r_mis)
-               - self._eval_miscentered_mean_surface_density(r_proj, z_cl, r_mis))
+    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis):
+        return (self._eval_surface_density_miscentered(r_proj, z_cl, r_mis)
+               - self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis))
 
     def _eval_2halo_term_generic(
         self,
@@ -654,7 +654,7 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if r_mis is not None:
-            return self._eval_miscentered_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
+            return self._eval_surface_density_miscentered(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False):
@@ -684,7 +684,7 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if r_mis is not None:
-            return self._eval_miscentered_mean_surface_density(r_proj=r_proj, z_cl=z_cl,
+            return self._eval_mean_surface_density_miscentered(r_proj=r_proj, z_cl=z_cl,
                                                                r_mis=r_mis)
 
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
@@ -716,7 +716,7 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if r_mis is not None:
-            return self._eval_miscentered_excess_surface_density(r_proj=r_proj, z_cl=z_cl,
+            return self._eval_excess_surface_density_miscentered(r_proj=r_proj, z_cl=z_cl,
                                                                  r_mis=r_mis)
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
