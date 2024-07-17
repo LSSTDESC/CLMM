@@ -261,6 +261,8 @@ class CLMModeling:
 
     def _integrand_surface_density_mis_Einasto(self, theta, R, Roff, r_s, alpha_ein):
         # pylint: disable=invalid-name
+
+        # Project surface mass density from numerical integration
         def integrand0(z):
             x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
             return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
@@ -270,6 +272,8 @@ class CLMModeling:
     def _integrand_surface_density_mis_Hernquist(self, theta, R, Roff, r_s):
         # pylint: disable=invalid-name
         x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+
+        # Analytical solution for Hernquist
         def f1(x):
             x2m1 = x**2. - 1.
             sqrt_x2m1 = np.sqrt(-x2m1)
