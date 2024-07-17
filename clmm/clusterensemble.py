@@ -252,9 +252,14 @@ class ClusterEnsemble:
             [self.data[tan_component], self.data[cross_component]],
         )
         self.stacked_data = GCData(
-            [radius, *components],
-            meta=self.data.meta,
-            names=("radius", tan_component, cross_component),
+            [
+                self.data.meta["radius_min"].value,
+                self.data.meta["radius_max"].value,
+                radius,
+                *components,
+            ],
+            meta={k: v for k, v in self.data.meta.items() if k not in ("radius_min", "radius_max")},
+            names=("radius_min", "radius_max", "radius", tan_component, cross_component),
         )
 
     def compute_sample_covariance(self, tan_component="gt", cross_component="gx"):
