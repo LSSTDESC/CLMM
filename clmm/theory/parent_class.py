@@ -206,6 +206,7 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_miscentered_surface_density(self, r_proj, z_cl, r_mis):
+        # pylint: disable=invalid-name
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
         r_s = self.eval_rdelta(z_cl) / c
@@ -214,8 +215,8 @@ class CLMModeling:
             rho_s = self.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
             integrand = self._integrand_NFW
 
-            return (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
-                    * 2 * r_s * rho_s / np.pi)
+            res = (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                   * 2 * r_s * rho_s / np.pi)
 
         # Einasto
         elif self.halo_profile_model=='einasto':
@@ -227,19 +228,22 @@ class CLMModeling:
 
             integrand = self._integrand_Einasto
 
-            return (quad_vec(integrand, 0., np.pi,
+            res = (quad_vec(integrand, 0., np.pi,
                              args=(r_proj, r_mis, r_s, alpha_ein), epsrel=1e-6)[0]
-                    * 2 * rho_s / np.pi)
+                   * 2 * rho_s / np.pi)
 
         # Hernquist
         elif self.halo_profile_model=='hernquist':
             rho_s = self.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
             integrand = self._integrand_Hernquist
 
-            return (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
-                    * r_s * rho_s / np.pi)
+            res = (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                   * r_s * rho_s / np.pi)
+
+        return res
 
     def _integrand_NFW(self, theta, R, Roff, r_s):
+        # pylint: disable=invalid-name
         x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
 
         # Analytical solution for NFW
@@ -256,6 +260,7 @@ class CLMModeling:
         return np.piecewise(x, [x<1, x>1], [f1, f2, 1./3.])
 
     def _integrand_Einasto(self, theta, R, Roff, r_s, alpha_ein):
+        # pylint: disable=invalid-name
         def integrand0(z):
             x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
             return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
@@ -263,8 +268,8 @@ class CLMModeling:
         return quad_vec(integrand0, 0., np.inf)[0]
 
     def _integrand_Hernquist(self, theta, R, Roff, r_s):
+        # pylint: disable=invalid-name
         x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
-
         def f1(x):
             x2m1 = x**2. - 1.
             sqrt_x2m1 = np.sqrt(-x2m1)
@@ -281,11 +286,12 @@ class CLMModeling:
 
     def _eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis):
         res = np.zeros_like(r_proj)
+        # pylint: disable=invalid-name
         for i, R in enumerate(r_proj):
             R_lower = 0 if i==0 else r_proj[i-1]
-            res[i] = integrate.quad(R * self._eval_miscentered_surface_density, R_lower, R,
-                                    args=(z_cl, Roff))[0]
-        res = np.cumsum(res)*2/R_arr**2
+            res[i] = quad(R * self._eval_miscentered_surface_density, R_lower, R,
+                                    args=(z_cl, r_mis))[0]
+        res = np.cumsum(res)*2/r_proj**2
         return res
 
     def _eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis):
@@ -637,15 +643,15 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None: validate_argument(locals(), "r_mis", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if r_mis is None:
-            return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
-        else:
+        if r_mis is not None:
             return self._eval_miscentered_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
+        return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False):
         r"""Computes the mean value of surface density inside radius `r_proj`
@@ -667,16 +673,17 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None: validate_argument(locals(), "r_mis", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if r_mis is None:
-            return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
-        else:
-            return self._eval_miscentered_mean_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
+        if r_mis is not None:
+            return self._eval_miscentered_mean_surface_density(r_proj=r_proj, z_cl=z_cl,
+                                                               r_mis=r_mis)
 
+        return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False):
         r"""Computes the excess surface density
@@ -698,15 +705,16 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None: validate_argument(locals(), "r_mis", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if r_mis is None:
-            return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
-        else:
-            return self._eval_miscentered_excess_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
+        if r_mis is not None:
+            return self._eval_miscentered_excess_surface_density(r_proj=r_proj, z_cl=z_cl,
+                                                                 r_mis=r_mis)
+        return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_excess_surface_density_2h(
         self,
