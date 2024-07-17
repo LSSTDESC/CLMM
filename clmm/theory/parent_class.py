@@ -9,7 +9,7 @@ import numpy as np
 # functions for the 2h term
 from scipy.integrate import simpson, quad
 from scipy.special import jv
-from scipy.interpolate import splrep, splev
+from scipy.interpolate import InterpolatedUnivariateSpline, splrep, splev
 
 from .generic import (
     compute_reduced_shear_from_convergence,
@@ -281,7 +281,6 @@ class CLMModeling:
             self.delta_mdef,
             self.halo_profile_model,
             self.massdef,
-            self.halo_profile_model,
             )
 
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
@@ -305,7 +304,6 @@ class CLMModeling:
             self.delta_mdef,
             self.halo_profile_model,
             self.massdef,
-            self.halo_profile_model,
             )
 
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
@@ -329,7 +327,6 @@ class CLMModeling:
             self.delta_mdef,
             self.halo_profile_model,
             self.massdef,
-            self.halo_profile_model,
             )
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
         deta_dlnr = r_proj * np.gradient(eta, r_proj)
@@ -339,8 +336,8 @@ class CLMModeling:
     def _eval_triaxial_corrected_excess_surface_density_monopole(
         self, r_proj, z_cl, ell
     ):
-        sigma = _eval_triaxial_corrected_surface_density(r_proj, z_cl, ell)
-        integral = np.array([scipy.integrate.simps(r_proj[r_proj <= ri] * sigma[r_proj<=ri], r_proj[r_proj<=ri]) for ri in r_proj])
+        sigma = self._eval_triaxial_corrected_surface_density(r_proj, z_cl, ell)
+        integral = np.array([simpson(r_proj[r_proj <= ri] * sigma[r_proj<=ri], r_proj[r_proj<=ri]) for ri in r_proj])
 
         return ((2/r_proj**2) * integral - sigma) / sigma_crit
 
@@ -810,7 +807,7 @@ class CLMModeling:
             r_proj, z_cl, ell
         )
 
-    def _eval_triaxial_corrected_surface_density(
+    def eval_triaxial_corrected_surface_density(
         self, r_proj, z_cl, ell
     ):
         r"""DOCUMENTATION RANCE
@@ -822,7 +819,7 @@ class CLMModeling:
             r_proj, z_cl, ell
         )
 
-    def _eval_triaxial_corrected_excess_surface_density_monopole(
+    def eval_triaxial_corrected_excess_surface_density_monopole(
         self, r_proj, z_cl, ell
     ):
         r"""DOCUMENTATION RANCE
