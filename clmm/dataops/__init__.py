@@ -33,7 +33,7 @@ def compute_tangential_and_cross_components(
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
-    is_quadrupole=False,
+    include_quadrupole=False,
     phi_major=None,
     ra_mem=None,
     dec_mem=None,
@@ -118,21 +118,21 @@ def compute_tangential_and_cross_components(
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         Used only when is_deltasigma=True.
-    is_quadrupole: bool
+    include_quadrupole: bool
         If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
         instead of g_t and g_x
     phi_major : float, optional
         the direction of the major axis of the input cluster in the unit of radian. 
-        only needed when `is_quadupole` is `True`.
+        only needed when `include_quadrupole` is `True`.
         Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
     ra_mem : array, optional
         right ascentions of the member galaxies of the input cluster,
         to calculate the direction of the major axis of the cluster.
-        Only needed when `is_quadrupole` is `True` and `phi_major` is not provided.
+        Only needed when `include_quadrupole` is `True` and `phi_major` is not provided.
     dec_mem : array, optional
         declinations of the member galaxies of the input cluster,
         to calculate the direction of the major axis of the cluster.
-        Only needed when `is_quadrupole` is `True` and `phi_major` is not provided.
+        Only needed when `include_quadrupole` is `True` and `phi_major` is not provided.
     weight_mem : array, optional
         weights for the member galaxies to be applied when calcualting 
         the major axis of the input cluster out of ra_mem and dec_mem. 
@@ -144,16 +144,15 @@ def compute_tangential_and_cross_components(
     -------
     angsep: array_like
         Angular separation between lens and each source galaxy in radians
-    IF is_quadrupole:
+    tangential_component: array_like
+        Tangential shear (or assimilated quantity) for each source galaxy
+    cross_component: array_like
+        Cross shear (or assimilated quantity) for each source galaxy
+    IF include_quadrupole:
         4theta_component: array_like
             4theta shear component (or assimilated quantity) for each source galaxy
         const_component: array_like
             constant shear component (or assimilated quantity) for each source galaxy
-    ELSE:
-        tangential_component: array_like
-            Tangential shear (or assimilated quantity) for each source galaxy
-        cross_component: array_like
-            Cross shear (or assimilated quantity) for each source galaxy
     """
     # pylint: disable-msg=too-many-locals
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
@@ -167,7 +166,7 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)
         validate_argument(locals(), "is_deltasigma", bool)
-        validate_argument(locals(), "is_quadrupole", bool)
+        validate_argument(locals(), "include_quadrupole", bool)
         validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
@@ -175,6 +174,12 @@ def compute_tangential_and_cross_components(
             prefix="Tangential- and Cross- shape components sources",
         )
         _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
+        if phi_major is not None:
+            validate_argument(locals(), "phi_major", float)
+        else:
+            validate_argument(locals(), "ra_mem", "float_array")
+            validate_argument(locals(), "dec_mem", "float_array")
+            validate_argument(locals(), "weight_mem", "float_array")
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -193,7 +198,15 @@ def compute_tangential_and_cross_components(
         angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
-    if is_quadupole:
+    # Compute the tangential and cross shears
+    tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
+    cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
+    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
+    if sigma_c is not None:
+        _sigma_c_arr = np.array(sigma_c)
+        tangential_comp *= _sigma_c_arr
+        cross_comp *= _sigma_c_arr
+    if include_quadrupole:
         if phi_major is not None:
             phi_major_ = phi_major
         else:
@@ -207,20 +220,10 @@ def compute_tangential_and_cross_components(
         const_comp = rotated_shear1
         # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
         if sigma_c is not None:
-            _sigma_c_arr = np.array(sigma_c)
             four_theta_comp *= _sigma_c_arr
             const_comp *= _sigma_c_arr
-    else:
-        # Compute the tangential and cross shears
-        tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
-        cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
-        # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
-        if sigma_c is not None:
-            _sigma_c_arr = np.array(sigma_c)
-            tangential_comp *= _sigma_c_arr
-            cross_comp *= _sigma_c_arr
-    if is_quadrupole:
-        return angsep, four_theta_comp, const_comp
+    if include_quadrupole:
+        return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
     else:
         return angsep, tangential_comp, cross_comp
 
