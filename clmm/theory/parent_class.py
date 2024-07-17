@@ -213,7 +213,7 @@ class CLMModeling:
 
         if self.halo_profile_model=='nfw':
             rho_s = self.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
-            integrand = self._integrand_NFW
+            integrand = self._integrand_surface_density_mis_NFW
 
             res = (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
                    * 2 * r_s * rho_s / np.pi)
@@ -226,7 +226,7 @@ class CLMModeling:
                 * np.exp(2./alpha_ein) * gamma(3./alpha_ein)
                 * gammainc(3./alpha_ein, 2./alpha_ein*c**alpha_ein))
 
-            integrand = self._integrand_Einasto
+            integrand = self._integrand_surface_density_mis_Einasto
 
             res = (quad_vec(integrand, 0., np.pi,
                              args=(r_proj, r_mis, r_s, alpha_ein), epsrel=1e-6)[0]
@@ -235,14 +235,14 @@ class CLMModeling:
         # Hernquist
         elif self.halo_profile_model=='hernquist':
             rho_s = self.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
-            integrand = self._integrand_Hernquist
+            integrand = self._integrand_surface_density_mis_Hernquist
 
             res = (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
                    * r_s * rho_s / np.pi)
 
         return res
 
-    def _integrand_NFW(self, theta, R, Roff, r_s):
+    def _integrand_surface_density_mis_NFW(self, theta, R, Roff, r_s):
         # pylint: disable=invalid-name
         x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
 
@@ -259,7 +259,7 @@ class CLMModeling:
 
         return np.piecewise(x, [x<1, x>1], [f1, f2, 1./3.])
 
-    def _integrand_Einasto(self, theta, R, Roff, r_s, alpha_ein):
+    def _integrand_surface_density_mis_Einasto(self, theta, R, Roff, r_s, alpha_ein):
         # pylint: disable=invalid-name
         def integrand0(z):
             x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
@@ -267,7 +267,7 @@ class CLMModeling:
 
         return quad_vec(integrand0, 0., np.inf)[0]
 
-    def _integrand_Hernquist(self, theta, R, Roff, r_s):
+    def _integrand_surface_density_mis_Hernquist(self, theta, R, Roff, r_s):
         # pylint: disable=invalid-name
         x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
         def f1(x):
@@ -289,10 +289,14 @@ class CLMModeling:
         # pylint: disable=invalid-name
         for i, R in enumerate(r_proj):
             R_lower = 0 if i==0 else r_proj[i-1]
-            res[i] = quad(R * self._eval_miscentered_surface_density, R_lower, R,
-                                    args=(z_cl, r_mis))[0]
+            res[i] = quad(self._integrand_mean_surface_density_mis, R_lower, R,
+                          args=(z_cl, r_mis))[0]
         res = np.cumsum(res)*2/r_proj**2
         return res
+
+    def _integrand_mean_surface_density_mis(self, R, z_cl, r_mis):
+        # pylint: disable=invalid-name
+        return R * self._eval_miscentered_surface_density(R, z_cl, r_mis)
 
     def _eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis):
         return (self._eval_miscentered_surface_density(r_proj, z_cl, r_mis)
