@@ -303,8 +303,8 @@ class CLMModeling:
         return R * self._eval_surface_density_miscentered(R, z_cl, r_mis)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis):
-        return (self._eval_surface_density_miscentered(r_proj, z_cl, r_mis)
-               - self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis))
+        return (self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis)
+               - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis))
 
     def _eval_2halo_term_generic(
         self,
