@@ -36,25 +36,25 @@ class GalaxyCluster:
     phi_major : float
         Direction of the cluster major axis (in radian).
         Users may provide `ra_mem`, `dec_mem` and `weight_mem` instead of this parameter. 
-        Only needed when `is_quadrupole==True`.
+        Only needed when `include_quadrupole==True`.
     ra_mem : array_like
         RAs of member galaxies (in degrees).
-        Only needed when `is_quadrupole==True`.
+        Only needed when `include_quadrupole==True`.
     dec_mem : array_like
         DECs of member galaxies (in degrees).
-        Only needed when `is_quadrupole==True`.
+        Only needed when `include_quadrupole==True`.
     weight_mem : array_like
         weights of member galaxies (to calculate major axis).
-        Only needed when `is_quadrupole==True`.
+        Only needed when `include_quadrupole==True`.
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     validate_input: bool
         Validade each input argument
-    is_quadrupole: bool
+    include_quadrupole: bool
         If quadrupole WL be calculated.
     """
 
-    def __init__(self, *args, validate_input=True, is_quadrupole=False, **kwargs):
+    def __init__(self, *args, validate_input=True, include_quadrupole=False, **kwargs):
         self.unique_id = None
         self.ra = None
         self.dec = None
@@ -65,7 +65,7 @@ class GalaxyCluster:
         self.dec_mem = None
         self.weight_mem = None
         self.validate_input = validate_input
-        self.is_quadrupole = is_quadrupole
+        self.include_quadrupole = include_quadrupole
         if len(args) > 0 or len(kwargs) > 0:
             self._add_values(*args, **kwargs)
             self._check_types()
@@ -79,7 +79,7 @@ class GalaxyCluster:
         self.dec = dec
         self.z = z
         self.galcat = galcat
-        if self.is_quadrupole:
+        if self.include_quadrupole:
             self.phi_major = phi_major
             self.ra_mem = ra_mem
             self.dec_mem = dec_mem
@@ -96,7 +96,7 @@ class GalaxyCluster:
         self.ra = float(self.ra)
         self.dec = float(self.dec)
         self.z = float(self.z)
-        if self.is_quadrupole:
+        if self.include_quadrupole:
             if self.phi_major is not None:
                 validate_argument(vars(self), "phi_major", float)
                 self.phi_major = float(self.phi_major)
@@ -264,8 +264,8 @@ class GalaxyCluster:
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
-        is_quadrupole: `input` is_quadrupole
-        [if is_quadrupole:]
+        include_quadrupole: `input` include_quadrupole
+        [if include_quadrupole:]
             phi_major: `cluster` major axis direction (in radian with respect to +x)
             (OR)
             ra_mem: `cluster` RAs of member galaxies for calculating major axis of a given cluster
@@ -311,12 +311,11 @@ class GalaxyCluster:
         -------
         angsep: array_like
             Angular separation between lens and each source galaxy in radians
-        [if not self.is_quadrupole:]
-            tangential_component: array_like
-                Tangential shear (or assimilated quantity) for each source galaxy
-            cross_component: array_like
-                Cross shear (or assimilated quantity) for each source galaxy
-        [if self.is_quadrupole:]
+        tangential_component: array_like
+            Tangential shear (or assimilated quantity) for each source galaxy
+        cross_component: array_like
+            Cross shear (or assimilated quantity) for each source galaxy
+        [if self.include_quadrupole:]
             quad_4theta_component: array_like
                 4theta quadrupole shear (or assimilated quantity) for each source galaxy
             quad_const_component: array_like
@@ -335,14 +334,14 @@ class GalaxyCluster:
         cols = self._get_input_galdata(col_dict)
 
         # compute shears
-        if self.is_quadrupole:
-            angsep, four_theta_comp, const_comp = compute_tangential_and_cross_components(
+        if self.include_quadrupole:
+            angsep, tangential_comp, cross_comp, four_theta_comp, const_comp = compute_tangential_and_cross_components(
                 is_deltasigma=is_deltasigma,
                 ra_lens=self.ra,
                 dec_lens=self.dec,
                 geometry=geometry,
                 validate_input=self.validate_input,
-                is_quadupole=self.is_quarupole,
+                include_quadrupole=self.include_quadrupole,
                 phi_major=self.phi_major,
                 ra_mem=self.ra_mem,
                 dec_mem=self.dec_mem,
@@ -351,13 +350,17 @@ class GalaxyCluster:
             )
             if add:
                 self.galcat["theta"] = angsep
+                self.galcat[tan_component] = tangential_comp
+                self.galcat[cross_component] = cross_comp
                 self.galcat[quad_4theta_component] = four_theta_comp
                 self.galcat[quad_const_component] = const_comp
                 if is_deltasigma:
                     sigmac_type = "effective" if use_pdz else "standard"
+                    self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
+                    self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
                     self.galcat.meta[f"{quad_4theta_component}_sigmac_type"] = sigmac_type
                     self.galcat.meta[f"{quad_const_component}_sigmac_type"] = sigmac_type
-            return angsep, four_theta_comp, const_comp
+            return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
         else:
             angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
                 is_deltasigma=is_deltasigma,
@@ -579,7 +582,7 @@ class GalaxyCluster:
         Calls `clmm.dataops.make_radial_profile` with the following arguments:
         components: `galcat` components (tan_component_in, cross_component_in, z)
                     OR
-                    (quad_4theta_component_in, quad_const_component_in, z) IF is_quadrupole
+                    (quad_4theta_component_in, quad_const_component_in, z) IF include_quadrupole
         angsep: `galcat` theta
         angsep_units: 'radians'
         bin_units: `input` bin_units
@@ -671,8 +674,15 @@ class GalaxyCluster:
         """
         # Too many local variables (19/15)
         # pylint: disable=R0914
-
-        if self.is_quadrupole:
+        if not all(
+            t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, "theta")
+        ):
+            raise TypeError(
+                "Shear or ellipticity information is missing. Galaxy catalog must have tangential"
+                "and cross shears (gt, gx) or ellipticities (et, ex). "
+                "Run compute_tangential_and_cross_components first."
+            )
+        if self.include_quadrupole:
             if not all(
                 t_ in self.galcat.columns for t_ in (quad_4theta_component_in, quad_const_component_in, "theta")
             ):
@@ -681,21 +691,16 @@ class GalaxyCluster:
                     "and constant quadrupole shears (g4theta, gconst) or ellipticities (e4theta, econst). "
                     "Run compute_tangential_and_cross_components first."
                 )
-        else:
-            if not all(
-                t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, "theta")
-            ):
-                raise TypeError(
-                    "Shear or ellipticity information is missing. Galaxy catalog must have tangential"
-                    "and cross shears (gt, gx) or ellipticities (et, ex). "
-                    "Run compute_tangential_and_cross_components first."
-                )
         if "z" not in self.galcat.columns:
             raise TypeError("Missing galaxy redshifts!")
         # Compute the binned averages and associated errors
-        if self.is_quadrupole:
+        if self.include_quadrupole:
             profile_table, binnumber = make_radial_profile(
-                [self.galcat[n].data for n in (quad_4theta_component_in, quad_const_component_in, "z")],
+                [self.galcat[n].data for n in 
+                    (tan_component_in, cross_component_in, 
+                        quad_4theta_component_in, quad_const_component_in, "z"
+                    )
+                ],
                 angsep=self.galcat["theta"],
                 angsep_units="radians",
                 bin_units=bin_units,
@@ -708,12 +713,16 @@ class GalaxyCluster:
                 validate_input=self.validate_input,
                 components_error=[
                     None if n is None else self.galcat[n].data
-                    for n in (quad_4theta_component_in_err, quad_const_component_in_err, None)
+                    for n in (tan_component_in_err, cross_component_in_err, 
+                        quad_4theta_component_in_err, quad_const_component_in_err, None
+                    )
                 ],
                 weights=self.galcat[weights_in].data if use_weights else None,
             )
             # Reaname table columns
-            for i, name in enumerate([quad_4theta_component_out, quad_const_component_out, "z"]):
+            for i, name in enumerate([tan_component_out, cross_component_out,
+                quad_4theta_component_out, quad_const_component_out, "z"]
+            ):
                 profile_table.rename_column(f"p_{i}", name)
                 profile_table.rename_column(f"p_{i}_err", f"{name}_err")
         else:
@@ -823,14 +832,33 @@ class GalaxyCluster:
         if not hasattr(self, table_name):
             raise ValueError(f"GalaxyClusters does not have a '{table_name}' table.")
         profile = getattr(self, table_name)
-        if self.is_quadrupole:
-            for col in (quad_4theta_component, quad_const_component):
+        if self.include_quadrupole:
+            for col in (tangential_component, cross_component, quad_4theta_component, quad_const_component):
                 if col not in profile.columns:
                     raise ValueError(f"Column for plotting '{col}' does not exist.")
-            for col in (quad_4theta_component_error, quad_const_component_error):
+            for col in (tangential_component_error, cross_component_error, 
+                    quad_4theta_component_error, quad_const_component_error
+            ):
                 if col not in profile.columns:
                     warnings.warn(f"Column for plotting '{col}' does not exist.")
             return plot_profiles(
+                rbins=profile["radius"],
+                r_units=profile.meta["bin_units"],
+                tangential_component=profile[tangential_component],
+                tangential_component_error=(
+                    profile[tangential_component_error]
+                    if tangential_component_error in profile.columns
+                    else None
+                ),
+                cross_component=profile[cross_component],
+                cross_component_error=(
+                    profile[cross_component_error] if cross_component_error in profile.columns else None
+                ),
+                xscale=xscale,
+                yscale=yscale,
+                tangential_component_label=tangential_component,
+                cross_component_label=cross_component,
+            ), plot_profiles(
                 rbins=profile["radius"],
                 r_units=profile.meta["bin_units"],
                 tangential_component=profile[quad_4theta_component],
@@ -848,6 +876,7 @@ class GalaxyCluster:
                 tangential_component_label=quad_4theta_component,
                 cross_component_label=quad_const_component,
             )
+
         else:
             for col in (tangential_component, cross_component):
                 if col not in profile.columns:

@@ -206,6 +206,7 @@ def compute_tangential_and_cross_components(
         _sigma_c_arr = np.array(sigma_c)
         tangential_comp *= _sigma_c_arr
         cross_comp *= _sigma_c_arr
+    
     if include_quadrupole:
         if phi_major is not None:
             phi_major_ = phi_major
@@ -221,11 +222,12 @@ def compute_tangential_and_cross_components(
         # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
         if sigma_c is not None:
             four_theta_comp *= _sigma_c_arr
-            const_comp *= _sigma_c_arr
+            const_comp *= _sigma_c_arr    
     if include_quadrupole:
         return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
     else:
         return angsep, tangential_comp, cross_comp
+
 
 def compute_background_probability(
     z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
