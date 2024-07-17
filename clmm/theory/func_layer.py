@@ -1308,7 +1308,7 @@ def compute_delta_sigma_4theta_triaxiality(
     verbose=False,
     validate_input=True,
 ):
-    r"""Compute the "4-theta"-quadrupole value
+    r"""Compute the "4-theta" component of quadrupole shear as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1351,7 +1351,7 @@ def compute_delta_sigma_4theta_triaxiality(
     Returns
     -------
     ds4theta: array
-        Delta sigma 4-theta value at a position for the elliptical halo specified
+        Delta sigma 4-theta component value at a position for the elliptical halo specified
     """
     ### DEFINING INTEGRALS:
     r_arr = np.linspace(0.01, 3*np.max(r_source), sample_N)
@@ -1390,7 +1390,7 @@ def compute_delta_sigma_const_triaxiality(
     verbose=False,
     validate_input=True,
 ):
-    r"""Compute the excess surface density lensing profile for "const"-quadrupole value
+    r"""Compute the "const" component of quadrupole shear as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1474,7 +1474,8 @@ def compute_delta_sigma_excess_triaxiality(
     verbose=False,
     validate_input=True,
 ):
-    r"""Compute the excess surface density lensing profile for the monopole component along with second order expansion term (e**2)
+    r"""Compute the excess surface density lensing profile for the monopole component along 
+    with second order expansion term (e**2) as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
