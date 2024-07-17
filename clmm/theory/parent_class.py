@@ -248,6 +248,7 @@ class CLMModeling:
         return res
 
     def _integrand_surface_density_mis(self, theta, R, Roff, z_cl):
+        # pylint: disable=invalid-name
         return self.eval_surface_density(np.sqrt(R*R + Roff*Roff - 2*R*Roff*np.cos(theta)), z_cl)
 
     def _integrand_surface_density_mis_NFW(self, theta, R, Roff, r_s):
@@ -310,9 +311,9 @@ class CLMModeling:
         # pylint: disable=invalid-name
         return R * self._eval_surface_density_miscentered(R, z_cl, r_mis, backend)
 
-    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis):
-        return (self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis)
-               - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis))
+    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+        return (self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis, backend)
+               - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis, backend))
 
     def _eval_2halo_term_generic(
         self,
