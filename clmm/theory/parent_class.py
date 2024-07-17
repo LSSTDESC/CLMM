@@ -206,7 +206,7 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_miscentered_surface_density(self, r_proj, z_cl, r_mis):
-        # pylint: disable=invalid-name
+        # pylint: disable=invalid-name, possibly-used-before-assignment
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
         r_s = self.eval_rdelta(z_cl) / c
