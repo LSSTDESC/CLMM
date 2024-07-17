@@ -8,7 +8,7 @@ import numpy as np
 
 # functions for the 2h term
 from scipy.integrate import simpson, quad, quad_vec
-from scipy.special import jv
+from scipy.special import gamma, gammainc, jv
 from scipy.interpolate import splrep, splev
 
 from .generic import (
@@ -206,65 +206,91 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_miscentered_surface_density(self, r_proj, z_cl, r_mis):
-        
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
         r_s = self.eval_rdelta(z_cl) / c
 
-        def integrand(theta, R, Roff):
+        if self.halo_profile_model=='nfw':
+            rho_s = self.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
+            integrand = self._integrand_NFW
+
+            return (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                    * 2 * r_s * rho_s / np.pi)
+
+        # Einasto
+        elif self.halo_profile_model=='einasto':
+            alpha_ein = self._get_einasto_alpha(z_cl)
+            rho_s = self.delta_mdef/3.*c**3.*rho_def/(
+                2.**(-3./alpha_ein) * alpha_ein**(-1.+3./alpha_ein)
+                * np.exp(2./alpha_ein) * gamma(3./alpha_ein)
+                * gammainc(3./alpha_ein, 2./alpha_ein*c**alpha_ein))
+
+            integrand = self._integrand_Einasto
+
+            return (quad_vec(integrand, 0., np.pi,
+                             args=(r_proj, r_mis, r_s, alpha_ein), epsrel=1e-6)[0]
+                    * 2 * rho_s / np.pi)
+
+        # Hernquist
+        elif self.halo_profile_model=='hernquist':
+            rho_s = self.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
+            integrand = self._integrand_Hernquist
+
+            return (quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                    * r_s * rho_s / np.pi)
+
+    def _integrand_NFW(self, theta, R, Roff, r_s):
+        x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+
         # Analytical solution for NFW
-            if self.halo_profile_model=='nfw':
-                rho_s = self.delta_mdef / 3. * c**3. * rho_def / (np.log(1.+c) - c/(1.+c))
-                x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
-                x2m1 = x**2. - 1.
-                print(type(x))
-                if x < 1:
-                    sqrt_x2m1 = np.sqrt(-x2m1)
-                    integrand = np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
-                elif x > 1:
-                    sqrt_x2m1 = np.sqrt(x2m1)
-                    integrand = -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
-                else:
-                    res = 1./3.
-                integrand *= 2. * r_s * rho_s
-                return integrand
+        def f1(x):
+            x2m1 = x**2. - 1.
+            sqrt_x2m1 = np.sqrt(-x2m1)
+            return np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
 
-            # Einasto
-            elif self.halo_profile_model=='einasto':
-                alpha_ein = self._get_einasto_alpha(z_cl)
-                rho_s = delta_mdef/3.*c**3.*rho_def/(2.**(-3./alpha_ein) * alpha_ein**(-1.+3./alpha_ein) 
-                    * np.exp(2./alpha_ein) * gamma(3./alpha_ein) * gammainc(3./alpha_ein, 2./alpha_ein*c**alpha_ein))
+        def f2(x):
+            x2m1 = x**2. - 1.
+            sqrt_x2m1 = np.sqrt(x2m1)
+            return -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
 
-                def integrand0(z):
-                    x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
-                    return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
-                
-                integrand = quad_vec(integrand, 0., np.inf)[0] * 2. * rho_s
-                return integrand
+        return np.piecewise(x, [x<1, x>1], [f1, f2, 1./3.])
 
-            # Hernquist
-            elif self.halo_profile_model=='hernquist':
-                rho_s = self.delta_mdef/3.*c**3.*rho_def/((c/(1. + c))**2.)*2
-                x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
-                x2m1 = x**2. - 1.
-                if x < 1:
-                    sqrt_x2m1 = np.sqrt(-x2m1)
-                    integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsinh(sqrt_x2m1/x) / (-x2m1)**2.5)
-                elif x > 1:
-                    sqrt_x2m1 = np.sqrt(x2m1)
-                    integrand = (-3 / x2m1**2 + (x2m1+3) * np.arcsin(sqrt_x2m1/x) / (x2m1)**2.5)
-                else:
-                    integrand = 4./15.
-                integrand *= r_s * rho_s
-                return integrand
+    def _integrand_Einasto(self, theta, R, Roff, r_s, alpha_ein):
+        def integrand0(z):
+            x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+            return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
 
-        return quad_vec(integrand, 0., np.pi, args=(r_proj, r_mis), epsrel=1e-6)[0]/np.pi
+        return quad_vec(integrand0, 0., np.inf)[0]
+
+    def _integrand_Hernquist(self, theta, R, Roff, r_s):
+        x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+
+        def f1(x):
+            x2m1 = x**2. - 1.
+            sqrt_x2m1 = np.sqrt(-x2m1)
+            return (-3 / x2m1**2
+                   + (x2m1+3) * np.arcsinh(sqrt_x2m1/x) / (-x2m1)**2.5)
+
+        def f2(x):
+            x2m1 = x**2. - 1.
+            sqrt_x2m1 = np.sqrt(x2m1)
+            return (-3 / x2m1**2
+                   + (x2m1+3) * np.arcsin(sqrt_x2m1/x) / (x2m1)**2.5)
+
+        return np.piecewise(x, [x<1, x>1], [f1, f2, 4./15.])
 
     def _eval_miscentered_mean_surface_density(self, r_proj, z_cl, r_mis):
-        return 0.
+        res = np.zeros_like(r_proj)
+        for i, R in enumerate(r_proj):
+            R_lower = 0 if i==0 else r_proj[i-1]
+            res[i] = integrate.quad(R * self._eval_miscentered_surface_density, R_lower, R,
+                                    args=(z_cl, Roff))[0]
+        res = np.cumsum(res)*2/R_arr**2
+        return res
 
     def _eval_miscentered_excess_surface_density(self, r_proj, z_cl, r_mis):
-        return 0.
+        return (self._eval_miscentered_surface_density(r_proj, z_cl, r_mis)
+               - self._eval_miscentered_mean_surface_density(r_proj, z_cl, r_mis))
 
     def _eval_2halo_term_generic(
         self,
@@ -612,7 +638,7 @@ class CLMModeling:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
             if r_mis is not None: validate_argument(locals(), "r_mis", float, argmin=0)
-      
+
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -632,7 +658,7 @@ class CLMModeling:
             Redshift of the cluster
         r_mis : float, optional
             Projected miscenter distance in :math:`M\!pc`.
-        
+
         Returns
         -------
         numpy.ndarray, float
@@ -681,7 +707,6 @@ class CLMModeling:
             return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
         else:
             return self._eval_miscentered_excess_surface_density(r_proj=r_proj, z_cl=z_cl, r_mis=r_mis)
-  
 
     def eval_excess_surface_density_2h(
         self,
