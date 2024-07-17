@@ -2,6 +2,7 @@
 import warnings
 import numpy as np
 import scipy
+from scipy.stats import binned_statistic
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from ..gcdata import GCData
@@ -708,3 +709,189 @@ def make_stacked_radial_profile(angsep, weights, components):
         np.average(component, axis=0, weights=weights) for component in components
     ]
     return staked_angsep, stacked_components
+
+def measure_Delta_Sigma_const_triaxiality(w, gamma1, Sigma_crit) :
+    """Measure Delta sigma const quadrupole value for individual galaxies.
+
+    Parameters
+    ----------
+    w: float or array
+        Weight computed for each galaxy by the descrition as given in Shin et al. (https://doi.org/10.1093/mnras/stx3366)
+    gamma1: float or array
+        Shear component gamma 1
+    Sigma_crit: float
+        Critical surface mass density in M_{sun}/Mpc^{2}
+
+    Returns
+    -------
+    dsconst_data: The measured "4theta" quadrupole component from the input shear measurements for each galaxy
+    """
+    dsconst_data = w * Sigma_crit * gamma1 / w
+    return dsconst_data
+
+def measure_Delta_Sigma_4theta_triaxiality(w1, w2, gamma1, gamma2, theta, Sigma_crit) :
+    """Measure Delta sigma 4theta quadrupole value for individual galaxies.
+
+    Parameters
+    ----------
+    w1: float or array
+        Weight computed for each galaxy by the descrition as given in Shin et al. (https://doi.org/10.1093/mnras/stx3366)
+    w2: float or array
+        Weight computed for each galaxy by the descrition as given in Shin et al. (https://doi.org/10.1093/mnras/stx3366)
+    gamma1: float or array
+        Shear component gamma 1
+    gamma2: float or array
+        Shear component gamma 2
+    theta: float or array
+        Position Angle of galaxy measured counter-clockwise from the gamma1 direction
+    Sigma_crit: float
+        Critical surface mass density in M_{sun}/Mpc^{2}
+
+    Returns
+    -------
+    ds4theta_data: The measured "const" quadrupole component from the input shear measurements for each galaxy
+    """
+    ds4theta_data = Sigma_crit * (w1*gamma1/np.cos(4*theta) + w2*gamma2/np.sin(4*theta)) / (w1 + w2)
+    return ds4theta_data
+
+def measure_weights_triaxiality(Sigma_crit, theta, Sigma_shape=0.0001, Sigma_meas=0) :
+    """Measure weight values for quadrupole measurement of individual galaxies. 
+    Using Equations 35, 32, 33 from Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
+
+    Parameters
+    ----------
+    Sigma_crit: float
+        Critical surface mass density in M_{sun}/Mpc^{2}
+    theta: float or array
+        Position Angle of galaxy measured counter-clockwise from the gamma1 direction
+    Sigma_shape: Float, optional
+        Scatter in the shape measurement from shape noise
+    Sigma_meas: Float, optional
+        Measurement error for shapes
+
+    Returns
+    -------
+    w, w1, w2: float or array
+        Weights for each galaxy
+    """
+	
+    w  = 1 / (Sigma_crit**2 * (Sigma_shape**2 + Sigma_meas**2))
+    w1 = np.cos(4*theta)**2 * w
+    w2 = np.sin(4*theta)**2 * w
+    return w, w1, w2
+
+def make_binned_estimators_triaxiality(gamma1, gamma2, x_arcsec, y_arcsec, z_cluster, z_source, cosmo, monopole_bins=15,
+                                      quadrupole_bins=15, r_min=0.3, r_max=2.5):
+    """
+    Makes radially binned profiles for Monopole, Quadrupole (4theta and const) as described in Shin et al. 2018
+    Parameters
+    ----------
+    gamma1: float or array
+        Shear component gamma 1
+    gamma2: float or array
+        Shear component gamma 2
+    x_arcsec: float or array
+        X position in arcsec when cluster center is at 0.0 and x axis is assumed to be along the major axis of the cluster
+    y_arcsec: float or array
+        Y position in arcsec when cluster center is at 0.0
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object 
+    monopole_bins: float, optional
+        Number of bins for monopole lensing profile
+    quadrupole_bins: float, optional
+        Number of bins for quadrupole lensing profiles (4theta, const)
+    r_min: Float, optional
+        Minimum radial distance to measure monopole and quadrupole shear profiles in Mpc (Default is 0.3 Mpc)
+    r_max: Float, optional
+        Maximum radial distance to measure monopole and quadrupole shear profiles in Mpc (Default is 2.5 Mpc)
+
+    Returns
+    -------
+    ds_mono: float or array
+        Binned monopole lensing profile
+    ds_mono_err: float or array
+        Uncertainty for the binned monopole lensing shear profile
+    r_mono: float or array
+        Bin centers for the monopole lensing shear profile
+    ds_4theta: float or array
+        Binned binned quadrupole 4-theta lensing shear profile
+    ds_4theta_err: float or array
+        Uncertainty for the binned quadrupole 4-theta lensing shear profile
+    ds_const: float or array
+        Binned binned quadrupole const lensing shear profile
+    ds_const_err: float or array
+        Uncertainty for the binned quadrupole const lensing shear profile
+    r_quad: float or array
+        Bin centers for the quadrupole lensing shear profiles (4theta and const)
+    """
+    
+    sigma_crit = cosmo.eval_sigma_crit(z_cluster,z_source)
+    r = np.sqrt((x_arcsec**2 + y_arcsec**2)) #In arcsecs
+    theta = np.arctan2(y_arcsec, x_arcsec)
+    r_mpc = r*cosmo.eval_da(z_cluster) * np.pi/180.0 * 1/3600 #In Mpc
+    
+    w, w1, w2 = measure_weights_triaxiality(sigma_crit, theta)
+    DS4theta = measure_Delta_Sigma_4theta_triaxiality(w1, w2, gamma1, gamma2, theta, sigma_crit)
+    DSconst = measure_Delta_Sigma_const_triaxiality(w, gamma1, sigma_crit)
+    
+    #Binning for Quadrupole measurements DS4theta and DSconst
+    bins=quadrupole_bins
+    r_min = r_min
+    r_max = r_max
+    
+    bin_edges = np.logspace(np.log10(r_min), np.log10(r_max), bins)
+    N_i = []
+    for i in np.arange(bins-1):
+        N_i.append(len(r_mpc[(r_mpc > bin_edges[i]) & (r_mpc < bin_edges[i+1])]))
+    N_i=np.array(N_i)
+
+
+    result = binned_statistic(r_mpc, gamma1, statistic='mean', bins=bin_edges)
+    gamma1_i = result.statistic
+    res = binned_statistic(r_mpc, gamma2, statistic='mean', bins=bin_edges)
+    gamma2_i = res.statistic
+    res = binned_statistic(r_mpc, DS4theta, statistic='mean', bins=bin_edges)
+    DS4theta_i_err = binned_statistic(r_mpc, DS4theta, statistic='std', bins=bin_edges).statistic/np.sqrt(N_i)
+    DS4theta_i = res.statistic
+    res = binned_statistic(r_mpc, DSconst, statistic='mean', bins=bin_edges)
+    DSconst_i = res.statistic
+    DSconst_i_err = binned_statistic(r_mpc, DSconst, statistic='std', bins=bin_edges).statistic/np.sqrt(N_i)
+    r_i = bin_edges
+    
+    #Binning for Monopole Measurements:
+    bins_mono=monopole_bins
+    bin_edges = np.logspace(np.log10(r_min), np.log10(r_max), bins_mono)
+    N_i = []
+    for i in np.arange(bins_mono-1):
+        N_i.append(len(r_mpc[(r_mpc > bin_edges[i]) & (r_mpc < bin_edges[i+1])]))
+    N_i=np.array(N_i)
+
+    r_mono = bin_edges
+    res = binned_statistic(r_mpc, -gamma1*np.cos(2*theta)-gamma2*np.sin(2*theta), statistic='mean', bins=bin_edges)
+    gammat_mono = res.statistic
+    ds_mono_err = binned_statistic(r_mpc, -gamma1*np.cos(2*theta)-gamma2*np.sin(2*theta), statistic='std',
+                                   bins=bin_edges).statistic/np.sqrt(N_i)*sigma_crit
+    ds_mono = gammat_mono*sigma_crit
+        
+    # SAFEGUARD AGAINST BINS WITH NANs and 0.0s
+    
+    ind = np.invert(np.isnan(ds_mono) | np.isnan(ds_mono_err))
+    ds_mono = ds_mono[ind]
+    ds_mono_err = ds_mono_err[ind]
+    r_mono = np.sqrt(r_mono[:-1]*r_mono[1:])[ind]
+    ind = (ds_mono!= 0.0) & (ds_mono_err!= 0.0)
+    ds_mono = ds_mono[ind]
+    ds_mono_err = np.abs(ds_mono_err[ind]) 
+    r_mono = r_mono[ind] 
+    
+    ind = np.invert(np.isnan(DS4theta_i) | np.isnan(DS4theta_i_err) | np.isnan(DSconst_i) | np.isnan(DSconst_i_err))
+    ds_4theta = DS4theta_i[ind]
+    ds_4theta_err = np.abs(DS4theta_i_err[ind])
+    ds_const = DSconst_i[ind] 
+    ds_const_err = np.abs(DSconst_i_err[ind])
+    r_quad = np.sqrt(r_i[:-1]*r_i[1:])[ind]
+    
+    return ds_mono,ds_mono_err,r_mono,ds_4theta,ds_4theta_err,ds_const,ds_const_err,r_quad
+
