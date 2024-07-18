@@ -139,10 +139,10 @@ def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
     thetas_pixel, phis_pixel = da._compute_lensing_angles_flatsky(
-        ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel"
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="euclidean"
     )
     thetas_sky, phis_sky = da._compute_lensing_angles_flatsky(
-        ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="celestial"
     )
 
     assert_allclose(
@@ -167,10 +167,10 @@ def test_compute_lensing_angles_astropy():
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
     thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(
-        ra_l, dec_l, ra_s, dec_s, coordinate_system="pixel"
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="euclidean"
     )
     thetas_sky, phis_sky = da._compute_lensing_angles_astropy(
-        ra_l, dec_l, ra_s, dec_s, coordinate_system="sky"
+        ra_l, dec_l, ra_s, dec_s, coordinate_system="celestial"
     )
 
     assert_allclose(

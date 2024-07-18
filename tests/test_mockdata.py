@@ -264,17 +264,13 @@ def test_shapenoise():
 
     # Verify that the shape noise is Gaussian around 0 (for the very small shear here)
     sigma = 0.25
-    data = mock.generate_galaxy_catalog(
-        10**12.0, 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=sigma
-    )
+    data = mock.generate_galaxy_catalog(10**12.0, 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=sigma)
     # Check that there are no galaxies with |e|>1
     assert_equal(np.count_nonzero((data["e1"] > 1) | (data["e1"] < -1)), 0)
     assert_equal(np.count_nonzero((data["e2"] > 1) | (data["e2"] < -1)), 0)
     # Check that shape noise is Guassian with correct std dev
     bins = np.arange(-1, 1.1, 0.1)
-    gauss = (
-        5000 * np.exp(-0.5 * (bins[:-1] + 0.05) ** 2 / sigma**2) / (sigma * np.sqrt(2 * np.pi))
-    )
+    gauss = 5000 * np.exp(-0.5 * (bins[:-1] + 0.05) ** 2 / sigma**2) / (sigma * np.sqrt(2 * np.pi))
     assert_allclose(np.histogram(data["e1"], bins=bins)[0], gauss, atol=50, rtol=0.05)
     assert_allclose(np.histogram(data["e2"], bins=bins)[0], gauss, atol=50, rtol=0.05)
 
@@ -289,11 +285,11 @@ def test_coordinate_system():
     # Verify that the coordinate system is correctly set up
     np.random.seed(285713)
     pixel_data = mock.generate_galaxy_catalog(
-        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="pixel"
+        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="euclidean"
     )
     np.random.seed(285713)
     sky_data = mock.generate_galaxy_catalog(
-        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="sky"
+        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="celestial"
     )
 
     assert_equal(pixel_data["ra"], sky_data["ra"])

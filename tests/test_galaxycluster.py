@@ -20,7 +20,7 @@ def test_initialization():
         "dec": 34.0,
         "z": 0.3,
         "galcat": GCData(),
-        "coordinate_system": "pixel",
+        "coordinate_system": "euclidean",
     }
     cl1 = clmm.GalaxyCluster(**testdict1)
 
@@ -49,7 +49,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -59,7 +59,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -69,7 +69,7 @@ def test_integrity():  # Converge on name
         dec=95.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -79,7 +79,7 @@ def test_integrity():  # Converge on name
         dec=-95.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -89,7 +89,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=-0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -111,7 +111,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -121,7 +121,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=1,
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -131,7 +131,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=[],
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -141,7 +141,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -151,7 +151,7 @@ def test_integrity():  # Converge on name
         dec=None,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -161,7 +161,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=None,
         galcat=GCData(),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -177,13 +177,13 @@ def test_integrity():  # Converge on name
     # Test that id can support numbers and strings
     assert isinstance(
         clmm.GalaxyCluster(
-            unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="pixel"
+            unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="euclidean"
         ).unique_id,
         str,
     )
     assert isinstance(
         clmm.GalaxyCluster(
-            unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="pixel"
+            unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="euclidean"
         ).unique_id,
         str,
     )
@@ -513,7 +513,7 @@ def test_coordinate_system():
             [ra_source, dec_source, shear1, shear2_pixel, z_src],
             names=("ra", "dec", "e1", "e2", "z"),
         ),
-        coordinate_system="pixel",
+        coordinate_system="euclidean",
     )
     cl_sky = clmm.GalaxyCluster(
         unique_id="test",
@@ -523,7 +523,7 @@ def test_coordinate_system():
         galcat=GCData(
             [ra_source, dec_source, shear1, shear2_sky, z_src], names=("ra", "dec", "e1", "e2", "z")
         ),
-        coordinate_system="sky",
+        coordinate_system="celestial",
     )
 
     cl_pixel.compute_tangential_and_cross_components()

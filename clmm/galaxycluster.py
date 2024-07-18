@@ -37,9 +37,9 @@ class GalaxyCluster:
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
-    coordinate_system : str
-        Coordinate system of the galaxy cluster center (pixel or sky)
-
+    coordinate_system : str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+        Default is 'euclidean'.
     validate_input: bool
         Validade each input argument
     """
@@ -63,7 +63,7 @@ class GalaxyCluster:
         dec: float,
         z: float,
         galcat: GCData,
-        coordinate_system: str = "pixel",
+        coordinate_system: str = "euclidean",
     ):
         """Add values for all attributes"""
         self.unique_id = unique_id
@@ -257,9 +257,6 @@ class GalaxyCluster:
             Name of the column to be added to the `galcat` astropy table that will contain the
             cross component computed from columns `shape_component1` and `shape_component2`.
             Default: `ex`
-        coordinate_system: str, optional
-            Coordinate system of the ellipticity components. Options are 'pixel' or 'sky'.
-            Default: 'pixel'
         geometry: str, optional
             Sky geometry to compute angular separation.
             Options are curve (uses astropy) or flat.
