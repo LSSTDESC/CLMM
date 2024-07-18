@@ -498,46 +498,47 @@ def test_coordinate_system():
     dec_source = [41.9, 42.2]
     z_src = [1.0, 2.0]
     shear1 = [0.2, 0.4]
-    shear2_pixel = [0.3, 0.5]
-    shear2_sky = [-0.3, -0.5]
+    shear2_euclidean = [0.3, 0.5]
+    shear2_celestial = [-0.3, -0.5]
     # Set up radial values
     bins_radians = [0.002, 0.003, 0.004]
     bin_units = "radians"
     # create cluster
-    cl_pixel = clmm.GalaxyCluster(
+    cl_euclidean = clmm.GalaxyCluster(
         unique_id="test",
         ra=ra_lens,
         dec=dec_lens,
         z=z_lens,
         galcat=GCData(
-            [ra_source, dec_source, shear1, shear2_pixel, z_src],
+            [ra_source, dec_source, shear1, shear2_euclidean, z_src],
             names=("ra", "dec", "e1", "e2", "z"),
         ),
         coordinate_system="euclidean",
     )
-    cl_sky = clmm.GalaxyCluster(
+    cl_celestial = clmm.GalaxyCluster(
         unique_id="test",
         ra=ra_lens,
         dec=dec_lens,
         z=z_lens,
         galcat=GCData(
-            [ra_source, dec_source, shear1, shear2_sky, z_src], names=("ra", "dec", "e1", "e2", "z")
+            [ra_source, dec_source, shear1, shear2_celestial, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
         ),
         coordinate_system="celestial",
     )
 
-    cl_pixel.compute_tangential_and_cross_components()
-    cl_sky.compute_tangential_and_cross_components()
+    cl_euclidean.compute_tangential_and_cross_components()
+    cl_celestial.compute_tangential_and_cross_components()
 
     assert_allclose(
-        cl_pixel.galcat["et"],
-        cl_sky.galcat["et"],
+        cl_euclidean.galcat["et"],
+        cl_celestial.galcat["et"],
         **TOLERANCE,
         err_msg="Tangential component conversion between ellipticity coordinate systems failed",
     )
     assert_allclose(
-        cl_pixel.galcat["ex"],
-        -cl_sky.galcat["ex"],
+        cl_euclidean.galcat["ex"],
+        -cl_celestial.galcat["ex"],
         **TOLERANCE,
         err_msg="Cross component conversion between ellipticity coordinate systems failed",
     )

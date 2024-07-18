@@ -284,27 +284,43 @@ def test_coordinate_system():
 
     # Verify that the coordinate system is correctly set up
     np.random.seed(285713)
-    pixel_data = mock.generate_galaxy_catalog(
-        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="euclidean"
+    euclidean_data = mock.generate_galaxy_catalog(
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        coordinate_system="euclidean",
     )
     np.random.seed(285713)
-    sky_data = mock.generate_galaxy_catalog(
-        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="celestial"
+    celestial_data = mock.generate_galaxy_catalog(
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        coordinate_system="celestial",
     )
 
-    assert_equal(pixel_data["ra"], sky_data["ra"])
-    assert_equal(pixel_data["dec"], sky_data["dec"])
+    assert_equal(euclidean_data["ra"], celestial_data["ra"])
+    assert_equal(euclidean_data["dec"], celestial_data["dec"])
     assert_allclose(
-        pixel_data["e1"],
-        sky_data["e1"],
+        euclidean_data["e1"],
+        celestial_data["e1"],
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
     )
     assert_allclose(
-        pixel_data["e2"],
-        -sky_data["e2"],
+        euclidean_data["e2"],
+        -celestial_data["e2"],
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
     )
 
     assert_raises(
