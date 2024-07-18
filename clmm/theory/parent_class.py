@@ -266,7 +266,7 @@ class CLMModeling:
             sigma = self._eval_surface_density_triaxial(r_proj, z_cl, ell, n_grid)
             integral = np.array(
                 [
-                    simpson(r_proj[r_proj <= ri] * sigma[r_proj <= ri], r_proj[r_proj <= ri])
+                    simpson(r_proj[r_proj <= ri] * sigma[r_proj <= ri], x=r_proj[r_proj <= ri])
                     for ri in r_proj
                 ]
             )
