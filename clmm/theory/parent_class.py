@@ -207,13 +207,14 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_surface_density_miscentered_float(self, r_proj, z_cl, r_mis, backend):
+    def _eval_surface_density_miscentered_float(self, r_proj_float, z_cl, r_mis, backend):
         # pylint: disable=invalid-name, possibly-used-before-assignment
 
         if backend:
             integrand = self._integrand_surface_density_mis
             res = (
-                quad_vec(integrand, 0.0, np.pi, args=(r_proj, r_mis, z_cl), epsrel=1e-6)[0] / np.pi
+                quad(integrand, 0.0, np.pi,
+                     args=(r_proj_float, r_mis, z_cl), epsrel=1e-6)[0] / np.pi
             )
 
         else:
@@ -226,7 +227,7 @@ class CLMModeling:
                 integrand = self._integrand_surface_density_mis_nfw
 
                 res = (
-                    quad_vec(integrand, 0.0, np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                    quad(integrand, 0.0, np.pi, args=(r_proj_float, r_mis, r_s), epsrel=1e-6)[0]
                     * 2
                     * r_s
                     * rho_s
@@ -253,8 +254,8 @@ class CLMModeling:
                 integrand = self._integrand_surface_density_mis_einasto
 
                 res = (
-                    quad_vec(
-                        integrand, 0.0, np.pi, args=(r_proj, r_mis, r_s, alpha_ein), epsrel=1e-6
+                    quad(integrand, 0.0, np.pi,
+                        args=(r_proj_float, r_mis, r_s, alpha_ein), epsrel=1e-6
                     )[0]
                     * 2
                     * rho_s
@@ -267,7 +268,8 @@ class CLMModeling:
                 integrand = self._integrand_surface_density_mis_hernquist
 
                 res = (
-                    quad_vec(integrand, 0.0, np.pi, args=(r_proj, r_mis, r_s), epsrel=1e-6)[0]
+                    quad(integrand, 0.0, np.pi,
+                         args=(r_proj_float, r_mis, r_s), epsrel=1e-6)[0]
                     * r_s
                     * rho_s
                     / np.pi
