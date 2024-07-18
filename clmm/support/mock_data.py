@@ -1,4 +1,5 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
+
 import warnings
 import numpy as np
 from astropy import units as u
@@ -12,6 +13,7 @@ from ..utils import (
     validate_argument,
     _draw_random_points_from_distribution,
     gaussian,
+    _validate_coordinate_system,
 )
 from ..redshift import distributions as zdist
 
@@ -38,7 +40,7 @@ def generate_galaxy_catalog(
     ngal_density=None,
     pz_bins=101,
     pzpdf_type="shared_bins",
-    coordinate_system="pixel",
+    coordinate_system="euclidean",
     validate_input=True,
 ):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -158,7 +160,9 @@ def generate_galaxy_catalog(
         The number of galaxies to be drawn will then depend on the redshift distribution and
         user-defined redshift range.  If specified, the ngals argument will be ignored.
     coordinate_system : str, optional
-        The coordinate system to use for the output catalog. Options are 'pixel' and 'sky'.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
 
     validate_input: bool
         Validade each input argument
@@ -212,6 +216,7 @@ def generate_galaxy_catalog(
         validate_argument(locals(), "ngals", float, none_ok=True)
         validate_argument(locals(), "ngal_density", float, none_ok=True)
         validate_argument(locals(), "pz_bins", (int, "array"))
+        _validate_coordinate_system(locals(), "coordinate_system", str)
 
     if zsrc_min is None:
         zsrc_min = cluster_z + 0.1
@@ -366,7 +371,7 @@ def _generate_galaxy_catalog(
     photoz_sigma_unscaled=None,
     pz_bins=101,
     pzpdf_type="shared_bins",
-    coordinate_system="pixel",
+    coordinate_system="euclidean",
     field_size=None,
 ):
     """A private function that skips the sanity checks on derived properties. This
@@ -461,6 +466,9 @@ def _generate_galaxy_catalog(
         if galaxy_catalog.pzpdf_info["type"] == "individual_bins":
             cols += ["pzbins"]
         cols += ["pzpdf"]
+
+    if coordinate_system == "celestial":
+        galaxy_catalog["e2"] *= -1  # flip e2 to match the celestial coordinate system
 
     return galaxy_catalog[cols]
 

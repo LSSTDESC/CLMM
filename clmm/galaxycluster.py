@@ -37,9 +37,10 @@ class GalaxyCluster:
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
-    coordinate_system : str
-        Coordinate system of the galaxy cluster center (pixel or sky)
-
+    coordinate_system : str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
     validate_input: bool
         Validade each input argument
     """
@@ -63,7 +64,7 @@ class GalaxyCluster:
         dec: float,
         z: float,
         galcat: GCData,
-        coordinate_system: str = "pixel",
+        coordinate_system: str = "euclidean",
     ):
         """Add values for all attributes"""
         self.unique_id = unique_id

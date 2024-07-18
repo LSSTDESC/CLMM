@@ -235,7 +235,7 @@ def _validate_coordinate_system(loc, coordinate_system, valid_type):
     loc: dict
         Dictionary with all input arguments. Should be locals().
     coordinate_system: str
-        Coordinate system used for the input data.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
@@ -243,5 +243,5 @@ def _validate_coordinate_system(loc, coordinate_system, valid_type):
             * 'float_array' - float, float array
     """
     validate_argument(loc, coordinate_system, valid_type)
-    if loc[coordinate_system] not in ["sky", "pixel"]:
-        raise ValueError(f"{coordinate_system} must be 'sky' or 'pixel'.")
+    if loc[coordinate_system] not in ["celestial", "euclidean"]:
+        raise ValueError(f"{coordinate_system} must be 'celestial' or 'euclidean'.")
