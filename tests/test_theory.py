@@ -467,24 +467,61 @@ def test_triaxial(modeling_data):
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
         )
 
-        ## Checks that OO-oriented and functional interface give the same results
-        # assert_allclose(
-        #    theo.compute_excess_surface_density_2h(
-        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], cosmo
-        #    ),
-        #    mod.eval_excess_surface_density_2h(
-        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]
-        #    ),
-        #    1.0e-10,
-        # )
-
-        # assert_allclose(
-        #    theo.compute_surface_density_2h(
-        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], cosmo
-        #    ),
-        #    mod.eval_surface_density_2h(cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]),
-        #    1.0e-10,
-        # )
+        # Checks that OO-oriented and functional interface give the same results
+         assert_allclose(
+            theo.compute_delta_sigma_4theta_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "quad_4theta",
+                100
+            ),
+            1.0e-10,
+         )
+         assert_allclose(
+            theo.compute_delta_sigma_const_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "quad_const",
+                100
+            ),
+            1.0e-10,
+         )
+         assert_allclose(
+            theo.compute_delta_sigma_excess_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "mono",
+                100
+            ),
+            1.0e-10,
+         )
 
 
 def test_2halo_term(modeling_data):
