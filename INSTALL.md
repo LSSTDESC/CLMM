@@ -66,7 +66,7 @@ Now, you can install CLMM and its dependencies as
 
 ### Local environment for CLMM
 
-Alternatively, you can create a new local environment and install CLMM by running
+Alternatively, you can create a new local environment by running
 
 ```bash
     conda env create -f environment.yml
