@@ -28,7 +28,7 @@ class ClusterEnsemble:
 
         * "tan_sc" : tangential component computed with sample covariance
         * "cross_sc" : cross component computed with sample covariance
-        * "tan_jk" : tangential component computed with bootstrap
+        * "tan_bs" : tangential component computed with bootstrap
         * "cross_bs" : cross component computed with bootstrap
         * "tan_jk" : tangential component computed with jackknife
         * "cross_jk" : cross component computed with jackknife
