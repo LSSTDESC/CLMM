@@ -1310,7 +1310,8 @@ def compute_delta_sigma_4theta_triaxiality(
     verbose=False,
     validate_input=True,
 ):
-    r"""Compute the "4-theta" component of quadrupole shear as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
+    r"""Compute the "4-theta" component of quadrupole shear as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1378,25 +1379,28 @@ def compute_delta_sigma_4theta_triaxiality(
     ###
 
     ### ACTUAL COMPUTATION:
-    I_1 = (3 / (r_source**4)) * integral_vec(0, r_source)
-    sigma_0 = compute_surface_density(
-        r_source,
-        mdelta,
-        cdelta,
-        z_cluster,
-        cosmo,
-        delta_mdef=200,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
-    # eta_0 = np.gradient(np.log(sigma_0),r)
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
-    eta_0 = eta_0_interpolation_func(r_source)
 
-    ds4theta = np.array((ell / 2.0) * (2 * I_1 - sigma_0 * eta_0))
+    ds4theta = np.array(
+        (ell / 2.0)
+        * (
+            2 * ((3 / (r_source**4)) * integral_vec(0, r_source))
+            - compute_surface_density(
+                r_source,
+                mdelta,
+                cdelta,
+                z_cluster,
+                cosmo,
+                delta_mdef=200,
+                halo_profile_model=halo_profile_model,
+                massdef=massdef,
+                alpha_ein=alpha_ein,
+                verbose=verbose,
+                validate_input=validate_input,
+            )
+            * eta_0_interpolation_func(r_source)
+        )
+    )
     return ds4theta
 
 
@@ -1415,7 +1419,8 @@ def compute_delta_sigma_const_triaxiality(
     verbose=False,
     validate_input=True,
 ):
-    r"""Compute the "const" component of quadrupole shear as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
+    r"""Compute the "const" component of quadrupole shear as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1484,25 +1489,28 @@ def compute_delta_sigma_const_triaxiality(
     ###
 
     ### ACTUAL COMPUTATION:
-    I_2 = integral_vec(r_source, np.inf)
-    sigma_0 = compute_surface_density(
-        r_source,
-        mdelta,
-        cdelta,
-        z_cluster,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
-    # eta_0 = np.gradient(np.log(sigma_0), r)*r
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
-    eta_0 = eta_0_interpolation_func(r_source)
 
-    dsconst = np.array((ell / 2.0) * (2 * I_2 - sigma_0 * eta_0))
+    dsconst = np.array(
+        (ell / 2.0)
+        * (
+            2 * integral_vec(r_source, np.inf)
+            - compute_surface_density(
+                r_source,
+                mdelta,
+                cdelta,
+                z_cluster,
+                cosmo,
+                delta_mdef=delta_mdef,
+                halo_profile_model=halo_profile_model,
+                massdef=massdef,
+                alpha_ein=alpha_ein,
+                verbose=verbose,
+                validate_input=validate_input,
+            )
+            * eta_0_interpolation_func(r_source)
+        )
+    )
     return dsconst
 
 
@@ -1522,7 +1530,8 @@ def compute_delta_sigma_excess_triaxiality(
     validate_input=True,
 ):
     r"""Compute the excess surface density lensing profile for the monopole component along
-    with second order expansion term (e**2) as given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
+    with second order expansion term (e**2) as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1587,29 +1596,34 @@ def compute_delta_sigma_excess_triaxiality(
     )
     eta_0_arr = np.gradient(np.log(sigma_0_arr), r_arr) * r_arr
     eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
-    eta_0 = eta_0_interpolation_func(r_source)
 
     ## e^2 shenanigans:
-    d_eta_0_arr_by_d_r = np.gradient(eta_0_arr, r_arr) * r_arr
-    d_eta_0_arr_by_d_r_interpolation_func = InterpolatedUnivariateSpline(r_arr, d_eta_0_arr_by_d_r)
-    d_eta_0_by_d_r = d_eta_0_arr_by_d_r_interpolation_func(r_source)
-
-    correction_factor_arr = (
-        4
-        * (ell) ** 2
-        * ((1 / 8) * eta_0_arr + (1 / 16) * d_eta_0_arr_by_d_r + (1 / 16) * eta_0_arr**2)
+    d_eta_0_arr_by_d_r_interpolation_func = InterpolatedUnivariateSpline(
+        r_arr, (np.gradient(eta_0_arr, r_arr) * r_arr)
     )
-    integrand = InterpolatedUnivariateSpline(r_arr, r_arr * sigma_0_arr * correction_factor_arr)
 
-    integral_vec = np.vectorize(integrand.integral)
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(
+            r_arr,
+            r_arr
+            * sigma_0_arr
+            * (
+                4
+                * (ell) ** 2
+                * (
+                    (1 / 8) * eta_0_arr
+                    + (1 / 16) * (np.gradient(eta_0_arr, r_arr) * r_arr)
+                    + (1 / 16) * eta_0_arr**2
+                )
+            ),
+        ).integral
+    )
     ##
 
     ### ACTUAL COMPUTATION:
-    I = (2 / r_source**2) * integral_vec(0, r_source)
-
-    # q=np.sqrt(2/(1+ell) - 1)
-
-    s = compute_surface_density(
+    ds_ell_square_correction = (2 / r_source**2) * integral_vec(
+        0, r_source
+    ) - compute_surface_density(
         r_source,
         mdelta,
         cdelta,
@@ -1621,14 +1635,17 @@ def compute_delta_sigma_excess_triaxiality(
         alpha_ein=alpha_ein,
         verbose=verbose,
         validate_input=validate_input,
+    ) * (
+        4
+        * (ell) ** 2
+        * (
+            (1 / 8) * eta_0_interpolation_func(r_source)
+            + (1 / 16) * d_eta_0_arr_by_d_r_interpolation_func(r_source)
+            + (1 / 16) * eta_0_interpolation_func(r_source) ** 2
+        )
     )
 
-    correction_factor = (
-        4 * (ell) ** 2 * ((1 / 8) * eta_0 + (1 / 16) * d_eta_0_by_d_r + (1 / 16) * eta_0**2)
-    )
-    ds_ell_square_correction = I - s * correction_factor
-
-    dsmono = (
+    return (
         compute_excess_surface_density(
             r_source,
             mdelta,
@@ -1644,4 +1661,3 @@ def compute_delta_sigma_excess_triaxiality(
         )
         + ds_ell_square_correction
     )
-    return dsmono
