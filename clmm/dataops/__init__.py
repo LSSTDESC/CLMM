@@ -123,7 +123,7 @@ def compute_tangential_and_cross_components(
         instead of g_t and g_x
     phi_major : float, optional
         the direction of the major axis of the input cluster in the unit of radian. 
-        only needed when `is_quadupole` is `True`.
+        only needed when `is_quadrupole` is `True`.
         Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
     ra_mem : array, optional
         right ascentions of the member galaxies of the input cluster,
@@ -193,7 +193,7 @@ def compute_tangential_and_cross_components(
         angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
-    if is_quadupole:
+    if is_quadrupole:
         if phi_major is not None:
             phi_major_ = phi_major
         else:
@@ -690,7 +690,7 @@ def make_stacked_radial_profile(angsep, weights, components):
     Parameters
     ----------
     angsep: 2d array
-        Transvesal distances corresponding to each object with shape `n_obj, n_rad_bins`.
+        Transversal distances corresponding to each object with shape `n_obj, n_rad_bins`.
     weights: 2d array
         Weights corresponding to each objects with shape `n_obj, n_rad_bins`.
     components: list of 2d arrays
@@ -726,7 +726,7 @@ def measure_Delta_Sigma_const_triaxiality(w, gamma1, Sigma_crit) :
     -------
     dsconst_data: The measured "4theta" quadrupole component from the input shear measurements for each galaxy
     """
-    dsconst_data = w * Sigma_crit * gamma1 / w
+    dsconst_data = Sigma_crit * gamma1 
     return dsconst_data
 
 def measure_Delta_Sigma_4theta_triaxiality(w1, w2, gamma1, gamma2, theta, Sigma_crit) :
