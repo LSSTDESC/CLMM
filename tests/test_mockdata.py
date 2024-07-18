@@ -306,3 +306,15 @@ def test_coordinate_system():
         **TOLERANCE,
         err_msg="Conversion from sky to pixel coordinate system for theta failed"
     )
+
+    assert_raises(
+        ValueError,
+        mock.generate_galaxy_catalog,
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        coordinate_system="blah",
+    )
