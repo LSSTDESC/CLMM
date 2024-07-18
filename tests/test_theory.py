@@ -396,6 +396,83 @@ def test_profiles(modeling_data, profile_init):
                 delattr(mod.hdpm, "projected_quad")
                 assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
+def test_triaxial(modeling_data):
+    cfg = load_validation_config()
+    cosmo = cfg["cosmo"]
+
+    # Object Oriented tests
+    mod = theo.Modeling()
+    mod.set_cosmo(cosmo)
+
+    if mod.backend not in ["ccl", "nc"]:
+        assert_raises(
+            NotImplementedError, mod.eval_surface_density_triaxial, 1.0, cfg["SIGMA_PARAMS"]["z_cl"], 0.1, 'mono'
+        )
+        assert_raises(
+            NotImplementedError,
+            mod.eval_excess_surface_density_triaxial,
+            1.0,
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            'mono',
+        )
+    else:
+        # Just checking that it runs and returns array of the right length
+        # To be updated with proper comparison to benchmark when available
+        assert_equal(
+            len(
+                mod.eval_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, 'mono'
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, 'quad_4theta'
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, 'quad_const'
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+
+        ## Checks that OO-oriented and functional interface give the same results
+        #assert_allclose(
+        #    theo.compute_excess_surface_density_2h(
+        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], cosmo
+        #    ),
+        #    mod.eval_excess_surface_density_2h(
+        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]
+        #    ),
+        #    1.0e-10,
+        #)
+
+        #assert_allclose(
+        #    theo.compute_surface_density_2h(
+        #        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], cosmo
+        #    ),
+        #    mod.eval_surface_density_2h(cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]),
+        #    1.0e-10,
+        #)
+
+
+
 
 def test_2halo_term(modeling_data):
     cfg = load_validation_config()
