@@ -259,11 +259,11 @@ class CLMModeling:
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term):
+    def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         """eval individual terms of  excess surface density"""
 
         if term == "mono":
-            sigma = self._eval_surface_density_triaxial(r_proj, z_cl, ell)
+            sigma = self._eval_surface_density_triaxial(r_proj, z_cl, ell, n_grid)
             integral = np.array(
                 [
                     simpson(r_proj[r_proj <= ri] * sigma[r_proj <= ri], r_proj[r_proj <= ri])
@@ -271,32 +271,50 @@ class CLMModeling:
                 ]
             )
 
-            return (2 / r_proj ** 2) * integral - sigma
-        elif term == "quad_4theta":
+            delta_sigma = (2 / r_proj ** 2) * integral - sigma
+
+        if term == "quad_4theta":
             sigma = self.eval_surface_density(r_proj, z_cl)
-            eta = r_proj * np.gradient(np.log(sigma), r_proj)
+
+            grid = np.logspace(-3, 1, n_grid)
+            eta_grid = grid * np.gradient(np.log(sigma), grid)
+            eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
+            eta = eta_func(r_proj)
 
             func = InterpolatedUnivariateSpline(r_proj, r_proj ** 3 * sigma * eta, k=5)
             integral_vec = np.vectorize(func.integral)
             integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
 
-            return 0.5 * ell * (2 * integral - sigma * eta)
-        elif term == "quad_const":
+            delta_sigma = 0.5 * ell * (2 * integral - sigma * eta)
+
+        if term == "quad_const":
             sigma = self.eval_surface_density(r_proj, z_cl)
-            eta = r_proj * np.gradient(np.log(sigma), r_proj)
+
+            grid = np.logspace(-3, 1, n_grid)
+            eta_grid = grid * np.gradient(np.log(sigma), grid)
+            eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
+            eta = eta_func(r_proj)
 
             func = InterpolatedUnivariateSpline(r_proj, sigma * eta / r_proj, k=5)
             integral_vec = np.vectorize(func.integral)
             integral = integral_vec(r_proj, np.inf)
 
-            return 0.5 * ell * (2 * integral - sigma * eta)
+            delta_sigma = 0.5 * ell * (2 * integral - sigma * eta)
 
-    def _eval_surface_density_triaxial(self, r_proj, z_cl, ell):
+        return delta_sigma
+
+    def _eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid=10000):
         """eval surface density with triaxial corrections"""
         sigma = self.eval_surface_density(r_proj, z_cl)
 
-        eta = r_proj * np.gradient(np.log(sigma), r_proj)
-        deta_dlnr = r_proj * np.gradient(eta, r_proj)
+        grid = np.logspace(-3, 1, n_grid)
+        eta_grid = grid * np.gradient(np.log(sigma), grid)
+        eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
+        eta = eta_func(r_proj)
+
+        deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
+        deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid)
+        deta_dlnr = deta_dlnr_func(r_proj)
 
         return sigma * (1 + ell ** 2 * (eta + eta ** 2 / 2 + deta_dlnr / 2) / 2)
 
@@ -742,7 +760,7 @@ class CLMModeling:
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term):
+    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid):
         r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
 
         Parameters
@@ -756,9 +774,12 @@ class CLMModeling:
             q=b/a (Ratio of major axis to the minor axis lengths)
         term: str
             The expansion term wanted.
-                * 'mono': The monopole term with the ellipticity corrections applied. This will give the usual excess surface density but for a triaxial halo.
+                * 'mono': The monopole term with the ellipticity corrections applied. This will
+                    give the usual excess surface density but for a triaxial halo.
                 * 'quad_4theta': The 4theta component of the quadrupole term.
                 * 'quad_const': The constant component of the quadrupole term.
+        n_grid: int
+            Grid steps for gradient calculations.
 
         Returns
         -------
@@ -771,6 +792,7 @@ class CLMModeling:
             validate_argument(locals(), "z_cl", float, argmin=0)
             validate_argument(locals(), "ell", float, argmin=0, argmax=1)
             validate_argument(locals(), "term", str)
+            validate_argument(locals(), "n_grid", int, argmin=2)
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
@@ -778,9 +800,9 @@ class CLMModeling:
                 "Use the CCL or NumCosmo backend instead"
             )
 
-        return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term)
+        return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term, n_grid)
 
-    def eval_surface_density_triaxial(self, r_proj, z_cl, ell):
+    def eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid):
         r"""Compute the individual terms in the quadrupole expansion of the surface density.
 
         Parameters
@@ -792,6 +814,8 @@ class CLMModeling:
             q=b/a (Ratio of major axis to the minor axis lengths)
         z_cl: float
             Redshift of lens cluster
+        n_grid: int
+            Grid steps for gradient calculations.
 
         Returns
         -------
@@ -803,14 +827,15 @@ class CLMModeling:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
             validate_argument(locals(), "ell", float, argmin=0, argmax=1)
+            validate_argument(locals(), "n_grid", int, argmin=2)
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
-                f"Triaxial correction to surface density not currently supported with the {self.backend} backend. "
+                f"Triaxial surface density not currently supported with the {self.backend} backend."
                 "Use the CCL or NumCosmo backend instead"
             )
 
-        return self._eval_surface_density_triaxial(r_proj, z_cl, ell)
+        return self._eval_surface_density_triaxial(r_proj, z_cl, ell, n_grid)
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear
