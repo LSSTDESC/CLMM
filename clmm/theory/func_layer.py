@@ -1507,6 +1507,9 @@ def compute_delta_sigma_excess_triaxiality(
             * 'mean' (default)
             * 'critical'
             * 'virial'
+    sample_N: float, optional
+        Number of samples to evaluate the gradients. (Default is 10000, increase for higher accuracy
+        at the expense of longer evaluation time)
     alpha_ein : float, None, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
