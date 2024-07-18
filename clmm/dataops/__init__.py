@@ -99,7 +99,8 @@ def compute_tangential_and_cross_components(
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         Default is 'euclidean'.
     geometry: str, optional
         Sky geometry to compute angular separation.
@@ -367,7 +368,8 @@ def _compute_lensing_angles_flatsky(
     dec_source_list: array
         Declinations of each source galaxy in degrees
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         Default is 'euclidean'.
 
     Returns
@@ -416,7 +418,8 @@ def _compute_lensing_angles_astropy(
     dec_source_list: array
         Declinations of each source galaxy in degrees
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         Default is 'euclidean'.
 
     Returns

@@ -159,7 +159,8 @@ def generate_galaxy_catalog(
         The number of galaxies to be drawn will then depend on the redshift distribution and
         user-defined redshift range.  If specified, the ngals argument will be ignored.
     coordinate_system : str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         Default is 'euclidean'.
 
     validate_input: bool
