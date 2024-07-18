@@ -247,13 +247,10 @@ class CLMModeling:
 
         return res
 
-    def _integrand_surface_density_mis(self, theta, R, Roff, z_cl):
-        # pylint: disable=invalid-name
-        return self.eval_surface_density(np.sqrt(R*R + Roff*Roff - 2*R*Roff*np.cos(theta)), z_cl)
+    def _integrand_surface_density_mis(self, theta, r, r_off, z_cl):
 
-    def _integrand_surface_density_mis_NFW(self, theta, R, Roff, r_s):
-        # pylint: disable=invalid-name
-        x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_NFW(self, theta, r, r_off, r_s):
+        x = np.sqrt(r**2. + r_off**2. - 2.*r*r_off*np.cos(theta)) / r_s
 
         # Analytical solution for NFW
         def f1(x):
@@ -268,19 +265,17 @@ class CLMModeling:
 
         return np.piecewise(x, [x<1, x>1], [f1, f2, 1./3.])
 
-    def _integrand_surface_density_mis_Einasto(self, theta, R, Roff, r_s, alpha_ein):
-        # pylint: disable=invalid-name
+    def _integrand_surface_density_mis_Einasto(self, theta, r, r_off, r_s, alpha_ein):
 
         # Project surface mass density from numerical integration
         def integrand0(z):
-            x = np.sqrt(z**2. + R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+            x = np.sqrt(z**2. + r**2. + r_off**2. - 2.*r*r_off*np.cos(theta)) / r_s
             return np.exp(-2. * (x**alpha_ein - 1.) / alpha_ein)
 
         return quad_vec(integrand0, 0., np.inf)[0]
 
-    def _integrand_surface_density_mis_Hernquist(self, theta, R, Roff, r_s):
-        # pylint: disable=invalid-name
-        x = np.sqrt(R**2. + Roff**2. - 2.*R*Roff*np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_Hernquist(self, theta, r, r_off, r_s):
+        x = np.sqrt(r**2. + r_off**2. - 2.*r*r_off*np.cos(theta)) / r_s
 
         # Analytical solution for Hernquist
         def f1(x):
@@ -299,17 +294,15 @@ class CLMModeling:
 
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
         res = np.zeros_like(r_proj)
-        # pylint: disable=invalid-name
-        for i, R in enumerate(r_proj):
-            R_lower = 0 if i==0 else r_proj[i-1]
-            res[i] = quad(self._integrand_mean_surface_density_mis, R_lower, R,
+        for i, r in enumerate(r_proj):
+            r_lower = 0 if i==0 else r_proj[i-1]
+            res[i] = quad(self._integrand_mean_surface_density_mis, r_lower, r,
                           args=(z_cl, r_mis, backend))[0]
         res = np.cumsum(res)*2/r_proj**2
         return res
 
-    def _integrand_mean_surface_density_mis(self, R, z_cl, r_mis, backend):
-        # pylint: disable=invalid-name
-        return R * self._eval_surface_density_miscentered(R, z_cl, r_mis, backend)
+    def _integrand_mean_surface_density_mis(self, r, z_cl, r_mis, backend):
+        return r * self._eval_surface_density_miscentered(r, z_cl, r_mis, backend)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
         return (self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis, backend)
