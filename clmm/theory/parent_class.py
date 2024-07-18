@@ -9,8 +9,8 @@ import numpy as np
 
 # functions for the 2h term
 from scipy.integrate import simpson, quad, quad_vec
-from scipy.special import gamma, gammainc, jv
 from scipy.interpolate import splrep, splev
+from scipy.special import gamma, gammainc, jv
 
 from .generic import (
     compute_reduced_shear_from_convergence,
@@ -209,9 +209,6 @@ class CLMModeling:
 
     def _eval_surface_density_miscentered_float(self, r_proj, z_cl, r_mis, backend):
         # pylint: disable=invalid-name, possibly-used-before-assignment
-        c = self.cdelta
-        rho_def = self.cosmo.get_rho_m(z_cl)
-        r_s = self.eval_rdelta(z_cl) / c
 
         if backend:
             integrand = self._integrand_surface_density_mis
@@ -220,6 +217,10 @@ class CLMModeling:
             )
 
         else:
+            c = self.cdelta
+            rho_def = self.cosmo.get_rho_m(z_cl)
+            r_s = self.eval_rdelta(z_cl) / c
+
             if self.halo_profile_model == "nfw":
                 rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
                 integrand = self._integrand_surface_density_mis_nfw
@@ -282,13 +283,16 @@ class CLMModeling:
             ]
         )
 
-    def _integrand_surface_density_mis(self, theta, r, r_off, z_cl):
+
+    def _integrand_surface_density_mis(self, theta, r, r_mis, z_cl):
+        # pylint: disable=invalid-name
         return self.eval_surface_density(
-            np.sqrt(r * r + r_off * r_off - 2 * r * r_off * np.cos(theta)), z_cl
+            np.sqrt(r**2.0 + r_mis**2.0 - 2 * r * r_mis * np.cos(theta)), z_cl
         )
 
-    def _integrand_surface_density_mis_nfw(self, theta, r, r_off, r_s):
-        x = np.sqrt(r**2.0 + r_off**2.0 - 2.0 * r * r_off * np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
 
         x2m1 = x**2.0 - 1.0
         if x < 1:
@@ -301,17 +305,19 @@ class CLMModeling:
             res = 1.0 / 3.0
         return res
 
-    def _integrand_surface_density_mis_einasto(self, theta, r, r_off, r_s, alpha_ein):
+    def _integrand_surface_density_mis_einasto(self, theta, r, r_mis, r_s, alpha_ein):
+        # pylint: disable=invalid-name
 
         # Project surface mass density from numerical integration
         def integrand0(z):
-            x = np.sqrt(z**2.0 + r**2.0 + r_off**2.0 - 2.0 * r * r_off * np.cos(theta)) / r_s
+            x = np.sqrt(z**2.0 + r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
             return np.exp(-2.0 * (x**alpha_ein - 1.0) / alpha_ein)
 
         return quad_vec(integrand0, 0.0, np.inf)[0]
 
-    def _integrand_surface_density_mis_hernquist(self, theta, r, r_off, r_s):
-        x = np.sqrt(r**2.0 + r_off**2.0 - 2.0 * r * r_off * np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
 
         x2m1 = x**2.0 - 1.0
         if x < 1:
@@ -325,6 +331,7 @@ class CLMModeling:
         return res
 
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+        # pylint: disable=invalid-name
         res = np.zeros_like(r_proj)
         for i, r in enumerate(r_proj):
             r_lower = 0 if i == 0 else r_proj[i - 1]
@@ -335,6 +342,7 @@ class CLMModeling:
         return res
 
     def _integrand_mean_surface_density_mis(self, r, z_cl, r_mis, backend):
+        # pylint: disable=invalid-name
         return r * self._eval_surface_density_miscentered_float(r, z_cl, r_mis, backend)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
