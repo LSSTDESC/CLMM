@@ -258,9 +258,6 @@ class GalaxyCluster:
             Name of the column to be added to the `galcat` astropy table that will contain the
             cross component computed from columns `shape_component1` and `shape_component2`.
             Default: `ex`
-        coordinate_system: str, optional
-            Coordinate system of the ellipticity components. Options are 'pixel' or 'sky'.
-            Default: 'pixel'
         geometry: str, optional
             Sky geometry to compute angular separation.
             Options are curve (uses astropy) or flat.

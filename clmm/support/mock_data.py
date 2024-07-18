@@ -433,9 +433,6 @@ def _generate_galaxy_catalog(
     _, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
     posangle += 0.5 * np.pi  # for right convention
 
-    if coordinate_system == "sky":
-        posangle = np.pi - posangle  # ellipticity coordinate system conversion
-
     # corresponding shear1,2 components
     gam1 = -gamt * np.cos(2 * posangle) + gamx * np.sin(2 * posangle)
     gam2 = -gamt * np.sin(2 * posangle) - gamx * np.cos(2 * posangle)
