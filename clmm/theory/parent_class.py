@@ -18,9 +18,6 @@ from .generic import (
     compute_profile_mass_in_radius,
     convert_profile_mass_concentration,
 )
-from .func_layer import (
-    compute_surface_density,
-)
 from ..utils import (
     validate_argument,
     compute_beta_s_func,
@@ -133,27 +130,21 @@ class CLMModeling:
     def massdef(self, massdef):
         """Set definition for the mass of cluster"""
         self.set_halo_density_profile(
-            halo_profile_model=self.halo_profile_model,
-            massdef=massdef,
-            delta_mdef=self.delta_mdef,
+            halo_profile_model=self.halo_profile_model, massdef=massdef, delta_mdef=self.delta_mdef,
         )
 
     @delta_mdef.setter
     def delta_mdef(self, delta_mdef):
         """Set number of deltas in mass definition of cluster"""
         self.set_halo_density_profile(
-            halo_profile_model=self.halo_profile_model,
-            massdef=self.massdef,
-            delta_mdef=delta_mdef,
+            halo_profile_model=self.halo_profile_model, massdef=self.massdef, delta_mdef=delta_mdef,
         )
 
     @halo_profile_model.setter
     def halo_profile_model(self, halo_profile_model):
         """Set halo profile model"""
         self.set_halo_density_profile(
-            halo_profile_model=halo_profile_model,
-            massdef=self.massdef,
-            delta_mdef=self.delta_mdef,
+            halo_profile_model=halo_profile_model, massdef=self.massdef, delta_mdef=self.delta_mdef,
         )
 
     # 2. Functions to be implemented by children classes
@@ -236,7 +227,7 @@ class CLMModeling:
 
         l_values = np.logspace(loglbounds[0], loglbounds[1], lsteps)
         kernel = np.array([simpson(__integrand__(l_values, t), x=l_values) for t in theta])
-        return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
+        return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da ** 2)
 
     def _eval_surface_density_2h(
         self,
@@ -268,43 +259,21 @@ class CLMModeling:
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def _eval_excess_surface_density_triaxial4theta(
-        self, r_proj, z_cl, ell
-    ):
-
-        sigma = compute_surface_density(
-            r_proj,
-            self.mdelta,
-            self.cdelta,
-            z_cl,
-            self.cosmo,
-            self.delta_mdef,
-            self.halo_profile_model,
-            self.massdef,
-            )
+    def _eval_excess_surface_density_triaxial4theta(self, r_proj, z_cl, ell):
+        """eval triaxial-4theta term of excess surface density"""
+        sigma = self.eval_surface_density(r_proj, z_cl)
 
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
-        f = InterpolatedUnivariateSpline(r_proj, r_proj**3 * sigma * eta, k=5)
+        f = InterpolatedUnivariateSpline(r_proj, r_proj ** 3 * sigma * eta, k=5)
         integral_vec = np.vectorize(f.integral)
 
-        I = 3 / r_proj**4 * integral_vec(0, r_proj)
+        I = 3 / r_proj ** 4 * integral_vec(0, r_proj)
 
-        return 0.5 * ell * (2 * I - sigma * eta) / 1e12
+        return 0.5 * ell * (2 * I - sigma * eta)
 
-    def _eval_excess_surface_density_triaxialConst(
-        self, r_proj, z_cl, ell
-    ):
-
-        sigma = compute_surface_density(
-            r_proj,
-            self.mdelta,
-            self.cdelta,
-            z_cl,
-            self.cosmo,
-            self.delta_mdef,
-            self.halo_profile_model,
-            self.massdef,
-            )
+    def _eval_excess_surface_density_triaxialConst(self, r_proj, z_cl, ell):
+        """eval triaxial-const term of excess surface density"""
+        sigma = self.eval_surface_density(r_proj, z_cl)
 
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
         f = InterpolatedUnivariateSpline(r_proj, sigma * eta / r_proj, k=5)
@@ -312,34 +281,28 @@ class CLMModeling:
 
         I = integral_vec(r_proj, np.inf)
 
-        return 0.5 * ell * (2 * I - sigma * eta) / 1e12
+        return 0.5 * ell * (2 * I - sigma * eta)
 
-    def _eval_triaxial_corrected_surface_density(
-        self, r_proj, z_cl, ell
-    ):
+    def _eval_triaxial_corrected_surface_density(self, r_proj, z_cl, ell):
+        """eval surface density with triaxial corrections"""
+        sigma = self.eval_surface_density(r_proj, z_cl)
 
-        sigma = compute_surface_density(
-            r_proj,
-            self.mdelta,
-            self.cdelta,
-            z_cl,
-            self.cosmo,
-            self.delta_mdef,
-            self.halo_profile_model,
-            self.massdef,
-            )
         eta = r_proj * np.gradient(np.log(sigma), r_proj)
         deta_dlnr = r_proj * np.gradient(eta, r_proj)
 
-        return sigma * (1 + ell**2 * (eta + eta**2/2 + deta_dlnr/2) / 2)
+        return sigma * (1 + ell ** 2 * (eta + eta ** 2 / 2 + deta_dlnr / 2) / 2)
 
-    def _eval_triaxial_corrected_excess_surface_density_monopole(
-        self, r_proj, z_cl, ell
-    ):
+    def _eval_triaxial_corrected_excess_surface_density_monopole(self, r_proj, z_cl, ell):
+        """eval triaxial-monopole term of excess surface density"""
         sigma = self._eval_triaxial_corrected_surface_density(r_proj, z_cl, ell)
-        integral = np.array([simpson(r_proj[r_proj <= ri] * sigma[r_proj<=ri], r_proj[r_proj<=ri]) for ri in r_proj])
+        integral = np.array(
+            [
+                simpson(r_proj[r_proj <= ri] * sigma[r_proj <= ri], r_proj[r_proj <= ri])
+                for ri in r_proj
+            ]
+        )
 
-        return ((2/r_proj**2) * integral - sigma) / sigma_crit
+        return (2 / r_proj ** 2) * integral - sigma
 
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
@@ -783,54 +746,133 @@ class CLMModeling:
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def eval_excess_surface_density_triaxial4theta(
-        self, r_proj, z_cl, ell
-    ):
-        r"""DOCUMENTATION RANCE
+    def eval_excess_surface_density_triaxial4theta(self, r_proj, z_cl, ell):
+        r"""Compute the "4-theta"-quadrupole component
+    
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        z_cl: float
+            Redshift of lens cluster
+    
+        Returns
+        -------
+        numpy.ndarry, float
+            Triaxial-4theta component of the excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
-        ## VALIDATE ARGUMENTS
-        ## VALIDATE BACKEND
 
-        return self._eval_excess_surface_density_triaxial4theta(
-            r_proj, z_cl, ell
-        )
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
 
-    def eval_excess_surface_density_triaxialConst(
-        self, r_proj, z_cl, ell
-    ):
-        r"""DOCUMENTATION RANCE
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial-4theta term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_excess_surface_density_triaxial4theta(r_proj, z_cl, ell)
+
+    def eval_excess_surface_density_triaxialConst(self, r_proj, z_cl, ell):
+        r"""Compute the "constant"-quadrupole component
+    
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        z_cl: float
+            Redshift of lens cluster
+    
+        Returns
+        -------
+        numpy.ndarry, float
+            Triaxial-constant component of the excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
-        ## VALIDATE ARGUMENTS
-        ## VALIDATE BACKEND
 
-        return self._eval_excess_surface_density_triaxialConst(
-            r_proj, z_cl, ell
-        )
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
 
-    def eval_triaxial_corrected_surface_density(
-        self, r_proj, z_cl, ell
-    ):
-        r"""DOCUMENTATION RANCE
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial-constant term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_excess_surface_density_triaxialConst(r_proj, z_cl, ell)
+
+    def eval_triaxial_corrected_surface_density(self, r_proj, z_cl, ell):
+        r"""Compute surface density with triaxial corrections
+    
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        z_cl: float
+            Redshift of lens cluster
+    
+        Returns
+        -------
+        numpy.ndarry, float
+            Triaxial corrected surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
-        ## VALIDATE ARGUMENTS
-        ## VALIDATE BACKEND
 
-        return self._eval_triaxial_corrected_surface_density(
-            r_proj, z_cl, ell
-        )
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
 
-    def eval_triaxial_corrected_excess_surface_density_monopole(
-        self, r_proj, z_cl, ell
-    ):
-        r"""DOCUMENTATION RANCE
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial correction to surface density not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_triaxial_corrected_surface_density(r_proj, z_cl, ell)
+
+    def eval_triaxial_corrected_excess_surface_density_monopole(self, r_proj, z_cl, ell):
+        r"""Compute monopole component
+    
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        z_cl: float
+            Redshift of lens cluster
+    
+        Returns
+        -------
+        numpy.ndarry, float
+            Monopole component of excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
-        ## VALIDATE ARGUMENTS
-        ## VALIDATE BACKEND
 
-        return self._eval_triaxial_corrected_excess_surface_density_monopole(
-            r_proj, z_cl, ell
-        )
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
 
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial correction to surface density not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_triaxial_corrected_excess_surface_density_monopole(r_proj, z_cl, ell)
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear
@@ -981,14 +1023,7 @@ class CLMModeling:
                 + "\nConvergence = 0 for those galaxies."
             )
             kappa = compute_for_good_redshifts(
-                self._eval_convergence_core,
-                z_cl,
-                z_src,
-                0.0,
-                warning_msg,
-                "z_cl",
-                "z_src",
-                r_proj,
+                self._eval_convergence_core, z_cl, z_src, 0.0, warning_msg, "z_cl", "z_src", r_proj,
             )
         elif z_src_info == "beta":
             beta_s_mean = z_src[0]
@@ -1351,7 +1386,7 @@ class CLMModeling:
         if approx is None:
             if z_src_info == "distribution":
                 mu = self._pdz_weighted_avg(
-                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2),
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat ** 2),
                     z_src,
                     r_proj,
                     z_cl,
@@ -1383,7 +1418,7 @@ class CLMModeling:
             if approx == "order2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu += 3 * beta_s_square_mean * kappa_inf**2 + beta_s_square_mean * gammat_inf**2
+                mu += 3 * beta_s_square_mean * kappa_inf ** 2 + beta_s_square_mean * gammat_inf ** 2
 
         return mu
 
@@ -1519,7 +1554,7 @@ class CLMModeling:
             # z_src (float or array) is redshift
             if z_src_info == "distribution":
                 mu_bias = self._pdz_weighted_avg(
-                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1),
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat ** 2) ** (alpha - 1),
                     z_src,
                     r_proj,
                     z_cl,
@@ -1553,9 +1588,9 @@ class CLMModeling:
             if approx == "order2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
+                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf ** 2) + (
                     2 * alpha - 1
-                ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
+                ) * (alpha - 1) * beta_s_square_mean * kappa_inf ** 2
 
         return mu_bias
 
