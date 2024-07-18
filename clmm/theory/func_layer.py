@@ -1,6 +1,7 @@
 """@file func_layer.py
 Main functions to encapsule oo calls
 """
+
 # pylint: disable=too-many-lines
 # pylint: disable=invalid-name
 # Thin functonal layer on top of the class implementation of CLMModeling .
@@ -108,7 +109,7 @@ def compute_surface_density(
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
-    r_mis = None,
+    r_mis=None,
     verbose=False,
     use_projected_quad=False,
     validate_input=True,
@@ -153,7 +154,7 @@ def compute_surface_density(
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
-    
+
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
 
@@ -186,7 +187,7 @@ def compute_surface_density(
     _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
-    if halo_profile_model == "einasto" and _modeling_object.backend=="ccl":
+    if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
         _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(r_proj, z_cl, r_mis=r_mis, verbose=verbose)
@@ -276,7 +277,9 @@ def compute_mean_surface_density(
     if alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
 
-    sigma_bar = _modeling_object.eval_mean_surface_density(r_proj, z_cl, r_mis=r_mis, verbose=verbose)
+    sigma_bar = _modeling_object.eval_mean_surface_density(
+        r_proj, z_cl, r_mis=r_mis, verbose=verbose
+    )
 
     _modeling_object.validate_input = True
     return sigma_bar
@@ -359,7 +362,9 @@ def compute_excess_surface_density(
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
 
-    deltasigma = _modeling_object.eval_excess_surface_density(r_proj, z_cl, r_mis=r_mis, verbose=verbose)
+    deltasigma = _modeling_object.eval_excess_surface_density(
+        r_proj, z_cl, r_mis=r_mis, verbose=verbose
+    )
 
     _modeling_object.validate_input = True
     return deltasigma
