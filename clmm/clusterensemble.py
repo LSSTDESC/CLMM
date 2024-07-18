@@ -27,10 +27,16 @@ class ClusterEnsemble:
 
         * "tan_sc" : tangential component computed with sample covariance
         * "cross_sc" : cross component computed with sample covariance
-        * "tan_jk" : tangential component computed with bootstrap
+        * "quad_4theta_sc" : quadrupole 4theta component computed with sample covariance
+        * "quad_const_sc" : quadrupole constant component computed with sample covariance
+        * "tan_bs" : tangential component computed with bootstrap
         * "cross_bs" : cross component computed with bootstrap
+        * "quad_4theta_bs" : quadrupole 4theta component computed with bootstrap
+        * "quad_const_bs" : quadrupole constant component computed with bootstrap
         * "tan_jk" : tangential component computed with jackknife
         * "cross_jk" : cross component computed with jackknife
+        * "quad_4theta_jk" : quadrupole 4theta component computed with jackknife
+        * "quad_const_jk" : quadrupole constant component computed with jackknife
 
     """
 
@@ -53,10 +59,16 @@ class ClusterEnsemble:
         self.cov = {
             "tan_sc": None,
             "cross_sc": None,
+            "quad_4theta_sc": None,
+            "quad_const_sc": None,
             "tan_bs": None,
             "cross_bs": None,
+            "quad_4theta_bs": None,
+            "quad_const_bs": None,
             "tan_jk": None,
             "cross_jk": None,
+            "quad_4theta_jk": None,
+            "quad_const_jk": None,
         }
 
     def _add_values(self, gc_list, **kwargs):
