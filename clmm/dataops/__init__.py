@@ -123,11 +123,7 @@ def compute_tangential_and_cross_components(
         instead of g_t and g_x
     phi_major : float, optional
         the direction of the major axis of the input cluster in the unit of radian. 
-<<<<<<< HEAD
-        only needed when `is_quadrupole` is `True`.
-=======
         only needed when `include_quadrupole` is `True`.
->>>>>>> 40358a7434d068f5b60a2b7a8fbd8b8c233a7216
         Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
     ra_mem : array, optional
         right ascentions of the member galaxies of the input cluster,
@@ -202,9 +198,6 @@ def compute_tangential_and_cross_components(
         angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
-<<<<<<< HEAD
-    if is_quadrupole:
-=======
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
@@ -215,7 +208,6 @@ def compute_tangential_and_cross_components(
         cross_comp *= _sigma_c_arr
     
     if include_quadrupole:
->>>>>>> 40358a7434d068f5b60a2b7a8fbd8b8c233a7216
         if phi_major is not None:
             phi_major_ = phi_major
         else:
