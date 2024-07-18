@@ -1,6 +1,7 @@
 """
 Tests for datatype and galaxycluster
 """
+
 import os
 import numpy as np
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_warns
@@ -13,7 +14,14 @@ TOLERANCE = {"rtol": 1.0e-7, "atol": 1.0e-7}
 
 def test_initialization():
     """test initialization"""
-    testdict1 = {"unique_id": "1", "ra": 161.3, "dec": 34.0, "z": 0.3, "galcat": GCData()}
+    testdict1 = {
+        "unique_id": "1",
+        "ra": 161.3,
+        "dec": 34.0,
+        "z": 0.3,
+        "galcat": GCData(),
+        "coordinate_system": "pixel",
+    }
     cl1 = clmm.GalaxyCluster(**testdict1)
 
     assert_equal(testdict1["unique_id"], cl1.unique_id)
@@ -21,6 +29,7 @@ def test_initialization():
     assert_equal(testdict1["dec"], cl1.dec)
     assert_equal(testdict1["z"], cl1.z)
     assert isinstance(cl1.galcat, GCData)
+    assert_equal(testdict1["coordinate_system"], cl1.coordinate_system)
 
 
 def test_integrity():  # Converge on name
@@ -33,43 +42,150 @@ def test_integrity():  # Converge on name
 
     # Test that we get errors when we pass in values outside of the domains
     assert_raises(
-        ValueError, clmm.GalaxyCluster, unique_id=1, ra=-360.3, dec=34.0, z=0.3, galcat=GCData()
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=-360.3,
+        dec=34.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
     )
     assert_raises(
-        ValueError, clmm.GalaxyCluster, unique_id=1, ra=360.3, dec=34.0, z=0.3, galcat=GCData()
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=360.3,
+        dec=34.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
     )
     assert_raises(
-        ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=95.0, z=0.3, galcat=GCData()
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=95.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
     )
     assert_raises(
-        ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=-95.0, z=0.3, galcat=GCData()
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=-95.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
     )
     assert_raises(
-        ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34.0, z=-0.3, galcat=GCData()
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=-0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
+    )
+    assert_raises(
+        ValueError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="blah",
     )
 
     # Test that inputs are the correct type
     assert_raises(
-        TypeError, clmm.GalaxyCluster, unique_id=None, ra=161.3, dec=34.0, z=0.3, galcat=GCData()
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=None,
+        ra=161.3,
+        dec=34.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
     )
-    assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=1)
-    assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=[])
     assert_raises(
-        TypeError, clmm.GalaxyCluster, unique_id=1, ra=None, dec=34.0, z=0.3, galcat=GCData()
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=0.3,
+        galcat=1,
+        coordinate_system="pixel",
     )
     assert_raises(
-        TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=None, z=0.3, galcat=GCData()
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=0.3,
+        galcat=[],
+        coordinate_system="pixel",
     )
     assert_raises(
-        TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34.0, z=None, galcat=GCData()
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=None,
+        dec=34.0,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
+    )
+    assert_raises(
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=None,
+        z=0.3,
+        galcat=GCData(),
+        coordinate_system="pixel",
+    )
+    assert_raises(
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=None,
+        galcat=GCData(),
+        coordinate_system="pixel",
+    )
+    assert_raises(
+        TypeError,
+        clmm.GalaxyCluster,
+        unique_id=1,
+        ra=161.3,
+        dec=34.0,
+        z=0.3,
+        galcat=None,
+        coordinate_system=2,
     )
 
     # Test that id can support numbers and strings
     assert isinstance(
-        clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData()).unique_id, str
+        clmm.GalaxyCluster(
+            unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="pixel"
+        ).unique_id,
+        str,
     )
     assert isinstance(
-        clmm.GalaxyCluster(unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData()).unique_id, str
+        clmm.GalaxyCluster(
+            unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="pixel"
+        ).unique_id,
+        str,
     )
 
     # Test that ra/dec/z can be converted from int/str to float if needed
@@ -372,3 +488,56 @@ def test_plot_profiles():
     cluster.plot_profiles()
     # check it passes missing a component error
     cluster.plot_profiles(cross_component_error="made_up_component")
+
+
+def test_coordinate_system():
+    """test coordinate system"""
+    # Input values
+    ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    ra_source = [120.1, 119.9]
+    dec_source = [41.9, 42.2]
+    z_src = [1.0, 2.0]
+    shear1 = [0.2, 0.4]
+    shear2_pixel = [0.3, 0.5]
+    shear2_sky = [-0.3, -0.5]
+    # Set up radial values
+    bins_radians = [0.002, 0.003, 0.004]
+    bin_units = "radians"
+    # create cluster
+    cl_pixel = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_pixel, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
+        ),
+        coordinate_system="pixel",
+    )
+    cl_sky = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_sky, z_src], names=("ra", "dec", "e1", "e2", "z")
+        ),
+        coordinate_system="sky",
+    )
+
+    cl_pixel.compute_tangential_and_cross_components()
+    cl_sky.compute_tangential_and_cross_components()
+
+    assert_allclose(
+        cl_pixel.galcat["et"],
+        cl_sky.galcat["et"],
+        **TOLERANCE,
+        err_msg="Tangential component conversion between ellipticity coordinate systems failed",
+    )
+    assert_allclose(
+        cl_pixel.galcat["ex"],
+        -cl_sky.galcat["ex"],
+        **TOLERANCE,
+        err_msg="Cross component conversion between ellipticity coordinate systems failed",
+    )

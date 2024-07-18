@@ -1,4 +1,5 @@
 """Tests for examples/support/mock_data.py"""
+
 import warnings
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -276,3 +277,36 @@ def test_shapenoise():
     )
     assert_allclose(np.histogram(data["e1"], bins=bins)[0], gauss, atol=50, rtol=0.05)
     assert_allclose(np.histogram(data["e2"], bins=bins)[0], gauss, atol=50, rtol=0.05)
+
+
+def test_coordinate_system():
+    """
+    Test that the coordinate system is correctly set up and that the galaxies are in the correct
+    position.
+    """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
+
+    # Verify that the coordinate system is correctly set up
+    np.random.seed(285713)
+    pixel_data = mock.generate_galaxy_catalog(
+        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="pixel"
+    )
+    np.random.seed(285713)
+    sky_data = mock.generate_galaxy_catalog(
+        10**15.0, 0.3, 4, cosmo, 0.8, ngals=50000, coordinate_system="sky"
+    )
+
+    assert_equal(pixel_data["ra"], sky_data["ra"])
+    assert_equal(pixel_data["dec"], sky_data["dec"])
+    assert_allclose(
+        pixel_data["e1"],
+        sky_data["e1"],
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+    )
+    assert_allclose(
+        pixel_data["e2"],
+        -sky_data["e2"],
+        **TOLERANCE,
+        err_msg="Conversion from sky to pixel coordinate system for theta failed"
+    )
