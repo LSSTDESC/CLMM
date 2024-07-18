@@ -1,6 +1,7 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
+
 import pickle
 import numpy as np
 import healpy
@@ -93,6 +94,7 @@ class ClusterEnsemble:
         """Returns length of ClusterEnsemble"""
         return len(self.data)
 
+    # pylint: disable=R0914
     def make_individual_radial_profile(
         self,
         galaxycluster,
@@ -159,10 +161,12 @@ class ClusterEnsemble:
             Name of the cross component binned profile column to be added in profile table.
             Default: 'gx'
         quad_4theta_component_out: string, optional
-            Name of the quadrupole 4theta component binned profile column to be added in profile table.
+            Name of the quadrupole 4theta component binned profile column to be added
+            in profile table.
             Default: 'g4theta'
         quad_const_component_out: string, optional
-            Name of the quadrupole constant component binned profile column to bea dded in profile table..
+            Name of the quadrupole constant component binned profile column to be added
+            in profile table.
             Default: 'gconst'
         tan_component_in_err: string, None, optional
             Name of the tangential component error column in `galcat` to be binned.
@@ -202,19 +206,19 @@ class ClusterEnsemble:
             self.add_individual_radial_profile(
                 galaxycluster,
                 profile_table,
-                tan_component = tan_component_out,
-                cross_component = cross_component_out,
-                quad_4theta_component = quad_4theta_component_out,
-                quad_const_component = quad_const_component_out,
-                weights = weights_out,
+                tan_component=tan_component_out,
+                cross_component=cross_component_out,
+                quad_4theta_component=quad_4theta_component_out,
+                quad_const_component=quad_const_component_out,
+                weights=weights_out,
             )
         else:
             self.add_individual_radial_profile(
                 galaxycluster,
                 profile_table,
-                tan_component = tan_component_out,
-                cross_component = cross_component_out,
-                weights = weights_out,
+                tan_component=tan_component_out,
+                cross_component=cross_component_out,
+                weights=weights_out,
             )
 
     def add_individual_radial_profile(
@@ -259,7 +263,14 @@ class ClusterEnsemble:
         self.data.update_info_ext_valid("cosmo", self.data, cl_cosmo, overwrite=False)
 
         if self.include_quadrupole:
-            tbcols = ("radius", tan_component, cross_component, quad_4theta_component, quad_const_component, weights)
+            tbcols = (
+                "radius",
+                tan_component,
+                cross_component,
+                quad_4theta_component,
+                quad_const_component,
+                weights,
+            )
         else:
             tbcols = ("radius", tan_component, cross_component, weights)
         data_to_save = [
@@ -285,12 +296,12 @@ class ClusterEnsemble:
             )
 
     def make_stacked_radial_profile(
-            self, 
-            tan_component="gt", 
-            cross_component="gx", 
-            quad_4theta_component="g4theta",
-            quad_const_component="gconst",
-            weights="W_l"
+        self,
+        tan_component="gt",
+        cross_component="gx",
+        quad_4theta_component="g4theta",
+        quad_const_component="gconst",
+        weights="W_l",
     ):
         """Computes stacked profile and mean separation distances and add it internally
         to `stacked_data`.
@@ -319,21 +330,21 @@ class ClusterEnsemble:
                 self.data["radius"],
                 self.data[weights],
                 [
-                    self.data[tan_component], 
+                    self.data[tan_component],
                     self.data[cross_component],
                     self.data[quad_4theta_component],
-                    self.data[quad_const_component]
+                    self.data[quad_const_component],
                 ],
             )
             self.stacked_data = GCData(
                 [radius, *components],
                 meta=self.data.meta,
                 names=(
-                    "radius", 
-                    tan_component, 
+                    "radius",
+                    tan_component,
                     cross_component,
                     quad_4theta_component,
-                    quad_const_component
+                    quad_const_component,
                 ),
             )
         else:
@@ -349,11 +360,11 @@ class ClusterEnsemble:
             )
 
     def compute_sample_covariance(
-            self, 
-            tan_component="gt", 
-            cross_component="gx", 
-            quad_4theta_component="g4theta",
-            quad_const_component="gconst",
+        self,
+        tan_component="gt",
+        cross_component="gx",
+        quad_4theta_component="g4theta",
+        quad_const_component="gconst",
     ):
         """Compute Sample covariance matrix for cross and tangential and cross
         stacked profiles and updates .cov dict (`tan_sc`, `cross_sc`).
@@ -379,16 +390,20 @@ class ClusterEnsemble:
         self.cov["tan_sc"] = np.cov(self.data[tan_component].T, bias=False) / n_catalogs
         self.cov["cross_sc"] = np.cov(self.data[cross_component].T, bias=False) / n_catalogs
         if self.include_quadrupole:
-            self.cov["quad_4theta_sc"] = np.cov(self.data[quad_4theta_component].T, bias=False) / n_catalogs
-            self.cov["quad_const_sc"] = np.cov(self.data[quad_const_component].T, bias=False) / n_catalogs
+            self.cov["quad_4theta_sc"] = (
+                np.cov(self.data[quad_4theta_component].T, bias=False) / n_catalogs
+            )
+            self.cov["quad_const_sc"] = (
+                np.cov(self.data[quad_const_component].T, bias=False) / n_catalogs
+            )
 
     def compute_bootstrap_covariance(
-        self, 
-        tan_component="gt", 
-        cross_component="gx", 
+        self,
+        tan_component="gt",
+        cross_component="gx",
         quad_4theta_component="g4theta",
         quad_const_component="gconst",
-        n_bootstrap=10
+        n_bootstrap=10,
     ):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
         tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_bs`).
@@ -425,8 +440,10 @@ class ClusterEnsemble:
                 [
                     self[tan_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                     self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[quad_4theta_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[quad_const_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0)
+                    self[quad_4theta_component][None, cluster_index_bootstrap][0].transpose(
+                        1, 2, 0
+                    ),
+                    self[quad_const_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 ],
             )[1]
             gt_boot, gx_boot, g4theta_boot, gconst_boot = g_boot_components
@@ -436,7 +453,7 @@ class ClusterEnsemble:
                 self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 [
                     self[tan_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0)
+                    self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 ],
             )[1]
             gt_boot, gx_boot = g_boot_components
@@ -449,13 +466,13 @@ class ClusterEnsemble:
             self.cov["quad_const_bs"] = coeff * np.cov(np.array(gconst_boot), bias=False, ddof=0)
 
     def compute_jackknife_covariance(
-            self, 
-            tan_component="gt", 
-            cross_component="gx", 
-            quad_4theta_component="g4theta",
-            quad_const_component="gconst",
-            n_side=16,
-            ):
+        self,
+        tan_component="gt",
+        cross_component="gx",
+        quad_4theta_component="g4theta",
+        quad_const_component="gconst",
+        n_side=16,
+    ):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
         tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_jk`).
 
@@ -494,33 +511,35 @@ class ClusterEnsemble:
                     self["radius"][mask],
                     self["W_l"][mask],
                     [
-                        self[tan_component][mask], 
+                        self[tan_component][mask],
                         self[cross_component][mask],
                         self[quad_4theta_component][mask],
-                        self[quad_const_component][mask]
+                        self[quad_const_component][mask],
                     ],
                 )[1]
-                gt, gx, g4theta, gconst = g_components
-                gt_jack.append(gt)
-                gx_jack.append(gx)
-                g4theta_jack.append(g4theta)
-                gconst_jack.append(gconst)
+                gt_jack.append(g_components[0])
+                gx_jack.append(g_components[1])
+                g4theta_jack.append(g_components[2])
+                gconst_jack.append(g_components[3])
             else:
                 _, g_components = make_stacked_radial_profile(
                     self["radius"][mask],
                     self["W_l"][mask],
                     [self[tan_component][mask], self[cross_component][mask]],
                 )[1]
-                gt, gx = g_components
-                gt_jack.append(gt)
-                gx_jack.append(gx)
+                gt_jack.append(g_components[0])
+                gx_jack.append(g_components[1])
         n_jack = pixels_list_unique.size
         coeff = (n_jack - 1) ** 2 / (n_jack)
         self.cov["tan_jk"] = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)
         self.cov["cross_jk"] = coeff * np.cov(np.transpose(gx_jack), bias=False, ddof=0)
         if self.include_quadrupole:
-            self.cov["quad_4theta_jk"] = coeff * np.cov(np.transpose(g4theta_jack), bias=False, ddof=0)
-            self.cov["quad_const_jk"] = coeff * np.cov(np.transpose(gconst_jack), bias=False, ddof=0)
+            self.cov["quad_4theta_jk"] = coeff * np.cov(
+                np.transpose(g4theta_jack), bias=False, ddof=0
+            )
+            self.cov["quad_const_jk"] = coeff * np.cov(
+                np.transpose(gconst_jack), bias=False, ddof=0
+            )
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
