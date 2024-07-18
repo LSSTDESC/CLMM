@@ -13,6 +13,7 @@ from ..utils import (
     validate_argument,
     _draw_random_points_from_distribution,
     gaussian,
+    _validate_coordinate_system,
 )
 from ..redshift import distributions as zdist
 
@@ -215,6 +216,7 @@ def generate_galaxy_catalog(
         validate_argument(locals(), "ngals", float, none_ok=True)
         validate_argument(locals(), "ngal_density", float, none_ok=True)
         validate_argument(locals(), "pz_bins", (int, "array"))
+        _validate_coordinate_system(locals(), "coordinate_system", str)
 
     if zsrc_min is None:
         zsrc_min = cluster_z + 0.1
@@ -431,9 +433,6 @@ def _generate_galaxy_catalog(
     _, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
     posangle += 0.5 * np.pi  # for right convention
 
-    if coordinate_system == "celestial":
-        posangle = np.pi - posangle  # ellipticity coordinate system conversion
-
     # corresponding shear1,2 components
     gam1 = -gamt * np.cos(2 * posangle) + gamx * np.sin(2 * posangle)
     gam2 = -gamt * np.sin(2 * posangle) - gamx * np.cos(2 * posangle)
@@ -464,6 +463,9 @@ def _generate_galaxy_catalog(
         if galaxy_catalog.pzpdf_info["type"] == "individual_bins":
             cols += ["pzbins"]
         cols += ["pzpdf"]
+
+    if coordinate_system == "celestial":
+        galaxy_catalog["e2"] *= -1  # flip e2 to match the celestial coordinate system
 
     return galaxy_catalog[cols]
 
