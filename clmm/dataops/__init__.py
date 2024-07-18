@@ -214,11 +214,7 @@ def compute_tangential_and_cross_components(
         else:
             phi_major_ = _calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem)
         rotated_phi = phi - phi_major_
-        shear_vector = shear1_ + shear2_ * 1.0j
-        rotated_shear_vector = shear_vector * np.exp(-2.0j * phi_major_)
-        rotated_shear1, rotated_shear2 = np.real(rotated_shear_vector), np.imag(
-            rotated_shear_vector
-        )
+        rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major_)
         # Compute the quadrupole shear components
         four_theta_comp = _compute_4theta_shear(rotated_shear1, rotated_shear2, rotated_phi)
         const_comp = rotated_shear1
@@ -228,8 +224,7 @@ def compute_tangential_and_cross_components(
             const_comp *= _sigma_c_arr
     if include_quadrupole:
         return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
-    else:
-        return angsep, tangential_comp, cross_comp
+    return angsep, tangential_comp, cross_comp
 
 
 def compute_background_probability(
@@ -505,13 +500,25 @@ def _calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
     weight_total_mem = weight_mem_ * distance_weight_mem
     sum_weight_total_mem = np.sum(weight_total_mem)
     # Calcualte second moments of the member galaxies
-    Ixx = np.sum(x_mem**2 * weight_total_mem) / sum_weight_total_mem
-    Iyy = np.sum(y_mem**2 * weight_total_mem) / sum_weight_total_mem
-    Ixy = np.sum(x_mem * y_mem * weight_total_mem) / sum_weight_total_mem
+    ixx = np.sum(x_mem**2 * weight_total_mem) / sum_weight_total_mem
+    iyy = np.sum(y_mem**2 * weight_total_mem) / sum_weight_total_mem
+    ixy = np.sum(x_mem * y_mem * weight_total_mem) / sum_weight_total_mem
     # Transformation of the second moments to the direction of the major axis
-    phi_major = np.arctan2(2.0 * Ixy, Ixx - Iyy) / 2.0
+    phi_major = np.arctan2(2.0 * ixy, ixx - iyy) / 2.0
     return phi_major
 
+def _rotate_shear(shear1, shear2, phi_major):
+    r"""Rotate shear components into the coordinate where +x axis is aligned with
+    the cluster major axis. 
+
+    .. math::
+        g_rotated = g * \exp\left(-2i\phi\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    shear_vec = shear1 + shear2 * 1.0j
+    rotated_shear_vec = shear_vec * np.exp(-2.0j * phi_major)
+    return np.real(rotated_shear_vec), np.imag(rotated_shear_vec)
 
 def _compute_tangential_shear(shear1, shear2, phi):
     r"""Compute the tangential shear given the two shears and azimuthal positions for
@@ -719,150 +726,3 @@ def make_stacked_radial_profile(angsep, weights, components):
         np.average(component, axis=0, weights=weights) for component in components
     ]
     return staked_angsep, stacked_components
-
-def make_binned_estimators_triaxiality(
-    gamma1,
-    gamma2,
-    x_arcsec,
-    y_arcsec,
-    z_cluster,
-    z_source,
-    cosmo,
-    monopole_bins=15,
-    quadrupole_bins=15,
-    r_min=0.3,
-    r_max=2.5,
-):
-    """
-    Makes radially binned profiles for Monopole, Quadrupole (4theta and const) as described in Shin et al. 2018
-    Parameters
-    ----------
-    gamma1: float or array
-        Shear component gamma 1
-    gamma2: float or array
-        Shear component gamma 2
-    x_arcsec: float or array
-        X position in arcsec when cluster center is at 0.0 and x axis is assumed to be along the major axis of the cluster
-    y_arcsec: float or array
-        Y position in arcsec when cluster center is at 0.0
-    z_cluster: float
-        Redshift of lens cluster
-    cosmo: clmm.cosmology.Cosmology object
-        CLMM Cosmology object
-    monopole_bins: float, optional
-        Number of bins for monopole lensing profile
-    quadrupole_bins: float, optional
-        Number of bins for quadrupole lensing profiles (4theta, const)
-    r_min: Float, optional
-        Minimum radial distance to measure monopole and quadrupole shear profiles in Mpc (Default is 0.3 Mpc)
-    r_max: Float, optional
-        Maximum radial distance to measure monopole and quadrupole shear profiles in Mpc (Default is 2.5 Mpc)
-
-    Returns
-    -------
-    ds_mono: float or array
-        Binned monopole lensing profile
-    ds_mono_err: float or array
-        Uncertainty for the binned monopole lensing shear profile
-    r_mono: float or array
-        Bin centers for the monopole lensing shear profile
-    ds_4theta: float or array
-        Binned binned quadrupole 4-theta lensing shear profile
-    ds_4theta_err: float or array
-        Uncertainty for the binned quadrupole 4-theta lensing shear profile
-    ds_const: float or array
-        Binned binned quadrupole const lensing shear profile
-    ds_const_err: float or array
-        Uncertainty for the binned quadrupole const lensing shear profile
-    r_quad: float or array
-        Bin centers for the quadrupole lensing shear profiles (4theta and const)
-    """
-
-    sigma_crit = cosmo.eval_sigma_crit(z_cluster, z_source)
-    r = np.sqrt((x_arcsec**2 + y_arcsec**2))  # In arcsecs
-    theta = np.arctan2(y_arcsec, x_arcsec)
-    r_mpc = r * cosmo.eval_da(z_cluster) * np.pi / 180.0 * 1 / 3600  # In Mpc
-
-    w, w1, w2 = measure_weights_triaxiality(sigma_crit, theta)
-    DS4theta = measure_Delta_Sigma_4theta_triaxiality(w1, w2, gamma1, gamma2, theta, sigma_crit)
-    DSconst = measure_Delta_Sigma_const_triaxiality(w, gamma1, sigma_crit)
-
-    # Binning for Quadrupole measurements DS4theta and DSconst
-    bins = quadrupole_bins
-    r_min = r_min
-    r_max = r_max
-
-    bin_edges = np.logspace(np.log10(r_min), np.log10(r_max), bins)
-    N_i = []
-    for i in np.arange(bins - 1):
-        N_i.append(len(r_mpc[(r_mpc > bin_edges[i]) & (r_mpc < bin_edges[i + 1])]))
-    N_i = np.array(N_i)
-
-    result = binned_statistic(r_mpc, gamma1, statistic="mean", bins=bin_edges)
-    gamma1_i = result.statistic
-    res = binned_statistic(r_mpc, gamma2, statistic="mean", bins=bin_edges)
-    gamma2_i = res.statistic
-    res = binned_statistic(r_mpc, DS4theta, statistic="mean", bins=bin_edges)
-    DS4theta_i_err = binned_statistic(
-        r_mpc, DS4theta, statistic="std", bins=bin_edges
-    ).statistic / np.sqrt(N_i)
-    DS4theta_i = res.statistic
-    res = binned_statistic(r_mpc, DSconst, statistic="mean", bins=bin_edges)
-    DSconst_i = res.statistic
-    DSconst_i_err = binned_statistic(
-        r_mpc, DSconst, statistic="std", bins=bin_edges
-    ).statistic / np.sqrt(N_i)
-    r_i = bin_edges
-
-    # Binning for Monopole Measurements:
-    bins_mono = monopole_bins
-    bin_edges = np.logspace(np.log10(r_min), np.log10(r_max), bins_mono)
-    N_i = []
-    for i in np.arange(bins_mono - 1):
-        N_i.append(len(r_mpc[(r_mpc > bin_edges[i]) & (r_mpc < bin_edges[i + 1])]))
-    N_i = np.array(N_i)
-
-    r_mono = bin_edges
-    res = binned_statistic(
-        r_mpc,
-        -gamma1 * np.cos(2 * theta) - gamma2 * np.sin(2 * theta),
-        statistic="mean",
-        bins=bin_edges,
-    )
-    gammat_mono = res.statistic
-    ds_mono_err = (
-        binned_statistic(
-            r_mpc,
-            -gamma1 * np.cos(2 * theta) - gamma2 * np.sin(2 * theta),
-            statistic="std",
-            bins=bin_edges,
-        ).statistic
-        / np.sqrt(N_i)
-        * sigma_crit
-    )
-    ds_mono = gammat_mono * sigma_crit
-
-    # SAFEGUARD AGAINST BINS WITH NANs and 0.0s
-
-    ind = np.invert(np.isnan(ds_mono) | np.isnan(ds_mono_err))
-    ds_mono = ds_mono[ind]
-    ds_mono_err = ds_mono_err[ind]
-    r_mono = np.sqrt(r_mono[:-1] * r_mono[1:])[ind]
-    ind = (ds_mono != 0.0) & (ds_mono_err != 0.0)
-    ds_mono = ds_mono[ind]
-    ds_mono_err = np.abs(ds_mono_err[ind])
-    r_mono = r_mono[ind]
-
-    ind = np.invert(
-        np.isnan(DS4theta_i)
-        | np.isnan(DS4theta_i_err)
-        | np.isnan(DSconst_i)
-        | np.isnan(DSconst_i_err)
-    )
-    ds_4theta = DS4theta_i[ind]
-    ds_4theta_err = np.abs(DS4theta_i_err[ind])
-    ds_const = DSconst_i[ind]
-    ds_const_err = np.abs(DSconst_i_err[ind])
-    r_quad = np.sqrt(r_i[:-1] * r_i[1:])[ind]
-
-    return ds_mono, ds_mono_err, r_mono, ds_4theta, ds_4theta_err, ds_const, ds_const_err, r_quad

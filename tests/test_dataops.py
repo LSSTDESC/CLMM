@@ -1,4 +1,5 @@
 """Tests for dataops.py"""
+
 import numpy as np
 from numpy.testing import assert_allclose, assert_raises, assert_array_equal, assert_warns
 
@@ -52,6 +53,26 @@ def test_compute_tangential_shear():
     assert_allclose(da._compute_tangential_shear(100.0, 0.0, 0.0), -100.0, **TOLERANCE)
     assert_allclose(da._compute_tangential_shear(0.0, 100.0, np.pi / 4.0), -100.0, **TOLERANCE)
     assert_allclose(da._compute_tangential_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
+
+
+def test_compute_4theta_shear():
+    """test compute quadrupole 4theta shear"""
+    shear1, shear2, phi = 0.15, 0.08, 0.52
+    expected_4theta_shear = -0.003271676989552594
+    four_theta_shear = da._compute_4theta_shear(shear1, shear2, phi)
+    assert_allclose(four_theta_shear, expected_4theta_shear)
+
+    shear1 = np.array([0.15, 0.40])
+    shear2 = np.array([0.08, 0.30])
+    phi = np.array([0.52, 1.23])
+    expected_4theta_shear = [-0.003271676989552594, -0.2111087147687582]
+    four_theta_shear = da._compute_4theta_shear(shear1, shear2, phi)
+    assert_allclose(four_theta_shear, expected_4theta_shear)
+
+    # test for reasonable values
+    assert_allclose(da._compute_4theta_shear(100.0, 0.0, 0.0), 100.0, **TOLERANCE)
+    assert_allclose(da._compute_4theta_shear(0.0, 100.0, np.pi / 8.0), 100.0, **TOLERANCE)
+    assert_allclose(da._compute_4theta_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
 def test_compute_lensing_angles_flatsky():
