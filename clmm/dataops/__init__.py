@@ -695,7 +695,7 @@ def make_stacked_radial_profile(angsep, weights, components):
     Parameters
     ----------
     angsep: 2d array
-        Transvesal distances corresponding to each object with shape `n_obj, n_rad_bins`.
+        Transversal distances corresponding to each object with shape `n_obj, n_rad_bins`.
     weights: 2d array
         Weights corresponding to each objects with shape `n_obj, n_rad_bins`.
     components: list of 2d arrays
@@ -731,7 +731,7 @@ def measure_Delta_Sigma_const_triaxiality(w, gamma1, Sigma_crit) :
     -------
     dsconst_data: The measured "4theta" quadrupole component from the input shear measurements for each galaxy
     """
-    dsconst_data = w * Sigma_crit * gamma1 / w
+    dsconst_data = Sigma_crit * gamma1 
     return dsconst_data
 
 def measure_Delta_Sigma_4theta_triaxiality(w1, w2, gamma1, gamma2, theta, Sigma_crit) :
