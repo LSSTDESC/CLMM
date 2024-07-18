@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+
 import numpy as np
 from ..constants import Constants as const
 
@@ -224,3 +225,23 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
         raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
     if not is_deltasigma and sigma_c is not None:
         raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
+
+
+def _validate_coordinate_system(loc, coordinate_system, valid_type):
+    r"""Validate the coordinate system.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    coordinate_system: str
+        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
+    """
+    validate_argument(loc, coordinate_system, valid_type)
+    if loc[coordinate_system] not in ["celestial", "euclidean"]:
+        raise ValueError(f"{coordinate_system} must be 'celestial' or 'euclidean'.")
