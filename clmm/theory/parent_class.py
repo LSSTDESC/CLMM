@@ -205,7 +205,7 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+    def _eval_surface_density_miscentered_float(self, r_proj, z_cl, r_mis, backend):
         # pylint: disable=invalid-name, possibly-used-before-assignment
         c = self.cdelta
         rho_def = self.cosmo.get_rho_m(z_cl)
@@ -247,23 +247,27 @@ class CLMModeling:
 
         return res
 
+    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+        return np.array([self._eval_surface_density_miscentered_float(_r, z_cl, r_mis, backend)
+                         for _r in r_proj])
+
     def _integrand_surface_density_mis(self, theta, r, r_off, z_cl):
+        return self.eval_surface_density(np.sqrt(r*r + r_off*r_off - 2*r*r_off*np.cos(theta)), z_cl)
 
     def _integrand_surface_density_mis_NFW(self, theta, r, r_off, r_s):
         x = np.sqrt(r**2. + r_off**2. - 2.*r*r_off*np.cos(theta)) / r_s
 
-        # Analytical solution for NFW
-        def f1(x):
-            x2m1 = x**2. - 1.
+        x2m1 = x**2. - 1.
+        if x < 1:
             sqrt_x2m1 = np.sqrt(-x2m1)
-            return np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
-
-        def f2(x):
-            x2m1 = x**2. - 1.
+            res = np.arcsinh(sqrt_x2m1/x) / (-x2m1)**(3./2.) + 1./x2m1
+        elif x > 1:
             sqrt_x2m1 = np.sqrt(x2m1)
-            return -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
+            res = -np.arcsin(sqrt_x2m1/x) / (x2m1)**(3./2.) + 1./x2m1
+        else:
+            res = 1./3.
+        return res
 
-        return np.piecewise(x, [x<1, x>1], [f1, f2, 1./3.])
 
     def _integrand_surface_density_mis_Einasto(self, theta, r, r_off, r_s, alpha_ein):
 
@@ -277,20 +281,18 @@ class CLMModeling:
     def _integrand_surface_density_mis_Hernquist(self, theta, r, r_off, r_s):
         x = np.sqrt(r**2. + r_off**2. - 2.*r*r_off*np.cos(theta)) / r_s
 
-        # Analytical solution for Hernquist
-        def f1(x):
-            x2m1 = x**2. - 1.
+        x2m1 = x**2. - 1.
+        if x < 1:
             sqrt_x2m1 = np.sqrt(-x2m1)
-            return (-3 / x2m1**2
+            res = (-3 / x2m1**2
                    + (x2m1+3) * np.arcsinh(sqrt_x2m1/x) / (-x2m1)**2.5)
-
-        def f2(x):
-            x2m1 = x**2. - 1.
+        elif x > 1:
             sqrt_x2m1 = np.sqrt(x2m1)
-            return (-3 / x2m1**2
+            res = (-3 / x2m1**2
                    + (x2m1+3) * np.arcsin(sqrt_x2m1/x) / (x2m1)**2.5)
-
-        return np.piecewise(x, [x<1, x>1], [f1, f2, 4./15.])
+        else:
+            res = 4./15.
+        return res
 
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
         res = np.zeros_like(r_proj)
@@ -302,7 +304,7 @@ class CLMModeling:
         return res
 
     def _integrand_mean_surface_density_mis(self, r, z_cl, r_mis, backend):
-        return r * self._eval_surface_density_miscentered(r, z_cl, r_mis, backend)
+        return r * self._eval_surface_density_miscentered_float(r, z_cl, r_mis, backend)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
         return (self._eval_mean_surface_density_miscentered(r_proj, z_cl, r_mis, backend)
