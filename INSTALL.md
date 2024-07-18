@@ -64,6 +64,17 @@ Now, you can install CLMM and its dependencies as
     python setup.py install     # build from source
 ```
 
+### Local environment for CLMM
+
+Alternatively, you can create a new local environment and install CLMM by running
+
+```bash
+    conda env create -f environment.yml
+    conda activate clmm
+```
+
+You can now install CLMM in a local and stable environment with the usual procedure.
+
 ## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
 If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following.  We recommend executing line-by-line to avoid errors:
