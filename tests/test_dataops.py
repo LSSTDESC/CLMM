@@ -138,25 +138,25 @@ def test_compute_lensing_angles_flatsky():
     # coordinate_system conversion
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
-    thetas_pixel, phis_pixel = da._compute_lensing_angles_flatsky(
+    thetas_euclidean, phis_euclidean = da._compute_lensing_angles_flatsky(
         ra_l, dec_l, ra_s, dec_s, coordinate_system="euclidean"
     )
-    thetas_sky, phis_sky = da._compute_lensing_angles_flatsky(
+    thetas_celestial, phis_celestial = da._compute_lensing_angles_flatsky(
         ra_l, dec_l, ra_s, dec_s, coordinate_system="celestial"
     )
 
     assert_allclose(
-        thetas_sky,
-        thetas_pixel,
+        thetas_celestial,
+        thetas_euclidean,
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for theta failed",
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed",
     )
 
     assert_allclose(
-        phis_sky,
-        np.pi - phis_pixel,
+        phis_celestial,
+        np.pi - phis_euclidean,
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for phi failed",
+        err_msg="Conversion from euclidean to celestial coordinate system for phi failed",
     )
 
 
@@ -166,25 +166,25 @@ def test_compute_lensing_angles_astropy():
     # coordinate_system conversion
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
-    thetas_pixel, phis_pixel = da._compute_lensing_angles_astropy(
+    thetas_euclidean, phis_euclidean = da._compute_lensing_angles_astropy(
         ra_l, dec_l, ra_s, dec_s, coordinate_system="euclidean"
     )
-    thetas_sky, phis_sky = da._compute_lensing_angles_astropy(
+    thetas_celestial, phis_celestial = da._compute_lensing_angles_astropy(
         ra_l, dec_l, ra_s, dec_s, coordinate_system="celestial"
     )
 
     assert_allclose(
-        thetas_sky,
-        thetas_pixel,
+        thetas_celestial,
+        thetas_euclidean,
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for theta failed",
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed",
     )
 
     assert_allclose(
-        phis_sky,
-        np.pi - phis_pixel,
+        phis_celestial,
+        np.pi - phis_euclidean,
         **TOLERANCE,
-        err_msg="Conversion from sky to pixel coordinate system for phi failed",
+        err_msg="Conversion from euclidean to celestial coordinate system for phi failed",
     )
 
 
