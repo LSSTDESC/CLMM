@@ -324,6 +324,13 @@ def test_profiles(modeling_data, profile_init):
             reltol,
         )
         assert_allclose(
+            mod.eval_surface_density(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=1.e-15, verbose=True
+            ),
+            cfg["numcosmo_profiles"]["Sigma"],
+            1.e-4,
+        )
+        assert_allclose(
             mod.eval_mean_surface_density(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], verbose=True
             ),
@@ -331,11 +338,25 @@ def test_profiles(modeling_data, profile_init):
             reltol,
         )
         assert_allclose(
+            mod.eval_mean_surface_density(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=1.e-15, verbose=True
+            ),
+            cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"],
+            1.e-4,
+        )
+        assert_allclose(
             mod.eval_excess_surface_density(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], verbose=True
             ),
             cfg["numcosmo_profiles"]["DeltaSigma"],
             reltol,
+        )
+        assert_allclose(
+            mod.eval_excess_surface_density(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=1.e-15, verbose=True
+            ),
+            cfg["numcosmo_profiles"]["DeltaSigma"],
+            1.e-4
         )
         if mod.backend == "ct":
             assert_raises(
