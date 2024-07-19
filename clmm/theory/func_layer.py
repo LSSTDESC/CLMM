@@ -158,7 +158,9 @@ def compute_surface_density(
 
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-
+    use_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -250,10 +252,11 @@ def compute_mean_surface_density(
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
         available for the NumCosmo backend
-
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-
+    use_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -342,10 +345,11 @@ def compute_excess_surface_density(
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
-
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-
+    use_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.

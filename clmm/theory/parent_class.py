@@ -760,12 +760,12 @@ class CLMModeling:
             Redshift of the cluster
         r_mis : float, optional
             Projected miscenter distance in :math:`M\!pc`
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
-        backend : bool, optional
-            If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
 
         Returns
         -------
@@ -799,12 +799,12 @@ class CLMModeling:
             Redshift of the cluster
         r_mis : float, optional
             Projected miscenter distance in :math:`M\!pc`.
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
-        backend : bool, optional
-            If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
 
         Returns
         -------
@@ -827,7 +827,8 @@ class CLMModeling:
 
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
+    def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None,
+                                    use_backend=False, verbose=False):
         r"""Computes the excess surface density
 
         Parameters
@@ -838,12 +839,12 @@ class CLMModeling:
             Redshift of the cluster
         r_mis : float, optional
             Projected miscenter distance in :math:`M\!pc`.
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
-        backend : bool, optional
-            If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
 
         Returns
         -------
