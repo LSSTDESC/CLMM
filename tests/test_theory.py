@@ -380,6 +380,12 @@ def test_profiles(modeling_data, profile_init):
                 cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
                 2.5e-2
             )
+            assert_equal(
+                mod._integrand_surface_density_mis_nfw(0, 0.3, 0, 0.3),
+                1./3.)
+            assert_equal(
+                mod._integrand_surface_density_mis_hernquist(0, 0.3, 0, 0.3),
+                4./15.)
         if mod.backend == "ct":
             assert_raises(
                 ValueError, mod.eval_excess_surface_density, 1e-12, cfg["SIGMA_PARAMS"]["z_cl"]
