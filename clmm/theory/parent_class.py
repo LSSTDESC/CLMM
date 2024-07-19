@@ -207,10 +207,10 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_surface_density_miscentered_float(self, r_proj_float, z_cl, r_mis, backend):
+    def _eval_surface_density_miscentered_float(self, r_proj_float, z_cl, r_mis, use_backend):
         # pylint: disable=invalid-name, possibly-used-before-assignment
 
-        if backend:
+        if use_backend:
             integrand = self._integrand_surface_density_mis
             res = (
                 quad(integrand, 0.0, np.pi,
@@ -277,10 +277,10 @@ class CLMModeling:
 
         return res
 
-    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
         return np.array(
             [
-                self._eval_surface_density_miscentered_float(_r, z_cl, r_mis, backend)
+                self._eval_surface_density_miscentered_float(_r, z_cl, r_mis, use_backend)
                 for _r in r_proj
             ]
         )
@@ -330,13 +330,13 @@ class CLMModeling:
             res = 4.0 / 15.0
         return res
 
-    def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+    def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
         # pylint: disable=invalid-name
         res = np.zeros_like(r_proj)
         for i, r in enumerate(r_proj):
             r_lower = 0 if i == 0 else r_proj[i - 1]
 
-            if backend:
+            if use_backend:
                 integrand = self._integrand_mean_surface_density_mis
                 res[i] = dblquad(integrand, r_lower, r, 0, np.pi,
                                  args=(r_mis, z_cl))[0]
@@ -420,10 +420,10 @@ class CLMModeling:
         # pylint: disable=invalid-name
         return r * self._integrand_surface_density_mis_hernquist(theta, r, r_mis, r_s)
 
-    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
+    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
         return self._eval_mean_surface_density_miscentered(
-            r_proj, z_cl, r_mis, backend
-        ) - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis, backend)
+            r_proj, z_cl, r_mis, use_backend
+        ) - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis, use_backend)
 
     def _eval_2halo_term_generic(
         self,
@@ -749,7 +749,7 @@ class CLMModeling:
 
         return 1.0 / _integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac)
 
-    def eval_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False, backend=False):
+    def eval_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
         r"""Computes the surface mass density
 
         Parameters
@@ -784,11 +784,11 @@ class CLMModeling:
 
         if r_mis is not None:
             return self._eval_surface_density_miscentered(
-                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, backend=backend
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
             )
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False, backend=False):
+    def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
         r"""Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
@@ -822,12 +822,12 @@ class CLMModeling:
 
         if r_mis is not None:
             return self._eval_mean_surface_density_miscentered(
-                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, backend=backend
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
             )
 
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None, verbose=False, backend=False):
+    def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
         r"""Computes the excess surface density
 
         Parameters
@@ -861,7 +861,7 @@ class CLMModeling:
 
         if r_mis is not None:
             return self._eval_excess_surface_density_miscentered(
-                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, backend=backend
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
             )
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
