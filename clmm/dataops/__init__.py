@@ -36,9 +36,7 @@ def compute_tangential_and_cross_components(
     sigma_c=None,
     include_quadrupole=False,
     phi_major=None,
-    ra_mem=None,
-    dec_mem=None,
-    weight_mem=None,
+    info_mem=None,
     validate_input=True,
 ):
     r"""Computes tangential- and cross- components for shear or ellipticity
@@ -126,18 +124,13 @@ def compute_tangential_and_cross_components(
         the direction of the major axis of the input cluster in the unit of radian. 
         only needed when `include_quadrupole` is `True`.
         Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
-    ra_mem : array, optional
-        right ascentions of the member galaxies of the input cluster,
-        to calculate the direction of the major axis of the cluster.
+    info_mem : list of array, optional
+        RAs, DECs and weights of the member galaxies of the input cluster,
+        to calcualte the direction of the major axis of the cluster.
         Only needed when `include_quadrupole` is `True` and `phi_major` is not provided.
-    dec_mem : array, optional
-        declinations of the member galaxies of the input cluster,
-        to calculate the direction of the major axis of the cluster.
-        Only needed when `include_quadrupole` is `True` and `phi_major` is not provided.
-    weight_mem : array, optional
-        weights for the member galaxies to be applied when calcualting 
-        the major axis of the input cluster out of ra_mem and dec_mem. 
-        It could be `1` (no weights) or `membership probability (p_mem)` or any user choice. 
+        The shape must be in `[ra_mem,dec_mem,weight_mem]`, where each element is an array.
+        The weights could be `1` (no weights) or 
+        `membership probability (p_mem)` or any user choice. 
     validate_input: bool
         Validade each input argument
 
@@ -175,12 +168,8 @@ def compute_tangential_and_cross_components(
             prefix="Tangential- and Cross- shape components sources",
         )
         _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
-        if phi_major is not None:
-            validate_argument(locals(), "phi_major", float)
-        else:
-            validate_argument(locals(), "ra_mem", "float_array")
-            validate_argument(locals(), "dec_mem", "float_array")
-            validate_argument(locals(), "weight_mem", "float_array")
+        validate_argument(locals(), "phi_major", float, none_ok=True)
+        validate_argument(locals(), "info_mem", "float_array", none_ok=True)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -209,10 +198,14 @@ def compute_tangential_and_cross_components(
         cross_comp *= _sigma_c_arr
 
     if include_quadrupole:
-        if phi_major is not None:
-            phi_major_ = phi_major
-        else:
-            phi_major_ = _calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem)
+        if (phi_major is None) and (info_mem is None):
+            raise ValueError("Either phi_major or (ra_mem, dec_mem, weight_mem) should be provided")
+        phi_major_ = phi_major
+        if phi_major_ is None:
+            # info_mem=[ra_mem,dec_mem,weight_mem]
+            phi_major_ = _calculate_major_axis(
+                ra_lens, dec_lens, info_mem[0], info_mem[1], info_mem[2]
+            )
         rotated_phi = phi - phi_major_
         rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major_)
         # Compute the quadrupole shear components
@@ -507,9 +500,10 @@ def _calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
     phi_major = np.arctan2(2.0 * ixy, ixx - iyy) / 2.0
     return phi_major
 
+
 def _rotate_shear(shear1, shear2, phi_major):
     r"""Rotate shear components into the coordinate where +x axis is aligned with
-    the cluster major axis. 
+    the cluster major axis.
 
     .. math::
         g_rotated = g * \exp\left(-2i\phi\right)
@@ -519,6 +513,7 @@ def _rotate_shear(shear1, shear2, phi_major):
     shear_vec = shear1 + shear2 * 1.0j
     rotated_shear_vec = shear_vec * np.exp(-2.0j * phi_major)
     return np.real(rotated_shear_vec), np.imag(rotated_shear_vec)
+
 
 def _compute_tangential_shear(shear1, shear2, phi):
     r"""Compute the tangential shear given the two shears and azimuthal positions for
