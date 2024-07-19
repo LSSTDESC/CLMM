@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simpson, quad, quad_vec, dblquad, tplquad
+from scipy.integrate import simpson, quad, dblquad, tplquad
 from scipy.interpolate import splrep, splev
 from scipy.special import gamma, gammainc, jv
 
@@ -348,7 +348,10 @@ class CLMModeling:
                 r_s = self.eval_rdelta(z_cl) / c
 
                 if self.halo_profile_model == "nfw":
-                    rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
+                    rho_s = (self.delta_mdef
+                             / 3.0 * c**3.0 * rho_def
+                             / (np.log(1.0 + c) - c / (1.0 + c)))
+
                     integrand = self._integrand_mean_surface_density_mis_nfw
 
                     res[i] = (dblquad(integrand, r_lower, r, 0, np.pi,
@@ -375,7 +378,6 @@ class CLMModeling:
                             * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
                         )
                     )
-                    x = np.sqrt(z**2.0 + r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
 
                     integrand = self._integrand_mean_surface_density_mis_einasto
 
@@ -408,12 +410,15 @@ class CLMModeling:
         return r * self._integrand_surface_density_mis(theta, r, r_mis, z_cl)
 
     def _integrand_mean_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
         return r * self._integrand_surface_density_mis_nfw(theta, r, r_mis, r_s)
 
     def _integrand_mean_surface_density_mis_einasto(self, z, theta, r, r_mis, r_s, alpha_ein):
+        # pylint: disable=invalid-name
         return r * self._integrand_surface_density_mis_einasto(z, theta, r, r_mis, r_s, alpha_ein)
 
     def _integrand_mean_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
         return r * self._integrand_surface_density_mis_hernquist(theta, r, r_mis, r_s)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, backend):
