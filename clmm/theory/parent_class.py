@@ -329,12 +329,11 @@ class CLMModeling:
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
         # pylint: disable=invalid-name
         res = np.zeros_like(r_proj)
+        norm = 1
         for i, r in enumerate(r_proj):
             r_lower = 0 if i == 0 else r_proj[i - 1]
 
             if use_backend:
-                norm = 1
-
                 integrand = self._integrand_mean_surface_density_mis
                 res[i] = dblquad(integrand, r_lower, r, 0, np.pi, args=(r_mis, z_cl))[0]
 
