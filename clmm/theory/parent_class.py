@@ -224,14 +224,12 @@ class CLMModeling:
 
             if self.halo_profile_model == "nfw":
                 rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
+                norm = 2 * r_s * rho_s / np.pi
+
                 integrand = self._integrand_surface_density_mis_nfw
 
                 res = (
                     quad(integrand, 0.0, np.pi, args=(r_proj_float, r_mis, r_s), epsrel=1e-6)[0]
-                    * 2
-                    * r_s
-                    * rho_s
-                    / np.pi
                 )
 
             # Einasto
@@ -250,30 +248,28 @@ class CLMModeling:
                         * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
                     )
                 )
+                norm = 2 * rho_s / np.pi
 
                 integrand = self._integrand_surface_density_mis_einasto
 
                 res = (
                     dblquad(integrand, 0.0, np.pi, 0, np.inf,
-                        args=(r_proj_float, r_mis, r_s, alpha_ein), epsrel=1e-6
+                            args=(r_proj_float, r_mis, r_s, alpha_ein), epsrel=1e-6
                     )[0]
-                    * 2
-                    * rho_s
-                    / np.pi
                 )
 
             # Hernquist
             elif self.halo_profile_model == "hernquist":
                 rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / ((c / (1.0 + c)) ** 2.0) * 2
+                norm = r_s * rho_s / np.pi
+
                 integrand = self._integrand_surface_density_mis_hernquist
 
                 res = (
-                    quad(integrand, 0.0, np.pi,
-                         args=(r_proj_float, r_mis, r_s), epsrel=1e-6)[0]
-                    * r_s
-                    * rho_s
-                    / np.pi
+                    quad(integrand, 0.0, np.pi, args=(r_proj_float, r_mis, r_s), epsrel=1e-6)[0]
                 )
+
+            res *= norm
 
         return res
 
@@ -337,9 +333,10 @@ class CLMModeling:
             r_lower = 0 if i == 0 else r_proj[i - 1]
 
             if use_backend:
+                norm = 1
+
                 integrand = self._integrand_mean_surface_density_mis
-                res[i] = dblquad(integrand, r_lower, r, 0, np.pi,
-                                 args=(r_mis, z_cl))[0]
+                res[i] = dblquad(integrand, r_lower, r, 0, np.pi, args=(r_mis, z_cl))[0]
 
             else:
                 c = self.cdelta
@@ -351,15 +348,12 @@ class CLMModeling:
                              / 3.0 * c**3.0 * rho_def
                              / (np.log(1.0 + c) - c / (1.0 + c))
                             )
+                    norm = 2 * r_s * rho_s
 
                     integrand = self._integrand_mean_surface_density_mis_nfw
 
                     res[i] = (
-                        dblquad(integrand, r_lower, r, 0, np.pi,
-                                      args=(r_mis, r_s), epsrel=1e-6)[0]
-                        * 2
-                        * r_s
-                        * rho_s
+                        dblquad(integrand, r_lower, r, 0, np.pi, args=(r_mis, r_s), epsrel=1e-6)[0]
                     )
 
                 # Einasto
@@ -378,29 +372,27 @@ class CLMModeling:
                             * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
                         )
                     )
+                    norm = 2 * rho_s
 
                     integrand = self._integrand_mean_surface_density_mis_einasto
 
                     res[i] = (
                         tplquad(integrand, r_lower, r, 0, np.pi, 0, np.inf,
-                                      args=(r_mis, r_s, alpha_ein), epsrel=1e-6)[0]
-                        * 2
-                        * rho_s
+                                args=(r_mis, r_s, alpha_ein), epsrel=1e-6)[0]
                     )
 
                 # Hernquist
                 elif self.halo_profile_model == "hernquist":
                     rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / ((c / (1.0 + c)) ** 2.0) * 2
+                    norm = r_s * rho_s
+
                     integrand = self._integrand_mean_surface_density_mis_hernquist
 
                     res[i] = (
-                        dblquad(integrand, r_lower, r, 0, np.pi,
-                                args=(r_mis, r_s), epsrel=1e-6)[0]
-                        * r_s
-                        * rho_s
+                        dblquad(integrand, r_lower, r, 0, np.pi, args=(r_mis, r_s), epsrel=1e-6)[0]
                     )
 
-        res = np.cumsum(res) * 2 / np.pi / r_proj**2
+        res = np.cumsum(res) * norm * 2 / np.pi / r_proj**2
         return res
 
 
