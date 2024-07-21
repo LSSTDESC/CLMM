@@ -208,6 +208,7 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _miscentering_integrand_surface_density(self, use_backend):
+        integrand = None
         if use_backend:
             integrand = self._integrand_surface_density_mis
         else:
@@ -220,6 +221,7 @@ class CLMModeling:
         return integrand
 
     def _miscentering_integrand_mean_surface_density(self, use_backend):
+        integrand = None
         if use_backend:
             integrand = self._integrand_mean_surface_density_mis
         else:
@@ -233,6 +235,7 @@ class CLMModeling:
 
     def _miscentering_params(self, z_cl, use_backend):
         # pylint: disable=invalid-name
+        params = None
         if use_backend:
             params = 1, (z_cl,)
 
