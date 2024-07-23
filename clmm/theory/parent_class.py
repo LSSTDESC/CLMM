@@ -308,23 +308,6 @@ class CLMModeling:
 
         return delta_sigma
 
-    def _eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid=10000):
-        """eval surface density with triaxial corrections"""
-        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-
-        sigma_grid = self.eval_surface_density(grid, z_cl)
-        sigma = self.eval_surface_density(r_proj, z_cl)
-
-        eta_grid = grid * np.gradient(np.log(sigma_grid), grid)
-        eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
-        eta = eta_func(r_proj)
-
-        deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
-        deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
-        deta_dlnr = deta_dlnr_func(r_proj)
-
-        return sigma * (1 + ell ** 2 * (eta + eta ** 2 / 2 + deta_dlnr / 2) / 2)
-
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
 
@@ -808,41 +791,6 @@ class CLMModeling:
             )
 
         return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term, n_grid)
-
-    def eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid=10000):
-        r"""Compute the individual terms in the quadrupole expansion of the surface density.
-
-        Parameters
-        ----------
-        r_proj: array
-            Projected radial position from the cluster center in :math:`M\!pc`.
-        ell: float
-            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
-            q=b/a (Ratio of major axis to the minor axis lengths)
-        z_cl: float
-            Redshift of lens cluster
-        n_grid: int
-            Grid steps for gradient calculations.
-
-        Returns
-        -------
-        numpy.ndarry, float
-            Triaxial corrected surface density in units of :math:`M_\odot\ Mpc^{-2}`.
-        """
-
-        if self.validate_input:
-            validate_argument(locals(), "r_proj", "float_array", argmin=0)
-            validate_argument(locals(), "z_cl", float, argmin=0)
-            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
-            validate_argument(locals(), "n_grid", int, argmin=2)
-
-        if self.backend not in ("ccl", "nc"):
-            raise NotImplementedError(
-                f"Triaxial surface density not currently supported with the {self.backend} backend."
-                "Use the CCL or NumCosmo backend instead"
-            )
-
-        return self._eval_surface_density_triaxial(r_proj, z_cl, ell, n_grid)
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear
