@@ -1297,13 +1297,13 @@ def compute_magnification_bias(
 
 def compute_delta_sigma_4theta_triaxiality(
     ell,
-    r_source,
+    r_proj,
     mdelta,
     cdelta,
-    z_cluster,
+    z_cl,
     cosmo,
     halo_profile_model="nfw",
-    massdef="critical",
+    massdef="mean",
     sample_N=10000,
     delta_mdef=200,
     alpha_ein=None,
@@ -1354,15 +1354,15 @@ def compute_delta_sigma_4theta_triaxiality(
     Returns
     -------
     ds4theta: array
-        Delta sigma 4-theta component value at a position for the elliptical halo specified
+        Delta sigma 4-theta component value at r_proj for the elliptical halo
     """
-    ### DEFINING INTEGRALS:
-    r_arr = np.logspace(np.log10(0.01), np.log10(3 * np.max(r_source)), sample_N)
-    sigma_0_arr = compute_surface_density(
-        r_arr,
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
+
+    sigma_grid = compute_surface_density(
+        grid,
         mdelta,
         cdelta,
-        z_cluster,
+        z_cl,
         cosmo,
         delta_mdef=delta_mdef,
         halo_profile_model=halo_profile_model,
@@ -1371,48 +1371,40 @@ def compute_delta_sigma_4theta_triaxiality(
         verbose=verbose,
         validate_input=validate_input,
     )
-    eta_0_arr = np.gradient(np.log(sigma_0_arr), r_arr) * r_arr
-    f = InterpolatedUnivariateSpline(
-        r_arr, (r_arr**3) * sigma_0_arr * eta_0_arr, k=5
-    )  # k=3 order of spline
-    integral_vec = np.vectorize(f.integral)
-    ###
-
-    ### ACTUAL COMPUTATION:
-    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr, k=5)
-
-    ds4theta = np.array(
-        (ell / 2.0)
-        * (
-            2 * ((3 / (r_source**4)) * integral_vec(0, r_source))
-            - compute_surface_density(
-                r_source,
-                mdelta,
-                cdelta,
-                z_cluster,
-                cosmo,
-                delta_mdef=200,
-                halo_profile_model=halo_profile_model,
-                massdef=massdef,
-                alpha_ein=alpha_ein,
-                verbose=verbose,
-                validate_input=validate_input,
-            )
-            * eta_0_interpolation_func(r_source)
-        )
+    sigma = compute_surface_density(
+        r_proj,
+        mdelta,
+        cdelta,
+        z_cl,
+        cosmo,
+        delta_mdef=delta_mdef,
+        halo_profile_model=halo_profile_model,
+        massdef=massdef,
+        alpha_ein=alpha_ein,
+        verbose=verbose,
+        validate_input=validate_input,
     )
-    return ds4theta
+
+    eta_grid = grid * np.gradient(np.log(sigma_grid), grid)
+    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
+    eta = eta_func(r_proj)
+
+    f = InterpolatedUnivariateSpline(grid, grid ** 3 * sigma_grid * eta_grid, k=5)
+    integral_vec = np.vectorize(f.integral)
+    integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
+
+    return 0.5 * ell * (2 * integral - sigma * eta)
 
 
 def compute_delta_sigma_const_triaxiality(
     ell,
-    r_source,
+    r_proj,
     mdelta,
     cdelta,
-    z_cluster,
+    z_cl,
     cosmo,
     halo_profile_model="nfw",
-    massdef="critical",
+    massdef="mean",
     sample_N=10000,
     delta_mdef=200,
     alpha_ein=None,
@@ -1465,14 +1457,13 @@ def compute_delta_sigma_const_triaxiality(
     ds4theta: array
         Delta sigma const value at a position for the elliptical halo specified
     """
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
 
-    ### DEFINING INTEGRALS:
-    r_arr = np.logspace(np.log10(0.01), np.log10(3 * np.max(r_source)), sample_N)
-    sigma_0_arr = compute_surface_density(
-        r_arr,
+    sigma0_grid = compute_surface_density(
+        grid,
         mdelta,
         cdelta,
-        z_cluster,
+        z_cl,
         cosmo,
         delta_mdef=delta_mdef,
         halo_profile_model=halo_profile_model,
@@ -1481,48 +1472,39 @@ def compute_delta_sigma_const_triaxiality(
         verbose=verbose,
         validate_input=validate_input,
     )
-    eta_0_arr = np.gradient(np.log(sigma_0_arr), r_arr) * r_arr
-    f = InterpolatedUnivariateSpline(
-        r_arr, sigma_0_arr * eta_0_arr / r_arr, k=5
-    )  # k=3 order of spline
-    integral_vec = np.vectorize(f.integral)
-    ###
-
-    ### ACTUAL COMPUTATION:
-    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr)
-
-    dsconst = np.array(
-        (ell / 2.0)
-        * (
-            2 * integral_vec(r_source, np.inf)
-            - compute_surface_density(
-                r_source,
-                mdelta,
-                cdelta,
-                z_cluster,
-                cosmo,
-                delta_mdef=delta_mdef,
-                halo_profile_model=halo_profile_model,
-                massdef=massdef,
-                alpha_ein=alpha_ein,
-                verbose=verbose,
-                validate_input=validate_input,
-            )
-            * eta_0_interpolation_func(r_source)
-        )
+    sigma0 = compute_surface_density(
+        r_proj,
+        mdelta,
+        cdelta,
+        z_cl,
+        cosmo,
+        delta_mdef=delta_mdef,
+        halo_profile_model=halo_profile_model,
+        massdef=massdef,
+        alpha_ein=alpha_ein,
+        verbose=verbose,
+        validate_input=validate_input,
     )
-    return dsconst
 
+    eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
+    eta = eta_func(r_proj)
+
+    func = InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5)
+    integral_vec = np.vectorize(func.integral)
+    integral = integral_vec(r_proj, np.inf)
+
+    return 0.5 * ell * (2 * integral - sigma0 * eta)
 
 def compute_delta_sigma_excess_triaxiality(
     ell,
-    r_source,
+    r_proj,
     mdelta,
     cdelta,
-    z_cluster,
+    z_cl,
     cosmo,
     halo_profile_model="nfw",
-    massdef="critical",
+    massdef="mean",
     sample_N=10000,
     delta_mdef=200,
     alpha_ein=None,
@@ -1579,13 +1561,13 @@ def compute_delta_sigma_excess_triaxiality(
     dsmono: array
         Delta sigma excess monopole value at a position for the elliptical halo specified
     """
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
 
-    r_arr = np.logspace(np.log10(0.01), np.log10(3 * np.max(r_source)), sample_N)
-    sigma_0_arr = compute_surface_density(
-        r_arr,
+    sigma0_grid = compute_surface_density(
+        grid,
         mdelta,
         cdelta,
-        z_cluster,
+        z_cl,
         cosmo,
         delta_mdef=delta_mdef,
         halo_profile_model=halo_profile_model,
@@ -1594,40 +1576,11 @@ def compute_delta_sigma_excess_triaxiality(
         verbose=verbose,
         validate_input=validate_input,
     )
-    eta_0_arr = np.gradient(np.log(sigma_0_arr), r_arr) * r_arr
-    eta_0_interpolation_func = InterpolatedUnivariateSpline(r_arr, eta_0_arr, k=5)
-
-    ## e^2 shenanigans:
-    d_eta_0_arr_by_d_r_interpolation_func = InterpolatedUnivariateSpline(
-        r_arr, (np.gradient(eta_0_arr, r_arr) * r_arr), k=5
-    )
-
-    integral_vec = np.vectorize(
-        InterpolatedUnivariateSpline(
-            r_arr,
-            r_arr
-            * sigma_0_arr
-            * (
-                4
-                * (ell) ** 2
-                * (
-                    (1 / 8) * eta_0_arr
-                    + (1 / 16) * (np.gradient(eta_0_arr, r_arr) * r_arr)
-                    + (1 / 16) * eta_0_arr**2
-                )
-            ), k=5
-        ).integral
-    )
-    ##
-
-    ### ACTUAL COMPUTATION:
-    ds_ell_square_correction = (2 / r_source**2) * integral_vec(
-        0, r_source
-    ) - compute_surface_density(
-        r_source,
+    sigma0 = compute_surface_density(
+        r_proj,
         mdelta,
         cdelta,
-        z_cluster,
+        z_cl,
         cosmo,
         delta_mdef=delta_mdef,
         halo_profile_model=halo_profile_model,
@@ -1635,22 +1588,31 @@ def compute_delta_sigma_excess_triaxiality(
         alpha_ein=alpha_ein,
         verbose=verbose,
         validate_input=validate_input,
-    ) * (
-        4
-        * (ell) ** 2
-        * (
-            (1 / 8) * eta_0_interpolation_func(r_source)
-            + (1 / 16) * d_eta_0_arr_by_d_r_interpolation_func(r_source)
-            + (1 / 16) * eta_0_interpolation_func(r_source) ** 2
-        )
     )
+
+    eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
+    eta = eta_func(r_proj)
+
+    deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
+    deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
+    deta_dlnr = deta_dlnr_func(r_proj)
+
+    sigma_correction_grid = sigma0_grid * (0.5 * ell ** 2 * (eta_grid + 0.5 * deta_dlnr_grid + 0.5 * eta_grid ** 2))
+    sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * deta_dlnr + 0.5 * eta ** 2))
+
+    func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
+    integral_vec = np.vectorize(func.integral)
+    integral = integral_vec(0, r_proj)
+
+    correction = (2 / r_proj**2) * integral - sigma_correction
 
     return (
         compute_excess_surface_density(
-            r_source,
+            r_proj,
             mdelta,
             cdelta,
-            z_cluster,
+            z_cl,
             cosmo,
             delta_mdef=delta_mdef,
             halo_profile_model=halo_profile_model,
@@ -1659,5 +1621,5 @@ def compute_delta_sigma_excess_triaxiality(
             verbose=verbose,
             validate_input=validate_input,
         )
-        + ds_ell_square_correction
+        + correction
     )
