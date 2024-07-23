@@ -261,12 +261,12 @@ class CLMModeling:
 
     def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         """eval individual terms of  excess surface density"""
-        
+
         grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-        
+
         sigma0_grid = self._eval_surface_density(grid, z_cl)
         sigma0 = self._eval_surface_density(r_proj, z_cl)
-        
+
         eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
         eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
         eta = eta_func(r_proj)
@@ -277,12 +277,14 @@ class CLMModeling:
             deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
             deta_dlnr = deta_dlnr_func(r_proj)
 
-            sigma_correction_grid = sigma0_grid * (0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid))
+            sigma_correction_grid = sigma0_grid * (
+                0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid)
+            )
             sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
 
             func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
             integral_vec = np.vectorize(func.integral)
-            integral = integral_vec(0,r_proj)
+            integral = integral_vec(0, r_proj)
 
             correction = (2 / r_proj ** 2) * integral - sigma_correction
 

@@ -643,11 +643,7 @@ def compute_tangential_shear(
         )
 
     tangential_shear = _modeling_object.eval_tangential_shear(
-        r_proj,
-        z_cluster,
-        z_src,
-        z_src_info=z_src_info,
-        verbose=verbose,
+        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -764,11 +760,7 @@ def compute_convergence(
         _modeling_object.set_einasto_alpha(alpha_ein)
 
     convergence = _modeling_object.eval_convergence(
-        r_proj,
-        z_cluster,
-        z_src,
-        z_src_info=z_src_info,
-        verbose=verbose,
+        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -1496,6 +1488,7 @@ def compute_delta_sigma_const_triaxiality(
 
     return 0.5 * ell * (2 * integral - sigma0 * eta)
 
+
 def compute_delta_sigma_excess_triaxiality(
     ell,
     r_proj,
@@ -1598,14 +1591,16 @@ def compute_delta_sigma_excess_triaxiality(
     deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
     deta_dlnr = deta_dlnr_func(r_proj)
 
-    sigma_correction_grid = sigma0_grid * (0.5 * ell ** 2 * (eta_grid + 0.5 * deta_dlnr_grid + 0.5 * eta_grid ** 2))
+    sigma_correction_grid = sigma0_grid * (
+        0.5 * ell ** 2 * (eta_grid + 0.5 * deta_dlnr_grid + 0.5 * eta_grid ** 2)
+    )
     sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * deta_dlnr + 0.5 * eta ** 2))
 
     func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
     integral_vec = np.vectorize(func.integral)
     integral = integral_vec(0, r_proj)
 
-    correction = (2 / r_proj**2) * integral - sigma_correction
+    correction = (2 / r_proj ** 2) * integral - sigma_correction
 
     return (
         compute_excess_surface_density(

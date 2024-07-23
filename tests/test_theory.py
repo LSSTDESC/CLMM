@@ -411,8 +411,8 @@ def test_triaxial(modeling_data):
     # Object Oriented tests
     mod = theo.Modeling()
     mod.set_cosmo(cosmo)
-    mod.set_concentration(cfg["SIGMA_PARAMS"]['cdelta'])
-    mod.set_mass(cfg["SIGMA_PARAMS"]['mdelta'])
+    mod.set_concentration(cfg["SIGMA_PARAMS"]["cdelta"])
+    mod.set_mass(cfg["SIGMA_PARAMS"]["mdelta"])
 
     if mod.backend not in ["ccl", "nc"]:
         assert_raises(
@@ -455,7 +455,11 @@ def test_triaxial(modeling_data):
         assert_equal(
             len(
                 mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 100
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_4theta",
+                    100,
                 )
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
@@ -463,7 +467,11 @@ def test_triaxial(modeling_data):
         assert_equal(
             len(
                 mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 100
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_const",
+                    100,
                 )
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
@@ -471,61 +479,49 @@ def test_triaxial(modeling_data):
 
         # Checks that OO-oriented and functional interface give the same results
         assert_allclose(
-           theo.compute_delta_sigma_4theta_triaxiality(
-               0.1,
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["mdelta"],
-               cfg["SIGMA_PARAMS"]["cdelta"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               cosmo,
-               sample_N=500
-           ),
-           mod.eval_excess_surface_density_triaxial(
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               0.1,
-               "quad_4theta",
-               500
-           ),
-           **TOLERANCE,
+            theo.compute_delta_sigma_4theta_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 500
+            ),
+            **TOLERANCE,
         )
         assert_allclose(
-           theo.compute_delta_sigma_const_triaxiality(
-               0.1,
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["mdelta"],
-               cfg["SIGMA_PARAMS"]["cdelta"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               cosmo,
-               sample_N=500
-           ),
-           mod.eval_excess_surface_density_triaxial(
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               0.1,
-               "quad_const",
-               500
-           ),
-           **TOLERANCE,
+            theo.compute_delta_sigma_const_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 500
+            ),
+            **TOLERANCE,
         )
         assert_allclose(
-           theo.compute_delta_sigma_excess_triaxiality(
-               0.1,
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["mdelta"],
-               cfg["SIGMA_PARAMS"]["cdelta"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               cosmo,
-               sample_N=500
-           ),
-           mod.eval_excess_surface_density_triaxial(
-               cfg["SIGMA_PARAMS"]["r_proj"],
-               cfg["SIGMA_PARAMS"]["z_cl"],
-               0.1,
-               "mono",
-               500
-           ),
-           **TOLERANCE,
+            theo.compute_delta_sigma_excess_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 500
+            ),
+            **TOLERANCE,
         )
 
 
