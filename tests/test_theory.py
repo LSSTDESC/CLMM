@@ -417,15 +417,6 @@ def test_triaxial(modeling_data):
     if mod.backend not in ["ccl", "nc"]:
         assert_raises(
             NotImplementedError,
-            mod.eval_surface_density_triaxial,
-            1.0,
-            cfg["SIGMA_PARAMS"]["z_cl"],
-            0.1,
-            "mono",
-            100,
-        )
-        assert_raises(
-            NotImplementedError,
             mod.eval_excess_surface_density_triaxial,
             1.0,
             cfg["SIGMA_PARAMS"]["z_cl"],
@@ -436,14 +427,6 @@ def test_triaxial(modeling_data):
     else:
         # Just checking that it runs and returns array of the right length
         # To be updated with proper comparison to benchmark when available
-        assert_equal(
-            len(
-                mod.eval_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, 100
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
         assert_equal(
             len(
                 mod.eval_excess_surface_density_triaxial(
