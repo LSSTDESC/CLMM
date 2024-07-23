@@ -261,59 +261,64 @@ class CLMModeling:
 
     def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         """eval individual terms of  excess surface density"""
+        
+        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
+        
+        sigma0_grid = self._eval_surface_density(grid, z_cl)
+        sigma0 = self._eval_surface_density(r_proj, z_cl)
+        
+        eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+        eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
+        eta = eta_func(r_proj)
 
         if term == "mono":
-            sigma = self._eval_surface_density_triaxial(r_proj, z_cl, ell, n_grid)
-            integral = np.array(
-                [
-                    simpson(r_proj[r_proj <= ri] * sigma[r_proj <= ri], x=r_proj[r_proj <= ri])
-                    for ri in r_proj
-                ]
-            )
 
-            delta_sigma = (2 / r_proj ** 2) * integral - sigma
+            deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
+            deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
+            deta_dlnr = deta_dlnr_func(r_proj)
+
+            sigma_correction_grid = sigma0_grid * (0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid))
+            sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
+
+            func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
+            integral_vec = np.vectorize(func.integral)
+            integral = integral_vec(0,r_proj)
+
+            correction = (2 / r_proj ** 2) * integral - sigma_correction
+
+            delta_sigma = self._eval_excess_surface_density(r_proj, z_cl) + correction
 
         if term == "quad_4theta":
-            sigma = self.eval_surface_density(r_proj, z_cl)
 
-            grid = np.logspace(-3, 1, n_grid)
-            eta_grid = grid * np.gradient(np.log(sigma), grid)
-            eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
-            eta = eta_func(r_proj)
-
-            func = InterpolatedUnivariateSpline(r_proj, r_proj ** 3 * sigma * eta, k=5)
+            func = InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5)
             integral_vec = np.vectorize(func.integral)
             integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
 
-            delta_sigma = 0.5 * ell * (2 * integral - sigma * eta)
+            delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
         if term == "quad_const":
-            sigma = self.eval_surface_density(r_proj, z_cl)
 
-            grid = np.logspace(-3, 1, n_grid)
-            eta_grid = grid * np.gradient(np.log(sigma), grid)
-            eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
-            eta = eta_func(r_proj)
-
-            func = InterpolatedUnivariateSpline(r_proj, sigma * eta / r_proj, k=5)
+            func = InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5)
             integral_vec = np.vectorize(func.integral)
             integral = integral_vec(r_proj, np.inf)
 
-            delta_sigma = 0.5 * ell * (2 * integral - sigma * eta)
+            delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
         return delta_sigma
 
     def _eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid=10000):
         """eval surface density with triaxial corrections"""
+        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
+
+        sigma_grid = self.eval_surface_density(grid, z_cl)
         sigma = self.eval_surface_density(r_proj, z_cl)
 
-        grid = np.logspace(-3, 1, n_grid)
-        eta_grid = grid * np.gradient(np.log(sigma), grid)
-        eta_func = InterpolatedUnivariateSpline(grid, eta_grid)
+        eta_grid = grid * np.gradient(np.log(sigma_grid), grid)
+        eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
         eta = eta_func(r_proj)
 
         deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
-        deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid)
+        deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
         deta_dlnr = deta_dlnr_func(r_proj)
 
         return sigma * (1 + ell ** 2 * (eta + eta ** 2 / 2 + deta_dlnr / 2) / 2)
@@ -760,7 +765,7 @@ class CLMModeling:
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid):
+    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
 
         Parameters
@@ -802,7 +807,7 @@ class CLMModeling:
 
         return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term, n_grid)
 
-    def eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid):
+    def eval_surface_density_triaxial(self, r_proj, z_cl, ell, n_grid=10000):
         r"""Compute the individual terms in the quadrupole expansion of the surface density.
 
         Parameters
