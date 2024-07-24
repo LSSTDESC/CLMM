@@ -75,6 +75,64 @@ def test_compute_4theta_shear():
     assert_allclose(da._compute_4theta_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
+def test_calculate_major_axis():
+    """test calculate major axis"""
+    ra_lens, dec_lens = 180.0, 0.0
+
+    ra_mem, dec_mem, weight_mem = [180.0, 180.0], [-0.5, 0.5], [1.0, 1.0]
+    expected_major_axis = np.pi / 2.0
+    assert_allclose(
+        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        expected_major_axis,
+        **TOLERANCE,
+    )
+
+    ra_mem, dec_mem, weight_mem = [179.5, 180.5], [0.0, 0.0], [1.0, 1.0]
+    expected_major_axis = 0.0
+    assert_allclose(
+        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        expected_major_axis,
+        **TOLERANCE,
+    )
+
+    ra_mem, dec_mem, weight_mem = [179.99, 180.01], [-0.01, 0.01], [1.0, 1.0]
+    expected_major_axis = -np.pi / 4.0
+    assert_allclose(
+        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        expected_major_axis,
+        **TOLERANCE,
+    )
+
+    ra_mem, dec_mem, weight_mem = [179.99, 180.01], [0.01, -0.01], [1.0, 1.0]
+    expected_major_axis = np.pi / 4.0
+    assert_allclose(
+        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        expected_major_axis,
+        **TOLERANCE,
+    )
+
+
+def test_rotate_shear():
+    """test rotate shear components"""
+    shear1, shear2, phi = 0.15, 0.08, 0.52
+    phi_major_45 = np.pi / 4.0
+    phi_major_90 = np.pi / 2.0
+    phi_major_180 = np.pi
+    expected_shear1_45, expected_shear2_45 = 0.08, -0.15
+    expected_shear1_90, expected_shear2_90 = -0.15, -0.08
+    expected_shear1_180, expected_shear2_180 = 0.15, 0.08
+
+    shear1_45, shear2_45 = da._rotate_shear(shear1, shear2, phi_major_45)
+    shear1_90, shear2_90 = da._rotate_shear(shear1, shear2, phi_major_90)
+    shear1_180, shear2_180 = da._rotate_shear(shear1, shear2, phi_major_180)
+
+    assert_allclose([shear1_45, shear2_45], [expected_shear1_45, expected_shear2_45], **TOLERANCE)
+    assert_allclose([shear1_90, shear2_90], [expected_shear1_90, expected_shear2_90], **TOLERANCE)
+    assert_allclose(
+        [shear1_180, shear2_180], [expected_shear1_180, expected_shear2_180], **TOLERANCE
+    )
+
+
 def test_compute_lensing_angles_flatsky():
     """test compute lensing angles flatsky"""
     ra_l, dec_l = 161.0, 65.0
@@ -169,6 +227,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # Input values
     reltol = modeling_data["dataops_reltol"]
     ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    phi_major = 0.0
     gals = GCData(
         {
             "ra": np.array([120.1, 119.9]),
@@ -184,20 +243,30 @@ def test_compute_tangential_and_cross_components(modeling_data):
         "angsep": np.array([0.0021745039090962414, 0.0037238407383072053]),
         "cross_shear": np.array([0.2780316984090899, 0.6398792901134982]),
         "tangential_shear": np.array([-0.22956126563459447, -0.02354769805831558]),
+        "four_theta_shear": np.array([-0.3324295, -0.43566851]),
+        "const_shear": np.array([0.2, 0.4]),
         # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
         "cross_DS": np.array([8.58093068e14, 1.33131522e15]),
         # [1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
         "tangential_DS": np.array([-7.08498103e14, -4.89926917e13]),
         # [-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
+        "four_theta_DS": np.array([-1.02598173e15, -9.06439876e14]),
+        "const_DS": np.array([6.17262745e14, 8.32228959e14]),
     }
+
     expected_curve = {
         "angsep": np.array([0.002175111279323424171, 0.003723129781247932167]),
         "cross_shear": np.array([0.277590689496438781, 0.639929479722048944]),
         "tangential_shear": np.array([-0.23009434826803484841, -0.02214183783401518779]),
+        "four_theta_shear": np.array([-0.33189127, -0.43360245]),
+        "const_shear": np.array([0.2, 0.4]),
         # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
         "cross_DS": np.array([8.56731976e14, 1.33141964e15]),
         "tangential_DS": np.array([-7.10143363e14, -4.60676976e13]),
+        "four_theta_DS": np.array([-1.02432059e15, -9.02141297e14]),
+        "const_DS": np.array([6.17262745e14, 8.32228959e14]),
     }
+
     # Geometries to test
     geo_tests = [("flat", expected_flat), ("curve", expected_curve)]
     # Test domains on inputs
@@ -332,20 +401,71 @@ def test_compute_tangential_and_cross_components(modeling_data):
             angsep,
             expected["angsep"],
             **TOLERANCE,
-            err_msg="Angular Separation not correct when passing lists",
+            err_msg="Angular Separation not correct when passing arrays",
         )
         assert_allclose(
             tshear,
             expected["tangential_shear"],
             **TOLERANCE,
-            err_msg="Tangential Shear not correct when passing lists",
+            err_msg="Tangential Shear not correct when passing arrays",
         )
         assert_allclose(
             xshear,
             expected["cross_shear"],
             **TOLERANCE,
-            err_msg="Cross Shear not correct when passing lists",
+            err_msg="Cross Shear not correct when passing arrays",
         )
+
+        ## Turn on quadrupole option
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            geometry=geometry,
+            include_quadrupole=True,
+            phi_major=0.0,
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing arrays and phi_major",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing arrays and phi_major",
+        )
+
+        ## Pass members info instead of major axis directly
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            geometry=geometry,
+            include_quadrupole=True,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing arrays and mem_info",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing arrays and mem_info",
+        )
+
         # Pass LISTS into function
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -374,6 +494,57 @@ def test_compute_tangential_and_cross_components(modeling_data):
             **TOLERANCE,
             err_msg="Cross Shear not correct when passing lists",
         )
+
+        ## Turn on quadrupole option
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            include_quadrupole=True,
+            phi_major=0.0,
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing lists and phi_major",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing listss and phi_major",
+        )
+
+        ## Pass members info instead of major axis directly
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            include_quadrupole=True,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing lists and mem_info",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing lists and mem_info",
+        )
+
         # Test without validation
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -403,6 +574,59 @@ def test_compute_tangential_and_cross_components(modeling_data):
             **TOLERANCE,
             err_msg="Cross Shear not correct when passing lists",
         )
+
+        ## Turn on quadrupole option
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            include_quadrupole=True,
+            phi_major=0.0,
+            validate_input=False,
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing lists and phi_major",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing listss and phi_major",
+        )
+
+        ## Pass members info instead of major axis directly
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            include_quadrupole=True,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            validate_input=False,
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing lists and mem_info",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing lists and mem_info",
+        )
+
         # Test without validation and float arguments
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -432,9 +656,18 @@ def test_compute_tangential_and_cross_components(modeling_data):
             **TOLERANCE,
             err_msg="Cross Shear not correct when passing lists",
         )
+
     # Use the cluster method
     cluster = clmm.GalaxyCluster(
         unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+    )
+    cluster_quad = clmm.GalaxyCluster(
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2"],
+        include_quadrupole=True,
     )
     # Test error with bad name/missing column
     assert_raises(
@@ -462,6 +695,39 @@ def test_compute_tangential_and_cross_components(modeling_data):
             expected["cross_shear"],
             **TOLERANCE,
             err_msg="Cross Shear not correct when using cluster method",
+        )
+        # include_quadrupole=True, with phi_major input
+        _, _, _, ftshear2, cnshear2 = cluster_quad.compute_tangential_and_cross_components(
+            geometry=geometry, phi_major=0.0
+        )
+        assert_allclose(
+            ftshear2,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when using cluster method w/ phi_major",
+        )
+        assert_allclose(
+            cnshear2,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when using cluster method w/ phi_major",
+        )
+        # include_quadrupole=True, with info_mem instead of phi_major input
+        _, _, _, ftshear3, cnshear3 = cluster_quad.compute_tangential_and_cross_components(
+            geometry=geometry,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+        )
+        assert_allclose(
+            ftshear3,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when using cluster method w/ info_mem",
+        )
+        assert_allclose(
+            cnshear3,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when using cluster method w/ info_mem",
         )
     # Check behaviour for the deltasigma option.
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
@@ -493,6 +759,18 @@ def test_compute_tangential_and_cross_components(modeling_data):
         is_deltasigma=True,
         sigma_c=None,
     )
+    # check validation between include_quadrupole and {phi_major|info_mem}
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        include_quadrupole=True,
+    )
     # test values
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
@@ -513,6 +791,38 @@ def test_compute_tangential_and_cross_components(modeling_data):
             tDS, expected["tangential_DS"], reltol, err_msg="Tangential Shear not correct"
         )
         assert_allclose(xDS, expected["cross_DS"], reltol, err_msg="Cross Shear not correct")
+        ## Turn on include_quadrupole w/ phi_major
+        _, _, _, ftDS, cnDS = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            is_deltasigma=True,
+            sigma_c=sigma_c,
+            geometry=geometry,
+            include_quadrupole=True,
+            phi_major=0.0,
+        )
+        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
+        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
+        ## Turn on include_quadrupole w/ info_mem
+        _, _, _, ftDS, cnDS = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            is_deltasigma=True,
+            sigma_c=sigma_c,
+            geometry=geometry,
+            include_quadrupole=True,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+        )
+        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
+        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
     cluster = clmm.GalaxyCluster(
@@ -526,6 +836,14 @@ def test_compute_tangential_and_cross_components(modeling_data):
         dec=dec_lens,
         z=z_lens,
         galcat=gals["ra", "dec", "e1", "e2", "z"],
+    )
+    cluster_quad = clmm.GalaxyCluster(
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2", "z"],
+        include_quadrupole=True,
     )
     assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # check values for DeltaSigma
@@ -550,6 +868,41 @@ def test_compute_tangential_and_cross_components(modeling_data):
             expected["cross_DS"],
             reltol,
             err_msg="Cross Shear not correct when using cluster method",
+        )
+        # Turn on include_quadrupole w/ phi_major
+        _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
+            cosmo=cosmo, is_deltasigma=True, geometry=geometry, phi_major=0.0
+        )
+        assert_allclose(
+            ftDS,
+            expected["four_theta_DS"],
+            reltol,
+            err_msg="4theta Shear not correct when using cluster method w/ phi_major",
+        )
+        assert_allclose(
+            cnDS,
+            expected["const_DS"],
+            reltol,
+            err_msg="Constant Shear not correct when using cluster method w/ phi_major",
+        )
+        # Turn on include_quadrupole w/ info_mem
+        _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
+            cosmo=cosmo,
+            is_deltasigma=True,
+            geometry=geometry,
+            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+        )
+        assert_allclose(
+            ftDS,
+            expected["four_theta_DS"],
+            reltol,
+            err_msg="4theta Shear not correct when using cluster method w/ info_mem",
+        )
+        assert_allclose(
+            cnDS,
+            expected["const_DS"],
+            reltol,
+            err_msg="Constant Shear not correct when using cluster method w/ info_mem",
         )
 
     # test basic weights functionality

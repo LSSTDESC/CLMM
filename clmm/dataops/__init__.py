@@ -16,6 +16,7 @@ from ..utils import (
     _validate_ra,
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
+    _validate_include_quadrupole_phi_major,
 )
 from ..redshift import (
     _integ_pzfuncs,
@@ -168,8 +169,9 @@ def compute_tangential_and_cross_components(
             prefix="Tangential- and Cross- shape components sources",
         )
         _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
+        _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_mem)
         validate_argument(locals(), "phi_major", float, none_ok=True)
-        validate_argument(locals(), "info_mem", "float_array", none_ok=True)
+        validate_argument(locals(), "info_mem", list, none_ok=True)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -483,14 +485,17 @@ def _calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
+    ind_bcg = (np.array(ra_mem_) == ra_lens_) * (np.array(dec_mem_) == dec_lens_)
     sk_lens = SkyCoord(ra_lens_ * u.deg, dec_lens_ * u.deg, frame="icrs")
-    sk_mem = SkyCoord(ra_mem_ * u.deg, dec_mem_ * u.deg, frame="icrs")
-    position_angle_mem = sk_lens.position_angle(sk_mem).radian + np.pi / 2.0
-    separation_mem = sk_lens.separation(sk_mem).degree
+    sk_mem = SkyCoord(
+        np.array(ra_mem_)[~ind_bcg] * u.deg, np.array(dec_mem_)[~ind_bcg] * u.deg, frame="icrs"
+    )
+    position_angle_mem = np.array(sk_lens.position_angle(sk_mem).radian + np.pi / 2.0)
+    separation_mem = np.array(sk_lens.separation(sk_mem).degree)
     x_mem = separation_mem * np.cos(position_angle_mem)
     y_mem = separation_mem * np.sin(position_angle_mem)
     distance_weight_mem = 1.0 / (separation_mem**2)
-    weight_total_mem = weight_mem_ * distance_weight_mem
+    weight_total_mem = np.array(weight_mem_) * distance_weight_mem
     sum_weight_total_mem = np.sum(weight_total_mem)
     # Calcualte second moments of the member galaxies
     ixx = np.sum(x_mem**2 * weight_total_mem) / sum_weight_total_mem

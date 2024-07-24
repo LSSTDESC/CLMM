@@ -40,6 +40,7 @@ from .validation import (
     _validate_ra,
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
+    _validate_include_quadrupole_phi_major,
 )
 
 from .units import (

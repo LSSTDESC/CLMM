@@ -210,7 +210,7 @@ def _validate_dec(loc, dec_name, is_array):
 
 
 def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
-    r""" "Validate the compatibility between is_deltasigma and sigma_c arguments.
+    r"""Validate the compatibility between is_deltasigma and sigma_c arguments.
 
 
     Parameters
@@ -224,3 +224,21 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
         raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
     if not is_deltasigma and sigma_c is not None:
         raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
+
+def _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_mem):
+    r"""Validate the compatibility between include_quadrupole and [phi_major or info_mem].
+
+    Parameters
+    ----------
+    include_quadrupole: bool
+        If `True`, include quadrupole lensing signal computed,
+        else, only tangential and cross shears.
+    phi_major: float
+        The direction of the cluster major axis in radian (+x // -RA)
+    info_mem: list of arrays
+        [ra, dec, weight] of the cluster member galaxies for calculating major axis
+    """
+    if include_quadrupole and (phi_major is None and info_mem is None):
+        raise TypeError(
+            "either phi_major or info_mem should be provided when include_quadrupole is True"
+        )
