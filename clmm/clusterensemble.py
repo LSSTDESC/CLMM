@@ -54,6 +54,7 @@ class ClusterEnsemble:
             raise TypeError(f"unique_id incorrect type: {type(unique_id)}")
         self.unique_id = unique_id
         self.data = GCData(meta={"bin_units": None})
+        self.include_quadrupole = include_quadrupole
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
         self.stacked_data = None
@@ -71,7 +72,6 @@ class ClusterEnsemble:
             "quad_4theta_jk": None,
             "quad_const_jk": None,
         }
-        self.include_quadrupole = include_quadrupole
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
@@ -434,7 +434,7 @@ class ClusterEnsemble:
         ]
 
         if self.include_quadrupole:
-            _, g_boot_components = make_stacked_radial_profile(
+            g_boot_components = make_stacked_radial_profile(
                 self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 [
@@ -448,7 +448,7 @@ class ClusterEnsemble:
             )[1]
             gt_boot, gx_boot, g4theta_boot, gconst_boot = g_boot_components
         else:
-            _, g_boot_components = make_stacked_radial_profile(
+            g_boot_components = make_stacked_radial_profile(
                 self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
                 [
@@ -507,7 +507,7 @@ class ClusterEnsemble:
         for hp_list_delete in pixels_list_unique:
             mask = ~np.isin(pixels, hp_list_delete)
             if self.include_quadrupole:
-                _, g_components = make_stacked_radial_profile(
+                g_components = make_stacked_radial_profile(
                     self["radius"][mask],
                     self["W_l"][mask],
                     [
@@ -522,7 +522,7 @@ class ClusterEnsemble:
                 g4theta_jack.append(g_components[2])
                 gconst_jack.append(g_components[3])
             else:
-                _, g_components = make_stacked_radial_profile(
+                g_components = make_stacked_radial_profile(
                     self["radius"][mask],
                     self["W_l"][mask],
                     [self[tan_component][mask], self[cross_component][mask]],
