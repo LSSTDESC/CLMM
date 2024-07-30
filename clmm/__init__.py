@@ -24,6 +24,12 @@ from .theory import (
     Modeling,
     Cosmology,
 )
+from .theory.func_layer import (
+    compute_delta_sigma_4theta_triaxiality,
+    compute_delta_sigma_const_triaxiality,
+    compute_delta_sigma_excess_triaxiality,
+)
+
 from . import support
 
 __version__ = "1.12.5"

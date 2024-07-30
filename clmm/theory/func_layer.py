@@ -1,6 +1,7 @@
 """@file func_layer.py
 Main functions to encapsule oo calls
 """
+
 # pylint: disable=too-many-lines
 # pylint: disable=invalid-name
 # Thin functonal layer on top of the class implementation of CLMModeling .
@@ -8,6 +9,7 @@ Main functions to encapsule oo calls
 # "_modeling_object".
 
 import numpy as np
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 if "_modeling_object" not in globals():
     _modeling_object = None
@@ -181,7 +183,7 @@ def compute_surface_density(
     _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
-    if halo_profile_model == "einasto" and _modeling_object.backend=="ccl":
+    if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
         _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
@@ -641,11 +643,7 @@ def compute_tangential_shear(
         )
 
     tangential_shear = _modeling_object.eval_tangential_shear(
-        r_proj,
-        z_cluster,
-        z_src,
-        z_src_info=z_src_info,
-        verbose=verbose,
+        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -762,11 +760,7 @@ def compute_convergence(
         _modeling_object.set_einasto_alpha(alpha_ein)
 
     convergence = _modeling_object.eval_convergence(
-        r_proj,
-        z_cluster,
-        z_src,
-        z_src_info=z_src_info,
-        verbose=verbose,
+        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -1291,3 +1285,189 @@ def compute_magnification_bias(
 
     _modeling_object.validate_input = True
     return magnification_bias
+
+
+def compute_delta_sigma_4theta_triaxiality(
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs,
+):
+    r"""Compute the "4-theta" component of quadrupole shear as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy in Mpc
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma 4-theta component value at r_proj for the elliptical halo
+    """
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
+
+    sigma_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+
+    eta_grid = grid * np.gradient(np.log(sigma_grid), grid)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, grid ** 3 * sigma_grid * eta_grid, k=5).integral
+    )
+    integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
+
+    return 0.5 * ell * (2 * integral - sigma * eta)
+
+
+def compute_delta_sigma_const_triaxiality(
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs,
+):
+    r"""Compute the "const" component of quadrupole shear as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+
+    Returns
+    -------
+    ds4theta: array
+        Delta sigma const value at a position for the elliptical halo specified
+    """
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
+
+    sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+
+    eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
+    )
+    integral = integral_vec(r_proj, np.inf)
+
+    return 0.5 * ell * (2 * integral - sigma0 * eta)
+
+
+def compute_delta_sigma_excess_triaxiality(
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs
+):
+    r"""Compute the excess surface density lensing profile for the monopole component along
+    with second order expansion term (e**2) as given in Shin et al. 2018
+    (https://doi.org/10.1093/mnras/stx3366)
+
+    Parameters
+    ----------
+    ell: float
+        ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    r_source: array
+        Radial distance of each source galaxy
+    mdelta: float
+        Mass of lens cluster
+    cdelta: array
+        Concentration of lens cluster
+    z_cluster: float
+        Redshift of lens cluster
+    cosmo: clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+
+    Returns
+    -------
+    dsmono: array
+        Delta sigma excess monopole value at a position for the elliptical halo specified
+    """
+    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
+
+    sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+
+    eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+    deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
+    deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
+
+    sigma_correction_grid = sigma0_grid * (
+        0.5 * ell ** 2 * (eta_grid + 0.5 * deta_dlnr_grid + 0.5 * eta_grid ** 2)
+    )
+    sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * deta_dlnr + 0.5 * eta ** 2))
+
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
+    )
+    integral = integral_vec(0, r_proj)
+
+    correction = (2 / r_proj ** 2) * integral - sigma_correction
+
+    return (
+        compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,) + correction
+    )
