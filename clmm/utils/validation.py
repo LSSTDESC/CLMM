@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+
 import numpy as np
 from ..constants import Constants as const
 
@@ -242,3 +243,22 @@ def _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_m
         raise TypeError(
             "either phi_major or info_mem should be provided when include_quadrupole is True"
         )
+
+def _validate_coordinate_system(loc, coordinate_system, valid_type):
+    r"""Validate the coordinate system.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    coordinate_system: str
+        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
+    """
+    validate_argument(loc, coordinate_system, valid_type)
+    if loc[coordinate_system] not in ["celestial", "euclidean"]:
+        raise ValueError(f"{coordinate_system} must be 'celestial' or 'euclidean'.")

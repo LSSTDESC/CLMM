@@ -32,4 +32,4 @@ from .theory.func_layer import (
 
 from . import support
 
-__version__ = "1.12.3"
+__version__ = "1.12.5"

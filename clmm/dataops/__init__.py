@@ -17,6 +17,7 @@ from ..utils import (
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
     _validate_include_quadrupole_phi_major,
+    _validate_coordinate_system,
 )
 from ..redshift import (
     _integ_pzfuncs,
@@ -32,6 +33,7 @@ def compute_tangential_and_cross_components(
     dec_source,
     shear1,
     shear2,
+    coordinate_system="euclidean",
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
@@ -109,6 +111,10 @@ def compute_tangential_and_cross_components(
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
@@ -163,6 +169,7 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "is_deltasigma", bool)
         validate_argument(locals(), "include_quadrupole", bool)
         validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
+        _validate_coordinate_system(locals(), "coordinate_system", str)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
             names=("Ra", "Dec", "Shear1", "Shear2"),
@@ -185,9 +192,13 @@ def compute_tangential_and_cross_components(
         )
     # Compute the lensing angles
     if geometry == "flat":
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_, dec_source_)
+        angsep, phi = _compute_lensing_angles_flatsky(
+            ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system
+        )
     elif geometry == "curve":
-        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
+        angsep, phi = _compute_lensing_angles_astropy(
+            ra_lens, dec_lens, ra_source_, dec_source_, coordinate_system=coordinate_system
+        )
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
@@ -387,7 +398,9 @@ def compute_galaxy_weights(
     return w_ls
 
 
-def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
+def _compute_lensing_angles_flatsky(
+    ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="euclidean"
+):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
@@ -411,6 +424,10 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         Right ascensions of each source galaxy in degrees
     dec_source_list: array
         Declinations of each source galaxy in degrees
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
 
     Returns
     -------
@@ -434,12 +451,16 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         phi[angsep == 0.0] = 0.0
     else:
         phi = 0.0 if angsep == 0.0 else phi
+    if coordinate_system == "celestial":
+        phi = np.pi - phi
     if np.any(angsep > np.pi / 180.0):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
 
 
-def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list):
+def _compute_lensing_angles_astropy(
+    ra_lens, dec_lens, ra_source_list, dec_source_list, coordinate_system="euclidean"
+):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
@@ -453,6 +474,10 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
         Right ascensions of each source galaxy in degrees
     dec_source_list: array
         Declinations of each source galaxy in degrees
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
 
     Returns
     -------
@@ -472,6 +497,8 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     else:
         phi -= 2 * np.pi if phi > np.pi else 0
         phi = 0 if angsep == 0 else phi
+    if coordinate_system == "celestial":
+        phi = np.pi - phi
     return angsep, phi
 
 
