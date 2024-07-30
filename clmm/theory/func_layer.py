@@ -1288,19 +1288,7 @@ def compute_magnification_bias(
 
 
 def compute_delta_sigma_4theta_triaxiality(
-    ell,
-    r_proj,
-    mdelta,
-    cdelta,
-    z_cl,
-    cosmo,
-    halo_profile_model="nfw",
-    massdef="mean",
-    sample_N=10000,
-    delta_mdef=200,
-    alpha_ein=None,
-    verbose=False,
-    validate_input=True,
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs,
 ):
     r"""Compute the "4-theta" component of quadrupole shear as given in Shin et al. 2018
     (https://doi.org/10.1093/mnras/stx3366)
@@ -1350,58 +1338,22 @@ def compute_delta_sigma_4theta_triaxiality(
     """
     grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
 
-    sigma_grid = compute_surface_density(
-        grid,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
-    sigma = compute_surface_density(
-        r_proj,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
+    sigma_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
 
     eta_grid = grid * np.gradient(np.log(sigma_grid), grid)
-    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
-    eta = eta_func(r_proj)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
-    f = InterpolatedUnivariateSpline(grid, grid ** 3 * sigma_grid * eta_grid, k=5)
-    integral_vec = np.vectorize(f.integral)
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, grid ** 3 * sigma_grid * eta_grid, k=5).integral
+    )
     integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
 
     return 0.5 * ell * (2 * integral - sigma * eta)
 
 
 def compute_delta_sigma_const_triaxiality(
-    ell,
-    r_proj,
-    mdelta,
-    cdelta,
-    z_cl,
-    cosmo,
-    halo_profile_model="nfw",
-    massdef="mean",
-    sample_N=10000,
-    delta_mdef=200,
-    alpha_ein=None,
-    verbose=False,
-    validate_input=True,
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs,
 ):
     r"""Compute the "const" component of quadrupole shear as given in Shin et al. 2018
     (https://doi.org/10.1093/mnras/stx3366)
@@ -1451,58 +1403,22 @@ def compute_delta_sigma_const_triaxiality(
     """
     grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
 
-    sigma0_grid = compute_surface_density(
-        grid,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
-    sigma0 = compute_surface_density(
-        r_proj,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
+    sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
 
     eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
-    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
-    eta = eta_func(r_proj)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
-    func = InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5)
-    integral_vec = np.vectorize(func.integral)
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
+    )
     integral = integral_vec(r_proj, np.inf)
 
     return 0.5 * ell * (2 * integral - sigma0 * eta)
 
 
 def compute_delta_sigma_excess_triaxiality(
-    ell,
-    r_proj,
-    mdelta,
-    cdelta,
-    z_cl,
-    cosmo,
-    halo_profile_model="nfw",
-    massdef="mean",
-    sample_N=10000,
-    delta_mdef=200,
-    alpha_ein=None,
-    verbose=False,
-    validate_input=True,
+    ell, r_proj, mdelta, cdelta, z_cl, cosmo, sample_N=10000, **kwargs
 ):
     r"""Compute the excess surface density lensing profile for the monopole component along
     with second order expansion term (e**2) as given in Shin et al. 2018
@@ -1523,31 +1439,6 @@ def compute_delta_sigma_excess_triaxiality(
         Redshift of lens cluster
     cosmo: clmm.cosmology.Cosmology object
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
-    sample_N: float, optional
-        Number of samples to evaluate the gradients. (Default is 10000, increase for higher accuracy
-        at the expense of longer evaluation time)
-    alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
 
     Returns
     -------
@@ -1556,65 +1447,27 @@ def compute_delta_sigma_excess_triaxiality(
     """
     grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), sample_N)
 
-    sigma0_grid = compute_surface_density(
-        grid,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
-    sigma0 = compute_surface_density(
-        r_proj,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        delta_mdef=delta_mdef,
-        halo_profile_model=halo_profile_model,
-        massdef=massdef,
-        alpha_ein=alpha_ein,
-        verbose=verbose,
-        validate_input=validate_input,
-    )
+    sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
 
     eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
-    eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
-    eta = eta_func(r_proj)
+    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
     deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
-    deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
-    deta_dlnr = deta_dlnr_func(r_proj)
+    deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
 
     sigma_correction_grid = sigma0_grid * (
         0.5 * ell ** 2 * (eta_grid + 0.5 * deta_dlnr_grid + 0.5 * eta_grid ** 2)
     )
     sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * deta_dlnr + 0.5 * eta ** 2))
 
-    func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
-    integral_vec = np.vectorize(func.integral)
+    integral_vec = np.vectorize(
+        InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
+    )
     integral = integral_vec(0, r_proj)
 
     correction = (2 / r_proj ** 2) * integral - sigma_correction
 
     return (
-        compute_excess_surface_density(
-            r_proj,
-            mdelta,
-            cdelta,
-            z_cl,
-            cosmo,
-            delta_mdef=delta_mdef,
-            halo_profile_model=halo_profile_model,
-            massdef=massdef,
-            alpha_ein=alpha_ein,
-            verbose=verbose,
-            validate_input=validate_input,
-        )
-        + correction
+        compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,) + correction
     )
