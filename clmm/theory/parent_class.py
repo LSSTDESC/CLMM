@@ -268,22 +268,21 @@ class CLMModeling:
         sigma0 = self._eval_surface_density(r_proj, z_cl)
 
         eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
-        eta_func = InterpolatedUnivariateSpline(grid, eta_grid, k=5)
-        eta = eta_func(r_proj)
+        eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
         if term == "mono":
 
             deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
-            deta_dlnr_func = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)
-            deta_dlnr = deta_dlnr_func(r_proj)
+            deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
 
             sigma_correction_grid = sigma0_grid * (
                 0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid)
             )
             sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
 
-            func = InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5)
-            integral_vec = np.vectorize(func.integral)
+            integral_vec = np.vectorize(
+                InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
+            )
             integral = integral_vec(0, r_proj)
 
             correction = (2 / r_proj ** 2) * integral - sigma_correction
@@ -292,16 +291,18 @@ class CLMModeling:
 
         elif term == "quad_4theta":
 
-            func = InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5)
-            integral_vec = np.vectorize(func.integral)
+            integral_vec = np.vectorize(
+                InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5).integral
+            )
             integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
 
             delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
         elif term == "quad_const":
 
-            func = InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5)
-            integral_vec = np.vectorize(func.integral)
+            integral_vec = np.vectorize(
+                InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
+            )
             integral = integral_vec(r_proj, np.inf)
 
             delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
