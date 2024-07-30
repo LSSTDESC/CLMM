@@ -308,7 +308,7 @@ class CLMModeling:
 
         else:
 
-            raise ValueError(f"Unsupported term (='{loc_dict['term']}')")
+            raise ValueError(f"Unsupported term (='{term}')")
 
         return delta_sigma
 
