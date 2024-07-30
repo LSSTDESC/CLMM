@@ -45,7 +45,7 @@ class GalaxyCluster:
         Validade each input argument
     include_quadrupole: bool
         If quadrupole WL be calculated.
-    """ 
+    """
 
     # pylint: disable=too-many-instance-attributes
     # Eight is reasonable in this case.
@@ -465,10 +465,7 @@ class GalaxyCluster:
             col_dict.update({"sigma_c": sigmac_colname})
         if use_shape_noise:
             col_dict.update(
-                {
-                    "shape_component1": shape_component1,
-                    "shape_component2": shape_component2,
-                }
+                {"shape_component1": shape_component1, "shape_component2": shape_component2,}
             )
         if use_shape_error:
             col_dict.update(
@@ -835,44 +832,47 @@ class GalaxyCluster:
             ):
                 if col not in profile.columns:
                     warnings.warn(f"Column for plotting '{col}' does not exist.")
-            return plot_profiles(
-                rbins=profile["radius"],
-                r_units=profile.meta["bin_units"],
-                tangential_component=profile[tangential_component],
-                tangential_component_error=(
-                    profile[tangential_component_error]
-                    if tangential_component_error in profile.columns
-                    else None
+            return (
+                plot_profiles(
+                    rbins=profile["radius"],
+                    r_units=profile.meta["bin_units"],
+                    tangential_component=profile[tangential_component],
+                    tangential_component_error=(
+                        profile[tangential_component_error]
+                        if tangential_component_error in profile.columns
+                        else None
+                    ),
+                    cross_component=profile[cross_component],
+                    cross_component_error=(
+                        profile[cross_component_error]
+                        if cross_component_error in profile.columns
+                        else None
+                    ),
+                    xscale=xscale,
+                    yscale=yscale,
+                    tangential_component_label=tangential_component,
+                    cross_component_label=cross_component,
                 ),
-                cross_component=profile[cross_component],
-                cross_component_error=(
-                    profile[cross_component_error]
-                    if cross_component_error in profile.columns
-                    else None
+                plot_profiles(
+                    rbins=profile["radius"],
+                    r_units=profile.meta["bin_units"],
+                    tangential_component=profile[quad_4theta_component],
+                    tangential_component_error=(
+                        profile[quad_4theta_component_error]
+                        if quad_4theta_component_error in profile.columns
+                        else None
+                    ),
+                    cross_component=profile[quad_const_component],
+                    cross_component_error=(
+                        profile[quad_const_component_error]
+                        if quad_const_component_error in profile.columns
+                        else None
+                    ),
+                    xscale=xscale,
+                    yscale=yscale,
+                    tangential_component_label=quad_4theta_component,
+                    cross_component_label=quad_const_component,
                 ),
-                xscale=xscale,
-                yscale=yscale,
-                tangential_component_label=tangential_component,
-                cross_component_label=cross_component,
-            ), plot_profiles(
-                rbins=profile["radius"],
-                r_units=profile.meta["bin_units"],
-                tangential_component=profile[quad_4theta_component],
-                tangential_component_error=(
-                    profile[quad_4theta_component_error]
-                    if quad_4theta_component_error in profile.columns
-                    else None
-                ),
-                cross_component=profile[quad_const_component],
-                cross_component_error=(
-                    profile[quad_const_component_error]
-                    if quad_const_component_error in profile.columns
-                    else None
-                ),
-                xscale=xscale,
-                yscale=yscale,
-                tangential_component_label=quad_4theta_component,
-                cross_component_label=quad_const_component,
             )
 
         for col in (tangential_component, cross_component):
