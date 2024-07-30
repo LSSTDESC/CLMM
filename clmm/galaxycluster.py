@@ -45,7 +45,10 @@ class GalaxyCluster:
         Validade each input argument
     include_quadrupole: bool
         If quadrupole WL be calculated.
-    """
+    """ 
+
+    # pylint: disable=too-many-instance-attributes
+    # Eight is reasonable in this case.
 
     def __init__(self, *args, validate_input=True, include_quadrupole=False, **kwargs):
         self.unique_id = None
