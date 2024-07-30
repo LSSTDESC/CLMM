@@ -290,7 +290,7 @@ class CLMModeling:
 
             delta_sigma = self._eval_excess_surface_density(r_proj, z_cl) + correction
 
-        if term == "quad_4theta":
+        elif term == "quad_4theta":
 
             func = InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5)
             integral_vec = np.vectorize(func.integral)
@@ -298,13 +298,17 @@ class CLMModeling:
 
             delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
-        if term == "quad_const":
+        elif term == "quad_const":
 
             func = InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5)
             integral_vec = np.vectorize(func.integral)
             integral = integral_vec(r_proj, np.inf)
 
             delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
+
+        else:
+
+            raise ValueError(f"Unsupported term (='{loc_dict['term']}')")
 
         return delta_sigma
 
