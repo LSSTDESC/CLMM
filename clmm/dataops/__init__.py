@@ -1,8 +1,6 @@
-"""Functions to compute polar/azimuthal averages in radial bins"""
-
+"""Data operation for polar/azimuthal averages in radial bins and weights"""
 import warnings
 import numpy as np
-import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from ..gcdata import GCData
@@ -17,11 +15,7 @@ from ..utils import (
     _validate_is_deltasigma_sigma_c,
     _validate_coordinate_system,
 )
-from ..redshift import (
-    _integ_pzfuncs,
-    compute_for_good_redshifts,
-)
-from ..theory import compute_critical_surface_density_eff
+from ..redshift import _integ_pzfuncs
 
 
 def compute_tangential_and_cross_components(

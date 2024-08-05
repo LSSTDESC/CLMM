@@ -11,6 +11,7 @@ from clmm.utils import (
     convert_shapes_to_epsilon,
     arguments_consistency,
     validate_argument,
+    DiffArray,
 )
 from clmm.redshift import distributions as zdist
 
@@ -533,6 +534,21 @@ def test_validate_argument():
     assert (
         validate_argument(loc, "float_array", ("float_array", str), argmax=1.2, eqmax=True) is None
     )
+
+
+def test_diff_array():
+    """test validate argument"""
+    # Validate diffs
+    assert DiffArray([1, 2]) == DiffArray([1, 2])
+    assert DiffArray([1, 2]) == DiffArray(np.array([1, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([2, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([1, 2, 3]))
+    assert DiffArray([1, 2]) != None
+    # Validate prints
+    arr = DiffArray([1, 2])
+    assert str(arr.value) == arr.__repr__()
+    arr = DiffArray(range(10))
+    assert str(arr.value) != arr.__repr__()
 
 
 def test_beta_functions(modeling_data):

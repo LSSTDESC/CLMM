@@ -41,6 +41,7 @@ from .validation import (
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
     _validate_coordinate_system,
+    DiffArray,
 )
 
 from .units import (

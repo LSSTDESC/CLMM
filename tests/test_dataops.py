@@ -146,6 +146,13 @@ def test_compute_lensing_angles_flatsky():
     )
 
     assert_allclose(
+        da._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
+        [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
+        TOLERANCE["rtol"],
+        err_msg="Failure when ra_l and ra_s are the same but one is defined negative",
+    )
+
+    assert_allclose(
         thetas_celestial,
         thetas_euclidean,
         **TOLERANCE,
