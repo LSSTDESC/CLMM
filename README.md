@@ -1,4 +1,3 @@
-
 # CLMM
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
 [![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
@@ -23,8 +22,8 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
-- [SciPy](https://scipy.org/) (v1.3 or later)
-- [Astropy](https://www.astropy.org/) (v4.0 or later for units and cosmology dependence)  
+- [SciPy](https://scipy.org/) (v1.6 or later)
+- [Astropy](https://www.astropy.org/) (v4.0 or later for units and cosmology dependence)
 (Please avoid Astropy v5.0 since there is bug breaking CCL backend. It has been fixed in Astropy v5.0.1.)
 - [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
 
@@ -36,7 +35,7 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
 - [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.7.1.dev10+gf81b59a4 and 3)
-- [NumCosmo](https://numcosmo.github.io/) (v0.15 or later)
+- [NumCosmo](https://numcosmo.github.io/) (v0.19 or later)
 
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
@@ -91,8 +90,8 @@ non-DESC project concept and progress to be presented to the working group,
 so working group members can help co-identify tools and/or ongoing development
 that might mutually benefit your non-DESC project and ongoing DESC projects.
 
-**External Projects by Non-DESC members**: If you are not from the DESC 
-community, you are also welcome to contact CLMM Topical Team leads to introduce 
+**External Projects by Non-DESC members**: If you are not from the DESC
+community, you are also welcome to contact CLMM Topical Team leads to introduce
 your project and share feedback.
 
 
@@ -110,6 +109,7 @@ the `CCL` publication be cited.  See details
 The `Cluster Toolkit` documentation can be found
 [here](https://cluster-toolkit.readthedocs.io/en/latest/#).
 
+The data for the notebook test_coordinate.ipynb is available at https://www.dropbox.com/scl/fo/dwsccslr5iwb7lnkf8jvx/AJkjgFeemUEHpHaZaHHqpAg?rlkey=efbtsr15mdrs3y6xsm7l48o0r&st=xb58ap0g&dl=0
 
 # Contributing to CLMM <a name="contributing"></a>
 
@@ -123,7 +123,7 @@ issue](https://github.com/LSSTDESC/CLMM/issues).
 
 The current leads of the LSST DESC CLMM Topical Team are Michel Aguena
 (m-aguena, aguena@apc.in2p3.fr) and Marina Ricci (mricci,
-marina.ricci@lmu.de)
+marina.ricci@apc.in2p3.fr)
 
 
 # Acknowledgements <a name="acknowledgements"></a>

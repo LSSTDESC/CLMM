@@ -11,6 +11,7 @@ from clmm.utils import (
     convert_shapes_to_epsilon,
     arguments_consistency,
     validate_argument,
+    DiffArray,
 )
 from clmm.redshift import distributions as zdist
 
@@ -535,46 +536,98 @@ def test_validate_argument():
     )
 
 
-def test_beta_functions():
+def test_diff_array():
+    """test validate argument"""
+    # Validate diffs
+    assert DiffArray([1, 2]) == DiffArray([1, 2])
+    assert DiffArray([1, 2]) == DiffArray(np.array([1, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([2, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([1, 2, 3]))
+    assert DiffArray([1, 2]) != None
+    # Validate prints
+    arr = DiffArray([1, 2])
+    assert str(arr.value) == arr.__repr__()
+    arr = DiffArray(range(10))
+    assert str(arr.value) != arr.__repr__()
+
+
+def test_beta_functions(modeling_data):
     z_cl = 1.0
-    z_s = 2.4
+    z_src = [2.4, 2.1]
+    shape_weights = [4.6, 6.4]
     z_inf = 1000.0
     zmax = 15.0
     nsteps = 1000
     zmin = z_cl + 0.1
     z_int = np.linspace(zmin, zmax, nsteps)
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
-    beta_test = np.heaviside(z_s - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
-    beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
+    beta_test = [
+        np.heaviside(z_s - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
+        for z_s in z_src
+    ]
+    beta_s_test = utils.compute_beta(z_src, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
-    assert_allclose(utils.compute_beta(z_s, z_cl, cosmo), beta_test, **TOLERANCE)
-    assert_allclose(utils.compute_beta_s(z_s, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
+    assert_allclose(utils.compute_beta(z_src, z_cl, cosmo), beta_test, **TOLERANCE)
+    assert_allclose(utils.compute_beta_s(z_src, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
+
+    # beta mean from distributions
 
     for model in (None, zdist.chang2013, zdist.desc_srd):
         # None defaults to chang2013 for compute_beta* functions
 
-        test1 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
-        test2 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
-        test3 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
-
         if model is None:
             model = zdist.chang2013
 
-        def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
-            return utils.compute_beta(z_i, z_cl, cosmo) * model(z_i)
-
-        def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+        def integrand1(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
             return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * model(z_i)
 
-        def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+        def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
             return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) ** 2 * model(z_i)
 
         assert_allclose(
-            test1, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0], **TOLERANCE
+            utils.compute_beta_s_mean_from_distribution(
+                z_cl, z_inf, cosmo, zmax, z_distrib_func=model
+            ),
+            quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+            **TOLERANCE
         )
         assert_allclose(
-            test2, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0], **TOLERANCE
+            utils.compute_beta_s_square_mean_from_distribution(
+                z_cl, z_inf, cosmo, zmax, z_distrib_func=model
+            ),
+            quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+            **TOLERANCE
         )
-        assert_allclose(
-            test3, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0], **TOLERANCE
-        )
+
+    # beta mean from weights
+
+    assert_allclose(
+        utils.compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights),
+        np.sum(
+            shape_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) / np.sum(shape_weights)
+        ),
+        **TOLERANCE
+    )
+    assert_allclose(
+        utils.compute_beta_s_square_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights),
+        np.sum(
+            shape_weights
+            * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) ** 2
+            / np.sum(shape_weights)
+        ),
+        **TOLERANCE
+    )
+
+    no_weights = [1, 1]
+    assert_allclose(
+        utils.compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, None),
+        np.sum(no_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) / np.sum(no_weights)),
+        **TOLERANCE
+    )
+    assert_allclose(
+        utils.compute_beta_s_square_mean_from_weights(z_src, z_cl, z_inf, cosmo, None),
+        np.sum(
+            no_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) ** 2 / np.sum(no_weights)
+        ),
+        **TOLERANCE
+    )

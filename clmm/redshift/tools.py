@@ -1,7 +1,7 @@
 """General utility functions that are used in multiple modules"""
 import warnings
 import numpy as np
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from scipy.interpolate import interp1d
 
 try:
@@ -70,7 +70,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=
         pz_matrix = np.array(pzpdf)[:, mask]
         kernel_matrix = kernel(z_grid)
 
-    return simps(pz_matrix * kernel_matrix, x=z_grid, axis=1)
+    return simpson(pz_matrix * kernel_matrix, x=z_grid, axis=1)
 
 
 def compute_for_good_redshifts(

@@ -12,20 +12,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v2
-    - name: Install prereq using conda
+    - uses: conda-incubator/setup-miniconda@v3
+    - name: Install prereq and NumCosmo using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge gobject-introspection pygobject numcosmo cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
     - name: Install the package
       run: |
         pip install .
-    - name: Install NumCosmo from conda-forge
-      run: |
-        conda install -c conda-forge numcosmo
+# temporarily moved up due to libarchive issue - see PR 620
+#    - name: Install NumCosmo from conda-forge
+#      run: |
+#        conda install -c conda-forge numcosmo
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
@@ -33,24 +34,25 @@ jobs:
         pip install .
     - name: Install CCL from source
       run: |
-        conda install -c conda-forge cmake swig --override-channels
+        # temporarily moved up due to libarchive issue - see PR 620
+        #conda install -c conda-forge cmake swig setuptools_scm
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        git checkout v3.0.0
-        pip install .
+        pip install --no-use-pep517 .
     - name: Analysing the code with pylint
       run: |
         pip install pylint
-        pylint clmm
+        pylint clmm --ignored-classes=astropy.units
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
-    - name: Install Sphinx prereq
-      run: |
-        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+# temporarily moved up due to libarchive issue - see PR 620
+#    - name: Install Sphinx prereq
+#      run: |
+#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
         make -C docs/ html

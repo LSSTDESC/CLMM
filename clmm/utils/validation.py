@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+
 import numpy as np
 from ..constants import Constants as const
 
@@ -224,3 +225,56 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
         raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
     if not is_deltasigma and sigma_c is not None:
         raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
+
+def _validate_coordinate_system(loc, coordinate_system, valid_type):
+    r"""Validate the coordinate system.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    coordinate_system: str
+        Coordinate system of the ellipticity components. Must be either 'celestial' or 'euclidean'.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
+    """
+    validate_argument(loc, coordinate_system, valid_type)
+    if loc[coordinate_system] not in ["celestial", "euclidean"]:
+        raise ValueError(f"{coordinate_system} must be 'celestial' or 'euclidean'.")
+
+class DiffArray:
+    """Array where arr1==arr2 is actually all(arr1==arr)"""
+
+    def __init__(self, array):
+        self.value = np.array(array)
+
+    def __eq__(self, other):
+        # pylint: disable=unidiomatic-typecheck
+        if type(other) != type(self):
+            return False
+        if self.value.size != other.value.size:
+            return False
+        return (self.value == other.value).all()
+
+    def __repr__(self):
+        out = str(self.value)
+        if self.value.size > 4:
+            out = self._get_lim_str(out) + " ... " + self._get_lim_str(out[::-1])[::-1]
+        return out
+
+    def _get_lim_str(self, out):
+        # pylint: disable=undefined-loop-variable
+        # get count starting point
+        for init_index, char in enumerate(out):
+            if all(char != _char for _char in "[]() "):
+                break
+        # get str
+        sep = 0
+        for i, char in enumerate(out[init_index + 1 :]):
+            sep += int(char == " " and out[i + init_index] != " ")
+            if sep == 2:
+                break
+        return out[: i + init_index + 1]
