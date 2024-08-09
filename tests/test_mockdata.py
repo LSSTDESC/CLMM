@@ -1,4 +1,5 @@
 """Tests for examples/support/mock_data.py"""
+
 import warnings
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -276,3 +277,64 @@ def test_shapenoise():
     )
     assert_allclose(np.histogram(data["e1"], bins=bins)[0], gauss, atol=50, rtol=0.05)
     assert_allclose(np.histogram(data["e2"], bins=bins)[0], gauss, atol=50, rtol=0.05)
+
+
+def test_coordinate_system():
+    """
+    Test that the coordinate system is correctly set up and that the galaxies are in the correct
+    position.
+    """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
+
+    # Verify that the coordinate system is correctly set up
+    np.random.seed(285713)
+    euclidean_data = mock.generate_galaxy_catalog(
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        coordinate_system="euclidean",
+    )
+    np.random.seed(285713)
+    celestial_data = mock.generate_galaxy_catalog(
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        coordinate_system="celestial",
+    )
+
+    assert_equal(euclidean_data["ra"], celestial_data["ra"])
+    assert_equal(euclidean_data["dec"], celestial_data["dec"])
+    assert_allclose(
+        euclidean_data["e1"],
+        celestial_data["e1"],
+        **TOLERANCE,
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
+    )
+    assert_allclose(
+        euclidean_data["e2"],
+        -celestial_data["e2"],
+        **TOLERANCE,
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
+    )
+
+    assert_raises(
+        ValueError,
+        mock.generate_galaxy_catalog,
+        10**15.0,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=50000,
+        coordinate_system="blah",
+    )
