@@ -45,11 +45,13 @@ def collect_argparser():
     parser = argparse.ArgumentParser(description="Let's extract source catalogs and estimate individual lensing profiles")
     parser.add_argument("--which_split", type=int, required=True)
     parser.add_argument("--number_of_splits", type=int, required=True)
-    parser.add_argument("--lens_catalog_name", type=str, required=False, default='./data/lens_catalog_cosmoDC2_v1.1.4_redmapper_v0.8.1.pkl',)
+    parser.add_argument("--lens_catalog_name", type=str, required=False, default='./DC2_data/cosmoDC2_v1.1.4_redmapper_v0.8.1_catalog.pkl',)
     parser.add_argument("--lambda_min", type=float, required=False, default=20,)
     parser.add_argument("--lambda_max", type=float, required=False, default=40,)
     parser.add_argument("--redshift_min", type=float, required=False, default=0.2,)
     parser.add_argument("--redshift_max", type=float, required=False, default=0.4,)
+    parser.add_argument("--method", type=str, required=False, default='qserv',)
+    parser.add_argument("--rmax", type=float, required=False, default=30,)
     return parser.parse_args()
 
 #select galaxy clusters
@@ -69,7 +71,7 @@ split_lists=np.array_split(index_cl, int(_config_extract_sources_in_cosmoDC2.num
 lens_catalog_truncated=lens_catalog_truncated[np.array(split_lists[int(_config_extract_sources_in_cosmoDC2.which_split)])]
 n_cl_to_extract=len(lens_catalog_truncated)
 
-path_where_to_save_profiles = f'./data/individual_lensing_profiles/'
+path_where_to_save_profiles = f'./DC2_data/individual_redMaPPer_cluster_lensing_profiles/'
 name_save = path_where_to_save_profiles+f'individual_profiles'
 name_save +=f'_split={_config_extract_sources_in_cosmoDC2.which_split}'
 name_save +=f'_number_of_splits={_config_extract_sources_in_cosmoDC2.number_of_splits}_ncl={n_cl_to_extract}.pkl'
@@ -92,7 +94,8 @@ for n, lens in enumerate(lens_catalog_truncated):
     dec_member_galaxy = lens_catalog['dec_member'][n]
     lens_distance=cosmo.eval_da(z)
     
-    tab = _utils_cosmoDC2.extract_cosmoDC2_galaxy(lens_z, lens_distance, ra, dec, rmax = 10, method = 'qserv')
+    tab = _utils_cosmoDC2.extract_cosmoDC2_galaxy(z, lens_distance, ra, dec, rmax = _config_extract_sources_in_cosmoDC2.rmax, 
+                                                  method = _config_extract_sources_in_cosmoDC2.method)
     #compute reduced shear and ellipticities
     tab['g1'], tab['g2'] = clmm.utils.convert_shapes_to_epsilon(tab['shear1'],tab['shear2'], 
                                                                 shape_definition = 'shear',
@@ -124,7 +127,7 @@ for n, lens in enumerate(lens_catalog_truncated):
 
     cl = clmm.GalaxyCluster("redmapper_cluster", ra, dec, z, dat)
     
-    bin_edges = clmm.dataops.make_bins(0.5, 30, 15, method='evenlog10width')
+    bin_edges = clmm.dataops.make_bins(0.5, _config_extract_sources_in_cosmoDC2.rmax, 15, method='evenlog10width')
     
     cl.compute_tangential_and_cross_components(
                                                 shape_component1="e1",
