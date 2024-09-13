@@ -12,7 +12,7 @@ for which_split in np.arange(number_of_splits):
         '#SBATCH --mem=8000                    # Memory in MB per default',
         '#SBATCH --time=0-6:00:00             # 7 days by default on htc partition',
         'source /pbs/home/c/cpayerne/setup_mydesc.sh']
-    cmd =   f'python run_extract_sources_and_compute_ind_profile_cosmoDC2_per_split.py --which_split {which_split} --number_of_splits {number_of_splits} '
+    cmd =   f'python extract_sources_and_compute_ind_profile_cosmoDC2_per_split.py --which_split {which_split} --number_of_splits {number_of_splits} '
     lines = lines_base + [cmd]
     name_job = f'job_which_split={which_split}_number_of_splits={number_of_splits}.job'
     with open(name_job, 'w') as f:
