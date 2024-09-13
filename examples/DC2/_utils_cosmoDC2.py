@@ -1,4 +1,3 @@
-import sys, os
 import numpy as np
 from astropy.table import QTable, Table, vstack, join
 import pickle 
@@ -9,15 +8,9 @@ import GCRCatalogs
 GCRCatalogs.set_root_dir_by_site('in2p3')
 import mysql
 from mysql.connector import Error
-r"""
-extract background galaxy catalog with qserv for:
-cosmodc2:
-- true shapes
-- true redshift
-and GCRCatalogs:
-- photoz addons
-"""
+
 def _fix_axis_ratio(q_bad):
+    
     #from https://github.com/LSSTDESC/gcr-catalogs/blob/ellipticity_bug_fix/GCRCatalogs/cosmodc2.py 
     # back out incorrect computation of q using Johnsonb function
     e_jb = np.sqrt((1 - q_bad**2)/(1 + q_bad**2))
@@ -25,6 +18,7 @@ def _fix_axis_ratio(q_bad):
     return q_new
 
 def _fix_ellipticity_disk_or_bulge(ellipticity):
+    
     #from https://github.com/LSSTDESC/gcr-catalogs/blob/ellipticity_bug_fix/GCRCatalogs/cosmodc2.py 
     # back out incorrect computation of q using Johnsonb function 
     q_bad = (1-ellipticity)/(1+ellipticity) #use default e definition to calculate q
@@ -34,6 +28,7 @@ def _fix_ellipticity_disk_or_bulge(ellipticity):
     return e_new
 
 def correct_shear_ellipticity(ellipticity_uncorr_e1, ellipticity_uncorr_e2):
+    
     #from https://github.com/LSSTDESC/gcr-catalogs/blob/ellipticity_bug_fix/GCRCatalogs/cosmodc2.py 
     ellipticity_uncorr_norm = (ellipticity_uncorr_e1**2+ellipticity_uncorr_e2**2)**.5
     complex_ellipticity_uncorr = ellipticity_uncorr_e1 + 1j*ellipticity_uncorr_e2
@@ -64,7 +59,7 @@ def extract_cosmoDC2_galaxy(lens_z, lens_distance, ra, dec, rmax = 10, method = 
                 maximum radius
             """
             zmax = 3.
-            zmin = lens_z#zmin = lens_z + .05
+            zmin = lens_z
             theta_max = (rmax/lens_distance) * (180./np.pi)
             query = "SELECT data.coord_ra as ra, data.coord_dec as dec, data.redshift as z, "
             query += "data.galaxy_id as galaxy_id, data.halo_id as halo_id, "
@@ -86,7 +81,10 @@ def extract_cosmoDC2_galaxy(lens_z, lens_distance, ra, dec, rmax = 10, method = 
         tab = QTable.from_pandas(tab)
         return tab
     
-#     if method == 'gcrcatalogs':
+    
+     if method == 'gcrcatalogs':
+        
+        raise ValueError("Extraction with GCRCatalogs not implemented yet")
         
 #         return 
         
