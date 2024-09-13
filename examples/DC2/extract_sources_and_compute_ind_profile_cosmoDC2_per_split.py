@@ -74,39 +74,6 @@ name_save = path_where_to_save_profiles+f'individual_profiles'
 name_save +=f'_split={_config_extract_sources_in_cosmoDC2.which_split}'
 name_save +=f'_number_of_splits={_config_extract_sources_in_cosmoDC2.number_of_splits}_ncl={n_cl_to_extract}.pkl'
 
-
-def qserv_query(lens_z, lens_distance, ra, dec, rmax = 10):
-    r"""
-    quantities wanted + cuts for qserv
-    Attributes:
-    -----------
-    z: float
-        lens redshift
-    lens_distance: float
-        distance to the cluster
-    ra: float
-        lens right ascension
-    dec: float
-        lens declinaison
-    rmax: float
-        maximum radius
-    """
-    zmax = 3.
-    zmin = lens_z#zmin = lens_z + .05
-    theta_max = (rmax/lens_distance) * (180./np.pi)
-    query = "SELECT data.coord_ra as ra, data.coord_dec as dec, data.redshift as z, "
-    query += "data.galaxy_id as galaxy_id, data.halo_id as halo_id, "
-    query += "data.mag_i, data.mag_r, data.mag_y, "
-    query += "data.shear_1 as shear1, data.shear_2 as shear2, data.convergence as kappa, "
-    query += "data.ellipticity_1_true as e1_true_uncorr, data.ellipticity_2_true as e2_true_uncorr " 
-    query += "FROM cosmoDC2_v1_1_4_image.data as data "
-    query += f"WHERE data.redshift >= {zmin} AND data.redshift < {zmax} "
-    query += f"AND scisql_s2PtInCircle(coord_ra, coord_dec, {ra}, {dec}, {theta_max}) = 1 "
-    query += f"AND data.mag_i <= 24.6 "
-    query += f"AND data.mag_r <= 28.0 "
-    query += ";" 
-    return query
-
 print(f'[cluster catalog]: {_config_extract_sources_in_cosmoDC2.lambda_min} < richness < {_config_extract_sources_in_cosmoDC2.lambda_max}')
 print(f'[cluster catalog]: {_config_extract_sources_in_cosmoDC2.redshift_min} < redshift < {_config_extract_sources_in_cosmoDC2.redshift_max}')
 print(f'[cluster catalog]: number of clusters = {n_cl}')
@@ -125,11 +92,7 @@ for n, lens in enumerate(lens_catalog_truncated):
     dec_member_galaxy = lens_catalog['dec_member'][n]
     lens_distance=cosmo.eval_da(z)
     
-    conn_qserv = mysql.connector.connect(host='ccqserv201', user='qsmaster', port=30040)
-    cursor = conn_qserv.cursor(dictionary=True, buffered=True)
-    qserv_query_extract = qserv_query(z, lens_distance, ra, dec, rmax=30)
-    tab = pd.read_sql_query(qserv_query_extract, conn_qserv)
-    tab = QTable.from_pandas(tab)
+    tab = _utils_cosmoDC2.extract_cosmoDC2_galaxy(lens_z, lens_distance, ra, dec, rmax = 10, method = 'qserv')
     #compute reduced shear and ellipticities
     tab['g1'], tab['g2'] = clmm.utils.convert_shapes_to_epsilon(tab['shear1'],tab['shear2'], 
                                                                 shape_definition = 'shear',
