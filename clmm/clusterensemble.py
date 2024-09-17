@@ -7,6 +7,7 @@ import healpy
 
 from .gcdata import GCData
 from .dataops import make_stacked_radial_profile
+from .utils import DiffArray
 
 
 class ClusterEnsemble:
@@ -27,7 +28,7 @@ class ClusterEnsemble:
 
         * "tan_sc" : tangential component computed with sample covariance
         * "cross_sc" : cross component computed with sample covariance
-        * "tan_jk" : tangential component computed with bootstrap
+        * "tan_bs" : tangential component computed with bootstrap
         * "cross_bs" : cross component computed with bootstrap
         * "tan_jk" : tangential component computed with jackknife
         * "cross_jk" : cross component computed with jackknife
@@ -46,7 +47,7 @@ class ClusterEnsemble:
         else:
             raise TypeError(f"unique_id incorrect type: {type(unique_id)}")
         self.unique_id = unique_id
-        self.data = GCData(meta={"bin_units": None})
+        self.data = GCData(meta={"bin_units": None, "radius_min": None, "radius_max": None})
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
         self.stacked_data = None
@@ -198,6 +199,9 @@ class ClusterEnsemble:
         """
         cl_bin_units = profile_table.meta.get("bin_units", None)
         self.data.update_info_ext_valid("bin_units", self.data, cl_bin_units, overwrite=False)
+        for col in ("radius_min", "radius_max"):
+            value = DiffArray(profile_table[col])
+            self.data.update_info_ext_valid(col, self.data, value, overwrite=False)
 
         cl_cosmo = profile_table.meta.get("cosmo", None)
         self.data.update_info_ext_valid("cosmo", self.data, cl_cosmo, overwrite=False)
@@ -248,9 +252,14 @@ class ClusterEnsemble:
             [self.data[tan_component], self.data[cross_component]],
         )
         self.stacked_data = GCData(
-            [radius, *components],
-            meta=self.data.meta,
-            names=("radius", tan_component, cross_component),
+            [
+                self.data.meta["radius_min"].value,
+                self.data.meta["radius_max"].value,
+                radius,
+                *components,
+            ],
+            meta={k: v for k, v in self.data.meta.items() if k not in ("radius_min", "radius_max")},
+            names=("radius_min", "radius_max", "radius", tan_component, cross_component),
         )
 
     def compute_sample_covariance(self, tan_component="gt", cross_component="gx"):
