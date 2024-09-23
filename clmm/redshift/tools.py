@@ -44,30 +44,43 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use
     if kernel is None:
         kernel = lambda z: 1.0
 
-    # adding these lines to interpolate CLMM redshift grid for each galaxies
-    # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
-    # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
-    if use_qp:
-        if not _HAS_QP:
-            raise ImportError("qp is not installed")
+    if hasattr(pzbins[0], "__len__"):
 
-        qp_ensamble = qp.Ensemble(
-            qp.interp_irregular,
-            data={"xvals": pzbins, "yvals": pzpdf, "check_input": True},
-        )
-        z_grid = pzbins[0][(pzbins[0] >= zmin) * (pzbins[0] <= zmax)]
-        pz_matrix = qp_ensamble.pdf(z_grid)
-        kernel_matrix = kernel(z_grid)
-    elif hasattr(pzbins[0], "__len__"):
+        # adding these lines to interpolate CLMM redshift grid for each galaxies
+        # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
+        # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
-        pdf_interp_list = [
-            interp1d(pzbin, pdf, bounds_error=False, fill_value=0.0)
-            for pzbin, pdf in zip(pzbins, pzpdf)
-        ]
-        pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
+
+        if use_qp:
+            if not _HAS_QP:
+                raise ImportError("qp is not installed")
+            qp_ensamble = qp.Ensemble(
+                qp.interp_irregular,
+                data={"xvals": pzbins, "yvals": pzpdf, "check_input": True},
+            )
+            pz_matrix = qp_ensamble.pdf(z_grid)
+        else:
+            pdf_interp_list = [
+                interp1d(pzbin, pdf, bounds_error=False, fill_value=0.0)
+                for pzbin, pdf in zip(pzbins, pzpdf)
+            ]
+            pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
+
         kernel_matrix = kernel(z_grid)
+
     else:
+
+        #if use_qp:
+        #    qp_ensamble = qp.Ensemble(
+        #        qp.interp,
+        #        data={
+        #            "xvals": pzbins,
+        #            "yvals": pzpdf,
+        #        },
+        #    )
+
         # OK perform the integration directly from the pdf binning common to all galaxies
         mask = (pzbins >= zmin) * (pzbins <= zmax)
         z_grid = pzbins[mask]
