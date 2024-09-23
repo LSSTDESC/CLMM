@@ -12,7 +12,7 @@ except ImportError:
     _HAS_QP = False
 
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000, use_qp=False):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use_qp=False):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -40,6 +40,10 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=
     numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
     """
+
+    if kernel is None:
+        kernel = lambda z: 1.0
+
     # adding these lines to interpolate CLMM redshift grid for each galaxies
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
