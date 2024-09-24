@@ -42,7 +42,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use
     """
 
     if kernel is None:
-        kernel = lambda z: 1.0
+        def kernel(z):
+            return 1.0
 
     if hasattr(pzbins[0], "__len__"):
 
