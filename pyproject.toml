@@ -3,7 +3,7 @@ line-length  = 100
 
 [tool.pylint]
 max-line-length = 100
-disable = ["R0913"]
+disable = ["R0913", "R0917"]
 good-names = ["ra", "z", "z1", "z2", "a", "a1", "a2",
               "gt", "gx", "mu", "da", "i",
               "H0", "Omega_b0", "Omega_dm0", "Omega_k0",
