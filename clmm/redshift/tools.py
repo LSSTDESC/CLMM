@@ -42,11 +42,12 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use
     """
 
     if kernel is None:
+
         def kernel(z):
+            # pylint: disable=unused-argument
             return 1.0
 
     if hasattr(pzbins[0], "__len__"):
-
         # adding these lines to interpolate CLMM redshift grid for each galaxies
         # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
         # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
