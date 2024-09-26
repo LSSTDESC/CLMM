@@ -4,30 +4,10 @@ import numpy as np
 from scipy.integrate import simpson
 from scipy.interpolate import interp1d
 
-try:
-    import qp
-
-    _HAS_QP = True
-except ImportError:
-    _HAS_QP = False
+import qp
 
 
-class FixedIterator:
-    """
-    Itrator that always returns a fixed value
-    """
-
-    def __init__(self, value):
-        self.__value = value
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return self.__value
-
-
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use_qp=False):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -47,17 +27,12 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use
         Default: kernel(z)=1
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
-    use_qp : bool
-        Use qp for computations.
 
     Returns
     -------
     numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
     """
-
-    if use_qp and not _HAS_QP:
-        raise ImportError("qp is not installed")
 
     if kernel is None:
 
@@ -67,36 +42,20 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, use
 
     z_grid = np.linspace(zmin, zmax, ngrid)
 
-    # Each galaxy as a diiferent zbin
-
-    if use_qp:
-        if hasattr(pzbins[0], "__len__"):
-            qp_ensamble = qp.Ensemble(
-                qp.interp_irregular,
-                data={"xvals": pzbins, "yvals": pzpdf, "check_input": True},
-            )
-        else:
-            qp_ensamble = qp.Ensemble(
-                qp.interp,
-                data={
-                    "xvals": pzbins,
-                    "yvals": pzpdf,
-                },
-            )
-        pz_matrix = qp_ensamble.pdf(z_grid)
-
+    if hasattr(pzbins[0], "__len__"):
+        # Each galaxy as a diiferent zbin
+        _qp_type = qp.interp_irregular
     else:
-        if hasattr(pzbins[0], "__len__"):
-            pzbins_loop = pzbins
+        _qp_type = qp.interp
 
-        else:
-            pzbins_loop = FixedIterator(pzbins)
-        pz_matrix = np.array(
-            [
-                interp1d(pzbin, pdf, bounds_error=False, fill_value=0.0)(z_grid)
-                for pzbin, pdf in zip(pzbins_loop, pzpdf)
-            ]
-        )
+    qp_ensamble = qp.Ensemble(
+        _qp_type,
+        data={
+            "xvals": np.array(pzbins),
+            "yvals": np.array(pzpdf),
+        },
+    )
+    pz_matrix = qp_ensamble.pdf(z_grid)
 
     kernel_matrix = kernel(z_grid)
 
