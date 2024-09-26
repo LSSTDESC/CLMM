@@ -64,6 +64,7 @@ def test_mock_data():
         photoz_sigma_unscaled=0.1,
         pzpdf_type="xxx",
     )
+    """
     assert_raises(
         NotImplementedError,
         mock.generate_galaxy_catalog,
@@ -76,6 +77,7 @@ def test_mock_data():
         photoz_sigma_unscaled=0.1,
         pzpdf_type="quantiles",
     )
+    """
 
     # Test pdz with bad arguments
     assert_raises(

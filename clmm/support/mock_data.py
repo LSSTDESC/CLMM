@@ -582,7 +582,10 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
             gaussian(row["pzbins"], row["z"], row["pzsigma"]) for row in galaxy_catalog
         ]
     elif galaxy_catalog.pzpdf_info["type"] == "quantiles":
-        raise NotImplementedError("PDF storing in quantiles not implemented.")
+        galaxy_catalog.pzpdf_info["quantiles"] = (0.005, 0.025, 0.16, 0.5, 0.84, 0.975, 0.995)
+        galaxy_catalog["pzpdf"] = (
+            galaxy_catalog["z"][:, None] + (np.arange(7) - 3) * galaxy_catalog["pzsigma"][:, None]
+        )
     else:
         raise ValueError(
             "Value of pzpdf_info['type'] " f"(={galaxy_catalog.pzpdf_info['type']}) " "not valid."
