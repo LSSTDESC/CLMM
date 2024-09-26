@@ -6,7 +6,7 @@ from scipy.integrate import simpson
 import qp
 
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, quantiles=False):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -26,90 +26,26 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000, qua
         Default: kernel(z)=1
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
-    quantiles : bool
-        PDF actually contains quantile information:
-            pzbins (array) - Quantiles on which all PDFs are tabulated.
-            pzpdf (list of arrays) - Location of quantiles for the source galaxies.
 
     Returns
     -------
     numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
     """
-    if quantiles:
-        pzpdf_type = "quantiles"
-        data = {"quantiles": pzbins, "locations": pzpdf}
+
     if len(np.array(pzbins).shape) > 1:
-        pzpdf_type = "individual_bins"
-        data = {"pzbins": pzbins, "pzpdf": pzpdf}
-    else:
-        pzpdf_type = "shared_bins"
-        data = {"pzbins": pzbins, "pzpdf": pzpdf}
-    return _integ_pzfuncs_core(pzpdf_type, data, zmin=zmin, zmax=zmax, kernel=kernel, ngrid=ngrid)
-
-
-def _integ_pzfuncs_core(pzpdf_type, pzdata, zmin=0.0, zmax=5, kernel=None, ngrid=1000):
-    r"""
-    Integrates the product of a photo-z pdf with a given kernel.
-    This function was created to allow for data with different photo-z binnings.
-
-    Parameters
-    ----------
-    pzpdf_type: str, None
-        Type of photo-z pdf to information provided:
-            `'shared_bins'` - single binning for all galaxies
-            `'individual_bins'` - individual binning for each galaxy
-            `'quantiles'` - quantiles of PDF
-    pzdata : dict
-        Data with Pz PDF, content will dependend on pzpdf_type.
-        If pzpdf_type is `'shared_bins'`, it must contain:
-            pzbins (array) - Redshift axis on which all PDFs are tabulated.
-            pzpdf (list of arrays) - Photometric PDF of the source galaxies.
-        If pzpdf_type is `'individual_bins', it must contain:
-            pzbins (list of arrays) - Redshift axis on which each PDF is tabulated.
-            pzpdf (list of arrays) - Photometric PDF of the source galaxies.
-        If pzpdf_type is `'quantiles', it must contain:
-            quantiles (array) - Quantiles on which all PDFs are tabulated.
-            locations (list of arrays) - Location of quantiles for the source galaxies.
-    zmin : float, optional
-        Minimum redshift for integration. Default: 0
-    zmax : float, optional
-        Maximum redshift for integration. Default: 5
-    kernel : function, optional
-        Function to be integrated with the pdf, must be f(z_array) format.
-        Default: kernel(z)=1
-    ngrid : int, optional
-        Number of points for the interpolation of the redshift pdf.
-
-    Returns
-    -------
-    numpy.ndarray
-        Kernel integrated with the pdf of each galaxy.
-    """
-
-    if pzpdf_type == "individual_bins":
         # Each galaxy as a diiferent zbin
         _qp_type = qp.interp_irregular
-        _data = {
-            "xvals": np.array(pzdata["pzbins"]),
-            "yvals": np.array(pzdata["pzpdf"]),
-        }
-    elif pzpdf_type == "shared_bins":
-        _qp_type = qp.interp
-        _data = {
-            "xvals": np.array(pzdata["pzbins"]),
-            "yvals": np.array(pzdata["pzpdf"]),
-        }
-    elif pzpdf_type == "quantiles":
-        _qp_type = qp.quant
-        _data = {
-            "quants": np.array(pzdata["quantiles"]),
-            "locs": pzdata["locations"],
-        }
     else:
-        raise ValueError(f"pzpdf_type (={pzpdf_type}) value not valid.")
+        _qp_type = qp.interp
 
-    qp_ensemble = qp.Ensemble(_qp_type, data=_data)
+    qp_ensemble = qp.Ensemble(
+        _qp_type,
+        data={
+            "xvals": np.array(pzbins),
+            "yvals": np.array(pzpdf),
+        },
+    )
 
     if kernel is None:
 

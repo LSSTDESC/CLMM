@@ -6,6 +6,8 @@ from collections import OrderedDict
 from astropy.table import Table as APtable
 import numpy as np
 
+import qp
+
 
 class GCMetaData(OrderedDict):
     r"""Object to store metadata, it always has a cosmo key with protective changes
@@ -227,6 +229,8 @@ class GCData(APtable):
             return ("zbins" in self.pzpdf_info) and ("pzpdf" in self.columns)
         if pzpdf_type == "individual_bins":
             return ("pzbins" in self.columns) and ("pzpdf" in self.columns)
+        if pzpdf_type == "quantiles":
+            return ("quantiles" in self.pzpdf_info) and ("pzpdf" in self.columns)
         raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
 
     def get_pzpdfs(self):
@@ -235,7 +239,7 @@ class GCData(APtable):
         Returns
         -------
         pzbins : array
-            zbins of PDF. 1D if `shared_bins`,
+            zbins of PDF. 1D if `shared_bins` or `quantiles`.
             zbins of each object in data if `individual_bins`.
         pzpdfs : array
             PDF of each object in data
@@ -245,8 +249,20 @@ class GCData(APtable):
             raise ValueError("No PDF information stored!")
         if pzpdf_type == "shared_bins":
             pzbins = self.pzpdf_info["zbins"]
+            pzpdf = self["pzpdf"]
         elif pzpdf_type == "individual_bins":
             pzbins = self["pzbins"]
+            pzpdf = self["pzpdf"]
+        elif pzpdf_type == "quantiles":
+            pzbins = np.linspace(0, 5, 501)
+            qp_ensemble = qp.Ensemble(
+                qp.quant,
+                data={
+                    "quants": np.array(self.pzpdf_info["quantiles"]),
+                    "locs": self["pzpdf"],
+                },
+            )
+            pzpdf = qp_ensemble.pdf(pzbins)
         else:
             raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
-        return pzbins, self["pzpdf"]
+        return pzbins, pzpdf

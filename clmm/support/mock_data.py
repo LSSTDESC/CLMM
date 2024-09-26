@@ -150,7 +150,7 @@ def generate_galaxy_catalog(
             `None` - does not store PDFs;
             `'shared_bins'` - single binning for all galaxies
             `'individual_bins'` - individual binning for each galaxy
-            `'quantiles'` - quantiles of PDF (not implemented yet)
+            `'quantiles'` - quantiles of PDF
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
     ngals : float, optional

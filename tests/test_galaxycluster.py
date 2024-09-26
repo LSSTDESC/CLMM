@@ -313,7 +313,7 @@ def test_integrity_of_probfuncs():
     expected = np.array([1.0, 1.0, 1.0])
     assert_allclose(cluster.galcat["p_bkg_true"], expected, **TOLERANCE)
 
-    # photoz + deltasigma
+    # photoz
     assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
     pzbins = np.linspace(0.0001, 5, 1000)
     cluster.galcat.pzpdf_info["zbins"] = pzbins
@@ -323,6 +323,16 @@ def test_integrity_of_probfuncs():
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
         assert_allclose(cluster.galcat["p_bkg_pz"], expected, **TOLERANCE)
+
+    # quantiles photoz
+    del cluster.galcat["pzpdf"]
+    cluster.galcat.pzpdf_info["type"] = "quantiles"
+    cluster.galcat.pzpdf_info["quantiles"] = (0.005, 0.025, 0.16, 0.5, 0.84, 0.975, 0.995)
+    cluster.galcat["pzpdf"] = cluster.galcat["z"][:, None] + (np.arange(7) - 3) * 0.01 * (
+        1 + cluster.galcat["z"][:, None]
+    )
+    cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
+    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=1e-3)
 
 
 def test_integrity_of_weightfuncs():
