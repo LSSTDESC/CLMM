@@ -39,6 +39,11 @@ jobs:
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         pip install --no-use-pep517 .
+    - name: Install qp from source
+      run: |
+        git clone https://github.com/LSSTDESC/qp
+        cd qp
+        pip install .
     - name: Analysing the code with pylint
       run: |
         pip install pylint
