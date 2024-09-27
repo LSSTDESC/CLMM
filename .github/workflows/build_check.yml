@@ -44,10 +44,6 @@ jobs:
         git clone https://github.com/LSSTDESC/qp
         cd qp
         pip install .
-    - name: Analysing the code with pylint
-      run: |
-        pip install pylint
-        pylint clmm --ignored-classes=astropy.units
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
@@ -58,6 +54,10 @@ jobs:
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+    - name: Analysing the code with pylint
+      run: |
+        pip install pylint
+        pylint clmm --ignored-classes=astropy.units
     - name: Run the docs
       run: |
         make -C docs/ html
