@@ -67,7 +67,10 @@ class GCData(APtable):
         metakwargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
-        self.pzpdf_info = {"type": None}
+        self.pzpdf_info = {
+            "type": None,
+            "unpack_quantile_zbins_limits": (0, 5, 501),
+        }
 
     def _str_colnames(self):
         """Colnames in comma separated str"""
@@ -85,6 +88,8 @@ class GCData(APtable):
                 np.set_printoptions(edgeitems=5, threshold=10)
                 out += " " + str(np.round(self.pzpdf_info.get("zbins"), 2))
                 np.set_printoptions(**default_cfg)
+            elif out == "quantiles":
+                out += " " + str(self.pzpdf_info["unpack_quantile_zbins_limits"])
         return out
 
     def __repr__(self):
@@ -243,6 +248,11 @@ class GCData(APtable):
             zbins of each object in data if `individual_bins`.
         pzpdfs : array
             PDF of each object in data
+
+        Note
+        ----
+        If pzpdf type is quantiles, a pdf will be unpacked on a grid contructed with
+        np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])
         """
         pzpdf_type = self.pzpdf_info["type"]
         if pzpdf_type is None:
@@ -254,7 +264,7 @@ class GCData(APtable):
             pzbins = self["pzbins"]
             pzpdf = self["pzpdf"]
         elif pzpdf_type == "quantiles":
-            pzbins = np.linspace(0, 5, 501)
+            pzbins = np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])
             qp_ensemble = qp.Ensemble(
                 qp.quant,
                 data={
