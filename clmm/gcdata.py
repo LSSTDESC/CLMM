@@ -89,7 +89,8 @@ class GCData(APtable):
                 out += " " + str(np.round(self.pzpdf_info.get("zbins"), 2))
                 np.set_printoptions(**default_cfg)
             elif out == "quantiles":
-                out += " " + str(self.pzpdf_info["unpack_quantile_zbins_limits"])
+                out += " " + str(self.pzpdf_info["quantiles"])
+                out += " - upacked with zgrid : " + str(self.pzpdf_info["unpack_quantile_zbins_limits"])
         return out
 
     def __repr__(self):
