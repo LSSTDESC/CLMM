@@ -3,11 +3,15 @@ Tests for datatype and galaxycluster
 """
 
 import os
+
 import numpy as np
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_warns
+
+from scipy.stats import multivariate_normal
+from scipy.special import erfc
+
 import clmm
 from clmm import GCData
-from scipy.stats import multivariate_normal
 
 TOLERANCE = {"rtol": 1.0e-7, "atol": 1.0e-7}
 
@@ -327,12 +331,13 @@ def test_integrity_of_probfuncs():
     # quantiles photoz
     del cluster.galcat["pzpdf"]
     cluster.galcat.pzpdf_info["type"] = "quantiles"
-    cluster.galcat.pzpdf_info["quantiles"] = (0.005, 0.025, 0.16, 0.5, 0.84, 0.975, 0.995)
-    cluster.galcat["pzquantiles"] = cluster.galcat["z"][:, None] + (np.arange(7) - 3) * 0.01 * (
+    sigma_steps = np.linspace(-5, 5, 31)
+    cluster.galcat.pzpdf_info["quantiles"] = 0.5 * erfc(-sigma_steps / np.sqrt(2))
+    cluster.galcat["pzquantiles"] = cluster.galcat["z"][:, None] + sigma_steps * 0.01 * (
         1 + cluster.galcat["z"][:, None]
     )
     cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
-    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=5e-3)
+    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=5e-4)
 
 
 def test_integrity_of_weightfuncs():
