@@ -250,10 +250,10 @@ class GCData(APtable):
         pzpdfs : array
             PDF of each object in data
 
-        Note
-        ----
+        Notes
+        -----
         If pzpdf type is quantiles, a pdf will be unpacked on a grid contructed with
-        np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])
+        `np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])`
         """
         pzpdf_type = self.pzpdf_info["type"]
         if pzpdf_type is None:
