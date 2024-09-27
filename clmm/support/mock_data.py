@@ -462,7 +462,10 @@ def _generate_galaxy_catalog(
     if all(c is not None for c in (photoz_sigma_unscaled, pzpdf_type)):
         if galaxy_catalog.pzpdf_info["type"] == "individual_bins":
             cols += ["pzbins"]
-        cols += ["pzpdf"]
+        if galaxy_catalog.pzpdf_info["type"] == "quantiles":
+            cols += ["pzquantiles"]
+        else:
+            cols += ["pzpdf"]
 
     if coordinate_system == "celestial":
         galaxy_catalog["e2"] *= -1  # flip e2 to match the celestial coordinate system
@@ -583,7 +586,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
         ]
     elif galaxy_catalog.pzpdf_info["type"] == "quantiles":
         galaxy_catalog.pzpdf_info["quantiles"] = (0.005, 0.025, 0.16, 0.5, 0.84, 0.975, 0.995)
-        galaxy_catalog["pzpdf"] = (
+        galaxy_catalog["pzquantiles"] = (
             galaxy_catalog["z"][:, None] + (np.arange(7) - 3) * galaxy_catalog["pzsigma"][:, None]
         )
     else:

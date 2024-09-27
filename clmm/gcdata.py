@@ -235,7 +235,7 @@ class GCData(APtable):
         if pzpdf_type == "individual_bins":
             return ("pzbins" in self.columns) and ("pzpdf" in self.columns)
         if pzpdf_type == "quantiles":
-            return ("quantiles" in self.pzpdf_info) and ("pzpdf" in self.columns)
+            return ("quantiles" in self.pzpdf_info) and ("pzquantiles" in self.columns)
         raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
 
     def get_pzpdfs(self):
@@ -269,7 +269,7 @@ class GCData(APtable):
                 qp.quant,
                 data={
                     "quants": np.array(self.pzpdf_info["quantiles"]),
-                    "locs": self["pzpdf"],
+                    "locs": self["pzquantiles"],
                 },
             )
             pzpdf = qp_ensemble.pdf(pzbins)

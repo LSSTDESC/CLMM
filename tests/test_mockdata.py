@@ -122,7 +122,7 @@ def test_mock_data():
                     assert "pzpdf" in cat.colnames
                 elif kwargs.get("pzpdf_type", "shared_bins") == "quantiles":
                     assert "quantiles" in cat.pzpdf_info
-                    assert "pzpdf" in cat.colnames
+                    assert "pzquantiles" in cat.colnames
                 elif kwargs.get("pzpdf_type", "shared_bins") is None:
                     assert "zbins" not in cat.pzpdf_info
                     assert "pzbins" not in cat.colnames

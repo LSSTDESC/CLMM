@@ -148,7 +148,7 @@ def test_pzfuncs():
     gcdata.pzpdf_info["type"] = "quantiles"
     assert not gcdata.has_pzpdfs()
     gcdata.pzpdf_info["quantiles"] = (0.16, 0.5, 0.84)
-    gcdata["pzpdf"] = [[0.1, 0.2, 0.3]] * ngals
+    gcdata["pzquantiles"] = [[0.1, 0.2, 0.3]] * ngals
     assert gcdata.has_pzpdfs()
     assert isinstance(gcdata._str_pzpdf_info(), str)
     assert isinstance(gcdata.__str__(), str)

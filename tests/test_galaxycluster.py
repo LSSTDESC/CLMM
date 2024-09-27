@@ -328,7 +328,7 @@ def test_integrity_of_probfuncs():
     del cluster.galcat["pzpdf"]
     cluster.galcat.pzpdf_info["type"] = "quantiles"
     cluster.galcat.pzpdf_info["quantiles"] = (0.005, 0.025, 0.16, 0.5, 0.84, 0.975, 0.995)
-    cluster.galcat["pzpdf"] = cluster.galcat["z"][:, None] + (np.arange(7) - 3) * 0.01 * (
+    cluster.galcat["pzquantiles"] = cluster.galcat["z"][:, None] + (np.arange(7) - 3) * 0.01 * (
         1 + cluster.galcat["z"][:, None]
     )
     cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
