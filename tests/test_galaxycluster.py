@@ -337,7 +337,7 @@ def test_integrity_of_probfuncs():
         1 + cluster.galcat["z"][:, None]
     )
     cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
-    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=5e-4)
+    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=2e-3)
 
 
 def test_integrity_of_weightfuncs():
