@@ -39,11 +39,6 @@ jobs:
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         pip install --no-use-pep517 .
-    - name: Install qp from source
-      run: |
-        git clone https://github.com/LSSTDESC/qp
-        cd qp
-        pip install .
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
