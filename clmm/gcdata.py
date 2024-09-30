@@ -91,7 +91,7 @@ class GCData(APtable):
             elif out == "quantiles":
                 np.set_printoptions(formatter={'float': "{0:g}".format}, edgeitems=3, threshold=6)
                 out += " " + str(self.pzpdf_info["quantiles"])
-                out += " - upacked with zgrid : " + str(
+                out += " - unpacked with zgrid : " + str(
                     self.pzpdf_info["unpack_quantile_zbins_limits"]
                 )
         return out
