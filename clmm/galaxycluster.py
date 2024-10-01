@@ -40,7 +40,7 @@ class GalaxyCluster:
     coordinate_system : str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        If not set, defaults to 'euclidean'.
     validate_input: bool
         Validade each input argument
     """
@@ -64,7 +64,7 @@ class GalaxyCluster:
         dec: float,
         z: float,
         galcat: GCData,
-        coordinate_system: str = "euclidean",
+        coordinate_system: str = "",
     ):
         """Add values for all attributes"""
         self.unique_id = unique_id
@@ -72,7 +72,14 @@ class GalaxyCluster:
         self.dec = dec
         self.z = z
         self.galcat = galcat
-        self.coordinate_system = coordinate_system
+
+        if coordinate_system == "":
+            warnings.warn(
+                "The coordinate_system argument was not provided. Defaulting to 'euclidean'."
+            )
+            self.coordinate_system = "euclidean"
+        else:
+            self.coordinate_system = coordinate_system
 
     def _check_types(self):
         """Check types of all attributes"""

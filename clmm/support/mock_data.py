@@ -40,7 +40,7 @@ def generate_galaxy_catalog(
     ngal_density=None,
     pz_bins=101,
     pzpdf_type="shared_bins",
-    coordinate_system="euclidean",
+    coordinate_system=None,
     validate_input=True,
 ):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -162,7 +162,7 @@ def generate_galaxy_catalog(
     coordinate_system : str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        If not set, defaults to 'euclidean'.
 
     validate_input: bool
         Validade each input argument
@@ -179,6 +179,10 @@ def generate_galaxy_catalog(
     # pylint: disable=too-many-arguments
     # Too many local variables (25/15)
     # pylint: disable=R0914
+
+    if coordinate_system is None:
+        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        coordinate_system = "euclidean"
 
     if validate_input:
         validate_argument(locals(), "cluster_m", float, argmin=0, eqmin=True)

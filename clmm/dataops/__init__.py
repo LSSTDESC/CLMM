@@ -31,7 +31,7 @@ def compute_tangential_and_cross_components(
     dec_source,
     shear1,
     shear2,
-    coordinate_system="euclidean",
+    coordinate_system=None,
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
@@ -101,7 +101,7 @@ def compute_tangential_and_cross_components(
     coordinate_system: str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        If not set, defaults to 'euclidean'.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
@@ -126,6 +126,10 @@ def compute_tangential_and_cross_components(
     # pylint: disable-msg=too-many-locals
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
+    if coordinate_system is None:
+        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        coordinate_system = "euclidean"
+
     if validate_input:
         _validate_ra(locals(), "ra_source", True)
         _validate_dec(locals(), "dec_source", True)
