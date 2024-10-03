@@ -242,6 +242,6 @@ def _validate_coordinate_system(loc, coordinate_system, valid_type):
             * 'int_array' - interger, interger array
             * 'float_array' - float, float array
     """
-    validate_argument(loc, coordinate_system, valid_type)
-    if loc[coordinate_system] not in ["celestial", "euclidean"]:
+    validate_argument(loc, "coordinate_system", valid_type)
+    if loc["coordinate_system"] not in ["celestial", "euclidean"]:
         raise ValueError(f"{coordinate_system} must be 'celestial' or 'euclidean'.")
