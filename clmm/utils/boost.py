@@ -2,8 +2,8 @@
 import numpy as np
 
 
-def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
-    """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding
+def compute_nfw_boost(rvals, rscale, boost_norm):
+    """Given a list of `rvals`, and optional `rscale` and `boost0`, returns the corresponding
     boost factor at each rval
 
     Parameters
@@ -11,14 +11,14 @@ def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
     rvals : array_like
         Radii
     rscale : float, optional
-        scale radius for NFW in same units as rvals (default 2000 kpc)
-    boost0 : float, optional
-        Boost factor at each value of rvals
+        scale radius in same units as rvals
+    boost_norm : float, optional
+        Boost factor normalisation
 
     Returns
     -------
     array
-        Boost factor
+        Boost factor at each value of rvals
     """
 
     r_norm = np.array(rvals) / rscale
@@ -39,7 +39,7 @@ def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
     return 1.0 + boost0 * (1 - _calc_finternal(r_norm)) / (r_norm**2 - 1)
 
 
-def compute_powerlaw_boost(rvals, rscale=1000, boost0=0.1, alpha=-1.0):
+def compute_powerlaw_boost(rvals, rscale, boost_norm, slope):
     """Given a list of `rvals`, and optional `rscale` and `boost0`, and `alpha`,
     return the corresponding boost factor at each `rval`
 
@@ -47,22 +47,22 @@ def compute_powerlaw_boost(rvals, rscale=1000, boost0=0.1, alpha=-1.0):
     ----------
     rvals : array_like
         Radii
-    rscale : float, optional
-        Scale radius for NFW in same units as rvals (default 2000 kpc)
-    boost0 : float, optional
-        Boost factor at each value of rvals
-    alpha : float, optional
-        Exponent from Melchior+16. Default: -1.0
+    rscale : float
+        Scale radius in same units as rvals
+    boost_norm : float
+        Boost factor normalisation
+    slope : float
+        Exponent for the power-law parametrisation. NB: Melchior+16 uses -1.0
 
     Returns
     -------
     array
-        Boost factor
+        Boost factor at each value of rvals
     """
 
     r_norm = np.array(rvals) / rscale
 
-    return 1.0 + boost0 * (r_norm) ** alpha
+    return 1.0 + boost0 * (r_norm) ** slope
 
 
 boost_models = {
