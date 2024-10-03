@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+
 import numpy as np
 
 
@@ -54,8 +55,8 @@ def compute_nfw_boost(rvals, rscale, boost0=0.1):
 
 
 def compute_powerlaw_boost(rvals, rscale, boost0=0.1, alpha=-1):
-    r"""Computes the boost factor at radii rvals using a power-law parametric form 
-    
+    r"""Computes the boost factor at radii rvals using a power-law parametric form
+
     .. math::
         B(R) = 1 + B_0 \left(\frac{R}{R_s}\right)^\alpha
 
@@ -87,35 +88,35 @@ boost_models = {
 }
 
 
-def correct_sigma_with_boost_values(sigma_vals, boost_factors):
-    """Given a list of boost values and sigma profile, compute corrected sigma
+def correct_with_boost_values(profile_vals, boost_factors):
+    """Given a list of profile (shear or DeltaSigma) values and boost values, compute corrected profile
 
     Parameters
     ----------
-    sigma_vals : array_like
-        uncorrected sigma with cluster member dilution
+    profile_vals : array_like
+        Uncorrected profile values
     boost_factors : array_like
-        Boost values pre-computed
+        Boost values, pre-computed
 
     Returns
     -------
-    sigma_corrected : numpy.ndarray
-        correted radial profile
+    profile_vals_corrected : numpy.ndarray
+        Corrected radial profile
     """
 
-    sigma_corrected = np.array(sigma_vals) / np.array(boost_factors)
-    return sigma_corrected
+    profile_vals_corrected = np.array(profile_vals) / np.array(boost_factors)
+    return profile_vals_corrected
 
 
-def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale, **boost_model_kw):
+def correct_with_boost_model(rvals, profile_vals, boost_model, boost_rscale, **boost_model_kw):
     """Given a boost model and sigma profile, compute corrected sigma
 
     Parameters
     ----------
     rvals : array_like
-        radii
-    sigma_vals : array_like
-        uncorrected sigma with cluster member dilution
+        Radii
+    profile_vals : array_like
+        Uncorrected profile values
     boost_model : str, optional
         Boost model to use for correcting sigma
 
@@ -124,14 +125,14 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale,
 
     Returns
     -------
-    sigma_corrected : numpy.ndarray
-        correted radial profile
+    profile_vals_corrected : numpy.ndarray
+        Correted radial profile
     """
     boost_model_func = boost_models[boost_model]
     boost_factors = boost_model_func(rvals, boost_rscale, **boost_model_kw)
 
-    sigma_corrected = np.array(sigma_vals) / boost_factors
-    return sigma_corrected
+    profile_vals_corrected = np.array(profile_vals) / boost_factors
+    return profile_vals_corrected
 
 
 boost_models = {

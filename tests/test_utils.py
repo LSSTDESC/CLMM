@@ -62,7 +62,7 @@ def test_compute_powerlaw_boost():
     assert_allclose(boost_factors, test_boost_factors)
 
 
-def test_correct_sigma_with_boost_values():
+def test_correct_with_boost_values():
     """ """
     # Make test data
     rvals = np.arange(1, 11)
@@ -70,11 +70,11 @@ def test_correct_sigma_with_boost_values():
 
     test_unit_boost_factors = np.ones(rvals.shape).tolist()
 
-    corrected_sigma = utils.correct_sigma_with_boost_values(sigma_vals, test_unit_boost_factors)
+    corrected_sigma = utils.correct_with_boost_values(sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, corrected_sigma)
 
 
-def test_correct_sigma_with_boost_model():
+def test_correct_with_boost_model():
     """ """
     # Make test data
     rvals = np.arange(1, 11).tolist()
@@ -85,12 +85,14 @@ def test_correct_sigma_with_boost_model():
         # Check for no nans or inf with positive-definite rvals and sigma vals
         assert np.all(
             np.isfinite(
-                utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale)
+                utils.correct_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale)
             )
         )
 
     # Test requesting unsupported boost model
-    assert_raises(KeyError, utils.correct_sigma_with_boost_model, rvals, sigma_vals, "glue", boost_rscale)
+    assert_raises(
+        KeyError, utils.correct_with_boost_model, rvals, sigma_vals, "glue", boost_rscale
+    )
 
 
 def test_compute_radial_averages():
