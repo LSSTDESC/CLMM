@@ -89,7 +89,8 @@ boost_models = {
 
 
 def correct_with_boost_values(profile_vals, boost_factors):
-    """Given a list of profile (shear or DeltaSigma) values and boost values, compute corrected profile
+    """Given a list of profile values (e.g., shear or DeltaSigma) and boost values,
+    computes corrected profile
 
     Parameters
     ----------
