@@ -2,17 +2,31 @@
 import numpy as np
 
 
-def compute_nfw_boost(rvals, rscale, boost_norm):
-    """Given a list of `rvals`, and optional `rscale` and `boost0`, returns the corresponding
-    boost factor at each rval
+def compute_nfw_boost(rvals, rscale, boost0=0.1):
+    r"""Computes the boost factor at radii rvals using a parametric form 
+    following that of the analytical NFW excess surface density.
+
+    Setting :math:`x = R/R_s` 
+
+    .. math::
+        B(x) = 1 + B_0\frac{1-F(x)}{(x)^2 -1}
+
+    where
+
+    .. math::
+        F(x) = \begin{cases} \frac{\arctan \sqrt{x^2 -1 }}{\sqrt{x^2 -1 }} & \text{if $x>1$}, \\
+        \text{1} & \text{if x = 1}, \\
+        \frac{\text{arctanh} \sqrt{1-x^2 }}{\sqrt{1- x^2 }} & \text{if $x<1$}.
+        \end{cases}
+
 
     Parameters
     ----------
     rvals : array_like
         Radii
-    rscale : float, optional
-        scale radius in same units as rvals
-    boost_norm : float, optional
+    rscale : float
+        Scale radius in same units as rvals
+    boost0: float, optional
         Boost factor normalisation
 
     Returns
@@ -39,9 +53,11 @@ def compute_nfw_boost(rvals, rscale, boost_norm):
     return 1.0 + boost0 * (1 - _calc_finternal(r_norm)) / (r_norm**2 - 1)
 
 
-def compute_powerlaw_boost(rvals, rscale, boost_norm, slope):
-    """Given a list of `rvals`, and optional `rscale` and `boost0`, and `alpha`,
-    return the corresponding boost factor at each `rval`
+def compute_powerlaw_boost(rvals, rscale, boost0=0.1, alpha=-1):
+    r"""Computes the boost factor at radii rvals using a power-law parametric form 
+    
+    .. math::
+        B(R) = 1 + B_0 \left(\frac{R}{R_s}\right)^\alpha
 
     Parameters
     ----------
@@ -49,10 +65,10 @@ def compute_powerlaw_boost(rvals, rscale, boost_norm, slope):
         Radii
     rscale : float
         Scale radius in same units as rvals
-    boost_norm : float
+    boost0 : float, optional
         Boost factor normalisation
-    slope : float
-        Exponent for the power-law parametrisation. NB: Melchior+16 uses -1.0
+    alpha : float, optional
+        Exponent for the power-law parametrisation. NB: -1.0 (as in Melchior+16)
 
     Returns
     -------
@@ -62,7 +78,7 @@ def compute_powerlaw_boost(rvals, rscale, boost_norm, slope):
 
     r_norm = np.array(rvals) / rscale
 
-    return 1.0 + boost0 * (r_norm) ** slope
+    return 1.0 + boost0 * (r_norm) ** alpha
 
 
 boost_models = {
@@ -91,7 +107,7 @@ def correct_sigma_with_boost_values(sigma_vals, boost_factors):
     return sigma_corrected
 
 
-def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model="nfw_boost", **boost_model_kw):
+def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale, **boost_model_kw):
     """Given a boost model and sigma profile, compute corrected sigma
 
     Parameters
@@ -112,7 +128,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model="nfw_boost", *
         correted radial profile
     """
     boost_model_func = boost_models[boost_model]
-    boost_factors = boost_model_func(rvals, **boost_model_kw)
+    boost_factors = boost_model_func(rvals, boost_rscale, **boost_model_kw)
 
     sigma_corrected = np.array(sigma_vals) / boost_factors
     return sigma_corrected
