@@ -167,7 +167,7 @@ class GCData(APtable):
         key: str
             Name of key to compare and update.
         gcdata: GCData
-            Table to check if same cosmology.
+            Table to check if same cosmology and ensemble bins.
         ext_value:
             Value to be compared to.
         overwrite: bool
