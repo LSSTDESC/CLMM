@@ -184,13 +184,12 @@ def test_update_coordinate_system():
     gcdata["ex"] = ex
     assert_raises(ValueError, gcdata.meta.__setitem__, "coordinate_system", "euclidean")
 
-    #raise error if column is not present
+    # raise error if column is not present
     gcdata = GCData(meta={"coordinate_system": "euclidean"})
     gcdata["e1"] = e1
     gcdata["e2"] = e2
     gcdata["ex"] = ex
     assert_raises(ValueError, gcdata.update_coordinate_system, "celestial", "et")
-
 
     # update coordinate system with bogus system
     gcdata = GCData(meta={"coordinate_system": "celestial"})

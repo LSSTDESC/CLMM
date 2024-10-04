@@ -5,13 +5,13 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
-from .utils import _validate_coordinate_system
-
 import numpy as np
+from .utils import _validate_coordinate_system
 
 
 class GCMetaData(OrderedDict):
-    r"""Object to store metadata, it always has a cosmo and coordinate_system keys with protective changes
+    r"""Object to store metadata, it always has a cosmo and coordinate_system keys with protective
+    changes
 
     Attributes
     ----------
@@ -30,7 +30,7 @@ class GCMetaData(OrderedDict):
             raise ValueError(
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
             )
-        elif item == "coordinate_system" and self.get("coordinate_system"):
+        if item == "coordinate_system" and self.get("coordinate_system"):
             raise ValueError(
                 "coordinate_system must be changed via update_coordinate_system method"
             )

@@ -83,7 +83,7 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=-0.3,
         galcat=GCData(),
-    )        
+    )
 
     # Test that inputs are the correct type
     assert_raises(
