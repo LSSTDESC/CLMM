@@ -241,6 +241,7 @@ def _validate_coordinate_system(loc, argname):
     if loc[argname] not in ["celestial", "euclidean"]:
         raise ValueError(f"{argname} must be 'celestial' or 'euclidean'.")
 
+
 class DiffArray:
     """Array where arr1==arr2 is actually all(arr1==arr)"""
 
