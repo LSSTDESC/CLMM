@@ -2,6 +2,9 @@
 
 import warnings
 import numpy as np
+
+from scipy.special import erfc
+
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
@@ -39,6 +42,7 @@ def generate_galaxy_catalog(
     ngals=None,
     ngal_density=None,
     pz_bins=101,
+    pz_quantiles_conf=(5, 31),
     pzpdf_type="shared_bins",
     coordinate_system="euclidean",
     validate_input=True,
@@ -145,12 +149,16 @@ def generate_galaxy_catalog(
     pz_bins: int, array
         Photo-z pdf bins in the given range. If int, the limits are set automatically.
         If is array, must be the bin edges.
+    pz_quantiles_conf: tuple
+        Configuration for quantiles when `pzpdf_type='quantiles'`. Must be with the format
+        `(max_sigma_dev, num_points)`, which is used as
+        `sigma_steps = np.linspace(-max_sigma_dev, max_sigma_dev, num_points)`
     pzpdf_type: str, None
         Type of photo-z pdf to be stored, options are:
             `None` - does not store PDFs;
             `'shared_bins'` - single binning for all galaxies
             `'individual_bins'` - individual binning for each galaxy
-            `'quantiles'` - quantiles of PDF (not implemented yet)
+            `'quantiles'` - quantiles of PDF
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
     ngals : float, optional
@@ -238,6 +246,7 @@ def generate_galaxy_catalog(
         "mean_e_err": mean_e_err,
         "photoz_sigma_unscaled": photoz_sigma_unscaled,
         "pz_bins": pz_bins,
+        "pz_quantiles_conf": pz_quantiles_conf,
         "field_size": field_size,
         "pzpdf_type": pzpdf_type,
         "coordinate_system": coordinate_system,
@@ -370,6 +379,7 @@ def _generate_galaxy_catalog(
     mean_e_err=None,
     photoz_sigma_unscaled=None,
     pz_bins=101,
+    pz_quantiles_conf=(5, 31),
     pzpdf_type="shared_bins",
     coordinate_system="euclidean",
     field_size=None,
@@ -389,7 +399,10 @@ def _generate_galaxy_catalog(
     if photoz_sigma_unscaled is not None:
         galaxy_catalog.pzpdf_info["type"] = pzpdf_type
         galaxy_catalog = _compute_photoz_pdfs(
-            galaxy_catalog, photoz_sigma_unscaled, pz_bins=pz_bins
+            galaxy_catalog,
+            photoz_sigma_unscaled,
+            pz_bins=pz_bins,
+            pz_quantiles_conf=pz_quantiles_conf,
         )
 
     # Draw galaxy positions
@@ -462,7 +475,10 @@ def _generate_galaxy_catalog(
     if all(c is not None for c in (photoz_sigma_unscaled, pzpdf_type)):
         if galaxy_catalog.pzpdf_info["type"] == "individual_bins":
             cols += ["pzbins"]
-        cols += ["pzpdf"]
+        if galaxy_catalog.pzpdf_info["type"] == "quantiles":
+            cols += ["pzquantiles"]
+        else:
+            cols += ["pzpdf"]
 
     if coordinate_system == "celestial":
         galaxy_catalog["e2"] *= -1  # flip e2 to match the celestial coordinate system
@@ -529,7 +545,9 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     return GCData([zsrc_list, zsrc_list], names=("ztrue", "z"))
 
 
-def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
+def _compute_photoz_pdfs(
+    galaxy_catalog, photoz_sigma_unscaled, pz_bins=101, pz_quantiles_conf=(5, 31)
+):
     """Private function to add photo-z errors and PDFs to the mock catalog.
 
     Parameters
@@ -582,7 +600,11 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
             gaussian(row["pzbins"], row["z"], row["pzsigma"]) for row in galaxy_catalog
         ]
     elif galaxy_catalog.pzpdf_info["type"] == "quantiles":
-        raise NotImplementedError("PDF storing in quantiles not implemented.")
+        sigma_steps = np.linspace(-pz_quantiles_conf[0], pz_quantiles_conf[0], pz_quantiles_conf[1])
+        galaxy_catalog.pzpdf_info["quantiles"] = 0.5 * erfc(-sigma_steps / np.sqrt(2))
+        galaxy_catalog["pzquantiles"] = (
+            galaxy_catalog["z"][:, None] + sigma_steps * galaxy_catalog["pzsigma"][:, None]
+        )
     else:
         raise ValueError(
             "Value of pzpdf_info['type'] " f"(={galaxy_catalog.pzpdf_info['type']}) " "not valid."

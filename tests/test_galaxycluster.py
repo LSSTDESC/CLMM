@@ -3,11 +3,15 @@ Tests for datatype and galaxycluster
 """
 
 import os
+
 import numpy as np
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_warns
+
+from scipy.stats import multivariate_normal
+from scipy.special import erfc
+
 import clmm
 from clmm import GCData
-from scipy.stats import multivariate_normal
 
 TOLERANCE = {"rtol": 1.0e-7, "atol": 1.0e-7}
 
@@ -313,7 +317,7 @@ def test_integrity_of_probfuncs():
     expected = np.array([1.0, 1.0, 1.0])
     assert_allclose(cluster.galcat["p_bkg_true"], expected, **TOLERANCE)
 
-    # photoz + deltasigma
+    # photoz
     assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
     pzbins = np.linspace(0.0001, 5, 1000)
     cluster.galcat.pzpdf_info["zbins"] = pzbins
@@ -323,6 +327,17 @@ def test_integrity_of_probfuncs():
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
         assert_allclose(cluster.galcat["p_bkg_pz"], expected, **TOLERANCE)
+
+    # quantiles photoz
+    del cluster.galcat["pzpdf"]
+    cluster.galcat.pzpdf_info["type"] = "quantiles"
+    sigma_steps = np.linspace(-5, 5, 31)
+    cluster.galcat.pzpdf_info["quantiles"] = 0.5 * erfc(-sigma_steps / np.sqrt(2))
+    cluster.galcat["pzquantiles"] = cluster.galcat["z"][:, None] + sigma_steps * 0.01 * (
+        1 + cluster.galcat["z"][:, None]
+    )
+    cluster.compute_background_probability(use_pdz=True, p_background_name="p_bkg_pz")
+    assert_allclose(cluster.galcat["p_bkg_pz"], expected, rtol=2e-3)
 
 
 def test_integrity_of_weightfuncs():
