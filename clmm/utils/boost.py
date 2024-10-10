@@ -49,9 +49,11 @@ def compute_nfw_boost(r_proj, r_scale, boost0=0.1):
             / (2 * np.lib.scimath.sqrt(radicand))
         )
 
-        return np.nan_to_num(finternal, copy=False, nan=1.0).real
+        return np.nan_to_num((1 - finternal) / radicand, copy=False, nan=1.0 / 3.0).real
+        # return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
-    return 1.0 + boost0 * (1 - _calc_finternal(r_norm)) / (r_norm**2 - 1)
+    return 1.0 + boost0 * _calc_finternal(r_norm)
+    # return 1.0 + boost0 * (1 - _calc_finternal(r_norm)) / (r_norm**2 - 1)
 
 
 def compute_powerlaw_boost(r_proj, r_scale, boost0=0.1, alpha=-1):
