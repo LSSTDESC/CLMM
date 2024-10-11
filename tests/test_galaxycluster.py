@@ -462,55 +462,70 @@ def test_plot_profiles():
     cluster.plot_profiles(cross_component_error="made_up_component")
 
 
-# def test_coordinate_system():
-#     """test coordinate system"""
-#     # Input values
-#     ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
-#     ra_source = [120.1, 119.9]
-#     dec_source = [41.9, 42.2]
-#     z_src = [1.0, 2.0]
-#     shear1 = [0.2, 0.4]
-#     shear2_euclidean = [0.3, 0.5]
-#     shear2_celestial = [-0.3, -0.5]
-#     # Set up radial values
-#     bins_radians = [0.002, 0.003, 0.004]
-#     bin_units = "radians"
-#     # create cluster
-#     cl_euclidean = clmm.GalaxyCluster(
-#         unique_id="test",
-#         ra=ra_lens,
-#         dec=dec_lens,
-#         z=z_lens,
-#         galcat=GCData(
-#             [ra_source, dec_source, shear1, shear2_euclidean, z_src],
-#             names=("ra", "dec", "e1", "e2", "z"),
-#         ),
-#         coordinate_system="euclidean",
-#     )
-#     cl_celestial = clmm.GalaxyCluster(
-#         unique_id="test",
-#         ra=ra_lens,
-#         dec=dec_lens,
-#         z=z_lens,
-#         galcat=GCData(
-#             [ra_source, dec_source, shear1, shear2_celestial, z_src],
-#             names=("ra", "dec", "e1", "e2", "z"),
-#         ),
-#         coordinate_system="celestial",
-#     )
+def test_coordinate_system():
+    """test coordinate system"""
+    # Input values
+    ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    ra_source = [120.1, 119.9]
+    dec_source = [41.9, 42.2]
+    z_src = [1.0, 2.0]
+    shear1 = [0.2, 0.4]
+    shear2_euclidean = [0.3, 0.5]
+    shear2_celestial = [-0.3, -0.5]
 
-#     cl_euclidean.compute_tangential_and_cross_components()
-#     cl_celestial.compute_tangential_and_cross_components()
+    # create cluster
+    cl_euclidean = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_euclidean, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
+            meta={"coordinate_system": "euclidean"},
+        ),
+    )
+    cl_celestial = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2_celestial, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
+            meta={"coordinate_system": "celestial"},
+        ),
+    )
 
-#     assert_allclose(
-#         cl_euclidean.galcat["et"],
-#         cl_celestial.galcat["et"],
-#         **TOLERANCE,
-#         err_msg="Tangential component conversion between ellipticity coordinate systems failed",
-#     )
-#     assert_allclose(
-#         cl_euclidean.galcat["ex"],
-#         -cl_celestial.galcat["ex"],
-#         **TOLERANCE,
-#         err_msg="Cross component conversion between ellipticity coordinate systems failed",
-#     )
+    cl_euclidean.compute_tangential_and_cross_components()
+    cl_celestial.compute_tangential_and_cross_components()
+
+    # assert tangential and cross components are computed consistently
+    assert_allclose(
+        cl_euclidean.galcat["et"],
+        cl_celestial.galcat["et"],
+        **TOLERANCE,
+        err_msg="Tangential component computation different between coordinate systems",
+    )
+    assert_allclose(
+        cl_euclidean.galcat["ex"],
+        -cl_celestial.galcat["ex"],
+        **TOLERANCE,
+        err_msg="Cross component computation different between coordinate systems",
+    )
+
+    cl_euclidean.update_coordinate_system("celestial", "e2", "ex")
+
+    # assert components are updated correctly
+    assert_allclose(
+        cl_euclidean.galcat["e2"],
+        cl_celestial.galcat["e2"],
+        **TOLERANCE,
+        err_msg="e2 column update failed",
+    )
+    assert_allclose(
+        cl_euclidean.galcat["ex"],
+        cl_celestial.galcat["ex"],
+        **TOLERANCE,
+        err_msg="ex column update failed",
+    )

@@ -246,7 +246,6 @@ class GCData(APtable):
         """
         in_coordinate_system = self.meta["coordinate_system"]
         self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
-        print(args)
         if coordinate_system != in_coordinate_system:
             for col in args:
                 if col in self.colnames:
