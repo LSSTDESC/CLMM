@@ -1,16 +1,18 @@
 """
 Define the custom data type
 """
+
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
-import numpy as np
-
 import qp
+import numpy as np
+from .utils import _validate_coordinate_system
 
 
 class GCMetaData(OrderedDict):
-    r"""Object to store metadata, it always has a cosmo key with protective changes
+    r"""Object to store metadata, it always has a cosmo and coordinate_system keys with protective
+    changes
 
     Attributes
     ----------
@@ -29,6 +31,10 @@ class GCMetaData(OrderedDict):
             raise ValueError(
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
             )
+        if item == "coordinate_system" and self.get("coordinate_system"):
+            raise ValueError(
+                "coordinate_system must be changed via update_coordinate_system method"
+            )
         OrderedDict.__setitem__(self, item, value)
 
     def __getitem__(self, item):
@@ -43,7 +49,7 @@ class GCMetaData(OrderedDict):
 
 class GCData(APtable):
     """
-    GCData: A data objetc for gcdata. Right now it behaves as an astropy table, with the following
+    GCData: A data object for gcdata. Right now it behaves as an astropy table, with the following
     modifications: `__getitem__` is case independent;
     The attribute .meta['cosmo'] is protected and
     can only be changed via update_cosmo or update_cosmo_ext_valid methods;
@@ -65,6 +71,16 @@ class GCData(APtable):
         APtable.__init__(self, *args, **kwargs)
         metakwargs = kwargs["meta"] if "meta" in kwargs else {}
         metakwargs = {} if metakwargs is None else metakwargs
+        if (
+            "coordinate_system" not in metakwargs
+            and "copy_indices" not in kwargs
+            and "masked" not in kwargs
+            and "copy" not in kwargs
+        ):
+            warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
+            metakwargs["coordinate_system"] = "euclidean"
+        if "coordinate_system" in metakwargs:
+            _validate_coordinate_system(metakwargs, "coordinate_system")
         self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
         self.pzpdf_info = {
@@ -89,7 +105,7 @@ class GCData(APtable):
                 out += " " + str(np.round(self.pzpdf_info.get("zbins"), 2))
                 np.set_printoptions(**default_cfg)
             elif out == "quantiles":
-                np.set_printoptions(formatter={'float': "{0:g}".format}, edgeitems=3, threshold=6)
+                np.set_printoptions(formatter={"float": "{0:g}".format}, edgeitems=3, threshold=6)
                 out += " " + str(self.pzpdf_info["quantiles"])
                 out += " - unpacked with zgrid : " + str(
                     self.pzpdf_info["unpack_quantile_zbins_limits"]
@@ -171,6 +187,8 @@ class GCData(APtable):
         -------
         None
         """
+        if key == "coordinate_system":
+            _validate_coordinate_system(locals(), "ext_value")
         if ext_value:
             in_value = gcdata.meta[key]
             if in_value and in_value != ext_value:
@@ -220,6 +238,30 @@ class GCData(APtable):
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+
+    def update_coordinate_system(self, coordinate_system, *args):
+        r"""Updates coordinate_system metadata and converts ellipticity
+
+        Parameters
+        ----------
+        coordinate_system : str
+            Coordinate system of the ellipticity components. Must be either 'celestial' or
+            euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        *args : tuple
+            Components to be converted, must be in data.
+
+        Returns
+        -------
+        None
+        """
+        in_coordinate_system = self.meta["coordinate_system"]
+        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
+        if coordinate_system != in_coordinate_system:
+            for col in args:
+                if col in self.colnames:
+                    self[col] = -self[col]
+                else:
+                    raise ValueError(f"component {col} not found in data")
 
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies

@@ -1,4 +1,5 @@
 """Data operation for polar/azimuthal averages in radial bins and weights"""
+
 import warnings
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -25,7 +26,7 @@ def compute_tangential_and_cross_components(
     dec_source,
     shear1,
     shear2,
-    coordinate_system="euclidean",
+    coordinate_system=None,
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
@@ -95,7 +96,7 @@ def compute_tangential_and_cross_components(
     coordinate_system: str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        If not set, defaults to 'euclidean'.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
@@ -120,6 +121,10 @@ def compute_tangential_and_cross_components(
     # pylint: disable-msg=too-many-locals
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
+    if coordinate_system is None:
+        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        coordinate_system = "euclidean"
+
     if validate_input:
         _validate_ra(locals(), "ra_source", True)
         _validate_dec(locals(), "dec_source", True)
@@ -129,7 +134,7 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)
         validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
-        _validate_coordinate_system(locals(), "coordinate_system", str)
+        _validate_coordinate_system(locals(), "coordinate_system")
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
             names=("Ra", "Dec", "Shear1", "Shear2"),
@@ -482,6 +487,7 @@ def make_radial_profile(
     z_lens=None,
     validate_input=True,
     weights=None,
+    coordinate_system=None,
 ):
     r"""Compute the angular profile of given components
 
@@ -535,6 +541,10 @@ def make_radial_profile(
     weights: array-like, optional
         Array of individual galaxy weights. If specified, the radial binned profile is
         computed using a weighted average
+    coordinate_system: str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
 
     Returns
     -------
@@ -553,6 +563,9 @@ def make_radial_profile(
     module.
     """
     # pylint: disable-msg=too-many-locals
+    if not coordinate_system:
+        warnings.warn("coordinate_system not set, defaulting to 'euclidean'.")
+        coordinate_system = "euclidean"
     if validate_input:
         validate_argument(locals(), "angsep", "float_array")
         validate_argument(locals(), "angsep_units", str)
@@ -564,6 +577,7 @@ def make_radial_profile(
         arguments_consistency(components, names=comp_dict.keys(), prefix="Input components")
         for component in comp_dict:
             validate_argument(comp_dict, component, "float_array")
+        _validate_coordinate_system(locals(), "coordinate_system")
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(angsep, angsep_units, bin_units, redshift=z_lens, cosmo=cosmo)
@@ -576,7 +590,7 @@ def make_radial_profile(
     profile_table = GCData(
         [bins[:-1], np.zeros(len(bins) - 1), bins[1:]],
         names=("radius_min", "radius", "radius_max"),
-        meta={"bin_units": bin_units},  # Add metadata
+        meta={"bin_units": bin_units, "coordinate_system": coordinate_system},  # Add metadata
     )
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
