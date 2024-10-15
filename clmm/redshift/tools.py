@@ -2,10 +2,11 @@
 import warnings
 import numpy as np
 from scipy.integrate import simpson
-from scipy.interpolate import interp1d
+
+import qp
 
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -30,30 +31,31 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=
     -------
     numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
-
-    Notes
-    -----
-        Will be replaced by qp at some point.
     """
-    # adding these lines to interpolate CLMM redshift grid for each galaxies
-    # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
-    # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
 
-    if hasattr(pzbins[0], "__len__"):
-        # First need to interpolate on a fixed grid
-        z_grid = np.linspace(zmin, zmax, ngrid)
-        pdf_interp_list = [
-            interp1d(pzbin, pdf, bounds_error=False, fill_value=0.0)
-            for pzbin, pdf in zip(pzbins, pzpdf)
-        ]
-        pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
-        kernel_matrix = kernel(z_grid)
+    if len(np.array(pzbins).shape) > 1:
+        # Each galaxy as a diiferent zbin
+        _qp_type = qp.interp_irregular
     else:
-        # OK perform the integration directly from the pdf binning common to all galaxies
-        mask = (pzbins >= zmin) * (pzbins <= zmax)
-        z_grid = pzbins[mask]
-        pz_matrix = np.array(pzpdf)[:, mask]
-        kernel_matrix = kernel(z_grid)
+        _qp_type = qp.interp
+
+    qp_ensemble = qp.Ensemble(
+        _qp_type,
+        data={
+            "xvals": np.array(pzbins),
+            "yvals": np.array(pzpdf),
+        },
+    )
+
+    if kernel is None:
+
+        def kernel(z):
+            # pylint: disable=unused-argument
+            return 1.0
+
+    z_grid = np.linspace(zmin, zmax, ngrid)
+    pz_matrix = qp_ensemble.pdf(z_grid)
+    kernel_matrix = kernel(z_grid)
 
     return simpson(pz_matrix * kernel_matrix, x=z_grid, axis=1)
 

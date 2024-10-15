@@ -66,18 +66,6 @@ def test_mock_data():
         photoz_sigma_unscaled=0.1,
         pzpdf_type="xxx",
     )
-    assert_raises(
-        NotImplementedError,
-        mock.generate_galaxy_catalog,
-        1e15,
-        0.3,
-        4,
-        cosmo,
-        0.8,
-        ngals=100,
-        photoz_sigma_unscaled=0.1,
-        pzpdf_type="quantiles",
-    )
 
     # Test pdz with bad arguments
     assert_raises(
@@ -110,6 +98,7 @@ def test_mock_data():
         {"pzpdf_type": None},
         {"pzpdf_type": "individual_bins"},
         {"pzpdf_type": "shared_bins"},
+        {"pzpdf_type": "quantiles"},
         {},
     ):
         for shapenoise in (None, 0.5):
@@ -129,9 +118,13 @@ def test_mock_data():
                 )
                 if kwargs.get("pzpdf_type", "shared_bins") == "shared_bins":
                     assert "zbins" in cat.pzpdf_info
+                    assert "pzpdf" in cat.colnames
                 elif kwargs.get("pzpdf_type", "shared_bins") == "individual_bins":
                     assert "pzbins" in cat.colnames
                     assert "pzpdf" in cat.colnames
+                elif kwargs.get("pzpdf_type", "shared_bins") == "quantiles":
+                    assert "quantiles" in cat.pzpdf_info
+                    assert "pzquantiles" in cat.colnames
                 elif kwargs.get("pzpdf_type", "shared_bins") is None:
                     assert "zbins" not in cat.pzpdf_info
                     assert "pzbins" not in cat.colnames
