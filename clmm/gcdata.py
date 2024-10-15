@@ -5,10 +5,9 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
+import qp
 import numpy as np
 from .utils import _validate_coordinate_system
-
-import qp
 
 
 class GCMetaData(OrderedDict):
@@ -106,7 +105,7 @@ class GCData(APtable):
                 out += " " + str(np.round(self.pzpdf_info.get("zbins"), 2))
                 np.set_printoptions(**default_cfg)
             elif out == "quantiles":
-                np.set_printoptions(formatter={'float': "{0:g}".format}, edgeitems=3, threshold=6)
+                np.set_printoptions(formatter={"float": "{0:g}".format}, edgeitems=3, threshold=6)
                 out += " " + str(self.pzpdf_info["quantiles"])
                 out += " - unpacked with zgrid : " + str(
                     self.pzpdf_info["unpack_quantile_zbins_limits"]
