@@ -122,6 +122,13 @@ def compute_surface_density(
 
     where :math:`\rho(r)` is the 3d density profile.
 
+    If the `r_mis` keyword is specified, this function computes the miscentered surface density instead as
+
+    .. math::
+        \Sigma_{\rm mis}(R, R_{\rm mis}) = \frac{1}{2\pi}\int_0^{2\pi} d\theta \, 
+        \Sigma\left(\sqrt{R^2 + R_{\rm mis}^2 - 2 R R_{\rm mis} \cos\theta} \right)\;, 
+        
+
     Parameters
     ----------
     r_proj : array_like
