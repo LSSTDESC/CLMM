@@ -341,6 +341,55 @@ def test_profiles(modeling_data, profile_init):
             cfg["numcosmo_profiles"]["DeltaSigma"],
             reltol,
         )
+        if mod.backend == "nc":
+            assert_allclose(
+                mod.eval_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True)[-40:],
+                cfg["numcosmo_profiles"]["Sigma"][-40:],
+                2.5e-2,
+            )
+            assert_allclose(
+                mod.eval_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True, use_backend=True)[-40:],
+                cfg["numcosmo_profiles"]["Sigma"][-40:],
+                2.5e-2,
+            )
+            assert_allclose(
+                mod.eval_mean_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True)[-40:],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                mod.eval_mean_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True, use_backend=True)[-40:],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                mod.eval_excess_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True)[-40:],
+                cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
+                2.5e-2
+            )
+            assert_allclose(
+                mod.eval_excess_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1,
+                    verbose=True, use_backend=False)[-40:],
+                cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
+                2.5e-2
+            )
+            assert_equal(
+                mod._integrand_surface_density_mis_nfw(0, 0.3, 0, 0.3),
+                1./3.)
+            assert_equal(
+                mod._integrand_surface_density_mis_hernquist(0, 0.3, 0, 0.3),
+                4./15.)
         if mod.backend == "ct":
             assert_raises(
                 ValueError, mod.eval_excess_surface_density, 1e-12, cfg["SIGMA_PARAMS"]["z_cl"]
@@ -376,6 +425,56 @@ def test_profiles(modeling_data, profile_init):
             cfg["numcosmo_profiles"]["DeltaSigma"],
             reltol,
         )
+
+        if mod.backend == "nc":
+            assert_allclose(
+                theo.compute_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1
+                )[-40:],
+                cfg["numcosmo_profiles"]["Sigma"][-40:],
+                2.5e-2,
+            )
+            assert_allclose(
+                theo.compute_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1, use_backend=True
+                )[-40:],
+                cfg["numcosmo_profiles"]["Sigma"][-40:],
+                2.5e-2,
+            )
+            assert_allclose(
+                theo.compute_mean_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1
+                )[-40:],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                theo.compute_mean_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1, use_backend=True
+                )[-40:],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                theo.compute_excess_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1
+                )[-40:],
+                cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
+                2.5e-2,
+            )
+            assert_allclose(
+                theo.compute_excess_surface_density(
+                    cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                    r_mis=0.1, use_backend=True
+                )[-40:],
+                cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
+                2.5e-2,
+            )
 
         # Test use_projected_quad
         if mod.backend == "ccl" and profile_init == "einasto":

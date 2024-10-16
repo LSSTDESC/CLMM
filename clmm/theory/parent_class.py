@@ -1,15 +1,16 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+
 # pylint: disable=too-many-lines
 import warnings
 
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simpson, quad
-from scipy.special import jv
+from scipy.integrate import simpson, quad, dblquad, tplquad
 from scipy.interpolate import splrep, splev
+from scipy.special import gamma, gammainc, jv
 
 from .generic import (
     compute_reduced_shear_from_convergence,
@@ -63,6 +64,7 @@ class CLMModeling:
     z_inf : float
         The value used as infinite redshift
     """
+
     # pylint: disable=too-many-instance-attributes
     # The disable below is added to avoid a pylint error where it thinks CLMMCosmlogy
     # has duplicates since both have many NotImplementedError functions
@@ -204,6 +206,177 @@ class CLMModeling:
     def _set_cosmo(self, cosmo):
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
+
+    def _miscentering_integrand_surface_density(self, use_backend):
+        integrand = None
+        if use_backend:
+            integrand = self._integrand_surface_density_mis
+        else:
+            if self.halo_profile_model == "nfw":
+                integrand = self._integrand_surface_density_mis_nfw
+            elif self.halo_profile_model == "einasto":
+                integrand = self._integrand_surface_density_mis_einasto
+            elif self.halo_profile_model == "hernquist":
+                integrand = self._integrand_surface_density_mis_hernquist
+        return integrand
+
+    def _miscentering_integrand_mean_surface_density(self, use_backend):
+        integrand = None
+        if use_backend:
+            integrand = self._integrand_mean_surface_density_mis
+        else:
+            if self.halo_profile_model == "nfw":
+                integrand = self._integrand_mean_surface_density_mis_nfw
+            elif self.halo_profile_model == "einasto":
+                integrand = self._integrand_mean_surface_density_mis_einasto
+            elif self.halo_profile_model == "hernquist":
+                integrand = self._integrand_mean_surface_density_mis_hernquist
+        return integrand
+
+    def _miscentering_params(self, z_cl, use_backend):
+        # pylint: disable=invalid-name
+        params = None
+        if use_backend:
+            params = 1, (z_cl,)
+
+        else:
+            c = self.cdelta
+            rho_def = self.cosmo.get_rho_m(z_cl)
+            r_s = self.eval_rdelta(z_cl) / c
+
+            if self.halo_profile_model == "nfw":
+                rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
+                params = 2 * r_s * rho_s, (r_s,)
+
+            elif self.halo_profile_model == "einasto":
+                alpha_ein = self._get_einasto_alpha(z_cl)
+                rho_s = (
+                    self.delta_mdef
+                    / 3.0
+                    * c**3.0
+                    * rho_def
+                    / (
+                        2.0 ** (-3.0 / alpha_ein)
+                        * alpha_ein ** (-1.0 + 3.0 / alpha_ein)
+                        * np.exp(2.0 / alpha_ein)
+                        * gamma(3.0 / alpha_ein)
+                        * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
+                    )
+                )
+                params = 2 * rho_s, (r_s, alpha_ein)
+
+            elif self.halo_profile_model == "hernquist":
+                rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / ((c / (1.0 + c)) ** 2.0) * 2
+                params = r_s * rho_s, (r_s,)
+
+        return params
+
+    def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
+        # pylint: disable=invalid-name
+        integrand = self._miscentering_integrand_surface_density(use_backend)
+        norm, aux_args = self._miscentering_params(z_cl, use_backend)
+
+        res = np.zeros_like(r_proj)
+
+        if self.halo_profile_model == "einasto" and not use_backend:
+            for i, r in enumerate(r_proj):
+                res[i] = dblquad(
+                    integrand, 0.0, np.pi, 0, np.inf, args=(r, r_mis, *aux_args), epsrel=1e-6
+                )[0]
+        else:
+            for i, r in enumerate(r_proj):
+                res[i] = quad(integrand, 0.0, np.pi, args=(r, r_mis, *aux_args), epsrel=1e-6)[0]
+
+        res *= norm / np.pi
+        return res
+
+    def _integrand_surface_density_mis(self, theta, r, r_mis, z_cl):
+        # pylint: disable=invalid-name
+        return self.eval_surface_density(
+            np.sqrt(r**2.0 + r_mis**2.0 - 2 * r * r_mis * np.cos(theta)), z_cl
+        )
+
+    def _integrand_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+
+        x2m1 = x**2.0 - 1.0
+        if x < 1:
+            sqrt_x2m1 = np.sqrt(-x2m1)
+            res = np.arcsinh(sqrt_x2m1 / x) / (-x2m1) ** (3.0 / 2.0) + 1.0 / x2m1
+        elif x > 1:
+            sqrt_x2m1 = np.sqrt(x2m1)
+            res = -np.arcsin(sqrt_x2m1 / x) / (x2m1) ** (3.0 / 2.0) + 1.0 / x2m1
+        else:
+            res = 1.0 / 3.0
+        return res
+
+    def _integrand_surface_density_mis_einasto(self, z, theta, r, r_mis, r_s, alpha_ein):
+        # pylint: disable=invalid-name
+
+        # Projected surface mass density element for numerical integration
+        x = np.sqrt(z**2.0 + r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+
+        return np.exp(-2.0 * (x**alpha_ein - 1.0) / alpha_ein)
+
+    def _integrand_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+
+        x2m1 = x**2.0 - 1.0
+        if x < 1:
+            sqrt_x2m1 = np.sqrt(-x2m1)
+            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsinh(sqrt_x2m1 / x) / (-x2m1) ** 2.5
+        elif x > 1:
+            sqrt_x2m1 = np.sqrt(x2m1)
+            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsin(sqrt_x2m1 / x) / (x2m1) ** 2.5
+        else:
+            res = 4.0 / 15.0
+        return res
+
+    def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
+        # pylint: disable=invalid-name
+        integrand = self._miscentering_integrand_mean_surface_density(use_backend)
+        norm, aux_args = self._miscentering_params(z_cl, use_backend)
+
+        res = np.zeros_like(r_proj)
+
+        if self.halo_profile_model == "einasto" and not use_backend:
+            for i, r in enumerate(r_proj):
+                r_lower = 0 if i == 0 else r_proj[i - 1]
+                res[i] = tplquad(
+                    integrand, r_lower, r, 0, np.pi, 0, np.inf, args=(r_mis, *aux_args), epsrel=1e-6
+                )[0]
+        else:
+            for i, r in enumerate(r_proj):
+                r_lower = 0 if i == 0 else r_proj[i - 1]
+                res[i] = dblquad(
+                    integrand, r_lower, r, 0, np.pi, args=(r_mis, *aux_args), epsrel=1e-6
+                )[0]
+
+        res = np.cumsum(res) * norm * 2 / np.pi / r_proj**2
+        return res
+
+    def _integrand_mean_surface_density_mis(self, theta, r, r_mis, z_cl):
+        # pylint: disable=invalid-name
+        return r * self._integrand_surface_density_mis(theta, r, r_mis, z_cl)
+
+    def _integrand_mean_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        return r * self._integrand_surface_density_mis_nfw(theta, r, r_mis, r_s)
+
+    def _integrand_mean_surface_density_mis_einasto(self, z, theta, r, r_mis, r_s, alpha_ein):
+        # pylint: disable=invalid-name
+        return r * self._integrand_surface_density_mis_einasto(z, theta, r, r_mis, r_s, alpha_ein)
+
+    def _integrand_mean_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
+        # pylint: disable=invalid-name
+        return r * self._integrand_surface_density_mis_hernquist(theta, r, r_mis, r_s)
+
+    def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, use_backend):
+        return self._eval_mean_surface_density_miscentered(
+            r_proj, z_cl, r_mis, use_backend
+        ) - self._eval_surface_density_miscentered(r_proj, z_cl, r_mis, use_backend)
 
     def _eval_2halo_term_generic(
         self,
@@ -529,31 +702,47 @@ class CLMModeling:
 
         return 1.0 / _integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac)
 
-    def eval_surface_density(self, r_proj, z_cl, verbose=False):
+    def eval_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
         r"""Computes the surface mass density
 
         Parameters
         ----------
         r_proj : array_like
-            Projected radial position from the cluster center in :math:`M\!pc`.
+            Projected radial position from the cluster center in :math:`M\!pc`
         z_cl: float
             Redshift of the cluster
+        r_mis : float, optional
+            Projected miscenter distance in :math:`M\!pc`
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends. (Default: False)
 
         Returns
         -------
         numpy.ndarray, float
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
+
         """
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        if r_mis is not None:
+            return self._eval_surface_density_miscentered(
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
+            )
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
+    def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False):
         r"""Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
@@ -562,22 +751,40 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
+        r_mis : float, optional
+            Projected miscenter distance in :math:`M\!pc`.
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends. (Default: False)
 
         Returns
         -------
         numpy.ndarray, float
-            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+            Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        if r_mis is not None:
+            return self._eval_mean_surface_density_miscentered(
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
+            )
+
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_excess_surface_density(self, r_proj, z_cl, verbose=False):
+    def eval_excess_surface_density(
+        self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False
+    ):
         r"""Computes the excess surface density
 
         Parameters
@@ -586,6 +793,15 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
+        r_mis : float, optional
+            Projected miscenter distance in :math:`M\!pc`.
+        use_backend : bool, optional
+            If True, use the projected surface density from the backend for miscentering
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends. (Default: False)
 
         Returns
         -------
@@ -595,10 +811,16 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        if r_mis is not None:
+            return self._eval_excess_surface_density_miscentered(
+                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, use_backend=use_backend
+            )
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_excess_surface_density_2h(
