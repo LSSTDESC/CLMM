@@ -122,7 +122,8 @@ def compute_surface_density(
 
     where :math:`\rho(r)` is the 3d density profile.
 
-    If the `r_mis` keyword is specified, this function computes the miscentered surface density instead as
+    If the `r_mis` keyword is specified, this function computes the miscentered surface 
+    density instead as
 
     .. math::
         \Sigma_{\rm mis}(R, R_{\rm mis}) = \frac{1}{2\pi}\int_0^{2\pi} d\theta \,
@@ -167,7 +168,8 @@ def compute_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     use_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -263,7 +265,8 @@ def compute_mean_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     use_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -356,7 +359,8 @@ def compute_excess_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     use_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.

@@ -715,7 +715,8 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical implementation instead. (Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
@@ -754,7 +755,8 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
@@ -795,7 +797,8 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical 
+            implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
