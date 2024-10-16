@@ -245,22 +245,24 @@ class CLMModeling:
             r_s = self.eval_rdelta(z_cl) / c
 
             if self.halo_profile_model == "nfw":
-                rho_s = (self.delta_mdef
-                         / 3.0 * c**3.0 * rho_def
-                         / (np.log(1.0 + c) - c / (1.0 + c))
-                        )
+                rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
                 params = 2 * r_s * rho_s, (r_s,)
 
             elif self.halo_profile_model == "einasto":
                 alpha_ein = self._get_einasto_alpha(z_cl)
-                rho_s = (self.delta_mdef / 3.0 * c**3.0 * rho_def
-                         / (2.0 ** (-3.0 / alpha_ein)
-                            * alpha_ein ** (-1.0 + 3.0 / alpha_ein)
-                            * np.exp(2.0 / alpha_ein)
-                            * gamma(3.0 / alpha_ein)
-                            * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
-                           )
-                        )
+                rho_s = (
+                    self.delta_mdef
+                    / 3.0
+                    * c**3.0
+                    * rho_def
+                    / (
+                        2.0 ** (-3.0 / alpha_ein)
+                        * alpha_ein ** (-1.0 + 3.0 / alpha_ein)
+                        * np.exp(2.0 / alpha_ein)
+                        * gamma(3.0 / alpha_ein)
+                        * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
+                    )
+                )
                 params = 2 * rho_s, (r_s, alpha_ein)
 
             elif self.halo_profile_model == "hernquist":
@@ -278,10 +280,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and not use_backend:
             for i, r in enumerate(r_proj):
-                res[i] = (
-                    dblquad(integrand, 0.0, np.pi, 0, np.inf,
-                            args=(r, r_mis, *aux_args), epsrel=1e-6)[0]
-                )
+                res[i] = dblquad(
+                    integrand, 0.0, np.pi, 0, np.inf, args=(r, r_mis, *aux_args), epsrel=1e-6
+                )[0]
         else:
             for i, r in enumerate(r_proj):
                 res[i] = quad(integrand, 0.0, np.pi, args=(r, r_mis, *aux_args), epsrel=1e-6)[0]
@@ -343,17 +344,15 @@ class CLMModeling:
         if self.halo_profile_model == "einasto" and not use_backend:
             for i, r in enumerate(r_proj):
                 r_lower = 0 if i == 0 else r_proj[i - 1]
-                res[i] = (
-                    tplquad(integrand, r_lower, r, 0, np.pi, 0, np.inf,
-                            args=(r_mis, *aux_args), epsrel=1e-6)[0]
-                )
+                res[i] = tplquad(
+                    integrand, r_lower, r, 0, np.pi, 0, np.inf, args=(r_mis, *aux_args), epsrel=1e-6
+                )[0]
         else:
             for i, r in enumerate(r_proj):
                 r_lower = 0 if i == 0 else r_proj[i - 1]
-                res[i] = (
-                    dblquad(integrand, r_lower, r, 0, np.pi,
-                            args=(r_mis, *aux_args), epsrel=1e-6)[0]
-                )
+                res[i] = dblquad(
+                    integrand, r_lower, r, 0, np.pi, args=(r_mis, *aux_args), epsrel=1e-6
+                )[0]
 
         res = np.cumsum(res) * norm * 2 / np.pi / r_proj**2
         return res
@@ -716,7 +715,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
@@ -755,7 +754,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
@@ -781,8 +780,9 @@ class CLMModeling:
 
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_excess_surface_density(self, r_proj, z_cl, r_mis=None,
-                                    use_backend=False, verbose=False):
+    def eval_excess_surface_density(
+        self, r_proj, z_cl, r_mis=None, use_backend=False, verbose=False
+    ):
         r"""Computes the excess surface density
 
         Parameters
@@ -795,7 +795,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         use_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. (Default: False)
+            calculations. If False, use the (faster) CLMM exact analytical implementation instead.(Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
             CCL backends. (Default: False)
