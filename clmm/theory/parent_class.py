@@ -211,27 +211,39 @@ class CLMModeling:
         integrand = None
         if mis_from_backend:
             integrand = self._integrand_surface_density_mis
-        else:
-            if self.halo_profile_model == "nfw":
-                integrand = self._integrand_surface_density_mis_nfw
-            elif self.halo_profile_model == "einasto":
-                integrand = self._integrand_surface_density_mis_einasto
-            elif self.halo_profile_model == "hernquist":
-                integrand = self._integrand_surface_density_mis_hernquist
+        elif self.halo_profile_model == "nfw":
+            integrand = self._integrand_surface_density_mis_nfw
+        elif self.halo_profile_model == "einasto":
+            integrand = self._integrand_surface_density_mis_einasto
+        elif self.halo_profile_model == "hernquist":
+            integrand = self._integrand_surface_density_mis_hernquist
         return integrand
 
     def _miscentering_integrand_mean_surface_density(self, mis_from_backend):
         integrand = None
         if mis_from_backend:
             integrand = self._integrand_mean_surface_density_mis
-        else:
-            if self.halo_profile_model == "nfw":
-                integrand = self._integrand_mean_surface_density_mis_nfw
-            elif self.halo_profile_model == "einasto":
-                integrand = self._integrand_mean_surface_density_mis_einasto
-            elif self.halo_profile_model == "hernquist":
-                integrand = self._integrand_mean_surface_density_mis_hernquist
+        elif self.halo_profile_model == "nfw":
+            integrand = self._integrand_mean_surface_density_mis_nfw
+        elif self.halo_profile_model == "einasto":
+            integrand = self._integrand_mean_surface_density_mis_einasto
+        elif self.halo_profile_model == "hernquist":
+            integrand = self._integrand_mean_surface_density_mis_hernquist
         return integrand
+
+    def _integrand_mean_surface_density_mis(self, theta, r_proj, r_mis, z_cl):
+        return r_proj * self._integrand_surface_density_mis(theta, r_proj, r_mis, z_cl)
+
+    def _integrand_mean_surface_density_mis_nfw(self, theta, r_proj, r_mis, r_s):
+        return r_proj * self._integrand_surface_density_mis_nfw(theta, r_proj, r_mis, r_s)
+
+    def _integrand_mean_surface_density_mis_einasto(self, z, theta, r_proj, r_mis, r_s, alpha_ein):
+        return r_proj * self._integrand_surface_density_mis_einasto(
+            z, theta, r_proj, r_mis, r_s, alpha_ein
+        )
+
+    def _integrand_mean_surface_density_mis_hernquist(self, theta, r_proj, r_mis, r_s):
+        return r_proj * self._integrand_surface_density_mis_hernquist(theta, r_proj, r_mis, r_s)
 
     def _miscentering_params(self, z_cl, mis_from_backend):
         params = None
@@ -283,33 +295,28 @@ class CLMModeling:
         return params
 
     def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
-        # pylint: disable=invalid-name
         integrand = self._miscentering_integrand_surface_density(mis_from_backend)
         norm, aux_args = self._miscentering_params(z_cl, mis_from_backend)
 
-        res = np.zeros_like(r_proj)
-
+        args_list = [(r, r_mis, *aux_args) for r in r_proj]
         if self.halo_profile_model == "einasto" and not mis_from_backend:
-            for i, r in enumerate(r_proj):
-                res[i] = dblquad(
-                    integrand, 0.0, np.pi, 0, np.inf, args=(r, r_mis, *aux_args), epsrel=1e-6
-                )[0]
+            res = [
+                dblquad(integrand, 0.0, np.pi, 0, np.inf, args=args, epsrel=1e-6)[0]
+                for args in args_list
+            ]
         else:
-            for i, r in enumerate(r_proj):
-                res[i] = quad(integrand, 0.0, np.pi, args=(r, r_mis, *aux_args), epsrel=1e-6)[0]
+            res = [quad(integrand, 0.0, np.pi, args=args, epsrel=1e-6)[0] for args in args_list]
 
-        res *= norm / np.pi
+        res = np.array(res) * norm / np.pi
         return res
 
-    def _integrand_surface_density_mis(self, theta, r, r_mis, z_cl):
-        # pylint: disable=invalid-name
+    def _integrand_surface_density_mis(self, theta, r_proj, r_mis, z_cl):
         return self.eval_surface_density(
-            np.sqrt(r**2.0 + r_mis**2.0 - 2 * r * r_mis * np.cos(theta)), z_cl
+            np.sqrt(r_proj**2.0 + r_mis**2.0 - 2 * r_proj * r_mis * np.cos(theta)), z_cl
         )
 
-    def _integrand_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
-        # pylint: disable=invalid-name
-        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_nfw(self, theta, r_proj, r_mis, r_s):
+        x = np.sqrt(r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)) / r_s
 
         x2m1 = x**2.0 - 1.0
         if x < 1:
@@ -322,67 +329,50 @@ class CLMModeling:
             res = 1.0 / 3.0
         return res
 
-    def _integrand_surface_density_mis_einasto(self, z, theta, r, r_mis, r_s, alpha_ein):
-        # pylint: disable=invalid-name
-
+    def _integrand_surface_density_mis_einasto(self, r_par, theta, r_proj, r_mis, r_s, alpha_ein):
         # Projected surface mass density element for numerical integration
-        x = np.sqrt(z**2.0 + r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+        x = (
+            np.sqrt(
+                r_par**2.0 + r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)
+            )
+            / r_s
+        )
 
         return np.exp(-2.0 * (x**alpha_ein - 1.0) / alpha_ein)
 
-    def _integrand_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
-        # pylint: disable=invalid-name
-        x = np.sqrt(r**2.0 + r_mis**2.0 - 2.0 * r * r_mis * np.cos(theta)) / r_s
+    def _integrand_surface_density_mis_hernquist(self, theta, r_proj, r_mis, r_s):
+        x = np.sqrt(r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)) / r_s
 
         x2m1 = x**2.0 - 1.0
         if x < 1:
-            sqrt_x2m1 = np.sqrt(-x2m1)
-            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsinh(sqrt_x2m1 / x) / (-x2m1) ** 2.5
+            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsinh(np.sqrt(-x2m1) / x) / (-x2m1) ** 2.5
         elif x > 1:
-            sqrt_x2m1 = np.sqrt(x2m1)
-            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsin(sqrt_x2m1 / x) / (x2m1) ** 2.5
+            res = -3 / x2m1**2 + (x2m1 + 3) * np.arcsin(np.sqrt(x2m1) / x) / (x2m1) ** 2.5
         else:
             res = 4.0 / 15.0
         return res
 
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
-        # pylint: disable=invalid-name
         integrand = self._miscentering_integrand_mean_surface_density(mis_from_backend)
         norm, aux_args = self._miscentering_params(z_cl, mis_from_backend)
 
-        res = np.zeros_like(r_proj)
+        r_lower = np.zeros_like(r_proj)
+        r_lower[1:] = r_proj[:-1]
+        args = (r_mis, *aux_args)
 
         if self.halo_profile_model == "einasto" and not mis_from_backend:
-            for i, r in enumerate(r_proj):
-                r_lower = 0 if i == 0 else r_proj[i - 1]
-                res[i] = tplquad(
-                    integrand, r_lower, r, 0, np.pi, 0, np.inf, args=(r_mis, *aux_args), epsrel=1e-6
-                )[0]
+            res = [
+                tplquad(integrand, r_low, r_high, 0, np.pi, 0, np.inf, args=args, epsrel=1e-6)[0]
+                for r_low, r_high in zip(r_lower, r_proj)
+            ]
         else:
-            for i, r in enumerate(r_proj):
-                r_lower = 0 if i == 0 else r_proj[i - 1]
-                res[i] = dblquad(
-                    integrand, r_lower, r, 0, np.pi, args=(r_mis, *aux_args), epsrel=1e-6
-                )[0]
+            res = [
+                dblquad(integrand, r_low, r_high, 0, np.pi, args=args, epsrel=1e-6)[0]
+                for r_low, r_high in zip(r_lower, r_proj)
+            ]
 
         res = np.cumsum(res) * norm * 2 / np.pi / r_proj**2
         return res
-
-    def _integrand_mean_surface_density_mis(self, theta, r, r_mis, z_cl):
-        # pylint: disable=invalid-name
-        return r * self._integrand_surface_density_mis(theta, r, r_mis, z_cl)
-
-    def _integrand_mean_surface_density_mis_nfw(self, theta, r, r_mis, r_s):
-        # pylint: disable=invalid-name
-        return r * self._integrand_surface_density_mis_nfw(theta, r, r_mis, r_s)
-
-    def _integrand_mean_surface_density_mis_einasto(self, z, theta, r, r_mis, r_s, alpha_ein):
-        # pylint: disable=invalid-name
-        return r * self._integrand_surface_density_mis_einasto(z, theta, r, r_mis, r_s, alpha_ein)
-
-    def _integrand_mean_surface_density_mis_hernquist(self, theta, r, r_mis, r_s):
-        # pylint: disable=invalid-name
-        return r * self._integrand_surface_density_mis_hernquist(theta, r, r_mis, r_s)
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
         return self._eval_mean_surface_density_miscentered(
