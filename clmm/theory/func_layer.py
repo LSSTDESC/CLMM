@@ -110,7 +110,7 @@ def compute_surface_density(
     massdef="mean",
     alpha_ein=None,
     r_mis=None,
-    use_backend=False,
+    mis_from_backend=False,
     verbose=False,
     use_projected_quad=False,
     validate_input=True,
@@ -166,7 +166,7 @@ def compute_surface_density(
 
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-    use_backend : bool, optional
+    mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical 
         implementation instead. (Default: False)
@@ -203,7 +203,7 @@ def compute_surface_density(
         _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(
-        r_proj, z_cl, r_mis=r_mis, use_backend=use_backend, verbose=verbose
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
     )
 
     _modeling_object.validate_input = True
@@ -221,7 +221,7 @@ def compute_mean_surface_density(
     massdef="mean",
     alpha_ein=None,
     r_mis=None,
-    use_backend=False,
+    mis_from_backend=False,
     verbose=False,
     validate_input=True,
 ):
@@ -263,7 +263,7 @@ def compute_mean_surface_density(
         available for the NumCosmo backend
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-    use_backend : bool, optional
+    mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical 
         implementation instead. (Default: False)
@@ -295,7 +295,7 @@ def compute_mean_surface_density(
         _modeling_object.set_einasto_alpha(alpha_ein)
 
     sigma_bar = _modeling_object.eval_mean_surface_density(
-        r_proj, z_cl, r_mis=r_mis, use_backend=use_backend, verbose=verbose
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
     )
 
     _modeling_object.validate_input = True
@@ -313,7 +313,7 @@ def compute_excess_surface_density(
     massdef="mean",
     alpha_ein=None,
     r_mis=None,
-    use_backend=False,
+    mis_from_backend=False,
     verbose=False,
     validate_input=True,
 ):
@@ -357,7 +357,7 @@ def compute_excess_surface_density(
         cosmology-dependent value for the CCL backend.)
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
-    use_backend : bool, optional
+    mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical 
         implementation instead. (Default: False)
@@ -383,7 +383,7 @@ def compute_excess_surface_density(
         _modeling_object.set_einasto_alpha(alpha_ein)
 
     deltasigma = _modeling_object.eval_excess_surface_density(
-        r_proj, z_cl, r_mis=r_mis, use_backend=use_backend, verbose=verbose
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
     )
 
     _modeling_object.validate_input = True
