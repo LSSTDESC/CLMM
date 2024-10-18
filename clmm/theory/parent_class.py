@@ -234,18 +234,22 @@ class CLMModeling:
         return integrand
 
     def _miscentering_params(self, z_cl, mis_from_backend):
-        # pylint: disable=invalid-name
         params = None
         if mis_from_backend:
             params = 1, (z_cl,)
 
         else:
-            c = self.cdelta
             rho_def = self.cosmo.get_rho_m(z_cl)
-            r_s = self.eval_rdelta(z_cl) / c
+            r_s = self.eval_rdelta(z_cl) / self.cdelta
 
             if self.halo_profile_model == "nfw":
-                rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / (np.log(1.0 + c) - c / (1.0 + c))
+                rho_s = (
+                    self.delta_mdef
+                    / 3.0
+                    * self.cdelta**3.0
+                    * rho_def
+                    / (np.log(1.0 + self.cdelta) - self.cdelta / (1.0 + self.cdelta))
+                )
                 params = 2 * r_s * rho_s, (r_s,)
 
             elif self.halo_profile_model == "einasto":
@@ -253,20 +257,27 @@ class CLMModeling:
                 rho_s = (
                     self.delta_mdef
                     / 3.0
-                    * c**3.0
+                    * self.cdelta**3.0
                     * rho_def
                     / (
                         2.0 ** (-3.0 / alpha_ein)
                         * alpha_ein ** (-1.0 + 3.0 / alpha_ein)
                         * np.exp(2.0 / alpha_ein)
                         * gamma(3.0 / alpha_ein)
-                        * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * c**alpha_ein)
+                        * gammainc(3.0 / alpha_ein, 2.0 / alpha_ein * self.cdelta**alpha_ein)
                     )
                 )
                 params = 2 * rho_s, (r_s, alpha_ein)
 
             elif self.halo_profile_model == "hernquist":
-                rho_s = self.delta_mdef / 3.0 * c**3.0 * rho_def / ((c / (1.0 + c)) ** 2.0) * 2
+                rho_s = (
+                    self.delta_mdef
+                    / 3.0
+                    * self.cdelta**3.0
+                    * rho_def
+                    / ((self.cdelta / (1.0 + self.cdelta)) ** 2.0)
+                    * 2
+                )
                 params = r_s * rho_s, (r_s,)
 
         return params
@@ -715,7 +726,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`
         mis_from_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical 
+            calculations. If False, use the (faster) CLMM exact analytical
             implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -742,7 +753,9 @@ class CLMModeling:
             )
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_mean_surface_density(self, r_proj, z_cl, r_mis=None, mis_from_backend=False, verbose=False):
+    def eval_mean_surface_density(
+        self, r_proj, z_cl, r_mis=None, mis_from_backend=False, verbose=False
+    ):
         r"""Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
@@ -755,7 +768,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         mis_from_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical 
+            calculations. If False, use the (faster) CLMM exact analytical
             implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -797,7 +810,7 @@ class CLMModeling:
             Projected miscenter distance in :math:`M\!pc`.
         mis_from_backend : bool, optional
             If True, use the projected surface density from the backend for miscentering
-            calculations. If False, use the (faster) CLMM exact analytical 
+            calculations. If False, use the (faster) CLMM exact analytical
             implementation instead. (Default: False)
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
