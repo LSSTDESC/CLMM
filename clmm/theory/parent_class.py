@@ -321,7 +321,9 @@ class CLMModeling:
         norm, aux_args = self._miscentering_params(z_cl, mis_from_backend)
 
         extra_integral = self.halo_profile_model == "einasto" and not mis_from_backend
-        return miscentering.eval_surface_density(r_proj, z_cl, r_mis, integrand, norm, aux_args, extra_integral)
+        return miscentering.integrate_azimuthially_miscentered_surface_density(
+            r_proj, r_mis, integrand, norm, aux_args, extra_integral
+        )
 
     def _eval_mean_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
         # set integrand function
@@ -338,7 +340,9 @@ class CLMModeling:
         norm, aux_args = self._miscentering_params(z_cl, mis_from_backend)
 
         extra_integral = self.halo_profile_model == "einasto" and not mis_from_backend
-        return miscentering.eval_mean_surface_density(r_proj, z_cl, r_mis, integrand, norm, aux_args, extra_integral)
+        return miscentering.integrate_azimuthially_miscentered_mean_surface_density(
+            r_proj, r_mis, integrand, norm, aux_args, extra_integral
+        )
 
     def _eval_excess_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
         return self._eval_mean_surface_density_miscentered(
