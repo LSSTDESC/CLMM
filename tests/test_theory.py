@@ -341,6 +341,7 @@ def test_profiles(modeling_data, profile_init):
             cfg["numcosmo_profiles"]["DeltaSigma"],
             reltol,
         )
+        # Test miscentering
         if mod.backend == "nc":
             assert_allclose(
                 mod.eval_surface_density(
@@ -384,12 +385,12 @@ def test_profiles(modeling_data, profile_init):
                 cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
                 2.5e-2
             )
-            assert_equal(
-                mod._integrand_surface_density_mis_nfw(0, 0.3, 0, 0.3),
-                1./3.)
-            assert_equal(
-                mod._integrand_surface_density_mis_hernquist(0, 0.3, 0, 0.3),
-                4./15.)
+        assert_equal(
+            theo.miscentering.integrand_surface_density_nfw(0, 0.3, 0, 0.3),
+            1./3.)
+        assert_equal(
+            theo.miscentering.integrand_surface_density_hernquist(0, 0.3, 0, 0.3),
+            4./15.)
         if mod.backend == "ct":
             assert_raises(
                 ValueError, mod.eval_excess_surface_density, 1e-12, cfg["SIGMA_PARAMS"]["z_cl"]
@@ -426,6 +427,7 @@ def test_profiles(modeling_data, profile_init):
             reltol,
         )
 
+        # Test miscentering
         if mod.backend == "nc":
             assert_allclose(
                 theo.compute_surface_density(
