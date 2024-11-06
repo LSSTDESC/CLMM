@@ -1,3 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project]
+name = "clmm"
+dynamic = ["version"]
+description = "A comprehensive package for galaxy cluster weak lensing"
+readme = "README.md"
+license = "bsd-3-clause"
+requires-python = ">=3.8"
+authors = [
+    { name = "The LSST DESC CLMM Contributors" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+dependencies = [
+  "python==3.10.2",
+  "pip>=21.0",
+  "jupyter>=1.0",
+  "numpy==1.25.2",
+  "scipy==1.11.2",
+  "astropy==5.3.2",
+  "healpy == 1.16.5",
+  "matplotlib==3.7.2",
+  "gsl==2.7",
+  "cmake==3.30.0",
+  "pyccl==3.0",
+  "numcosmo==0.18.2",
+  "pytest==7.4.0",
+  "sphinx==7.2.4",
+  "qp-prob @ git+https://github.com/LSSTDESC/qp.git"
+]
+
+
+
+[project.urls]
+Repository = "https://github.com/LSSTDESC/CLMM"
+
+[tool.hatch.version]
+path = "clmm/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/clmm",
+]
+
 [tool.black]
 line-length  = 100
 
