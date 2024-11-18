@@ -1,7 +1,9 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
+
 import pickle
+import warnings
 import numpy as np
 import healpy
 
@@ -50,6 +52,11 @@ class ClusterEnsemble:
         self.data = GCData(meta={"bin_units": None, "radius_min": None, "radius_max": None})
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
+            weights_out = kwargs.get("weights_out", "W_l")
+            if (self.data[weights_out] == 0).any():
+                warnings.warn(
+                    f"There are empty bins in some of the profile tables, filter them with {weights_out}>0"
+                )
         self.stacked_data = None
         self.cov = {
             "tan_sc": None,
