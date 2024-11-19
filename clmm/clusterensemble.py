@@ -55,7 +55,8 @@ class ClusterEnsemble:
             weights_out = kwargs.get("weights_out", "W_l")
             if (self.data[weights_out] == 0).any():
                 warnings.warn(
-                    f"There are empty bins in some of the profile tables, filter them with {weights_out}>0"
+                    "There are empty bins in some of the profile tables,"
+                    f" filter them with {weights_out}>0 for visualization."
                 )
         self.stacked_data = None
         self.cov = {
