@@ -38,7 +38,7 @@ jobs:
         #conda install -c conda-forge cmake swig setuptools_scm
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        pip install --no-use-pep517 .
+        pip install .
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
