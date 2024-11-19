@@ -1,4 +1,5 @@
 """Data operation for polar/azimuthal averages in radial bins and weights"""
+
 import warnings
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -607,6 +608,7 @@ def make_radial_profile(
         return profile_table, binnumber
     return profile_table
 
+
 def not_nan_average(values, axis=0, weights=None):
     """Computes averages using only not nan values
 
@@ -630,6 +632,7 @@ def not_nan_average(values, axis=0, weights=None):
     _values[np.isnan(values)] = 0
     _weights[np.isnan(values)] = 0
     return np.average(_values, axis=axis, weights=_weights)
+
 
 def make_stacked_radial_profile(angsep, weights, components):
     """Compute stacked profile, and mean separation distances.
