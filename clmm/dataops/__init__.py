@@ -482,6 +482,7 @@ def make_radial_profile(
     z_lens=None,
     validate_input=True,
     weights=None,
+    empty_bins_value=np.nan,
 ):
     r"""Compute the angular profile of given components
 
@@ -535,6 +536,8 @@ def make_radial_profile(
     weights: array-like, optional
         Array of individual galaxy weights. If specified, the radial binned profile is
         computed using a weighted average
+    empty_bins_value: float, None
+        Values to be assigned to empty bins.
 
     Returns
     -------
@@ -595,11 +598,38 @@ def make_radial_profile(
     profile_table["weights_sum"] = wts_sum
     # return empty bins?
     if not include_empty_bins:
-        profile_table = profile_table[nsrc > 1]
+        profile_table = profile_table[nsrc >= 1]
+    else:
+        for i in range(len(components)):
+            profile_table[f"p_{i}"][nsrc < 1] = empty_bins_value
+            profile_table[f"p_{i}_err"][nsrc < 1] = empty_bins_value
     if return_binnumber:
         return profile_table, binnumber
     return profile_table
 
+def not_nan_average(values, axis=0, weights=None):
+    """Computes averages using only not nan values
+
+    Parameters
+    ----------
+    values: nd array
+        Values to be averaged
+    axis: int
+        axis to make the average on
+    weighs: nd array
+        Weights, must have same shape as values
+
+    Returns
+    -------
+    array
+        Averaged values
+    """
+    _values = np.copy(values)
+    _weights = np.ones(_values.shape) if weights is None else np.copy(weights)
+    print(_values.shape, _weights.shape)
+    _values[np.isnan(values)] = 0
+    _weights[np.isnan(values)] = 0
+    return np.average(_values, axis=axis, weights=_weights)
 
 def make_stacked_radial_profile(angsep, weights, components):
     """Compute stacked profile, and mean separation distances.
@@ -621,8 +651,9 @@ def make_stacked_radial_profile(angsep, weights, components):
     stacked_components: list of arrays
         List of stacked components.
     """
-    staked_angsep = np.average(angsep, axis=0, weights=None)
+    # rm nan values
+    staked_angsep = not_nan_average(angsep, axis=0, weights=None)
     stacked_components = [
-        np.average(component, axis=0, weights=weights) for component in components
+        not_nan_average(component, axis=0, weights=weights) for component in components
     ]
     return staked_angsep, stacked_components
