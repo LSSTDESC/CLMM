@@ -233,6 +233,7 @@ class GalaxyCluster:
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
+        coordinate_system: `galcat` coordinate_system
 
         Parameters
         ----------
