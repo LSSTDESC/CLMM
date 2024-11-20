@@ -11,8 +11,9 @@ This is a brief guide to contributing to CLMM, including information about ident
 4. [Reviewing an open pull request](#reviewing_an_open_pull_request)
 5. [Steps to merging a pull request](#steps_to_merging_a_pull_request)
 6. [Updating Public Documentation on lsstdesc.org](#updating_public_docs)
-7. [Additional resources](#additional_resources)
-8. [Contact](#contact)
+7. [Creating installation via pip and conda](#creating_pip_conda)
+8. [Additional resources](#additional_resources)
+9. [Contact](#contact)
 
 ## Identifying Issues <a name="identifying_issues"></a>
 
@@ -112,6 +113,12 @@ All these steps should be done on the `publish-docs` branch (just `git checkout 
 1. Merge all of the latest changes from main `git merge main`.
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
+
+## Creating installation via pip and conda <a name="creating_pip_conda"></a>
+
+To create an installation via `pip`...
+
+To create an installation via `conda`...
 
 ## Additional resources <a name="additional_resources"></a>
 
