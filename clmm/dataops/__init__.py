@@ -601,10 +601,11 @@ def make_radial_profile(
     if not include_empty_bins:
         profile_table = profile_table[nsrc >= 1]
     else:
-        profile_table["radius"][nsrc < 1] = empty_bins_value
-        for i in range(len(components)):
-            profile_table[f"p_{i}"][nsrc < 1] = empty_bins_value
-            profile_table[f"p_{i}_err"][nsrc < 1] = empty_bins_value
+        for col in (
+            "radius",
+            *(_col for i in range(len(components)) for _col in (f"p_{i}", f"p_{i}_err")),
+        ):
+            profile_table[col][nsrc < 1] = empty_bins_value
     if return_binnumber:
         return profile_table, binnumber
     return profile_table
