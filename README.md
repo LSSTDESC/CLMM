@@ -40,6 +40,9 @@ see [INSTALL documentation](INSTALL.md) for instructions on how to do it.
 ## Requirements <a name="requirements"></a>
 
 CLMM requires Python version 3.8 or later.
+
+### Dependencies <a name="dependencies"></a>
+
 CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
@@ -52,8 +55,9 @@ CLMM has the following dependencies:
   pip install numpy scipy astropy matplotlib
 ```
 
+### Back-ends <a name="backends"></a>
+
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
-<a name="backends"></a>
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
 - [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.7.1.dev10+gf81b59a4 and 3)
@@ -61,6 +65,8 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
+
+### Developers <a name="developers"></a>
 
 For developers, you will also need to install:
 
