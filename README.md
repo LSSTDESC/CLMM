@@ -17,9 +17,30 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 
 # Installing CLMM <a name="installing"></a>
 
+CLMM can be installed with `pip` or `conda`.
+There commands will install most of the dependencies for CLMM,
+with the exception of the backend to be used on theoretical predictions,
+check [this](#backends) section for details.
+
+For a `pip` installation, run:
+
+```bash
+    pip install clmm
+```
+
+For a `conda` installation, run:
+
+```bash
+    conda install -c conda-forge clmm
+```
+
+We highly recommend you make a new conda environment for the installation of CLMM,
+see [INSTALL documentation](INSTALL.md) for instructions on how to do it.
+
 ## Requirements <a name="requirements"></a>
 
-CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
+CLMM requires Python version 3.8 or later.
+CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
 - [SciPy](https://scipy.org/) (v1.6 or later)
@@ -32,6 +53,7 @@ CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
 ```
 
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
+<a name="backends"></a>
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
 - [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.7.1.dev10+gf81b59a4 and 3)
@@ -51,9 +73,9 @@ These are also pip installable:
 ```
 Note, the last item, `sphinx_rtd_theme` is to make the docs.
 
-## Installation <a name="installation"></a>
+## Manual installation <a name="installation"></a>
 
-To install CLMM you currently need to build it from source:
+To install CLMM manually, you need to build it from source:
 
 ```
   git clone https://github.com/LSSTDESC/CLMM.git
