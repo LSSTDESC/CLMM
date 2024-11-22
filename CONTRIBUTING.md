@@ -121,6 +121,7 @@ After new changes to the main code have been made, you will want to update the e
     pip install hatch
     ```
 You can check [Publish your Python package with Hatch](https://www.pyopensci.org/python-package-guide/tutorials/publish-pypi.html) for more information.
+
 2. In the `CLMM` repository, create the virtual environment with the command:
     ```bash
     cd CLMM
