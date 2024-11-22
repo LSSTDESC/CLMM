@@ -133,6 +133,7 @@ You can check [Publish your Python package with Hatch](https://www.pyopensci.org
     hatch build
     ```
 This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
+
 5. To publish the package to pip, we will use `twine`, which should be installed with the following:
     ```bash
     pip install twine
@@ -146,6 +147,7 @@ Once the package is published, one can install it by running:
     pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
     ```
 with the proper version number. This step will require an account at [PypiTest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PypiTest` and thus we need the extra index url to import the packages from `Pypi`. If the package was properly installed, we are now ready to publish it to `Pypi`.
+
 7. To publish to `Pypi`, run the command:
 ```bash
 twine upload dist/*
