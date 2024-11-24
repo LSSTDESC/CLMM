@@ -1,6 +1,8 @@
 # CLMM
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
 [![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
+[![Documentation](https://readthedocs.org/projects/clmm/badge/?version=latest)](http://lsstdesc.org/CLMM/)
+[![DOI](https://img.shields.io/badge/DOI-10.3847%2F1538--4365%2Fab1658-B31B1B.svg)](https://doi.org/10.1093/mnras/stab2764)
 
 The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a DESC tool consisting of a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
 <!---CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.--->
@@ -17,9 +19,33 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 
 # Installing CLMM <a name="installing"></a>
 
+CLMM can be installed with `pip` or `conda`.
+There commands will install most of the dependencies for CLMM,
+with the exception of the backend to be used on theoretical predictions,
+check [this](#backends) section for details.
+
+For a `pip` installation, run:
+
+```bash
+    pip install clmm
+```
+
+For a `conda` installation, run:
+
+```bash
+    conda install -c conda-forge clmm
+```
+
+We highly recommend you make a new conda environment for the installation of CLMM,
+see [INSTALL documentation](INSTALL.md) for instructions on how to do it.
+
 ## Requirements <a name="requirements"></a>
 
-CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
+CLMM requires Python version 3.8 or later.
+
+### Dependencies <a name="dependencies"></a>
+
+CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
 - [SciPy](https://scipy.org/) (v1.6 or later)
@@ -31,6 +57,8 @@ CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
   pip install numpy scipy astropy matplotlib
 ```
 
+### Back-ends <a name="backends"></a>
+
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
@@ -39,6 +67,8 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
+
+### Developers <a name="developers"></a>
 
 For developers, you will also need to install:
 
@@ -51,9 +81,9 @@ These are also pip installable:
 ```
 Note, the last item, `sphinx_rtd_theme` is to make the docs.
 
-## Installation <a name="installation"></a>
+## Manual installation <a name="installation"></a>
 
-To install CLMM you currently need to build it from source:
+To install CLMM manually, you need to build it from source:
 
 ```
   git clone https://github.com/LSSTDESC/CLMM.git
