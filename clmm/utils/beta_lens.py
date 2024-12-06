@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.integrate import quad
 
-from ..redshift import distributions as zdist
+from . import redshift_distributions as zdist
 
 
 def compute_beta(z_src, z_cl, cosmo):
