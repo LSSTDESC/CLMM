@@ -1,4 +1,5 @@
 """Tests for theory/"""
+
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -11,8 +12,8 @@ from clmm.utils import (
     compute_beta_s_square_mean_from_distribution,
     compute_beta_s_mean_from_distribution,
     compute_beta_s_func,
+    redshift_distributions as zdist,
 )
-from clmm.redshift.distributions import chang2013, desc_srd
 
 TOLERANCE = {"rtol": 1.0e-8}
 
@@ -565,8 +566,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
         kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
 
-        # test z_src = chang2013 distribution
-        cfg_inf["GAMMA_PARAMS"]["z_src"] = chang2013
+        # test z_src = zdist.chang2013 distribution
+        cfg_inf["GAMMA_PARAMS"]["z_src"] = zdist.chang2013
         cfg_inf["GAMMA_PARAMS"]["z_src_info"] = "distribution"
 
         # store original values
