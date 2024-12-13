@@ -5,7 +5,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.theory as theo
-from clmm.constants import Constants as clc
+from clmm.utils.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
 from clmm.utils import (
