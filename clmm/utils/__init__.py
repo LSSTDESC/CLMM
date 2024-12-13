@@ -1,6 +1,6 @@
 """General utility functions that are used in multiple modules"""
 
-from . import redshift_distributions, constants
+from . import redshift_distributions, constants, plotting
 
 from .beta_lens import (
     compute_beta,
