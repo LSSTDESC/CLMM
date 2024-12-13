@@ -1,5 +1,7 @@
 """General utility functions that are used in multiple modules"""
 
+from . import redshift_distributions, constants, plotting
+
 from .beta_lens import (
     compute_beta,
     compute_beta_s,
@@ -31,6 +33,11 @@ from .statistic import (
     _draw_random_points_from_distribution,
     _draw_random_points_from_tab_distribution,
     gaussian,
+)
+
+from .redshift_tools import (
+    _integ_pzfuncs,
+    compute_for_good_redshifts,
 )
 
 from .validation import (
