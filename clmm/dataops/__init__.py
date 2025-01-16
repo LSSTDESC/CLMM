@@ -126,7 +126,6 @@ def compute_tangential_and_cross_components(
         Used only when is_deltasigma=True.
     include_quadrupole: bool
         If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
-        instead of g_t and g_x
     phi_major : float, optional
         the direction of the major axis of the input cluster in the unit of radian. 
         only needed when `include_quadrupole` is `True`.
