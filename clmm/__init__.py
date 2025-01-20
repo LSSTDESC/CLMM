@@ -25,9 +25,7 @@ from .theory import (
     Cosmology,
 )
 from .theory.func_layer import (
-    compute_delta_sigma_4theta_triaxiality,
-    compute_delta_sigma_const_triaxiality,
-    compute_delta_sigma_excess_triaxiality,
+    compute_excess_surface_density_triaxial,
 )
 
 from . import support
