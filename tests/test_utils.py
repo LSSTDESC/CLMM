@@ -576,7 +576,7 @@ def test_beta_functions(modeling_data):
     # beta mean from distributions
 
     for model in (None, zdist.chang2013, zdist.desc_srd):
-        # None defaults to chang2013 for compute_beta* functions
+        # None defaults to chang2013 for compute_beta* functions.
 
         if model is None:
             model = zdist.chang2013
