@@ -12,8 +12,8 @@ from clmm.utils import (
     arguments_consistency,
     validate_argument,
     DiffArray,
+    redshift_distributions as zdist,
 )
-from clmm.redshift import distributions as zdist
 
 
 TOLERANCE = {"rtol": 1.0e-6, "atol": 0}
@@ -90,9 +90,7 @@ def test_correct_with_boost_model():
         )
 
     # Test requesting unsupported boost model
-    assert_raises(
-        KeyError, utils.correct_with_boost_model, rvals, sigma_vals, "glue", boost_rscale
-    )
+    assert_raises(KeyError, utils.correct_with_boost_model, rvals, sigma_vals, "glue", boost_rscale)
 
 
 def test_compute_radial_averages():
@@ -578,7 +576,7 @@ def test_beta_functions(modeling_data):
     # beta mean from distributions
 
     for model in (None, zdist.chang2013, zdist.desc_srd):
-        # None defaults to chang2013 for compute_beta* functions
+        # None defaults to chang2013 for compute_beta* functions.
 
         if model is None:
             model = zdist.chang2013

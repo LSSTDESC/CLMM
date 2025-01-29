@@ -17,8 +17,8 @@ from ..utils import (
     _draw_random_points_from_distribution,
     gaussian,
     _validate_coordinate_system,
+    redshift_distributions as zdist,
 )
-from ..redshift import distributions as zdist
 
 
 def generate_galaxy_catalog(
