@@ -13,8 +13,8 @@ from .beta_lens import (
 from .boost import (
     compute_nfw_boost,
     compute_powerlaw_boost,
-    correct_sigma_with_boost_values,
-    correct_sigma_with_boost_model,
+    correct_with_boost_values,
+    correct_with_boost_model,
     boost_models,
 )
 
