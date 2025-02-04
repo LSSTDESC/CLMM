@@ -1,18 +1,16 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
+import pickle
 import numpy as np
-from scipy.stats import binned_statistic
-from astropy.table import Table
-from .plotting import mpl
 import healpy
 
 from .gcdata import GCData
-from .galaxycluster import GalaxyCluster
-from .utils import compute_radial_averages, convert_units
-from .dataops import make_radial_profile, make_stacked_radial_profile
+from .dataops import make_stacked_radial_profile
+from .utils import DiffArray
 
-class ClusterEnsemble():
+
+class ClusterEnsemble:
     """Object that contains a list of GalaxyCluster objects
 
     Attributes
@@ -23,8 +21,21 @@ class ClusterEnsemble():
         Table with galaxy clusters data (i. e. ids, profiles, redshifts).
     id_dict: dict
         Dictionary of indices given the cluster id
+    stacked_data : GCData, None
+        Stacked cluster profiles
+    cov : dict
+        Dictionary with the covariances:
+
+        * "tan_sc" : tangential component computed with sample covariance
+        * "cross_sc" : cross component computed with sample covariance
+        * "tan_bs" : tangential component computed with bootstrap
+        * "cross_bs" : cross component computed with bootstrap
+        * "tan_jk" : tangential component computed with jackknife
+        * "cross_jk" : cross component computed with jackknife
+
     """
-    def __init__(self, unique_id, gclist, *args, **kwargs):
+
+    def __init__(self, unique_id, gc_list=None, **kwargs):
         """Initializes a ClusterEnsemble object
         Parameters
         ----------
@@ -34,11 +45,20 @@ class ClusterEnsemble():
         if isinstance(unique_id, (int, str)):
             unique_id = str(unique_id)
         else:
-            raise TypeError('unique_id incorrect type: %s'%type(unique_id))
+            raise TypeError(f"unique_id incorrect type: {type(unique_id)}")
         self.unique_id = unique_id
-        self.data = GCData(meta={'bin_units': None})
-        if len(args)>0 or len(kwargs)>0:
-            self._add_values(gclist, **kwargs)
+        self.data = GCData(meta={"bin_units": None, "radius_min": None, "radius_max": None})
+        if gc_list is not None:
+            self._add_values(gc_list, **kwargs)
+        self.stacked_data = None
+        self.cov = {
+            "tan_sc": None,
+            "cross_sc": None,
+            "tan_bs": None,
+            "cross_bs": None,
+            "tan_jk": None,
+            "cross_jk": None,
+        }
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
@@ -50,8 +70,8 @@ class ClusterEnsemble():
         gc_cols : list, tuple
             List of GalaxyCluster objects.
         """
-        for gc in gc_list:
-            self.make_individual_radial_profile(gc, **kwargs)
+        for cluster in gc_list:
+            self.make_individual_radial_profile(cluster, **kwargs)
 
     def __getitem__(self, item):
         """Returns self.data[item]"""
@@ -61,11 +81,23 @@ class ClusterEnsemble():
         """Returns length of ClusterEnsemble"""
         return len(self.data)
 
-    def make_individual_radial_profile(self, galaxycluster, bin_units, bins=10, error_model='ste',
-                                       cosmo=None, tan_component_in='et', cross_component_in='ex',
-                                       tan_component_out='gt', cross_component_out='gx',
-                                       tan_component_in_err=None, cross_component_in_err=None,
-                                       weights_in='w_ls', weights_out='W_l'):
+    def make_individual_radial_profile(
+        self,
+        galaxycluster,
+        bin_units,
+        bins=10,
+        error_model="ste",
+        cosmo=None,
+        tan_component_in="et",
+        cross_component_in="ex",
+        tan_component_out="gt",
+        cross_component_out="gx",
+        tan_component_in_err=None,
+        cross_component_in_err=None,
+        use_weights=True,
+        weights_in="w_ls",
+        weights_out="W_l",
+    ):
         """Compute the individual shear profile from a single GalaxyCluster object
         and adds the averaged data in the data attribute.
 
@@ -113,41 +145,93 @@ class ClusterEnsemble():
         weights_out : str, None
             Name of the weight column to be used in the added to the profile table.
         """
-        if self.data.meta['bin_units'] is None:
-            self.data.meta['bin_units'] = bin_units
-        elif self.data.meta['bin_units'] != bin_units:
-            raise ValueError('inconsistent units')
-        # This will be replaced when gc has weights on make_radial_profile
-        profile_table = make_radial_profile(
-            [galaxycluster.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
-            angsep=galaxycluster.galcat['theta'], angsep_units='radians',
-            bin_units=bin_units, bins=bins, error_model=error_model,
-            include_empty_bins=True, return_binnumber=False,
-            cosmo=cosmo, z_lens=galaxycluster.z, weights=galaxycluster.galcat[weights_in],
-            components_error=[None if n is None else galaxycluster.galcat[n].data
-                              for n in (tan_component_in_err, cross_component_in_err, None)],
-            )
-        #profile_table[weights_out] = 1 #rm this line
-        if bin_units != 'radians':
-            bins = convert_units(bins, bin_units, 'radians', redshift=galaxycluster.z, cosmo=cosmo)
-        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'], 
-                                                       galaxycluster.galcat[weights_in], 
-                                                       statistic='sum', 
-                                                       bins = bins)[0]
-        data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
-                        *[np.array(profile_table[col]) for col in
-                            ('radius', 'p_0', 'p_1', weights_out)]]
-        # to be fixed down to here after issue 443 is merged
-        if len(self.data)==0:
-            for col, data in zip(['cluster_id', 'ra', 'dec', 'z', 'radius', tan_component_out,
-                                  cross_component_out, weights_out], data_to_save):
+        # pylint: disable=unused-argument
+        tb_kwargs = {}
+        tb_kwargs.update(locals())
+        tb_kwargs.pop("self")
+        tb_kwargs.pop("tb_kwargs")
+        tb_kwargs.pop("galaxycluster")
+
+        cl_bin_units = galaxycluster.galcat.meta.get("bin_units", None)
+        self.data.update_info_ext_valid("bin_units", self.data, cl_bin_units, overwrite=False)
+
+        cl_cosmo = galaxycluster.galcat.meta.get("cosmo", None)
+        self.data.update_info_ext_valid("cosmo", self.data, cl_cosmo, overwrite=False)
+
+        profile_table = galaxycluster.make_radial_profile(
+            include_empty_bins=True, gal_ids_in_bins=False, add=False, **tb_kwargs
+        )
+
+        self.add_individual_radial_profile(
+            galaxycluster,
+            profile_table,
+            tan_component_out,
+            cross_component_out,
+            weights_out,
+        )
+
+    def add_individual_radial_profile(
+        self,
+        galaxycluster,
+        profile_table,
+        tan_component="gt",
+        cross_component="gx",
+        weights="W_l",
+    ):
+        """Compute the individual shear profile from a single GalaxyCluster object
+        and adds the averaged data in the data attribute.
+
+        Parameters
+        ----------
+        galaxycluster : GalaxyCluster
+            GalaxyCluster object with cluster metadata and background galaxy data
+        profile_table : GCData
+            Table containing the radius grid points, the tangential, cross shear and weights
+            profiles on that grid.
+        tan_component: string, optional
+            Name of the tangetial component binned column in the profile table.
+            Default: 'gt'
+        cross_component: string, optional
+            Name of the cross component binned profile column in the profile table.
+            Default: 'gx'
+        weights : str, None
+            Name of the weight binned column in the profile table.
+        """
+        cl_bin_units = profile_table.meta.get("bin_units", None)
+        self.data.update_info_ext_valid("bin_units", self.data, cl_bin_units, overwrite=False)
+        for col in ("radius_min", "radius_max"):
+            value = DiffArray(profile_table[col])
+            self.data.update_info_ext_valid(col, self.data, value, overwrite=False)
+
+        cl_cosmo = profile_table.meta.get("cosmo", None)
+        self.data.update_info_ext_valid("cosmo", self.data, cl_cosmo, overwrite=False)
+
+        tbcols = ("radius", tan_component, cross_component, weights)
+        data_to_save = [
+            galaxycluster.unique_id,
+            galaxycluster.ra,
+            galaxycluster.dec,
+            galaxycluster.z,
+            *(np.array(profile_table[col]) for col in tbcols),
+        ]
+        if len(self.data) == 0:
+            for col, data in zip(["cluster_id", "ra", "dec", "z", *tbcols], data_to_save):
                 self.data[col] = [data]
         else:
             self.data.add_row(data_to_save)
 
-    def make_stacked_radial_profile(self, tan_component='gt', cross_component='gx',
-                                    weights='W_l'):
-        """Computes stacked profile and mean separation distances and add it internally.
+    def _check_empty_data(self):
+        if len(self.data) == 0:
+            raise ValueError(
+                "There is no single cluster profile data. Please run"
+                + "'make_individual_radial_profile' or "
+                "'add_individual_radial_profile' "
+                "for each cluster in your catalog"
+            )
+
+    def make_stacked_radial_profile(self, tan_component="gt", cross_component="gx", weights="W_l"):
+        """Computes stacked profile and mean separation distances and add it internally
+        to `stacked_data`.
 
         Parameters
         ----------
@@ -160,76 +244,127 @@ class ClusterEnsemble():
         weights : str
             Name of the weights column in `data`.
         """
+        self._check_empty_data()
+
         radius, components = make_stacked_radial_profile(
-            self.data['radius'], self.data[weights],
-            [self.data[tan_component], self.data[cross_component]])
-        self.stacked_data = GCData([radius, *components], meta=self.data.meta,
-                                    names=('radius', tan_component, cross_component))
+            self.data["radius"],
+            self.data[weights],
+            [self.data[tan_component], self.data[cross_component]],
+        )
+        self.stacked_data = GCData(
+            [
+                self.data.meta["radius_min"].value,
+                self.data.meta["radius_max"].value,
+                radius,
+                *components,
+            ],
+            meta={k: v for k, v in self.data.meta.items() if k not in ("radius_min", "radius_max")},
+            names=("radius_min", "radius_max", "radius", tan_component, cross_component),
+        )
 
-    def compute_sample_covariance(self, tan_component='gt', cross_component='gx'):
+    def compute_sample_covariance(self, tan_component="gt", cross_component="gx"):
         """Compute Sample covariance matrix for cross and tangential and cross
-        stacked profiles adds as attributes.
-
-        Returns
-        -------
-        sample_tangential_covariance : ndarray
-            The sample covariance matrix for the stacked tangential profile
-        sample_cross_covariance : ndarray
-            The sample covariance matrix for the stacked cross profile
-        """
-        n_catalogs = len(self.data)
-        self.sample_tangential_covariance = np.cov(self.data[tan_component].T, bias = False)/n_catalogs
-        self.sample_cross_covariance = np.cov(self.data[cross_component].T, bias = False)/n_catalogs
-
-    def compute_bootstrap_covariance(self, tan_component='gt', cross_component='gx', n_bootstrap=10):
-        """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes.
+        stacked profiles and updates .cov dict (`tan_sc`, `cross_sc`).
 
         Parameters
         ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
+        """
+        self._check_empty_data()
+
+        n_catalogs = len(self.data)
+        self.cov["tan_sc"] = np.cov(self.data[tan_component].T, bias=False) / n_catalogs
+        self.cov["cross_sc"] = np.cov(self.data[cross_component].T, bias=False) / n_catalogs
+
+    def compute_bootstrap_covariance(
+        self, tan_component="gt", cross_component="gx", n_bootstrap=10
+    ):
+        """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
+        tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_bs`).
+
+        Parameters
+        ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
         n_bootstrap : int
             number of bootstrap resamplings
         """
-        cluster_index = np.arange(len(self.data))
-        gt_boot, gx_boot = [], []
-        for n_boot in range(n_bootstrap):
-            cluster_index_bootstrap = np.random.choice(cluster_index, len(cluster_index))
-            data_bootstrap = self.data[cluster_index_bootstrap]
-            r, (gt, gx) = make_stacked_radial_profile(
-                            data_bootstrap['radius'], data_bootstrap['W_l'],
-                            [data_bootstrap[tan_component], data_bootstrap[cross_component]])
-            gt_boot.append(gt), gx_boot.append(gx)
-        n_catalogs = len(self.data)
-        coeff = (n_catalogs/(n_catalogs-1))**2
-        self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T, bias = False,ddof=0)
-        self.bootstrap_cross_covariance = coeff*np.cov(np.array(gx_boot).T, bias = False)
+        self._check_empty_data()
+        n_catalogs = len(self)
 
-    def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
+        cluster_index = np.arange(n_catalogs)
+        cluster_index_bootstrap = [
+            np.random.choice(cluster_index, n_catalogs) for n_boot in range(n_bootstrap)
+        ]
+
+        gt_boot, gx_boot = make_stacked_radial_profile(
+            self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+            self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+            [
+                self[tan_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+                self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+            ],
+        )[1]
+
+        coeff = (n_catalogs / (n_catalogs - 1)) ** 2
+        self.cov["tan_bs"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
+        self.cov["cross_bs"] = coeff * np.cov(np.array(gx_boot), bias=False)
+
+    def compute_jackknife_covariance(self, tan_component="gt", cross_component="gx", n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes.
+        tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_jk`).
+
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
 
         Parameters
         ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
         n_side : int
             healpix sky area division parameter (number of sky area : 12*n_side^2)
         """
-        #may induce artificial noise if there are some healpix pixels
-        #not covering entirely the 2D map of clusters
-        index = np.arange(len(self.data))
-        pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
-                                nest=True, lonlat=True)
+        # may induce artificial noise if there are some healpix pixels
+        # not covering entirely the 2D map of clusters
+        self._check_empty_data()
+
+        pixels = healpy.ang2pix(n_side, self.data["ra"], self.data["dec"], nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
-        n_jack = len(pixels_list_unique)
         gt_jack, gx_jack = [], []
-        for i, hp_list_delete in enumerate(pixels_list_unique):
-            mask_in_area = np.isin(pixels, hp_list_delete)
-            data_jk = self.data[~mask_in_area]
-            r, (gt, gx) = make_stacked_radial_profile(data_jk['radius'], data_jk['W_l'],
-                                                      [data_jk[tan_component], data_jk[cross_component]])
-            gt_jack.append(gt), gx_jack.append(gx)
-        coeff = (n_jack - 1)**2/(n_jack)
-        self.jackknife_tangential_covariance = coeff*np.cov(np.array(gt_jack).T,
-                                                            bias=False, ddof=0)
-        self.jackknife_cross_covariance = coeff*np.cov(np.array(gx_jack).T,
-                                                       bias=False, ddof=0)
+        for hp_list_delete in pixels_list_unique:
+            mask = ~np.isin(pixels, hp_list_delete)
+            gt, gx = make_stacked_radial_profile(
+                self["radius"][mask],
+                self["W_l"][mask],
+                [self[tan_component][mask], self[cross_component][mask]],
+            )[1]
+            gt_jack.append(gt)
+            gx_jack.append(gx)
+        n_jack = pixels_list_unique.size
+        coeff = (n_jack - 1) ** 2 / (n_jack)
+        self.cov["tan_jk"] = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)
+        self.cov["cross_jk"] = coeff * np.cov(np.transpose(gx_jack), bias=False, ddof=0)
+
+    def save(self, filename, **kwargs):
+        """Saves GalaxyCluster object to filename using Pickle"""
+        with open(filename, "wb") as fin:
+            pickle.dump(self, fin, **kwargs)
+
+    @classmethod
+    def load(cls, filename, **kwargs):
+        """Loads GalaxyCluster object to filename using Pickle"""
+        with open(filename, "rb") as fin:
+            self = pickle.load(fin, **kwargs)
+        return self

@@ -1,17 +1,28 @@
 """@file galaxycluster.py
 The GalaxyCluster class
 """
+
 import pickle
 import warnings
 from .gcdata import GCData
-from .dataops import (compute_tangential_and_cross_components, make_radial_profile,
-                      compute_galaxy_weights, compute_background_probability)
-from .theory import compute_critical_surface_density
+from .dataops import (
+    compute_tangential_and_cross_components,
+    make_radial_profile,
+    compute_galaxy_weights,
+    compute_background_probability,
+)
+from .theory import compute_critical_surface_density_eff
 from .plotting import plot_profiles
-from .utils import validate_argument, _draw_random_points_from_tab_distribution
+from .utils import (
+    validate_argument,
+    _validate_ra,
+    _validate_dec,
+    _draw_random_points_from_tab_distribution,
+    _validate_coordinate_system,
+)
 
 
-class GalaxyCluster():
+class GalaxyCluster:
     """Object that contains the galaxy cluster metadata and background galaxy data
 
     Attributes
@@ -26,6 +37,10 @@ class GalaxyCluster():
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
+    coordinate_system : str, optional
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is 'euclidean'.
     validate_input: bool
         Validade each input argument
     """
@@ -37,28 +52,36 @@ class GalaxyCluster():
         self.z = None
         self.galcat = None
         self.validate_input = validate_input
-        if len(args)>0 or len(kwargs)>0:
+        if len(args) > 0 or len(kwargs) > 0:
             self._add_values(*args, **kwargs)
             self._check_types()
             self.set_ra_lower(ra_low=0)
 
-    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, galcat: GCData):
+    def _add_values(
+        self,
+        unique_id: str,
+        ra: float,
+        dec: float,
+        z: float,
+        galcat: GCData,
+        coordinate_system: str = "euclidean",
+    ):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
         self.dec = dec
         self.z = z
         self.galcat = galcat
+        self.coordinate_system = coordinate_system
 
     def _check_types(self):
         """Check types of all attributes"""
-        validate_argument(vars(self), 'unique_id', (int, str))
-        validate_argument(vars(self), 'ra', (float, str),
-                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
-        validate_argument(vars(self), 'dec', (float, str),
-                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
-        validate_argument(vars(self), 'z', (float, str), argmin=0, eqmin=True)
-        validate_argument(vars(self), 'galcat', GCData)
+        validate_argument(vars(self), "unique_id", (int, str))
+        _validate_ra(vars(self), "ra", False)
+        _validate_dec(vars(self), "dec", False)
+        validate_argument(vars(self), "z", (float, str), argmin=0, eqmin=True)
+        validate_argument(vars(self), "galcat", GCData)
+        _validate_coordinate_system(vars(self), "coordinate_system", str)
         self.unique_id = str(self.unique_id)
         self.ra = float(self.ra)
         self.dec = float(self.dec)
@@ -66,46 +89,48 @@ class GalaxyCluster():
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
-        with open(filename, 'wb') as fin:
+        with open(filename, "wb") as fin:
             pickle.dump(self, fin, **kwargs)
 
     @classmethod
     def load(cls, filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
-        with open(filename, 'rb') as fin:
+        with open(filename, "rb") as fin:
             self = pickle.load(fin, **kwargs)
+        # pylint: disable=protected-access
         self._check_types()
         return self
 
     def _str_colnames(self):
         """Colnames in comma separated str"""
-        return ', '.join(self.galcat.colnames)
+        return ", ".join(self.galcat.colnames)
 
     def __repr__(self):
         """Generates basic description of GalaxyCluster"""
         return (
-            f'GalaxyCluster {self.unique_id}: '
-            f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
-            f'\n> with columns: {self._str_colnames()}'
-            f'\n> {len(self.galcat)} source galaxies'
-            )
+            f"GalaxyCluster {self.unique_id}: "
+            f"(ra={self.ra}, dec={self.dec}) at z={self.z}"
+            f"\n> with columns: {self._str_colnames()}"
+            f"\n> {len(self.galcat)} source galaxies"
+        )
 
     def __str__(self):
         """Generates string for print(GalaxyCluster)"""
-        table = 'objects'.join(self.galcat.__str__().split('objects')[1:])
-        return self.__repr__()+'\n'+table
+        table = "objects".join(self.galcat.__str__().split("objects")[1:])
+        return self.__repr__() + "\n" + table
 
     def _repr_html_(self):
         """Generates string for display(GalaxyCluster)"""
+        # pylint: disable=protected-access
         return (
-            f'<b>GalaxyCluster:</b> {self.unique_id} '
-            f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
-            f'<br>> <b>with columns:</b> {self._str_colnames()}'
-            f'<br>> {len(self.galcat)} source galaxies'
-            f'<br>{self.galcat._html_table()}'
-            )
+            f"<b>GalaxyCluster:</b> {self.unique_id} "
+            f"(ra={self.ra}, dec={self.dec}) at z={self.z}"
+            f"<br>> <b>with columns:</b> {self._str_colnames()}"
+            f"<br>> {len(self.galcat)} source galaxies"
+            f"<br>{self.galcat._html_table()}"
+        )
 
-    def add_critical_surface_density(self, cosmo, use_pdz=False):
+    def add_critical_surface_density(self, cosmo, use_pdz=False, force=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -119,83 +144,103 @@ class GalaxyCluster():
             `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `galcat` table should have
             pzbins` and `pzpdf` columns.
+        force : bool
+            Force recomputation of sigma_c.
 
         Returns
         -------
         None
         """
         if cosmo is None:
-            raise TypeError('To compute Sigma_crit, please provide a cosmology')
-        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat.columns:
+            raise TypeError("To compute Sigma_crit, please provide a cosmology")
+        sigmac_colname = "sigma_c_eff" if use_pdz else "sigma_c"
+        if (
+            cosmo.get_desc() != self.galcat.meta["cosmo"]
+            or sigmac_colname not in self.galcat.columns
+            or force
+        ):
             if self.z is None:
-                raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
-            if use_pdz is False and 'z' not in self.galcat.columns:
-                raise TypeError("Galaxy catalog missing the redshift column (which should be"
-                                "called 'z'). Cannot compute Sigma_crit.")
-            if use_pdz and ('pzbins' not in self.galcat.columns
-                            or 'pzpdf' not in self.galcat.columns):
-                raise TypeError("Galaxy catalog missing the redshift distribution information. "
-                                "Need to have both a 'pzbins' and 'pzpdf' columns."
-                                "Cannot compute 1/<1/Sigma_crit>.")
+                raise TypeError("Cluster's redshift is None. Cannot compute Sigma_crit")
+            if not use_pdz and "z" not in self.galcat.columns:
+                raise TypeError(
+                    "Galaxy catalog missing the redshift column (which should be"
+                    "called 'z'). Cannot compute Sigma_crit."
+                )
+            if use_pdz and not self.galcat.has_pzpdfs():
+                raise TypeError(
+                    "Galaxy catalog missing the pzpdfs. Cannot compute 1/<1/Sigma_crit>."
+                )
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            if use_pdz is False:
-                self.galcat['sigma_c'] = compute_critical_surface_density(
-                    cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
-                    validate_input=self.validate_input)
-                self.galcat.meta['sigmac_type']= 'standard'
+            if not use_pdz:
+                self.galcat[sigmac_colname] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
             else:
-                self.galcat['sigma_c'] = compute_critical_surface_density(
-                    cosmo=cosmo, z_cluster=self.z, use_pdz=True,
-                    pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
-                    validate_input=self.validate_input)
-                self.galcat.meta['sigmac_type']= 'effective'
+                zdata = self._get_input_galdata({"pzpdf": "pzpdf", "pzbins": "pzbins"})
+                self.galcat[sigmac_colname] = compute_critical_surface_density_eff(
+                    cosmo=cosmo,
+                    z_cluster=self.z,
+                    pzbins=zdata["pzbins"],
+                    pzpdf=zdata["pzpdf"],
+                    validate_input=self.validate_input,
+                )
+        return sigmac_colname
 
-
-
-    def _get_input_galdata(self, col_dict, required_cols=None):
+    def _get_input_galdata(self, col_dict):
         """
         Checks required columns exist in galcat and returns kwargs dictionary
         to be passed to dataops functions.
 
         Parametters
         -----------
-        col_dict: dict
+        col_dict : dict
             Dictionary with the names of the dataops arguments as keys and galcat columns
             as values, made to usually pass locals() here.
-        required_cols: list, None
-            List of column names required. If None, checks all columns.
 
         Returns
         -------
-        dict
+        kwarg_data : dict
             Dictionary with the data to be passed to functions by **kwargs method.
         """
-        use_cols = col_dict if required_cols is None \
-                    else {col:col_dict[col] for col in required_cols}
-        missing_cols = ', '.join([f"'{t_}'" for t_ in use_cols.values()
-                                    if t_ not in self.galcat.columns])
-        if len(missing_cols)>0:
-            raise TypeError(f'Galaxy catalog missing required columns: {missing_cols}')
-        return {key: self.galcat[colname] for key, colname in use_cols.items()}
-
+        use_cols = {**col_dict}
+        kwarg_data = {}
+        if "pzbins" in col_dict:
+            if not self.galcat.has_pzpdfs():
+                raise TypeError("Missing galaxy photoz distributions")
+            use_cols.pop("pzbins")
+            use_cols.pop("pzpdf")
+            pzbins, pzpdfs = self.galcat.get_pzpdfs()
+            kwarg_data.update({"pzbins": pzbins, "pzpdf": pzpdfs})
+        missing_cols = ", ".join(
+            [f"'{t_}'" for t_ in use_cols.values() if t_ not in self.galcat.columns]
+        )
+        if len(missing_cols) > 0:
+            raise TypeError(f"Galaxy catalog missing required columns: {missing_cols}")
+        kwarg_data.update({key: self.galcat[colname] for key, colname in use_cols.items()})
+        return kwarg_data
 
     def compute_tangential_and_cross_components(
-        self, shape_component1='e1', shape_component2='e2', tan_component='et',
-        cross_component='ex', geometry='curve', is_deltasigma=False, use_pdz=False,
-        cosmo=None, add=True):
+        self,
+        shape_component1="e1",
+        shape_component2="e2",
+        tan_component="et",
+        cross_component="ex",
+        geometry="curve",
+        is_deltasigma=False,
+        use_pdz=False,
+        cosmo=None,
+        add=True,
+    ):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
-        ra_lens: cluster Ra
-        dec_lens: cluster Dec
+        ra_lens: `cluster` Ra
+        dec_lens: `cluster` Dec
         ra_source: `galcat` Ra
         dec_source: `galcat` Dec
         shear1: `galcat` shape_component1
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
-        sigma_c: `galcat` sigma_c | None
 
         Parameters
         ----------
@@ -234,27 +279,40 @@ class GalaxyCluster():
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        cols = self._get_input_galdata(
-            {'ra_source':'ra', 'dec_source':'dec',
-             'shear1': shape_component1, 'shear2': shape_component2})
-
+        col_dict = {
+            "ra_source": "ra",
+            "dec_source": "dec",
+            "shear1": shape_component1,
+            "shear2": shape_component2,
+        }
         if is_deltasigma:
-            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            cols['sigma_c'] = self.galcat['sigma_c']
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
+        cols = self._get_input_galdata(col_dict)
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-            ra_lens=self.ra, dec_lens=self.dec, geometry=geometry,
-            is_deltasigma=is_deltasigma, use_pdz=use_pdz,
-            validate_input=self.validate_input, **cols)
+            is_deltasigma=is_deltasigma,
+            ra_lens=self.ra,
+            dec_lens=self.dec,
+            geometry=geometry,
+            validate_input=self.validate_input,
+            coordinate_system=self.coordinate_system,
+            **cols,
+        )
         if add:
-            self.galcat['theta'] = angsep
+            self.galcat["theta"] = angsep
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
+            if is_deltasigma:
+                sigmac_type = "effective" if use_pdz else "standard"
+                self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
+                self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
         return angsep, tangential_comp, cross_comp
 
-    def compute_background_probability(self, use_pdz=False,
-                                       add=True, p_background_name='p_background'):
+    def compute_background_probability(
+        self, use_pdz=False, add=True, p_background_name="p_background"
+    ):
         r"""Probability for being a background galaxy
 
         Parameters
@@ -272,21 +330,30 @@ class GalaxyCluster():
         p_background : array
             Probability for being a background galaxy
         """
-        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
-        required_cols = ['pzpdf', 'pzbins'] if use_pdz else ['z_source']
-        cols = self._get_input_galdata(col_dict, required_cols)
+        cols = self._get_input_galdata(
+            {"pzpdf": "pzpdf", "pzbins": "pzbins"} if use_pdz else {"z_src": "z"}
+        )
         p_background = compute_background_probability(
-            self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols)
+            self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols
+        )
         if add:
             self.galcat[p_background_name] = p_background
         return p_background
 
-    def compute_galaxy_weights(self, use_pdz=False,
-                               use_shape_noise=False,
-                               shape_component1='e1', shape_component2='e2',
-                               use_shape_error=False,
-                               shape_component1_err='e1_err', shape_component2_err='e2_err',
-                               weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
+    def compute_galaxy_weights(
+        self,
+        use_pdz=False,
+        use_shape_noise=False,
+        shape_component1="e1",
+        shape_component2="e2",
+        use_shape_error=False,
+        shape_component1_err="e1_err",
+        shape_component2_err="e2_err",
+        weight_name="w_ls",
+        cosmo=None,
+        is_deltasigma=False,
+        add=True,
+    ):
         r"""Computes the individual lens-source pair weights
 
         Parameters
@@ -324,34 +391,43 @@ class GalaxyCluster():
             the individual lens source pair weights
         """
         # input cols
-        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z', 'sigma_c':'sigma_c',
-        'shape_component1':shape_component1, 'shape_component2':shape_component2,
-        'shape_component1_err':shape_component1_err, 'shape_component2_err':shape_component2_err}
-        col_dict.update(locals())
-        required_cols = ['shape_component1', 'shape_component2']
-        if use_pdz:
-            required_cols += ['pzpdf', 'pzbins']
+        col_dict = {}
         if is_deltasigma:
-            if 'sigma_c' not in self.galcat.columns:
-                self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            required_cols += ['z_source','sigma_c']
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
         if use_shape_noise:
-            required_cols += ['shape_component1', 'shape_component2']
+            col_dict.update(
+                {
+                    "shape_component1": shape_component1,
+                    "shape_component2": shape_component2,
+                }
+            )
         if use_shape_error:
-            required_cols += ['shape_component1_err', 'shape_component2_err']
-        cols = self._get_input_galdata(col_dict, required_cols)
+            col_dict.update(
+                {
+                    "shape_component1_err": shape_component1_err,
+                    "shape_component2_err": shape_component2_err,
+                }
+            )
+        cols = self._get_input_galdata(col_dict)
 
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise,
-            use_shape_error=use_shape_error, is_deltasigma=is_deltasigma,
-            validate_input=self.validate_input, **cols)
+            is_deltasigma=is_deltasigma,
+            use_shape_noise=use_shape_noise,
+            use_shape_error=use_shape_error,
+            validate_input=self.validate_input,
+            **cols,
+        )
         if add:
             self.galcat[weight_name] = w_ls
+            if is_deltasigma:
+                self.galcat.meta[f"{weight_name}_sigmac_type"] = (
+                    "effective" if use_pdz else "standard"
+                )
         return w_ls
 
-
-    def draw_gal_z_from_pdz(self, zcol_out='z', overwrite=False, nobj=1, xmin=None, xmax=None):
+    def draw_gal_z_from_pdz(self, zcol_out="z", overwrite=False, nobj=1, xmin=None, xmax=None):
         """Draw random redshifts from the photoz pdf for each galaxy
         of the galcat table.
 
@@ -376,29 +452,52 @@ class GalaxyCluster():
             Random points following the pdf_tab distribution
         """
 
-        if 'pzpdf' not in self.galcat.columns or 'pzbins' not in self.galcat.columns:
-            raise TypeError('Missing galaxy photoz distributions')
-
         if zcol_out in self.galcat.columns and overwrite is False:
-            raise TypeError(f'Column {zcol_out} already exists in galcat. \
-                            Set overwrite=True to overwrite or use other column name')
+            raise TypeError(
+                f"Column {zcol_out} already exists in galcat. \
+                            Set overwrite=True to overwrite or use other column name"
+            )
 
-        res = []
-        for pzbins, pzpdf in zip(self.galcat['pzbins'], self.galcat['pzpdf']):
-            res.append(_draw_random_points_from_tab_distribution(pzbins, pzpdf, nobj=nobj,
-                                                                 xmin=xmin, xmax=xmax))
+        zdata = self._get_input_galdata({"pzpdf": "pzpdf", "pzbins": "pzbins"})
+        if self.galcat.pzpdf_info["type"] == "shared_bins":
+            res = [
+                _draw_random_points_from_tab_distribution(
+                    zdata["pzbins"], pzpdf, nobj=nobj, xmin=xmin, xmax=xmax
+                )
+                for pzpdf in zdata["pzpdf"]
+            ]
+        else:
+            res = [
+                _draw_random_points_from_tab_distribution(
+                    pzbin, pzpdf, nobj=nobj, xmin=xmin, xmax=xmax
+                )
+                for pzbin, pzpdf in zip(zdata["pzbins"], zdata["pzpdf"])
+            ]
 
         self.galcat[zcol_out] = res
         return res
 
-    def make_radial_profile(self,
-                            bin_units, bins=10, error_model='ste', cosmo=None,
-                            tan_component_in='et', cross_component_in='ex',
-                            tan_component_out='gt', cross_component_out='gx',
-                            tan_component_in_err=None, cross_component_in_err=None,
-                            include_empty_bins=False, gal_ids_in_bins=False,
-                            add=True, table_name='profile', overwrite=True,
-                            use_weights=False, weights_name='w_ls'):
+    def make_radial_profile(
+        self,
+        bin_units,
+        bins=10,
+        error_model="ste",
+        cosmo=None,
+        tan_component_in="et",
+        cross_component_in="ex",
+        tan_component_out="gt",
+        cross_component_out="gx",
+        tan_component_in_err=None,
+        cross_component_in_err=None,
+        include_empty_bins=False,
+        gal_ids_in_bins=False,
+        add=True,
+        table_name="profile",
+        overwrite=True,
+        use_weights=False,
+        weights_in="w_ls",
+        weights_out="W_l",
+    ):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -464,9 +563,9 @@ class GalaxyCluster():
             Overwrite profile table.
             Default True
         use_weights: bool, optional
-            If True, use the column `weights_name` in `galcat` as the weights
+            If True, use the column `weights_in` in `galcat` as the weights
             Default: False
-        weights_name: str, optional
+        weights_in: str, optional
             Name of the weights column in `galcat`
             Default: 'w_ls'
 
@@ -477,58 +576,77 @@ class GalaxyCluster():
             profiles on that grid, and the errors in the two shear profiles. The errors are
             defined as the standard errors in each bin.
         """
-        #Too many local variables (19/15)
-        #pylint: disable=R0914
+        # Too many local variables (19/15)
+        # pylint: disable=R0914
 
-        if not all([t_ in self.galcat.columns for t_ in
-                (tan_component_in, cross_component_in, 'theta')]):
+        if not all(
+            t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, "theta")
+        ):
             raise TypeError(
-                'Shear or ellipticity information is missing. Galaxy catalog must have tangential'
-                'and cross shears (gt, gx) or ellipticities (et, ex). '
-                'Run compute_tangential_and_cross_components first.')
-        if 'z' not in self.galcat.columns:
-            raise TypeError('Missing galaxy redshifts!')
+                "Shear or ellipticity information is missing. Galaxy catalog must have tangential"
+                "and cross shears (gt, gx) or ellipticities (et, ex). "
+                "Run compute_tangential_and_cross_components first."
+            )
+        if "z" not in self.galcat.columns:
+            raise TypeError("Missing galaxy redshifts!")
         # Compute the binned averages and associated errors
         profile_table, binnumber = make_radial_profile(
-            [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
-            angsep=self.galcat['theta'], angsep_units='radians',
-            bin_units=bin_units, bins=bins, error_model=error_model,
-            include_empty_bins=include_empty_bins, return_binnumber=True,
-            cosmo=cosmo, z_lens=self.z, validate_input=self.validate_input,
-            components_error=[None if n is None else self.galcat[n].data
-                              for n in (tan_component_in_err, cross_component_in_err, None)],
-            weights=self.galcat[weights_name].data if use_weights else None
-            )
+            [self.galcat[n].data for n in (tan_component_in, cross_component_in, "z")],
+            angsep=self.galcat["theta"],
+            angsep_units="radians",
+            bin_units=bin_units,
+            bins=bins,
+            error_model=error_model,
+            include_empty_bins=include_empty_bins,
+            return_binnumber=True,
+            cosmo=cosmo,
+            z_lens=self.z,
+            validate_input=self.validate_input,
+            components_error=[
+                None if n is None else self.galcat[n].data
+                for n in (tan_component_in_err, cross_component_in_err, None)
+            ],
+            weights=self.galcat[weights_in].data if use_weights else None,
+        )
         # Reaname table columns
-        for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
-            profile_table.rename_column(f'p_{i}', name)
-            profile_table.rename_column(f'p_{i}_err', f'{name}_err')
+        for i, name in enumerate([tan_component_out, cross_component_out, "z"]):
+            profile_table.rename_column(f"p_{i}", name)
+            profile_table.rename_column(f"p_{i}_err", f"{name}_err")
+        # Reaname weights columns
+        profile_table.rename_column("weights_sum", weights_out)
         # add galaxy IDs
         if gal_ids_in_bins:
-            if 'id' not in self.galcat.columns:
-                raise TypeError('Missing galaxy IDs!')
-            nbins = len(bins)-1 if hasattr(bins, '__len__') else bins
-            gal_ids = [list(self.galcat['id'][binnumber==i+1])
-                        for i in range(nbins)]
+            if "id" not in self.galcat.columns:
+                raise TypeError("Missing galaxy IDs!")
+            nbins = len(bins) - 1 if hasattr(bins, "__len__") else bins
+            gal_ids = [list(self.galcat["id"][binnumber == i + 1]) for i in range(nbins)]
             if not include_empty_bins:
-                gal_ids = [g_id for g_id in gal_ids if len(g_id)>1]
-            profile_table['gal_id'] = gal_ids
+                gal_ids = [g_id for g_id in gal_ids if len(g_id) > 1]
+            profile_table["gal_id"] = gal_ids
         if add:
             profile_table.update_cosmo_ext_valid(self.galcat, cosmo, overwrite=False)
             if hasattr(self, table_name):
                 if overwrite:
-                    warnings.warn(f'overwriting {table_name} table.')
+                    warnings.warn(f"overwriting {table_name} table.")
                     delattr(self, table_name)
                 else:
                     raise AttributeError(
-                        f'table {table_name} already exists, '
-                        'set overwrite=True or use another name.')
+                        f"table {table_name} already exists, "
+                        "set overwrite=True or use another name."
+                    )
             setattr(self, table_name, profile_table)
         return profile_table
 
-    def plot_profiles(self, tangential_component='gt', tangential_component_error='gt_err',
-                      cross_component='gx', cross_component_error='gx_err', table_name='profile',
-                      xscale='linear', yscale='linear'):
+    def plot_profiles(
+        self,
+        tangential_component="gt",
+        tangential_component_error="gt_err",
+        cross_component="gx",
+        cross_component_error="gx_err",
+        table_name="profile",
+        xscale="linear",
+        yscale="linear",
+    ):
         """Plot shear profiles using `plotting.plot_profiles` function
 
         Parameters
@@ -569,17 +687,23 @@ class GalaxyCluster():
             if col not in profile.columns:
                 warnings.warn(f"Column for plotting '{col}' does not exist.")
         return plot_profiles(
-            rbins=profile['radius'],
-            r_units=profile.meta['bin_units'],
+            rbins=profile["radius"],
+            r_units=profile.meta["bin_units"],
             tangential_component=profile[tangential_component],
-            tangential_component_error=(profile[tangential_component_error] if
-                tangential_component_error in profile.columns else None),
+            tangential_component_error=(
+                profile[tangential_component_error]
+                if tangential_component_error in profile.columns
+                else None
+            ),
             cross_component=profile[cross_component],
-            cross_component_error=(profile[cross_component_error] if
-                cross_component_error in profile.columns else None),
-            xscale=xscale, yscale=yscale,
+            cross_component_error=(
+                profile[cross_component_error] if cross_component_error in profile.columns else None
+            ),
+            xscale=xscale,
+            yscale=yscale,
             tangential_component_label=tangential_component,
-            cross_component_label=cross_component)
+            cross_component_label=cross_component,
+        )
 
     def set_ra_lower(self, ra_low=0):
         """
@@ -591,10 +715,10 @@ class GalaxyCluster():
             Lower value for RA range, can be -180 or 0
 
         """
-        if ra_low not in (-180., 0.):
-            raise ValueError('ra_low must be -180 or 0')
-        self.ra += 360. if self.ra<ra_low else 0
-        self.ra -= 360. if self.ra>=ra_low+360. else 0
-        if 'ra' in self.galcat.columns:
-            self.galcat['ra'][self.galcat['ra']<ra_low] += 360.
-            self.galcat['ra'][self.galcat['ra']>=ra_low+360.] -= 360.
+        if ra_low not in (-180.0, 0.0):
+            raise ValueError("ra_low must be -180 or 0")
+        self.ra += 360.0 if self.ra < ra_low else 0
+        self.ra -= 360.0 if self.ra >= ra_low + 360.0 else 0
+        if "ra" in self.galcat.columns:
+            self.galcat["ra"][self.galcat["ra"] < ra_low] += 360.0
+            self.galcat["ra"][self.galcat["ra"] >= ra_low + 360.0] -= 360.0

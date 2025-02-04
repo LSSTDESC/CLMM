@@ -2,27 +2,35 @@
 import os
 import subprocess
 import sys
-sys.path.insert(0, os.path.abspath('../clmm'))
-sys.path.insert(0, os.path.abspath('..'))
+
+sys.path.insert(0, os.path.abspath("../clmm"))
+sys.path.insert(0, os.path.abspath(".."))
 
 from unittest.mock import MagicMock
 
-MOCK_MODULES = ['gi', 'gi.repository', 'gi.repository.NumCosmoMath', 'gi.repository.NumCosmo', 'pyccl']
+MOCK_MODULES = [
+    "gi",
+    "gi.repository",
+    "gi.repository.NumCosmoMath",
+    "gi.repository.NumCosmo",
+    "pyccl",
+]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = MagicMock()
 
 # Fix for ccl
-sys.modules['pyccl'].Cosmology = MagicMock
+sys.modules["pyccl"].Cosmology = MagicMock
+sys.modules["pyccl"].__version__ = "3"
 
 # Fix for numcosmo
-sys.modules['gi.repository'].NumCosmo.Distance = MagicMock
-sys.modules['gi.repository'].NumCosmo.Distance.new = MagicMock
-sys.modules['gi.repository'].NumCosmo.Distance.new.prepare_if_needed = MagicMock
+sys.modules["gi.repository"].NumCosmo.Distance = MagicMock
+sys.modules["gi.repository"].NumCosmo.Distance.new = MagicMock
+sys.modules["gi.repository"].NumCosmo.Distance.new.prepare_if_needed = MagicMock
 
 import clmm
 
 # -- RTD Fix for cluster_toolkit -----------------------------------------
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
 # This code will execute only on readthedocs
 if on_rtd:
@@ -37,7 +45,7 @@ if on_rtd:
             return MagicMock()
 
     # For these modules, do a mock import
-    MOCK_MODULES = ['cluster_toolkit']
+    MOCK_MODULES = ["cluster_toolkit"]
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Load the version number ----------------------------------------------
@@ -45,49 +53,60 @@ version = clmm.__version__
 release = version
 
 # -- General configuration ------------------------------------------------
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.autosummary',
-              'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon',
-              'sphinx.ext.githubpages',
-              'IPython.sphinxext.ipython_console_highlighting']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.githubpages",
+    "IPython.sphinxext.ipython_console_highlighting",
+]
 
-apidoc_module_dir = '../clmm'
+apidoc_module_dir = "../clmm"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-source_suffix = ['.rst', '.md']
+templates_path = ["_templates"]
+source_suffix = [".rst", ".md"]
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'CLMM'
-copyright = '2018-2021, LSST DESC CLMM Contributors'
-author = 'LSST DESC CLMM Contributors'
-language = 'en'
+project = "CLMM"
+copyright = "2018-2021, LSST DESC CLMM Contributors"
+author = "LSST DESC CLMM Contributors"
+language = "en"
 
 # Files to ignore when looking for source files
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
-                    'api/clmm.rst', 'source/index_body.rst',
-                    'api/clmm.cluster_toolkit_patches.rst',
-                    'api/clmm.modbackend.*']
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "api/clmm.rst",
+    "source/index_body.rst",
+    "api/clmm.cluster_toolkit_patches.rst",
+    "api/clmm.modbackend.*",
+    ".precompiled-fixed-examples/*",
+]
 
 # Some style options
-highlight_language = 'python3'
-pygments_style = 'sphinx'
+highlight_language = "python3"
+pygments_style = "sphinx"
 todo_include_todos = True
 add_function_parentheses = True
 add_module_names = True
+smartquotes = False
 
 
 # -- Options for HTML output ----------------------------------------------
 
 # HTML Theme
-html_theme = 'sphinx_rtd_theme'
-html_theme_options = {'prev_next_buttons_location': None,
-                      'collapse_navigation': False,
-                      'titles_only': True}
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "prev_next_buttons_location": None,
+    "collapse_navigation": False,
+    "titles_only": True,
+}
 html_static_path = []
 
 
@@ -105,7 +124,7 @@ napoleon_use_ivar = True
 # -- Options for Autodoc--------------------------------------------------
 # Autodoc collects docstrings and builds API pages
 
-#def run_apidoc(_):
+# def run_apidoc(_):
 #    from sphinxcontrib.apidoc import main as apidoc_main
 #    cur_dir = os.path.normpath(os.path.dirname(__file__))
 #    output_path = os.path.join(cur_dir, 'api')
@@ -113,94 +132,89 @@ napoleon_use_ivar = True
 #    paramlist = ['--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
 #    apidoc_main(paramlist)
 
-#def setup(app):
+# def setup(app):
 #    app.connect('builder-inited', run_apidoc)
 
 
 # -- Load from the config file -------------------------------------------
-config = open('doc-config.ini').read().strip().split('\n')
-apilist, demofiles, examplefiles = [], [], []
-apion, demoon, exon = False, False, False
+config = open("doc-config.ini").read().strip().split("\n")
+doc_files = {
+    "APIDOC": [],
+    "DEMO": [],
+    "EXAMPLE": [],
+    "OTHER": [],
+}
+key = None
 for entry in config:
-    if not entry or entry[0] == '#':
+    if not entry or entry[0] == "#":
         continue
-    elif entry == 'APIDOC':
-        apion, demoon, exon = True, False, False
-        continue
-    elif entry == 'DEMO':
-        apion, demoon, exon = False, True, False
-        continue
-    elif entry == 'EXAMPLE':
-        apion, demoon, exon = False, False, True
-        continue
-    if apion:
-        apilist+= [entry]
-    elif demoon:
-        demofiles+= [entry]
-    elif exon:
-        examplefiles+= [entry]
-
-
+    elif entry in doc_files:
+        key = entry
+    else:
+        doc_files[key].append(entry)
 # -- Compile the examples into rst----------------------------------------
-outdir = 'compiled-examples/'
-nbconvert_opts = ['--to rst',
-                  '--ExecutePreprocessor.kernel_name=python3',
-                   '--execute',
-                  f'--output-dir {outdir}']
-nb_skip_run = [
-    '../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
-    ]
-
 run_nb = False
-for demo in [*demofiles, *examplefiles]:
-    com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
-    if demo in nb_skip_run or not run_nb:
-        com = com.replace(' --execute ', ' ')
+
+outdir = "compiled-examples/"
+nbconvert_opts = [
+    "--to rst",
+    "--ExecutePreprocessor.kernel_name=python3",
+    "--execute",
+    f"--output-dir {outdir}",
+]
+nb_skip_run = [
+    #    '../examples/DC2/data_and_model_demo_DC2.ipynb',
+    #    '../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
+    #    '../examples/mass_fitting/Example5_Fit_Halo_mass_to_DES_data.ipynb',
+]
+
+for lists in [v for k, v in doc_files.items() if k != "APIDOC"]:
+    for demo in lists:
+        com = " ".join(["jupyter nbconvert"] + nbconvert_opts + [demo])
+        if demo in nb_skip_run or not run_nb:
+            com = com.replace(" --execute ", " ")
+        subprocess.run(com, shell=True)
+
+for nb in nb_skip_run:
+    pref = nb.split("/")[-1].replace(".ipynb", "")
+    com = f"cp -rf .precompiled-fixed-examples/{pref}* compiled-examples/"
+    print(f"* Fix for publication (use precompiled version of {pref} from older version)")
     subprocess.run(com, shell=True)
 
 
 # -- Build index.html ----------------------------------------------------
-index_examples_toc = \
-""".. toctree::
-   :maxdepth: 1
-   :caption: Mass Fitting Examples
-
-"""
-for example in examplefiles:
-    fname = ''.join(example.split('.')[:-1]).split('/')[-1]+'.rst'
-    index_examples_toc+= f"   {outdir}{fname}\n"
-
-# This is automatic
-index_demo_toc = \
-"""
+doc_captions = {
+    "DEMO": "Usage Demos",
+    "EXAMPLE": "Mass Fitting Examples",
+    "OTHER": "Other",
+}
+index_toc = ""
+for CASE in ("DEMO", "EXAMPLE", "OTHER"):
+    index_toc += f"""
 .. toctree::
    :maxdepth: 1
-   :caption: Usage Demos
+   :caption: {doc_captions[CASE]}
 
 """
-for demo in demofiles:
-    fname = ''.join(demo.split('.')[:-1]).split('/')[-1]+'.rst'
-    index_demo_toc+= f"   {outdir}{fname}\n"
+    for example in doc_files[CASE]:
+        fname = "".join(example.split(".")[:-1]).split("/")[-1] + ".rst"
+        index_toc += f"   {outdir}{fname}\n"
 
-index_api_toc = \
-"""
+subprocess.run("cp source/index_body.rst index.rst", shell=True)
+with open("index.rst", "a") as indexfile:
+    indexfile.write(index_toc)
+    indexfile.write(
+        """
 .. toctree::
    :maxdepth: 1
    :caption: Reference
 
    api
 """
-
-subprocess.run('cp source/index_body.rst index.rst', shell=True)
-with open('index.rst', 'a') as indexfile:
-    indexfile.write(index_demo_toc)
-    indexfile.write(index_examples_toc)
-    indexfile.write(index_api_toc)
-
+    )
 
 # -- Set up the API table of contents ------------------------------------
-apitoc = \
-"""API Documentation
+apitoc = """API Documentation
 -----------------
 
 Information on specific functions, classes, and methods.
@@ -209,7 +223,7 @@ Information on specific functions, classes, and methods.
    :glob:
 
 """
-for onemodule in apilist:
-    apitoc+= f"   api/clmm.{onemodule}.rst\n"
-with open('api.rst', 'w') as apitocfile:
+for onemodule in doc_files["APIDOC"]:
+    apitoc += f"   api/clmm.{onemodule}.rst\n"
+with open("api.rst", "w") as apitocfile:
     apitocfile.write(apitoc)
