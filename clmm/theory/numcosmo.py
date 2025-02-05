@@ -52,9 +52,9 @@ class NumCosmoCLMModeling(CLMModeling):
         Ncm.cfg_init()
         self.backend = "nc"
         self.mdef_dict = {
-            "mean": Nc.HaloDensityProfileMassDef.MEAN,
-            "critical": Nc.HaloDensityProfileMassDef.CRITICAL,
-            "virial": Nc.HaloDensityProfileMassDef.VIRIAL,
+            "mean": Nc.HaloMassSummaryMassDef.MEAN,
+            "critical": Nc.HaloMassSummaryMassDef.CRITICAL,
+            "virial": Nc.HaloMassSummaryMassDef.VIRIAL,
         }
         self.hdpm_dict = {
             "nfw": Nc.HaloDensityProfileNFW.new,
@@ -62,6 +62,7 @@ class NumCosmoCLMModeling(CLMModeling):
             "hernquist": Nc.HaloDensityProfileHernquist.new,
         }
         self.cosmo_class = NumCosmoCosmology
+        self._hms = None
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
@@ -74,34 +75,35 @@ class NumCosmoCLMModeling(CLMModeling):
         has_cm_vals = self.hdpm is not None
         if has_cm_vals:
             cdelta = self.cdelta
-            log10_mdelta = self.hdpm.props.log10MDelta
+            log10_mdelta = self._hms.props.log10MDelta
 
-        self.hdpm = self.hdpm_dict[self.halo_profile_model](
-            self.mdef_dict[self.massdef], self.delta_mdef
-        )
+        self._hms = Nc.HaloCMParam.new(self.mdef_dict[self.massdef], self.delta_mdef)
+
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](self._hms)
 
         if has_cm_vals:
             self.cdelta = cdelta
-            self.hdpm.props.log10MDelta = log10_mdelta
+            self._hms.props.cDelta = cdelta
+            self._hms.props.log10MDelta = log10_mdelta
 
         self._update_vec_funcs()
 
     def _get_concentration(self):
         """get concentration"""
-        return self.hdpm.props.cDelta
+        return self._hms.props.cDelta
 
     def _get_mass(self):
         """get mass"""
-        return 10**self.hdpm.props.log10MDelta
+        return 10**self._hms.props.log10MDelta
 
     def _set_concentration(self, cdelta):
         """set concentration"""
-        self.hdpm.props.cDelta = cdelta
+        self._hms.props.cDelta = cdelta
         self._update_vec_funcs()
 
     def _set_mass(self, mdelta):
         """set mass"""
-        self.hdpm.props.log10MDelta = math.log10(mdelta)
+        self._hms.props.log10MDelta = math.log10(mdelta)
         self._update_vec_funcs()
 
     def _set_einasto_alpha(self, alpha):
