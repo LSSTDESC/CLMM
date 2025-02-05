@@ -200,6 +200,9 @@ def compute_tangential_and_cross_components(
         )
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
+    # Change sign for shear2_ if "celestial"
+    if coordinate_system == "euclidean":
+        shear2_ = -1.*shear2_
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
@@ -218,6 +221,8 @@ def compute_tangential_and_cross_components(
             phi_major_ = _calculate_major_axis(
                 ra_lens, dec_lens, info_mem[0], info_mem[1], info_mem[2]
             )
+        if coordinate_system == "celestial":
+            phi_major_ = np.pi - phi_major_
         rotated_phi = phi - phi_major_
         rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major_)
         # Compute the quadrupole shear components

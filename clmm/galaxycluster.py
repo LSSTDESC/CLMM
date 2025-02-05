@@ -337,6 +337,7 @@ class GalaxyCluster:
                 include_quadrupole=self.include_quadrupole,
                 phi_major=phi_major,
                 info_mem=info_mem,
+                coordinate_system=self.coordinate_system,
                 **cols,
             )
             if add:
