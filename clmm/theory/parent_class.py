@@ -363,7 +363,9 @@ class CLMModeling:
             params = 1, (z_cl,)
 
         else:
-            rho_def = self.cosmo.get_rho_m(z_cl)
+            rho_def = (
+                self.cosmo.get_rho_m(z_cl) if self.massdef == "mean" else self.cosmo.get_rho_c(z_cl)
+            )
             r_s = self.eval_rdelta(z_cl) / self.cdelta
 
             if self.halo_profile_model == "nfw":
