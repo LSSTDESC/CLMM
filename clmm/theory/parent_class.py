@@ -186,6 +186,9 @@ class CLMModeling:
         if defined"""
         raise NotImplementedError
 
+    def _get_delta_mdef_virial(self, z_cl):
+        raise NotImplementedError
+
     def _set_projected_quad(self, use_projected_quad):
         """Implemented for the CCL backend only"""
         raise NotImplementedError

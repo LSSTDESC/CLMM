@@ -116,6 +116,9 @@ class NumCosmoCLMModeling(CLMModeling):
         # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
+    def _get_delta_mdef_virial(self, z_cl):
+        return self.hdpm.Delta(self.cosmo.be_cosmo, z_cl)
+
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear considering a single redshift plane
         for background sources"""
