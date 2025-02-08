@@ -380,12 +380,11 @@ class CLMModeling:
             )
             r_s = self.eval_rdelta(z_cl) / self.cdelta
 
-            if self.massdef == "virial":
-                self._set_delta_mdef_virial(z_cl)
+            delta_mdef = self._get_delta_mdef(z_cl)
 
             if self.halo_profile_model == "nfw":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -396,7 +395,7 @@ class CLMModeling:
             elif self.halo_profile_model == "einasto":
                 alpha_ein = self._get_einasto_alpha(z_cl)
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -412,7 +411,7 @@ class CLMModeling:
 
             elif self.halo_profile_model == "hernquist":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
