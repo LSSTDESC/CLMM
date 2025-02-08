@@ -506,7 +506,7 @@ class CLMModeling:
             Mass definition, supported options are 'mean', 'critical', 'virial'
             (letter case independent)
         delta_mdef: int
-            Overdensity number
+            Overdensity number. No effect if massdef='virial'.
         """
         # make case independent
         validate_argument(locals(), "massdef", str)

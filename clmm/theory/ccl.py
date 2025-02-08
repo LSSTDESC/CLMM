@@ -148,7 +148,7 @@ class CCLCLMModeling(CLMModeling):
         return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl)
 
     def _get_delta_mdef_virial(self, z_cl):
-        "Gets the overdensity delta value"
+        "Gets the overdensity number"
         a_cl = self.cosmo.get_a_from_z(z_cl)
         return self.mdef.get_Delta(self.cosmo.be_cosmo, a_cl)
 
