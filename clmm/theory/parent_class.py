@@ -377,7 +377,7 @@ class CLMModeling:
             r_s = self.eval_rdelta(z_cl) / self.cdelta
 
             if self.massdef == "virial":
-                self._set_delta_mdef_virial(self, z_cl)
+                self._set_delta_mdef_virial(z_cl)
 
             if self.halo_profile_model == "nfw":
                 rho_s = (
@@ -1623,7 +1623,7 @@ class CLMModeling:
             validate_argument(locals(), "z_cl", float, argmin=0)
 
         if self.massdef == "virial":
-            self._set_delta_mdef_virial(self, z_cl)
+            self._set_delta_mdef_virial(z_cl)
 
         return self._eval_rdelta(z_cl)
 
@@ -1672,7 +1672,7 @@ class CLMModeling:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if self.massdef == "virial":
-            self._set_delta_mdef_virial(self, z_cl)
+            self._set_delta_mdef_virial(z_cl)
 
         return self._eval_mass_in_radius(r3d, z_cl)
 
@@ -1731,7 +1731,7 @@ class CLMModeling:
             )
 
         if self.massdef == "virial":
-            self._set_delta_mdef_virial(self, z_cl)
+            self._set_delta_mdef_virial(z_cl)
 
         return self._convert_mass_concentration(
             z_cl, massdef, delta_mdef, halo_profile_model, alpha
