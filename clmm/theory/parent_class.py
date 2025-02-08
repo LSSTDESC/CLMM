@@ -273,10 +273,12 @@ class CLMModeling:
         )
 
     def _eval_rdelta(self, z_cl):
-        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+        delta_mdef = self._get_delta_mdef(z_cl)
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, delta_mdef)
 
     def _eval_mass_in_radius(self, r3d, z_cl):
         alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef = self._get_delta_mdef(z_cl)
         return compute_profile_mass_in_radius(
             r3d,
             z_cl,
@@ -284,7 +286,7 @@ class CLMModeling:
             self.mdelta,
             self.cdelta,
             self.massdef,
-            self.delta_mdef,
+            delta_mdef,
             self.halo_profile_model,
             alpha,
         )
@@ -293,13 +295,14 @@ class CLMModeling:
         self, z_cl, massdef=None, delta_mdef=None, halo_profile_model=None, alpha=None
     ):
         alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef1 = self._get_delta_mdef(z_cl)
         return convert_profile_mass_concentration(
             self.mdelta,
             self.cdelta,
             z_cl,
             self.cosmo,
             massdef=self.massdef,
-            delta_mdef=self.delta_mdef,
+            delta_mdef=delta_mdef1,
             halo_profile_model=self.halo_profile_model,
             alpha=alpha1,
             massdef2=massdef,
@@ -308,9 +311,10 @@ class CLMModeling:
             alpha2=alpha,
         )
 
-    def _set_delta_mdef_virial(self, z_cl):
-        "Sets the delta_mdef value to the modeling object for mdef='virial'"
-        self.delta_mdef = int(self._get_delta_mdef_virial(z_cl))
+    def _get_delta_mdef(self, z_cl):
+        if self.massdef == "virial":
+            return int(self._get_delta_mdef_virial(z_cl))
+        return self.delta_mdef
 
     # 3.1. Miscentering functions
 
@@ -1622,9 +1626,6 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "z_cl", float, argmin=0)
 
-        if self.massdef == "virial":
-            self._set_delta_mdef_virial(z_cl)
-
         return self._eval_rdelta(z_cl)
 
     def eval_mass_in_radius(self, r3d, z_cl, verbose=False):
@@ -1670,9 +1671,6 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
-
-        if self.massdef == "virial":
-            self._set_delta_mdef_virial(z_cl)
 
         return self._eval_mass_in_radius(r3d, z_cl)
 
@@ -1729,9 +1727,6 @@ class CLMModeling:
                 "Einasto alpha (out) = "
                 f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}"
             )
-
-        if self.massdef == "virial":
-            self._set_delta_mdef_virial(z_cl)
 
         return self._convert_mass_concentration(
             z_cl, massdef, delta_mdef, halo_profile_model, alpha
