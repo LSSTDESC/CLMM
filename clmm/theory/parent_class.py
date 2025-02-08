@@ -187,6 +187,7 @@ class CLMModeling:
         raise NotImplementedError
 
     def _get_delta_mdef_virial(self, z_cl):
+        "Gets the overdensity delta value for mdef='virial' from the backends"
         raise NotImplementedError
 
     def _set_projected_quad(self, use_projected_quad):
@@ -307,6 +308,10 @@ class CLMModeling:
             alpha2=alpha,
         )
 
+    def _set_delta_mdef_virial(self, z_cl):
+        "Sets the delta_mdef value to the modeling object for mdef='virial'"
+        self.delta_mdef = int(self._get_delta_mdef_virial(z_cl))
+
     # 3.1. Miscentering functions
 
     def _eval_surface_density_miscentered(self, r_proj, z_cl, r_mis, mis_from_backend):
@@ -370,6 +375,9 @@ class CLMModeling:
                 self.cosmo.get_rho_m(z_cl) if self.massdef == "mean" else self.cosmo.get_rho_c(z_cl)
             )
             r_s = self.eval_rdelta(z_cl) / self.cdelta
+
+            if self.massdef == "virial":
+                self._set_delta_mdef_virial(self, z_cl)
 
             if self.halo_profile_model == "nfw":
                 rho_s = (
@@ -1613,6 +1621,10 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), "z_cl", float, argmin=0)
+
+        if self.massdef == "virial":
+            self._set_delta_mdef_virial(self, z_cl)
+
         return self._eval_rdelta(z_cl)
 
     def eval_mass_in_radius(self, r3d, z_cl, verbose=False):
@@ -1658,6 +1670,9 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        if self.massdef == "virial":
+            self._set_delta_mdef_virial(self, z_cl)
 
         return self._eval_mass_in_radius(r3d, z_cl)
 
@@ -1714,6 +1729,9 @@ class CLMModeling:
                 "Einasto alpha (out) = "
                 f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}"
             )
+
+        if self.massdef == "virial":
+            self._set_delta_mdef_virial(self, z_cl)
 
         return self._convert_mass_concentration(
             z_cl, massdef, delta_mdef, halo_profile_model, alpha
