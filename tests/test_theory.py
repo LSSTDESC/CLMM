@@ -1284,4 +1284,4 @@ def test_delta_mdef_virial(modeling_data):
         cosmo = cfg['cosmo']
         mod = theo.Modeling(massdef="virial")
         mod.set_cosmo(cosmo)
-        assert_allclose(mod._get_delta_mdef(0.1), 111)
+        assert_equal(mod._get_delta_mdef(0.1), 111)
