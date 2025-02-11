@@ -118,7 +118,7 @@ class NumCosmoCLMModeling(CLMModeling):
 
     def _get_delta_mdef_virial(self, z_cl):
         "Gets the overdensity"
-        # This fuction returns the correct overdensity for all mass definitions
+        # This fuction can return the overdensity for all mass definitions
         return self.hdpm.Delta(self.cosmo.be_cosmo, z_cl)
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):

@@ -150,7 +150,7 @@ class CCLCLMModeling(CLMModeling):
     def _get_delta_mdef_virial(self, z_cl):
         "Gets the virial overdensity"
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        # This fuction returns only the virial overdensity
+        # This fuction can only return the virial overdensity
         return self.mdef.get_Delta_vir(self.cosmo.be_cosmo, a_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
