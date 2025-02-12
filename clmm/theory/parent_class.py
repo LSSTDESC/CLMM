@@ -187,7 +187,7 @@ class CLMModeling:
         raise NotImplementedError
 
     def _get_delta_mdef_virial(self, z_cl):
-        "Gets the overdensity delta value for mdef='virial' from the backends"
+        "Gets the overdensity delta value for massdef='virial' from the backends"
         raise NotImplementedError
 
     def _set_projected_quad(self, use_projected_quad):
