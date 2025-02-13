@@ -122,7 +122,7 @@ class NumCosmoCLMModeling(CLMModeling):
         "Gets the virial overdensity"
         # This fuction can return the overdensity for all mass definitions,
         # but in CLMM, we only use it in the case of massdef='virial'.
-        return self.hdpm.Delta(self.cosmo.be_cosmo, z_cl)
+        return self._hms.Delta(self.cosmo.be_cosmo, z_cl)
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear considering a single redshift plane
