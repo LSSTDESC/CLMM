@@ -1276,3 +1276,12 @@ def test_mass_conversion(modeling_data, profile_init):
         if halo_profile_model == "einasto":
             profile._get_einasto_alpha = lambda z_cl: None
             assert_raises(ValueError, profile.convert_mass_concentration, z_cl)
+
+
+def test_delta_mdef_virial(modeling_data):
+    if modeling_data["nick"] in ["nc", "ccl"]:
+        cfg = load_validation_config()
+        cosmo = cfg['cosmo']
+        mod = theo.Modeling(massdef="virial")
+        mod.set_cosmo(cosmo)
+        assert_equal(mod._get_delta_mdef(0.1), 111)
