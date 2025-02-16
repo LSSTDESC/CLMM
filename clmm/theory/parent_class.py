@@ -22,8 +22,6 @@ from .generic import (
 from ..utils import (
     validate_argument,
     compute_beta_s_func,
-)
-from ..redshift import (
     _integ_pzfuncs,
     compute_for_good_redshifts,
 )
