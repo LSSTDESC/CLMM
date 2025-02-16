@@ -21,6 +21,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod._update_halo_density_profile)
     assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
     assert_raises(NotImplementedError, mod._get_einasto_alpha)
+    assert_raises(NotImplementedError, mod._get_delta_mdef_virial, 0.1)
     assert_raises(NotImplementedError, mod._set_projected_quad, True)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_surface_density, [0.3], 0.3)
