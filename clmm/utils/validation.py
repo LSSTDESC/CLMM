@@ -1,7 +1,7 @@
 """General utility functions that are used in multiple modules"""
 
 import numpy as np
-from ..constants import Constants as const
+from ..utils.constants import Constants as const
 
 
 def arguments_consistency(arguments, names=None, prefix=""):
@@ -240,6 +240,7 @@ def _validate_coordinate_system(loc, argname):
     validate_argument(loc, argname, str)
     if loc[argname] not in ["celestial", "euclidean"]:
         raise ValueError(f"{argname} must be 'celestial' or 'euclidean'.")
+
 
 
 class DiffArray:

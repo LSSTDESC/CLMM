@@ -12,13 +12,13 @@ from .dataops import (
     compute_background_probability,
 )
 from .theory import compute_critical_surface_density_eff
-from .plotting import plot_profiles
 from .utils import (
     validate_argument,
     _validate_ra,
     _validate_dec,
     _draw_random_points_from_tab_distribution,
 )
+from .utils.plotting import plot_profiles
 
 
 class GalaxyCluster:

@@ -16,7 +16,7 @@ jobs:
     - name: Install prereq and NumCosmo using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject numcosmo cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
+        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt

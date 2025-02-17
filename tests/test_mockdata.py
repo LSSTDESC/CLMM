@@ -7,7 +7,7 @@ import clmm
 import clmm.dataops as da
 from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
-from clmm.redshift import distributions as zdist
+from clmm.utils import redshift_distributions as zdist
 
 TOLERANCE = {"rtol": 5.0e-4, "atol": 1.0e-4}
 

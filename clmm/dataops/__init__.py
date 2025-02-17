@@ -15,8 +15,8 @@ from ..utils import (
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
     _validate_coordinate_system,
+    _integ_pzfuncs,
 )
-from ..redshift import _integ_pzfuncs
 
 
 def compute_tangential_and_cross_components(
