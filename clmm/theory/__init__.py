@@ -23,6 +23,7 @@ from .func_layer import (
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
     compute_surface_density_2h,
+    compute_excess_surface_density_triaxial,
     compute_critical_surface_density_eff,
     compute_tangential_shear,
     compute_convergence,

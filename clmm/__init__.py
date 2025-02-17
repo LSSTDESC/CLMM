@@ -24,6 +24,10 @@ from .theory import (
     Modeling,
     Cosmology,
 )
+from .theory.func_layer import (
+    compute_excess_surface_density_triaxial,
+)
+
 from . import support
 
 __version__ = "0.16.0"
