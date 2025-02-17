@@ -34,7 +34,9 @@ def test_mock_data():
         warnings.simplefilter("always")
         # Trigger a warning.
         np.random.seed(314)
-        mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0)
+        mock.generate_galaxy_catalog(
+            1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0, coordinate_system="euclidean"
+        )
         # Verify some things
         assert len(warn) == 1
     # Simple test to check if option with ngal_density is working

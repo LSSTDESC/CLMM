@@ -44,7 +44,7 @@ def generate_galaxy_catalog(
     pz_bins=101,
     pz_quantiles_conf=(5, 31),
     pzpdf_type="shared_bins",
-    coordinate_system="euclidean",
+    coordinate_system=None,
     validate_input=True,
 ):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -170,7 +170,7 @@ def generate_galaxy_catalog(
     coordinate_system : str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        If not set, defaults to 'euclidean'.
 
     validate_input: bool
         Validade each input argument
@@ -187,6 +187,10 @@ def generate_galaxy_catalog(
     # pylint: disable=too-many-arguments
     # Too many local variables (25/15)
     # pylint: disable=R0914
+
+    if not coordinate_system:
+        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        coordinate_system = "euclidean"
 
     if validate_input:
         validate_argument(locals(), "cluster_m", float, argmin=0, eqmin=True)
@@ -224,7 +228,7 @@ def generate_galaxy_catalog(
         validate_argument(locals(), "ngals", float, none_ok=True)
         validate_argument(locals(), "ngal_density", float, none_ok=True)
         validate_argument(locals(), "pz_bins", (int, "array"))
-        _validate_coordinate_system(locals(), "coordinate_system", str)
+        _validate_coordinate_system(locals(), "coordinate_system")
 
     if zsrc_min is None:
         zsrc_min = cluster_z + 0.1
@@ -393,7 +397,7 @@ def _generate_galaxy_catalog(
     # pylint: disable=R0914
 
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals)
+    galaxy_catalog = _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
@@ -486,7 +490,7 @@ def _generate_galaxy_catalog(
     return galaxy_catalog[cols]
 
 
-def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
+def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
     distribution. Return a table (GCData) of the source galaxies
 
@@ -542,7 +546,9 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     else:
         raise ValueError(f"zsrc must be a float, chang13 or desc_srd. You set: {zsrc}")
 
-    return GCData([zsrc_list, zsrc_list], names=("ztrue", "z"))
+    return GCData(
+        [zsrc_list, zsrc_list], names=("ztrue", "z"), meta={"coordinate_system": coordinate_system}
+    )
 
 
 def _compute_photoz_pdfs(
