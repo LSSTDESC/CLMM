@@ -56,13 +56,25 @@ Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster
 Now, you can install CLMM and its dependencies as
 
 ```bash
-    pip install numpy scipy astropy matplotlib
+    pip install numpy scipy astropy matplotlib healpy
     pip install pytest sphinx sphinx_rtd_theme
     pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
+    pip install git+https://github.com/LSSTDESC/qp.git # Install qp package
     git clone https://github.com/LSSTDESC/CLMM.git  # If you'd like to contribute but don't have edit permissions to the CLMM repo, see below how to fork the repo instead.
     cd CLMM
     python setup.py install     # build from source
 ```
+
+### Local environment for CLMM
+
+Alternatively, you can create a new local environment by running
+
+```bash
+    conda env create -f environment.yml
+    conda activate clmm
+```
+
+You can now install CLMM in a local and stable environment with the usual procedure.
 
 ## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 

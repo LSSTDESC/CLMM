@@ -1,5 +1,7 @@
 """General utility functions that are used in multiple modules"""
 
+from . import redshift_distributions, constants, plotting
+
 from .beta_lens import (
     compute_beta,
     compute_beta_s,
@@ -13,8 +15,8 @@ from .beta_lens import (
 from .boost import (
     compute_nfw_boost,
     compute_powerlaw_boost,
-    correct_sigma_with_boost_values,
-    correct_sigma_with_boost_model,
+    correct_with_boost_values,
+    correct_with_boost_model,
     boost_models,
 )
 
@@ -33,6 +35,11 @@ from .statistic import (
     gaussian,
 )
 
+from .redshift_tools import (
+    _integ_pzfuncs,
+    compute_for_good_redshifts,
+)
+
 from .validation import (
     arguments_consistency,
     _patch_rho_crit_to_cd2018,
@@ -42,6 +49,7 @@ from .validation import (
     _validate_is_deltasigma_sigma_c,
     _validate_include_quadrupole_phi_major,
     _validate_coordinate_system,
+    DiffArray,
 )
 
 from .units import (

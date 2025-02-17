@@ -12,7 +12,6 @@ from .dataops import (
     compute_background_probability,
 )
 from .theory import compute_critical_surface_density_eff
-from .plotting import plot_profiles
 from .utils import (
     validate_argument,
     _validate_ra,
@@ -20,6 +19,7 @@ from .utils import (
     _draw_random_points_from_tab_distribution,
     _validate_coordinate_system,
 )
+from .utils.plotting import plot_profiles
 
 
 class GalaxyCluster:

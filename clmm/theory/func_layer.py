@@ -110,6 +110,8 @@ def compute_surface_density(
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
+    r_mis=None,
+    mis_from_backend=False,
     verbose=False,
     use_projected_quad=False,
     validate_input=True,
@@ -120,6 +122,14 @@ def compute_surface_density(
         \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),
 
     where :math:`\rho(r)` is the 3d density profile.
+
+    If the `r_mis` keyword is specified, this function computes the miscentered surface 
+    density instead as
+
+    .. math::
+        \Sigma_{\rm mis}(R, R_{\rm mis}) = \frac{1}{2\pi}\int_0^{2\pi} d\theta \,
+        \Sigma\left(\sqrt{R^2 + R_{\rm mis}^2 - 2 R R_{\rm mis} \cos\theta} \right)\;,
+
 
     Parameters
     ----------
@@ -154,6 +164,13 @@ def compute_surface_density(
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
+
+    r_mis : float, optional
+        Projected miscenter distance in :math:`M\!pc`
+    mis_from_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -186,7 +203,9 @@ def compute_surface_density(
     if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
         _modeling_object.set_projected_quad(use_projected_quad)
 
-    sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
+    sigma = _modeling_object.eval_surface_density(
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
+    )
 
     _modeling_object.validate_input = True
     return sigma
@@ -202,6 +221,8 @@ def compute_mean_surface_density(
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
+    r_mis=None,
+    mis_from_backend=False,
     verbose=False,
     validate_input=True,
 ):
@@ -241,6 +262,12 @@ def compute_mean_surface_density(
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
         available for the NumCosmo backend
+    r_mis : float, optional
+        Projected miscenter distance in :math:`M\!pc`
+    mis_from_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -268,7 +295,9 @@ def compute_mean_surface_density(
     if alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
 
-    sigma_bar = _modeling_object.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
+    sigma_bar = _modeling_object.eval_mean_surface_density(
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
+    )
 
     _modeling_object.validate_input = True
     return sigma_bar
@@ -284,6 +313,8 @@ def compute_excess_surface_density(
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
+    r_mis=None,
+    mis_from_backend=False,
     verbose=False,
     validate_input=True,
 ):
@@ -325,6 +356,12 @@ def compute_excess_surface_density(
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
+    r_mis : float, optional
+        Projected miscenter distance in :math:`M\!pc`
+    mis_from_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. If False, use the (faster) CLMM exact analytical 
+        implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -346,7 +383,9 @@ def compute_excess_surface_density(
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
 
-    deltasigma = _modeling_object.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
+    deltasigma = _modeling_object.eval_excess_surface_density(
+        r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
+    )
 
     _modeling_object.validate_input = True
     return deltasigma

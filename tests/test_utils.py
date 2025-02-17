@@ -11,8 +11,9 @@ from clmm.utils import (
     convert_shapes_to_epsilon,
     arguments_consistency,
     validate_argument,
+    DiffArray,
+    redshift_distributions as zdist,
 )
-from clmm.redshift import distributions as zdist
 
 
 TOLERANCE = {"rtol": 1.0e-6, "atol": 0}
@@ -22,8 +23,9 @@ def test_compute_nfw_boost():
     """Test the nfw model for boost factor"""
     # Test data
     rvals = np.arange(1, 11).tolist()
+    rscale = 1000
 
-    boost_factors = utils.compute_nfw_boost(rvals)
+    boost_factors = utils.compute_nfw_boost(rvals, rscale)
 
     test_boost_factors = np.array(
         [
@@ -48,8 +50,9 @@ def test_compute_powerlaw_boost():
     """Test the powerlaw model for boost factor"""
     # Test data
     rvals = np.arange(1, 11).tolist()  # Cannot contain 0 due to reciprocal term
+    rscale = 1000
 
-    boost_factors = utils.compute_powerlaw_boost(rvals)
+    boost_factors = utils.compute_powerlaw_boost(rvals, rscale)
 
     test_boost_factors = np.array(
         [101.0, 51.0, 34.33333333, 26.0, 21.0, 17.66666667, 15.28571429, 13.5, 12.11111111, 11.0]
@@ -59,7 +62,7 @@ def test_compute_powerlaw_boost():
     assert_allclose(boost_factors, test_boost_factors)
 
 
-def test_correct_sigma_with_boost_values():
+def test_correct_with_boost_values():
     """ """
     # Make test data
     rvals = np.arange(1, 11)
@@ -67,26 +70,27 @@ def test_correct_sigma_with_boost_values():
 
     test_unit_boost_factors = np.ones(rvals.shape).tolist()
 
-    corrected_sigma = utils.correct_sigma_with_boost_values(sigma_vals, test_unit_boost_factors)
+    corrected_sigma = utils.correct_with_boost_values(sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, corrected_sigma)
 
 
-def test_correct_sigma_with_boost_model():
+def test_correct_with_boost_model():
     """ """
     # Make test data
     rvals = np.arange(1, 11).tolist()
     sigma_vals = (2 ** np.arange(10)).tolist()
+    boost_rscale = 1000
 
     for boost_model in utils.boost_models.keys():
         # Check for no nans or inf with positive-definite rvals and sigma vals
         assert np.all(
             np.isfinite(
-                utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model)
+                utils.correct_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale)
             )
         )
 
     # Test requesting unsupported boost model
-    assert_raises(KeyError, utils.correct_sigma_with_boost_model, rvals, sigma_vals, "glue")
+    assert_raises(KeyError, utils.correct_with_boost_model, rvals, sigma_vals, "glue", boost_rscale)
 
 
 def test_compute_radial_averages():
@@ -535,6 +539,21 @@ def test_validate_argument():
     )
 
 
+def test_diff_array():
+    """test validate argument"""
+    # Validate diffs
+    assert DiffArray([1, 2]) == DiffArray([1, 2])
+    assert DiffArray([1, 2]) == DiffArray(np.array([1, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([2, 2]))
+    assert DiffArray([1, 2]) != DiffArray(np.array([1, 2, 3]))
+    assert DiffArray([1, 2]) != None
+    # Validate prints
+    arr = DiffArray([1, 2])
+    assert str(arr.value) == arr.__repr__()
+    arr = DiffArray(range(10))
+    assert str(arr.value) != arr.__repr__()
+
+
 def test_beta_functions(modeling_data):
     z_cl = 1.0
     z_src = [2.4, 2.1]
@@ -557,7 +576,7 @@ def test_beta_functions(modeling_data):
     # beta mean from distributions
 
     for model in (None, zdist.chang2013, zdist.desc_srd):
-        # None defaults to chang2013 for compute_beta* functions
+        # None defaults to chang2013 for compute_beta* functions.
 
         if model is None:
             model = zdist.chang2013

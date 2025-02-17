@@ -6,6 +6,8 @@ from collections import OrderedDict
 from astropy.table import Table as APtable
 import numpy as np
 
+import qp
+
 
 class GCMetaData(OrderedDict):
     r"""Object to store metadata, it always has a cosmo key with protective changes
@@ -65,7 +67,10 @@ class GCData(APtable):
         metakwargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
-        self.pzpdf_info = {"type": None}
+        self.pzpdf_info = {
+            "type": None,
+            "unpack_quantile_zbins_limits": (0, 5, 501),
+        }
 
     def _str_colnames(self):
         """Colnames in comma separated str"""
@@ -83,6 +88,12 @@ class GCData(APtable):
                 np.set_printoptions(edgeitems=5, threshold=10)
                 out += " " + str(np.round(self.pzpdf_info.get("zbins"), 2))
                 np.set_printoptions(**default_cfg)
+            elif out == "quantiles":
+                np.set_printoptions(formatter={'float': "{0:g}".format}, edgeitems=3, threshold=6)
+                out += " " + str(self.pzpdf_info["quantiles"])
+                out += " - unpacked with zgrid : " + str(
+                    self.pzpdf_info["unpack_quantile_zbins_limits"]
+                )
         return out
 
     def __repr__(self):
@@ -150,7 +161,7 @@ class GCData(APtable):
         key: str
             Name of key to compare and update.
         gcdata: GCData
-            Table to check if same cosmology.
+            Table to check if same cosmology and ensemble bins.
         ext_value:
             Value to be compared to.
         overwrite: bool
@@ -227,6 +238,8 @@ class GCData(APtable):
             return ("zbins" in self.pzpdf_info) and ("pzpdf" in self.columns)
         if pzpdf_type == "individual_bins":
             return ("pzbins" in self.columns) and ("pzpdf" in self.columns)
+        if pzpdf_type == "quantiles":
+            return ("quantiles" in self.pzpdf_info) and ("pzquantiles" in self.columns)
         raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
 
     def get_pzpdfs(self):
@@ -235,18 +248,35 @@ class GCData(APtable):
         Returns
         -------
         pzbins : array
-            zbins of PDF. 1D if `shared_bins`,
+            zbins of PDF. 1D if `shared_bins` or `quantiles`.
             zbins of each object in data if `individual_bins`.
         pzpdfs : array
             PDF of each object in data
+
+        Notes
+        -----
+        If pzpdf type is quantiles, a pdf will be unpacked on a grid contructed with
+        `np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])`
         """
         pzpdf_type = self.pzpdf_info["type"]
         if pzpdf_type is None:
             raise ValueError("No PDF information stored!")
         if pzpdf_type == "shared_bins":
             pzbins = self.pzpdf_info["zbins"]
+            pzpdf = self["pzpdf"]
         elif pzpdf_type == "individual_bins":
             pzbins = self["pzbins"]
+            pzpdf = self["pzpdf"]
+        elif pzpdf_type == "quantiles":
+            pzbins = np.linspace(*self.pzpdf_info["unpack_quantile_zbins_limits"])
+            qp_ensemble = qp.Ensemble(
+                qp.quant,
+                data={
+                    "quants": np.array(self.pzpdf_info["quantiles"]),
+                    "locs": self["pzquantiles"],
+                },
+            )
+            pzpdf = qp_ensemble.pdf(pzbins)
         else:
             raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
-        return pzbins, self["pzpdf"]
+        return pzbins, pzpdf
