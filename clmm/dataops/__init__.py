@@ -630,7 +630,6 @@ def not_nan_average(values, axis=0, weights=None):
     """
     _values = np.copy(values)
     _weights = np.ones(_values.shape) if weights is None else np.copy(weights)
-    print(_values.shape, _weights.shape)
     _values[np.isnan(values)] = 0
     _weights[np.isnan(values)] = 0
     return np.average(_values, axis=axis, weights=_weights)
