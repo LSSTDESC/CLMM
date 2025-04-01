@@ -22,8 +22,6 @@ from .generic import (
 from ..utils import (
     validate_argument,
     compute_beta_s_func,
-)
-from ..redshift import (
     _integ_pzfuncs,
     compute_for_good_redshifts,
 )
@@ -186,6 +184,10 @@ class CLMModeling:
         if defined"""
         raise NotImplementedError
 
+    def _get_delta_mdef_virial(self, z_cl):
+        "Gets the overdensity delta value for massdef='virial' from the backends"
+        raise NotImplementedError
+
     def _set_projected_quad(self, use_projected_quad):
         """Implemented for the CCL backend only"""
         raise NotImplementedError
@@ -269,10 +271,12 @@ class CLMModeling:
         )
 
     def _eval_rdelta(self, z_cl):
-        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+        delta_mdef = self._get_delta_mdef(z_cl)
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, delta_mdef)
 
     def _eval_mass_in_radius(self, r3d, z_cl):
         alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef = self._get_delta_mdef(z_cl)
         return compute_profile_mass_in_radius(
             r3d,
             z_cl,
@@ -280,7 +284,7 @@ class CLMModeling:
             self.mdelta,
             self.cdelta,
             self.massdef,
-            self.delta_mdef,
+            delta_mdef,
             self.halo_profile_model,
             alpha,
         )
@@ -289,13 +293,14 @@ class CLMModeling:
         self, z_cl, massdef=None, delta_mdef=None, halo_profile_model=None, alpha=None
     ):
         alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef1 = self._get_delta_mdef(z_cl)
         return convert_profile_mass_concentration(
             self.mdelta,
             self.cdelta,
             z_cl,
             self.cosmo,
             massdef=self.massdef,
-            delta_mdef=self.delta_mdef,
+            delta_mdef=delta_mdef1,
             halo_profile_model=self.halo_profile_model,
             alpha=alpha1,
             massdef2=massdef,
@@ -303,6 +308,11 @@ class CLMModeling:
             halo_profile_model2=halo_profile_model,
             alpha2=alpha,
         )
+
+    def _get_delta_mdef(self, z_cl):
+        if self.massdef == "virial":
+            return int(self._get_delta_mdef_virial(z_cl))
+        return self.delta_mdef
 
     # 3.1. Miscentering functions
 
@@ -363,12 +373,16 @@ class CLMModeling:
             params = 1, (z_cl,)
 
         else:
-            rho_def = self.cosmo.get_rho_m(z_cl)
+            rho_def = (
+                self.cosmo.get_rho_m(z_cl) if self.massdef == "mean" else self.cosmo.get_rho_c(z_cl)
+            )
             r_s = self.eval_rdelta(z_cl) / self.cdelta
+
+            delta_mdef = self._get_delta_mdef(z_cl)
 
             if self.halo_profile_model == "nfw":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -379,7 +393,7 @@ class CLMModeling:
             elif self.halo_profile_model == "einasto":
                 alpha_ein = self._get_einasto_alpha(z_cl)
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -395,7 +409,7 @@ class CLMModeling:
 
             elif self.halo_profile_model == "hernquist":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -493,7 +507,7 @@ class CLMModeling:
             Mass definition, supported options are 'mean', 'critical', 'virial'
             (letter case independent)
         delta_mdef: int
-            Overdensity number
+            Overdensity number. No effect if massdef='virial'.
         """
         # make case independent
         validate_argument(locals(), "massdef", str)
@@ -1608,6 +1622,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), "z_cl", float, argmin=0)
+
         return self._eval_rdelta(z_cl)
 
     def eval_mass_in_radius(self, r3d, z_cl, verbose=False):

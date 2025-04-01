@@ -6,7 +6,7 @@ import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM, FlatLambdaCDM
 
-from ..constants import Constants as const
+from ..utils.constants import Constants as const
 
 from .parent_class import CLMMCosmology
 
