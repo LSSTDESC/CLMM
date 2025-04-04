@@ -39,7 +39,7 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
     float
         lightspeed^2/G[Msun/pc]
     """
-    return (lightspeed * 1000.0 / pc_to_m) ** 2 / (gnewt * msun / pc_to_m**3)
+    return (lightspeed * 1000.0 / pc_to_m) ** 2 / (gnewt * msun / pc_to_m ** 3)
 
 
 def load_validation_config(halo_profile_model=None):
@@ -534,6 +534,110 @@ def test_profiles(modeling_data, profile_init):
                 assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
 
+def test_triaxial(modeling_data):
+    cfg = load_validation_config()
+    cosmo = cfg["cosmo"]
+
+    # Object Oriented tests
+    mod = theo.Modeling()
+    mod.set_cosmo(cosmo)
+    mod.set_concentration(cfg["SIGMA_PARAMS"]["cdelta"])
+    mod.set_mass(cfg["SIGMA_PARAMS"]["mdelta"])
+
+    if mod.backend not in ["ccl", "nc"]:
+        assert_raises(
+            NotImplementedError,
+            mod.eval_excess_surface_density_triaxial,
+            1.0,
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            "mono",
+            100,
+        )
+    else:
+        # Just checking that it runs and returns array of the right length
+        # To be updated with proper comparison to benchmark when available
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 100
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_4theta",
+                    100,
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_const",
+                    100,
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+
+        # Checks that OO-oriented and functional interface give the same results
+        assert_allclose(
+            theo.compute_delta_sigma_4theta_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 500
+            ),
+            **TOLERANCE,
+        )
+        assert_allclose(
+            theo.compute_delta_sigma_const_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 500
+            ),
+            **TOLERANCE,
+        )
+        assert_allclose(
+            theo.compute_delta_sigma_excess_triaxiality(
+                0.1,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                cosmo,
+                sample_N=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 500
+            ),
+            **TOLERANCE,
+        )
+
+
 def test_2halo_term(modeling_data):
     cfg = load_validation_config()
     cosmo = cfg["cosmo"]
@@ -837,8 +941,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             theo.compute_magnification(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
             1
             + 2 * beta_s_mean * kappa_inf
-            + beta_s_square_mean * gammat_inf**2
-            + 3 * beta_s_square_mean * kappa_inf**2,
+            + beta_s_square_mean * gammat_inf ** 2
+            + 3 * beta_s_square_mean * kappa_inf ** 2,
             1.0e-10,
         )
 
@@ -853,8 +957,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"], alpha=alpha),
             1
-            + (alpha - 1) * (2 * beta_s_mean * kappa_inf + beta_s_square_mean * gammat_inf**2)
-            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf**2,
+            + (alpha - 1) * (2 * beta_s_mean * kappa_inf + beta_s_square_mean * gammat_inf ** 2)
+            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf ** 2,
             1.0e-10,
         )
 
@@ -869,48 +973,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         assert_allclose(
             theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.ones(len(radius)),
             1.0e-10,
@@ -934,48 +1018,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         z_src = [0.25, 0.1, 0.14, 0.02]
         assert_allclose(
             theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo,
             ),
             np.ones(len(z_src)),
             1.0e-10,
@@ -1111,8 +1175,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             ),
             1
             + 2 * beta_s_mean * kappa_inf
-            + 3 * beta_s_square_mean * kappa_inf**2
-            + beta_s_square_mean * gammat_inf**2,
+            + 3 * beta_s_square_mean * kappa_inf ** 2
+            + beta_s_square_mean * gammat_inf ** 2,
             1.0e-10,
         )
 
@@ -1130,8 +1194,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             ),
             1
             + (alpha - 1) * (2 * beta_s_mean * kappa_inf)
-            + (alpha - 1) * (beta_s_square_mean * gammat_inf**2)
-            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf**2,
+            + (alpha - 1) * (beta_s_square_mean * gammat_inf ** 2)
+            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf ** 2,
             1.0e-10,
         )
 
