@@ -1,8 +1,7 @@
 import numpy as np
-import pyccl as ccl
-from pyccl import physical_constants as const
+from clmm.utils.constants import Constants as const
 from astropy import units as un
-
+from clmm.dataops import _compute_tangential_shear, _compute_cross_shear
 
 class profiles:
     '''
@@ -10,6 +9,8 @@ class profiles:
 
     Attributes
     ----------
+    cosmo : CLMM.Cosmology
+        CLMM Cosmology object 
     M: float
         mass (units: M_sun)
     c: float
@@ -27,13 +28,13 @@ class profiles:
 
         self.M = M  # M_sun
         self.c = c
-        self.a_l = 1./(1.+z_l)  # ccl works with scale factor instead of redshift
-        self.a_s = 1./(1.+z_s)
+        self.z_l = z_l
+        self.z_s = z_s
         self.compute_sigma = compute_sigma
         
         # physical constants with units (cosmological)
-        self.const_G = const.GNEWT * (un.Mpc/const.MPC_TO_METER)**3 /(un.M_sun/const.SOLAR_MASS) / un.s**2.  # Mpc^3/Msun/s^2
-        self.const_c = const.CLIGHT * (un.Mpc/const.MPC_TO_METER)/ un.s    # Mpc/s
+        self.const_G = const.GNEWT_SOLAR_MASS* (un.Mpc/const.PC_TO_METER/1e6)**3 /un.M_sun / un.s**2.  # Mpc^3/Msun/s^2
+        self.const_c = const.CLIGHT *  (un.Mpc/const.PC_TO_METER/1e6)/ un.s    # Mpc/s
 
         # cosmology
         self.cosmo = cosmo
@@ -84,14 +85,12 @@ class profiles:
     
     def kappa_NFW(self,r_vals=None):
         '''
-        Create radial bins for profiles
+        Compute kappa or surface density profiles
         
         Attributes
         ----------
         r_vals: float or array
             radial bin values for halo lensing profile
-         cosmo : clmm.Cosmology object
-            CLMM Cosmology object 
             
         Returns
         ----------
@@ -104,7 +103,7 @@ class profiles:
             r_vals = self.r_vals
 
 
-        Hz = self.cosmo.h_over_h0(self.a_l) * self.cosmo.cosmo.params.h * 100 * 1/(const.MPC_TO_METER*1e-3) / un.s   # units: 1/s
+        Hz = self.cosmo.get_E2(self.z_l)**0.5 * self.cosmo['H0'] * 1/(const.PC_TO_METER.value*1e3) / un.s   # units: 1/s
         r_200 = (((self.const_G * self.M)/(100. * Hz**2) )**(1./3.))   # units: Mpc
         r_s   = r_200 * self.c 
         delta_c = (200./3.) * ( self.c**3 / ( np.log(1+self.c) - ( self.c/(1+self.c) ) ) )
@@ -113,12 +112,12 @@ class profiles:
         
         Sigma_crit_coeff = self.const_c**2 / (4. * np.pi * self.const_G)  # units: Msun/Mpc
         
-        D_s  = self.cosmo.angular_diameter_distance(self.a_s) *un.Mpc
-        D_d  = self.cosmo.angular_diameter_distance(self.a_l) *un.Mpc
-        D_ds = self.cosmo.angular_diameter_distance(self.a_l,self.a_s) *un.Mpc
+        D_s  = self.cosmo.eval_da(self.z_s) *un.Mpc
+        D_d  = self.cosmo.eval_da(self.z_l) *un.Mpc
+        D_ds = self.cosmo.eval_da_z1z2(self.z_l,self.z_s) *un.Mpc
         
         Sigma_crit = Sigma_crit_coeff * D_s / (D_d * D_ds)
-        critical_density = self.cosmo.rho_x(self.a_l, 'critical', is_comoving=False) * un.M_sun/un.Mpc**3 
+        critical_density = self.cosmo.get_rho_c(self.z_l) * un.M_sun/un.Mpc**3 
         k_s = critical_density * delta_c * r_s
         
         coeff = 2.*k_s / (x**2 - 1.)
@@ -234,24 +233,21 @@ def getTangential(e1, e2, center, dx=10./1000.):
         radius and angle maps, used for computing the radial profile
     '''    
     
-    n = e1.shape[0]
-
+    n  = e1.shape[0]
     xx = np.arange(-n/2, n/2)*dx
-
     XX, YY = np.meshgrid(xx, xx)
 
     center_1, center_2 = center
-
     from_cent_1 = XX - center_1
     from_cent_2 = YY - center_2
 
-    angle = -np.sign(from_cent_2)*np.arccos(from_cent_1/np.sqrt(from_cent_1**2+from_cent_2**2))
-    radius = np.sqrt(from_cent_1**2+from_cent_2**2)
+    angle  = -np.sign(from_cent_2) * np.arccos(from_cent_1/np.sqrt(from_cent_1**2 + from_cent_2**2))
+    radius = np.sqrt(from_cent_1**2 + from_cent_2**2)
 
     angle[np.isnan(angle)] = 0
 
-    et = - e1*np.cos(2*angle) - e2*np.sin(2*angle)
-    ex = + e1*np.sin(2*angle) - e2*np.cos(2*angle)
+    et = _compute_tangential_shear(e1, e2, angle)
+    ex = _compute_cross_shear(e1, e2, angle)
 
     return et, ex, radius, angle
 
