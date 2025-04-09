@@ -592,14 +592,15 @@ def test_triaxial(modeling_data):
 
         # Checks that OO-oriented and functional interface give the same results
         assert_allclose(
-            theo.compute_delta_sigma_4theta_triaxiality(
-                0.1,
+            theo.compute_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"],
                 cfg["SIGMA_PARAMS"]["mdelta"],
                 cfg["SIGMA_PARAMS"]["cdelta"],
                 cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
                 cosmo,
-                sample_N=500,
+                term="quad_4theta",
+                n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 500
@@ -607,14 +608,15 @@ def test_triaxial(modeling_data):
             **TOLERANCE,
         )
         assert_allclose(
-            theo.compute_delta_sigma_const_triaxiality(
-                0.1,
+            theo.compute_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"],
                 cfg["SIGMA_PARAMS"]["mdelta"],
                 cfg["SIGMA_PARAMS"]["cdelta"],
                 cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
                 cosmo,
-                sample_N=500,
+                term="quad_const",
+                n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 500
@@ -622,14 +624,15 @@ def test_triaxial(modeling_data):
             **TOLERANCE,
         )
         assert_allclose(
-            theo.compute_delta_sigma_excess_triaxiality(
-                0.1,
+            theo.compute_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"],
                 cfg["SIGMA_PARAMS"]["mdelta"],
                 cfg["SIGMA_PARAMS"]["cdelta"],
                 cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
                 cosmo,
-                sample_N=500,
+                term="mono",
+                n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 500
