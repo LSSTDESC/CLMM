@@ -225,8 +225,8 @@ def compute_tangential_and_cross_components(
         if sigma_c is not None:
             four_theta_comp *= _sigma_c_arr
             const_comp *= _sigma_c_arr
-    if include_quadrupole:
         return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
+        
     return angsep, tangential_comp, cross_comp
 
 
