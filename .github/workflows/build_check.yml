@@ -49,6 +49,11 @@ jobs:
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+    - name: Analysing the code formatting with black
+      run: |
+        pip install black black-configparser isort
+        black --check --diff clmm
+        isort --check --diff clmm
     - name: Analysing the code with pylint
       run: |
         pip install pylint
