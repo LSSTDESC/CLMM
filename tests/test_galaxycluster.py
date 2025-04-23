@@ -550,8 +550,8 @@ def test_coordinate_system():
     dec_source = [41.9, 42.2]
     z_src = [1.0, 2.0]
     shear1 = [0.2, 0.4]
-    shear2_euclidean = [0.3, 0.5]
-    shear2_celestial = [-0.3, -0.5]
+    shear2_euclidean = [-0.3, -0.5]
+    shear2_celestial = [0.3, 0.5]
     # Set up radial values
     bins_radians = [0.002, 0.003, 0.004]
     bin_units = "radians"
