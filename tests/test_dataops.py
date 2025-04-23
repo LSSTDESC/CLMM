@@ -285,7 +285,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
             "dec": np.array([41.9, 42.2]),
             "id": np.array([1, 2]),
             "e1": np.array([0.2, 0.4]),
-            "e2": np.array([0.3, 0.5]),
+            "e2": np.array([-0.3, -0.5]),
             "z": np.array([1.0, 2.0]),
         }
     )
@@ -1203,7 +1203,7 @@ def test_make_radial_profiles():
             "dec": np.array([41.9, 42.2, 42.2]),
             "id": np.array([1, 2, 3]),
             "e1": np.array([0.2, 0.4, 0.4]),
-            "e2": np.array([0.3, 0.5, 0.5]),
+            "e2": np.array([-0.3, -0.5, -0.5]),
             "z": np.ones(3),
         }
     )
