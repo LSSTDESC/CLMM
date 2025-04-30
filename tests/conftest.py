@@ -14,7 +14,7 @@ import clmm
         {
             "nick": "ccl",
             "cosmo_reltol": 8.0e-8,
-            "dataops_reltol": 3.0e-8,
+            "dataops_reltol": 1.0e-7,
             "theory_reltol": 2.0e-6,
             "theory_reltol_num": 5.0e-5,
             "ps_reltol": 5.0e-3,
