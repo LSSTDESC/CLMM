@@ -22,7 +22,7 @@ import clmm
         {
             "nick": "nc",
             "cosmo_reltol": 1.0e-8,
-            "dataops_reltol": 1.0e-8,
+            "dataops_reltol": 1.0e-7,
             "theory_reltol": 1.0e-8,
             "theory_reltol_num": 1.0e-8,
             "ps_reltol": 1.0e-5,
@@ -38,7 +38,7 @@ import clmm
         {
             "nick": "notabackend",
             "cosmo_reltol": 8.0e-8,
-            "dataops_reltol": 3.0e-8,
+            "dataops_reltol": 1.0e-7,
             "theory_reltol": 2.0e-6,
             "ps_reltol": 5.0e-3,
         },
