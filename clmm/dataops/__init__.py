@@ -1,5 +1,6 @@
 """Data operation for polar/azimuthal averages in radial bins and weights"""
 
+
 import warnings
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -488,6 +489,7 @@ def make_radial_profile(
     validate_input=True,
     weights=None,
     coordinate_system=None,
+    empty_bins_value=np.nan,
 ):
     r"""Compute the angular profile of given components
 
@@ -545,6 +547,8 @@ def make_radial_profile(
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         Default is 'euclidean'.
+    empty_bins_value: float, None
+        Values to be assigned to empty bins.
 
     Returns
     -------
@@ -609,10 +613,40 @@ def make_radial_profile(
     profile_table["weights_sum"] = wts_sum
     # return empty bins?
     if not include_empty_bins:
-        profile_table = profile_table[nsrc > 1]
+        profile_table = profile_table[nsrc >= 1]
+    else:
+        for col in (
+            "radius",
+            *(_col for i in range(len(components)) for _col in (f"p_{i}", f"p_{i}_err")),
+        ):
+            profile_table[col][nsrc < 1] = empty_bins_value
     if return_binnumber:
         return profile_table, binnumber
     return profile_table
+
+
+def not_nan_average(values, axis=0, weights=None):
+    """Computes averages using only not nan values
+
+    Parameters
+    ----------
+    values: nd array
+        Values to be averaged
+    axis: int
+        axis to make the average on
+    weighs: nd array
+        Weights, must have same shape as values
+
+    Returns
+    -------
+    array
+        Averaged values
+    """
+    _values = np.copy(values)
+    _weights = np.ones(_values.shape) if weights is None else np.copy(weights)
+    _values[np.isnan(values)] = 0
+    _weights[np.isnan(values)] = 0
+    return np.average(_values, axis=axis, weights=_weights)
 
 
 def make_stacked_radial_profile(angsep, weights, components):
@@ -635,8 +669,9 @@ def make_stacked_radial_profile(angsep, weights, components):
     stacked_components: list of arrays
         List of stacked components.
     """
-    staked_angsep = np.average(angsep, axis=0, weights=None)
+    # rm nan values
+    staked_angsep = not_nan_average(angsep, axis=0, weights=None)
     stacked_components = [
-        np.average(component, axis=0, weights=weights) for component in components
+        not_nan_average(component, axis=0, weights=weights) for component in components
     ]
     return staked_angsep, stacked_components
