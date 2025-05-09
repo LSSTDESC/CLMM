@@ -1363,51 +1363,39 @@ def compute_excess_surface_density_triaxial(
         Component of delta sigma excess for the elliptical halo specified
     """
     grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-
     sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
     sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
-
     eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
     eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
     if term == "mono":
-
         deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
         deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
-
         sigma_correction_grid = sigma0_grid * (
             0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid)
         )
         sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
-
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
         )
-
         correction = (2 / r_proj ** 2) * integral_vec(0, r_proj) - sigma_correction
-
-        delta_sigma = compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, 
+        delta_sigma = compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl,
                                                      cosmo, **kwargs,) + correction
 
     elif term == "quad_4theta":
-
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5).integral
         )
         integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
-
         delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
     elif term == "quad_const":
-        
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
         )
-        
         delta_sigma = 0.5 * ell * (2 * integral_vec(r_proj, np.inf) - sigma0 * eta)
 
     else:
-
         raise ValueError(f"Unsupported term (='{term}')")
 
     return delta_sigma
