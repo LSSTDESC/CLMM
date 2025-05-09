@@ -1330,7 +1330,8 @@ def compute_excess_surface_density_triaxial(
     r_proj, mdelta, cdelta, z_cl, ell, cosmo, term, n_grid=10000, **kwargs
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
-    or constant quadrupole component given in Shin et al. 2018 (https://doi.org/10.1093/mnras/stx3366)
+    or constant quadrupole component given in Shin et al. 2018 
+    (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
     ----------
@@ -1353,7 +1354,8 @@ def compute_excess_surface_density_triaxial(
             'quad_4theta': the 4theta component of the quadrupole term
             'quad_const': the constant component of the quadrupole term
     n_grid: int
-        Grid resolution for functions to be computed on. Too low n_grid can lead to large deviations.
+        Grid resolution for functions to be computed on. 
+        Too low n_grid can lead to large deviations.
 
     Returns
     -------
@@ -1381,11 +1383,11 @@ def compute_excess_surface_density_triaxial(
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
         )
-        integral = integral_vec(0, r_proj)
 
-        correction = (2 / r_proj ** 2) * integral - sigma_correction
+        correction = (2 / r_proj ** 2) * integral_vec(0, r_proj) - sigma_correction
 
-        delta_sigma = compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,) + correction
+        delta_sigma = compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, 
+                                                     cosmo, **kwargs,) + correction
 
     elif term == "quad_4theta":
 
@@ -1397,17 +1399,15 @@ def compute_excess_surface_density_triaxial(
         delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
 
     elif term == "quad_const":
-    
+        
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
         )
-        integral = integral_vec(r_proj, np.inf)
-    
-        delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
+        
+        delta_sigma = 0.5 * ell * (2 * integral_vec(r_proj, np.inf) - sigma0 * eta)
 
     else:
 
         raise ValueError(f"Unsupported term (='{term}')")
 
     return delta_sigma
-
