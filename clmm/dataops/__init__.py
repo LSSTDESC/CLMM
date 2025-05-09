@@ -224,13 +224,9 @@ def compute_tangential_and_cross_components(
             four_theta_comp *= _sigma_c_arr
             const_comp *= _sigma_c_arr
         return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
-        
     return angsep, tangential_comp, cross_comp
-    
-
 def compute_background_probability(
-    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
-):
+    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
     r"""Probability for being a background galaxy, defined by:
 
         .. math::
