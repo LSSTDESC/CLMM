@@ -193,7 +193,6 @@ def compute_tangential_and_cross_components(
         )
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
-        
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
