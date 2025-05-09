@@ -1378,16 +1378,15 @@ def compute_excess_surface_density_triaxial(
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
         )
-        correction = (2 / r_proj ** 2) * integral_vec(0, r_proj) - sigma_correction
-        delta_sigma = compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl,
-                                                     cosmo, **kwargs,) + correction
+        delta_sigma = compute_excess_surface_density(
+            r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,) + (
+            2 / r_proj ** 2) * integral_vec(0, r_proj) - sigma_correction
 
     elif term == "quad_4theta":
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5).integral
         )
-        integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
-        delta_sigma = 0.5 * ell * (2 * integral - sigma0 * eta)
+        delta_sigma = 0.5 * ell * (2 * (3 / r_proj ** 4 * integral_vec(0, r_proj)) - sigma0 * eta)
 
     elif term == "quad_const":
         integral_vec = np.vectorize(
