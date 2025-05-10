@@ -294,11 +294,13 @@ class GalaxyCluster:
             Specifying a cosmology is required if `is_deltasigma` is True
         add: bool
             If `True`, adds the computed shears to the `galcat`
-        [if include_quadrupole:]
-            phi_major: `cluster` major axis direction (in radian with respect to +x)
-            (OR)
-            info_mem: `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
-                for calculating major axis of a given cluster
+        phi_major: 
+            `cluster` major axis direction (in radian with respect to +x),
+            If include_quadrupole is `True', either phi_major or info_mem needs to be supplied.       
+        info_mem: 
+            `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
+            for calculating major axis of a given cluster
+            If include_quadrupole is `True', either phi_major or info_mem needs to be supplied. 
 
         Returns
         -------
@@ -308,11 +310,12 @@ class GalaxyCluster:
             Tangential shear (or assimilated quantity) for each source galaxy
         cross_component: array_like
             Cross shear (or assimilated quantity) for each source galaxy
-        [if self.include_quadrupole:]
-            quad_4theta_component: array_like
-                4theta quadrupole shear (or assimilated quantity) for each source galaxy
-            quad_const_component: array_like
-                constatnt quadrupole shear (or assimilated quantity) for each source galaxy
+        quad_4theta_component: array_like
+            4theta quadrupole shear (or assimilated quantity) for each source galaxy
+            Returned only if include_quadrupole is `True'. 
+        quad_const_component: array_like
+            constatnt quadrupole shear (or assimilated quantity) for each source galaxy
+            Returned only if include_quadrupole is `True'. 
         """
         # Check is all the required data is available
         col_dict = {
@@ -576,9 +579,8 @@ class GalaxyCluster:
         tangential shears or ellipticities and angular separation of the source galaxies
 
         Calls `clmm.dataops.make_radial_profile` with the following arguments:
-        components: `galcat` components (tan_component_in, cross_component_in, z)
-                    OR
-                    (quad_4theta_component_in, quad_const_component_in, z) IF include_quadrupole
+        components: `galcat` components (tan_component_in, cross_component_in, z) OR 
+        (quad_4theta_component_in, quad_const_component_in, z) IF include_quadrupole
         angsep: `galcat` theta
         angsep_units: 'radians'
         bin_units: `input` bin_units
