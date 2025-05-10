@@ -72,8 +72,8 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    The quadrupole ellipticity/shear components, :math:`g_4theta' and :math:`g_const', 
-    are also calculated using the two ellipticity/shear components :math:`g_1' and :math:`g_2' 
+    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`, 
+    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` 
     of the source galaxies, following Eq.31 and Eq.34 in Shin et al. (2018), arXiv:1705.11167. 
 
     .. math::
@@ -105,9 +105,9 @@ def compute_tangential_and_cross_components(
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either `celestial` or
+        `euclidean`. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is `euclidean`.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
