@@ -251,13 +251,10 @@ class GalaxyCluster:
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
-        include_quadrupole: `input` include_quadrupole
-        [if include_quadrupole:]
-            phi_major: `cluster` major axis direction (in radian with respect to +x)
-            (OR)
-            info_mem: `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
-                for calculating major axis of a given cluster
-
+        include_quadrupole: `input` include_quadrupole 
+        phi_major: `cluster` major axis direction (in radian with respect to +x)
+        info_mem: `cluster` [RAs, DECs, weights] of member galaxies as a list of array
+        
         Parameters
         ----------
         shape_component1: string, optional
@@ -295,11 +292,11 @@ class GalaxyCluster:
         add: bool
             If `True`, adds the computed shears to the `galcat`
         phi_major: 
-            `cluster` major axis direction (in radian with respect to +x),
+            `cluster` major axis direction (in radian with respect to +x).
             If include_quadrupole is `True', either phi_major or info_mem needs to be supplied.       
         info_mem: 
             `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
-            for calculating major axis of a given cluster
+            for calculating major axis of a given cluster.
             If include_quadrupole is `True', either phi_major or info_mem needs to be supplied. 
 
         Returns
