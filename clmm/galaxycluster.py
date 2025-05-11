@@ -291,10 +291,10 @@ class GalaxyCluster:
             Specifying a cosmology is required if `is_deltasigma` is True
         add: bool
             If `True`, adds the computed shears to the `galcat`
-        phi_major: 
+        phi_major: string, optional
             `cluster` major axis direction (in radian with respect to +x).
             If include_quadrupole is `True', either phi_major or info_mem needs to be supplied.       
-        info_mem: 
+        info_mem: string, optional
             `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
             for calculating major axis of a given cluster.
             If include_quadrupole is `True', either phi_major or info_mem needs to be supplied. 
