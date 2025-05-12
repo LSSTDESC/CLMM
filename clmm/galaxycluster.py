@@ -288,16 +288,16 @@ class GalaxyCluster:
             If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
             Results in units of :math:`M_\odot\ Mpc^{-2}`
         cosmo: astropy cosmology object
-            Specifying a cosmology is required if `is_deltasigma` is True
+            Specifying a cosmology is required if `is_deltasigma` is `True`
         add: bool
             If `True`, adds the computed shears to the `galcat`
         phi_major: string, optional
             `cluster` major axis direction (in radian with respect to +x).
-            If include_quadrupole is `True', either phi_major or info_mem needs to be supplied.       
+            If include_quadrupole is `True`, either phi_major or info_mem needs to be supplied.       
         info_mem: string, optional
             `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
             for calculating major axis of a given cluster.
-            If include_quadrupole is `True', either phi_major or info_mem needs to be supplied. 
+            If include_quadrupole is `True`, either phi_major or info_mem needs to be supplied. 
 
         Returns
         -------
@@ -309,10 +309,10 @@ class GalaxyCluster:
             Cross shear (or assimilated quantity) for each source galaxy
         quad_4theta_component: array_like
             4theta quadrupole shear (or assimilated quantity) for each source galaxy
-            Returned only if include_quadrupole is `True'. 
+            Returned only if include_quadrupole is `True`. 
         quad_const_component: array_like
             constatnt quadrupole shear (or assimilated quantity) for each source galaxy
-            Returned only if include_quadrupole is `True'. 
+            Returned only if include_quadrupole is `True`. 
         """
         # Check is all the required data is available
         col_dict = {
