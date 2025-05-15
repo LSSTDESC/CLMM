@@ -1286,12 +1286,12 @@ def test_make_radial_profiles():
         )
         _test_profile_table_output(
             profile,
-            bins_radians[1],
-            expected_radius[1],
-            bins_radians[2],
-            expected["tan_shear"][1],
-            expected["cross_shear"][1],
-            [2],
+            bins_radians[:2],
+            expected_radius[:2],
+            bins_radians[1:3],
+            expected["tan_shear"][:2],
+            expected["cross_shear"][:2],
+            [1, 2],
         )
         # Test metadata
         assert_array_equal(profile.meta["bin_units"], bin_units)
@@ -1307,12 +1307,12 @@ def test_make_radial_profiles():
         )
         _test_profile_table_output(
             profile,
-            bins_radians[1],
-            expected_radius[1],
-            bins_radians[2],
-            expected["tan_shear"][1],
-            expected["cross_shear"][1],
-            [2],
+            bins_radians[:2],
+            expected_radius[:2],
+            bins_radians[1:3],
+            expected["tan_shear"][:2],
+            expected["cross_shear"][:2],
+            [1, 2],
         )
         # including empty bins
         profile = da.make_radial_profile(
@@ -1367,12 +1367,12 @@ def test_make_radial_profiles():
         # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
         _test_profile_table_output(
             cluster.profile,
-            bins_radians[1],
-            expected_radius[1],
-            bins_radians[2],
-            expected["tan_shear"][1],
-            expected["cross_shear"][1],
-            [2],
+            bins_radians[:2],
+            expected_radius[:2],
+            bins_radians[1:3],
+            expected["tan_shear"][:2],
+            expected["cross_shear"][:2],
+            [1, 2],
             p0="gt",
             p1="gx",
         )
@@ -1445,12 +1445,12 @@ def test_make_radial_profiles():
         )
         _test_profile_table_output(
             cluster.profile3,
-            bins_radians[1],
-            expected_radius[1],
-            bins_radians[2],
-            expected["tan_shear"][1],
-            expected["cross_shear"][1],
-            [2],
+            bins_radians[:2],
+            expected_radius[:2],
+            bins_radians[1:3],
+            expected["tan_shear"][:2],
+            expected["cross_shear"][:2],
+            [1, 2],
             p0="gt",
             p1="gx",
         )

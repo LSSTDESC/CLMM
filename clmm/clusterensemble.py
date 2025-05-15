@@ -3,6 +3,7 @@ The Cluster Ensemble class
 """
 
 import pickle
+import warnings
 import numpy as np
 import healpy
 
@@ -58,6 +59,12 @@ class ClusterEnsemble:
         self.include_quadrupole = include_quadrupole
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
+            weights_out = kwargs.get("weights_out", "W_l")
+            if (self.data[weights_out] == 0).any():
+                warnings.warn(
+                    "There are empty bins in some of the profile tables,"
+                    f" filter them with {weights_out}>0 for visualization."
+                )
         self.stacked_data = None
         self.cov = {
             "tan_sc": None,
