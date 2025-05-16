@@ -1,10 +1,11 @@
 """General utility functions that are used in multiple modules"""
 
 import warnings
+
 import numpy as np
-from scipy.stats import binned_statistic
 from scipy.integrate import cumulative_trapezoid
 from scipy.interpolate import interp1d
+from scipy.stats import binned_statistic
 
 
 def compute_weighted_bin_sum(xvals, yvals, xbins, weights):

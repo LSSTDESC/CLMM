@@ -1,10 +1,10 @@
 """General utility functions that are used in multiple modules"""
 
 import warnings
-import numpy as np
-from scipy.integrate import simpson
 
+import numpy as np
 import qp
+from scipy.integrate import simpson
 
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=None, ngrid=1000):

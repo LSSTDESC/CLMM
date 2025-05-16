@@ -4,10 +4,10 @@ Define the custom data type
 
 import warnings
 from collections import OrderedDict
-from astropy.table import Table as APtable
-import numpy as np
 
+import numpy as np
 import qp
+from astropy.table import Table as APtable
 
 
 class GCMetaData(OrderedDict):

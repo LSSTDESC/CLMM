@@ -2,9 +2,8 @@
 Cosmology using NumCosmo
 """
 
-import numpy as np
-
 import gi
+import numpy as np
 
 # pylint: disable=wrong-import-position
 gi.require_version("NumCosmo", "1.0")

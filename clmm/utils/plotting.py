@@ -2,6 +2,7 @@
 
 # Set mpl backend run plots on github actions
 import os
+
 import matplotlib as mpl
 
 # pylint: disable=wrong-import-position

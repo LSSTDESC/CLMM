@@ -5,7 +5,7 @@ Model functions with miscentering
 # Functions to model halo profiles
 
 import numpy as np
-from scipy.integrate import quad, dblquad, tplquad
+from scipy.integrate import dblquad, quad, tplquad
 
 
 def integrand_surface_density_nfw(theta, r_proj, r_mis, r_s):

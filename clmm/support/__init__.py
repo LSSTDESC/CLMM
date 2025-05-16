@@ -2,5 +2,4 @@
 Support package
 """
 
-from . import mock_data
-from . import sampler
+from . import mock_data, sampler

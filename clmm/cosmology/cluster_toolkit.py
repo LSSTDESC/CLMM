@@ -3,12 +3,10 @@ Cosmology using AstroPy (for cluster_toolkit)
 """
 
 import numpy as np
-
 from astropy import units
-from astropy.cosmology import LambdaCDM, FlatLambdaCDM
+from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 
 from ..utils.constants import Constants as const
-
 from .parent_class import CLMMCosmology
 
 __all__ = []

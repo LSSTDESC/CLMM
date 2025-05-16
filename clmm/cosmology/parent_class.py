@@ -4,7 +4,8 @@ CLMMCosmology abstract class
 
 # CLMM Cosmology object abstract superclass
 import numpy as np
-from ..utils import validate_argument, compute_for_good_redshifts
+
+from ..utils import compute_for_good_redshifts, validate_argument
 from ..utils.constants import Constants as const
 
 

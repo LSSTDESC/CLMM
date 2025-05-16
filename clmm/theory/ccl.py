@@ -2,17 +2,17 @@
 Modeling using CCL
 """
 
+import pyccl as ccl
+
 # Functions to model halo profiles
 from packaging.version import parse
 
-import pyccl as ccl
-
-from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.ccl import CCLCosmology
-from .parent_class import CLMModeling
+from ..utils import _patch_rho_crit_to_cd2018
 
 # Check which versions of ccl are currently supported
 from . import _ccl_supported_versions
+from .parent_class import CLMModeling
 
 if (
     parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)

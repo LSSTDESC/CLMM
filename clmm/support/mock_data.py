@@ -1,24 +1,23 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 
 import warnings
+
 import numpy as np
-
-from scipy.special import erfc
-
 from astropy import units as u
 from astropy.coordinates import SkyCoord
+from scipy.special import erfc
 
 from ..gcdata import GCData
-from ..theory import compute_tangential_shear, compute_convergence
+from ..theory import compute_convergence, compute_tangential_shear
 from ..utils import (
-    convert_units,
-    compute_lensed_ellipticity,
-    validate_argument,
     _draw_random_points_from_distribution,
-    gaussian,
     _validate_coordinate_system,
-    redshift_distributions as zdist,
+    compute_lensed_ellipticity,
+    convert_units,
+    gaussian,
 )
+from ..utils import redshift_distributions as zdist
+from ..utils import validate_argument
 
 
 def generate_galaxy_catalog(
