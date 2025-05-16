@@ -682,20 +682,15 @@ def test_compute_tangential_and_cross_components(modeling_data):
         assert_raises(
                 ValueError,
                 da.compute_tangential_and_cross_components,
-                ra_lens,
-                dec_lens,
-                list(gals["ra"]),
-                list(gals["dec"]),
-                list(gals["e1"]),
-                list(gals["e2"]),
-                "euclidean",
-                geometry,
-                False
-                None,
-                True,
-                None,
-                None,
-                False,
+                ra_lens=ra_lens,
+                dec_lens=dec_lens,
+                ra_source=list(gals["ra"]),
+                dec_source=list(gals["dec"]),
+                shear1=list(gals["e1"]),
+                shear2=list(gals["e2"]),
+                geometry=geometry,
+                include_quadrupole=True,
+                validate_input=False,
                 )
 
         # Test without validation and float arguments
