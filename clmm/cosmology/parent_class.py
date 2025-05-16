@@ -1,6 +1,7 @@
 """@file parent_class.py
 CLMMCosmology abstract class
 """
+
 # CLMM Cosmology object abstract superclass
 import numpy as np
 from ..utils import validate_argument, compute_for_good_redshifts

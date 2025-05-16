@@ -1,6 +1,7 @@
 """@file miscentering.py
 Model functions with miscentering
 """
+
 # Functions to model halo profiles
 
 import numpy as np

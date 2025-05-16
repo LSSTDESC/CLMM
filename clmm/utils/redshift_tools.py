@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+
 import warnings
 import numpy as np
 from scipy.integrate import simpson

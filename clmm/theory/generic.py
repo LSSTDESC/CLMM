@@ -1,6 +1,7 @@
 """@file generic.py
 Model independent theory functions
 """
+
 # Functions to model halo profiles
 
 import warnings

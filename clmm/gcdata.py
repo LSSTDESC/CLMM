@@ -1,6 +1,7 @@
 """
 Define the custom data type
 """
+
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable

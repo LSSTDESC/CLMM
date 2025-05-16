@@ -1,6 +1,7 @@
 """@file numcosmo.py
 Cosmology using NumCosmo
 """
+
 import numpy as np
 
 import gi
