@@ -195,6 +195,10 @@ def test_update_coordinate_system():
     gcdata["e2"] = e2
     gcdata["ex"] = ex
     assert_raises(ValueError, gcdata.meta.__setitem__, "coordinate_system", "euclidean")
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
 
     # raise error if column is not present
     gcdata = GCData(meta={"coordinate_system": "euclidean"})
@@ -202,6 +206,10 @@ def test_update_coordinate_system():
     gcdata["e2"] = e2
     gcdata["ex"] = ex
     assert_raises(ValueError, gcdata.update_coordinate_system, "celestial", "et")
+    assert_equal("euclidean", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
 
     # update coordinate system with bogus system
     gcdata = GCData(meta={"coordinate_system": "celestial"})
@@ -212,6 +220,10 @@ def test_update_coordinate_system():
     assert_raises(TypeError, gcdata.update_coordinate_system, 2)
     assert_raises(TypeError, gcdata.update_coordinate_system, None)
     assert_raises(TypeError, gcdata.update_coordinate_system, ["celestial", 2])
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
 
     # update coordinate system without conversion
     gcdata = GCData(meta={"coordinate_system": "euclidean"})
@@ -229,9 +241,9 @@ def test_update_coordinate_system():
     gcdata["e1"] = e1
     gcdata["e2"] = e2
     gcdata["ex"] = ex
-    assert_no_warnings(gcdata.update_coordinate_system, "celestial")
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "celestial")
     assert_equal("celestial", gcdata.meta["coordinate_system"])
-    assert_no_warnings(gcdata.update_coordinate_system, "celestial", "e2", "ex")
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "celestial", "e2", "ex")
     assert_equal(e1, gcdata["e1"])
     assert_equal(e2, gcdata["e2"])
     assert_equal(ex, gcdata["ex"])
