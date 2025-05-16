@@ -336,33 +336,14 @@ class ClusterEnsemble:
         """
         self._check_empty_data()
 
+        _col_names = [tan_component, cross_component]
         if self.include_quadrupole:
-            _cols_in = [
-                self.data[tan_component],
-                self.data[cross_component],
-                self.data[quad_4theta_component],
-                self.data[quad_const_component],
-            ]
-            _cols_names = (
-                tan_component,
-                cross_component,
-                quad_4theta_component,
-                quad_const_component,
-            )
-        else:
-            _cols_in = [
-                self.data[tan_component],
-                self.data[cross_component],
-            ]
-            _cols_names = (
-                tan_component,
-                cross_component,
-            )
+            _col_names += [quad_4theta_component, quad_const_component]
 
         radius, components = make_stacked_radial_profile(
             self.data["radius"],
             self.data[weights],
-            _cols_in,
+            [self.data[_col] for _col in _col_names],
         )
         self.stacked_data = GCData(
             [
@@ -372,7 +353,7 @@ class ClusterEnsemble:
                 *components,
             ],
             meta={k: v for k, v in self.data.meta.items() if k not in ("radius_min", "radius_max")},
-            names=("radius_min", "radius_max", "radius", *_cols_names),
+            names=("radius_min", "radius_max", "radius", *_col_names),
         )
 
     def compute_sample_covariance(
