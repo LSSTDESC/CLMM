@@ -15,9 +15,9 @@ from ..utils import (
     compute_lensed_ellipticity,
     convert_units,
     gaussian,
+    redshift_distributions,
+    validate_argument,
 )
-from ..utils import redshift_distributions as zdist
-from ..utils import validate_argument
 
 
 def generate_galaxy_catalog(
@@ -346,7 +346,11 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     if isinstance(zsrc, float):
         ngals = int(ngals)
     elif zsrc in ("chang13", "desc_srd"):
-        z_distrib_func = zdist.chang2013 if zsrc == "chang13" else zdist.desc_srd
+        z_distrib_func = (
+            redshift_distributions.chang2013
+            if zsrc == "chang13"
+            else redshift_distributions.desc_srd
+        )
         # Compute the normalisation for the redshift distribution function (z=[0, inf))
         # z_distrib_func(0, is_cdf=True)=0
         norm = z_distrib_func(np.inf, is_cdf=True)
@@ -526,12 +530,14 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     # Draw zsrc from Chang et al. 2013
     elif zsrc == "chang13":
         zsrc_list = _draw_random_points_from_distribution(
-            zsrc_min, zsrc_max, ngals, zdist.chang2013
+            zsrc_min, zsrc_max, ngals, redshift_distributions.chang2013
         )
 
     # Draw zsrc from the distribution used in the DESC SRD (arxiv:1809.01669)
     elif zsrc == "desc_srd":
-        zsrc_list = _draw_random_points_from_distribution(zsrc_min, zsrc_max, ngals, zdist.desc_srd)
+        zsrc_list = _draw_random_points_from_distribution(
+            zsrc_min, zsrc_max, ngals, redshift_distributions.desc_srd
+        )
 
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == "uniform":
