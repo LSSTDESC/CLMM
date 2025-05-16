@@ -258,8 +258,7 @@ class GCData(APtable):
         in_coordinate_system = self.meta["coordinate_system"]
         if coordinate_system == in_coordinate_system:
             warnings.warn(
-                f"coordinate_system {coordinate_system} is the same as in data "
-                f"{in_coordinate_system}. No changes made."
+                f"coordinate_system {coordinate_system} is the same as in data. No changes made."
             )
         else:
             if args:
