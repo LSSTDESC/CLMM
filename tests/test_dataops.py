@@ -688,7 +688,10 @@ def test_compute_tangential_and_cross_components(modeling_data):
                 list(gals["dec"]),
                 list(gals["e1"]),
                 list(gals["e2"]),
+                "euclidean",
                 geometry,
+                False
+                None,
                 True,
                 None,
                 None,
