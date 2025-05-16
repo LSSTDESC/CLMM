@@ -248,7 +248,8 @@ class GCData(APtable):
             Coordinate system of the ellipticity components. Must be either 'celestial' or
             euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         *args : tuple
-            Components to be converted, must be in data.
+            Name of the columns holding the ellipticity components. Passing names not corresponding
+            to these columns will have undesired effects.
 
         Returns
         -------
