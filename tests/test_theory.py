@@ -589,6 +589,27 @@ def test_triaxial(modeling_data):
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
         )
+        
+        # Check that wrong term value is caught in OO-oriented and functional interface.
+        assert_raises(ValueError,
+                theo.compute_excess_surface_density_triaxial,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                cosmo,
+                term="bleh",
+                n_grid=500,
+                )
+        assert_raises(ValueError,
+                mod.eval_excess_surface_density_triaxial,
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "bleh",
+                500
+                )
 
         # Checks that OO-oriented and functional interface give the same results
         assert_allclose(
