@@ -678,6 +678,23 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Constant Shear not correct when passing lists and mem_info",
         )
 
+        # Test for ValueError if neither phi_major or mem positions are given with quadrupole
+        assert_raises(
+                ValueError,
+                da.compute_tangential_and_cross_components,
+                ra_lens,
+                dec_lens,
+                list(gals["ra"]),
+                list(gals["dec"]),
+                list(gals["e1"]),
+                list(gals["e2"]),
+                geometry,
+                True,
+                None,
+                None,
+                False,
+                )
+
         # Test without validation and float arguments
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
