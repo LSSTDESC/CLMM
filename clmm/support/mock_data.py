@@ -188,7 +188,7 @@ def generate_galaxy_catalog(
     # pylint: disable=R0914
 
     if not coordinate_system:
-        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
         coordinate_system = "euclidean"
 
     if validate_input:

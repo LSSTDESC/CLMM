@@ -123,7 +123,7 @@ def compute_tangential_and_cross_components(
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if coordinate_system is None:
-        warnings.warn("The coordinate_system argument was not provided. Defaulting to 'euclidean'.")
+        warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
         coordinate_system = "euclidean"
 
     if validate_input:
@@ -568,7 +568,7 @@ def make_radial_profile(
     """
     # pylint: disable-msg=too-many-locals
     if not coordinate_system:
-        warnings.warn("coordinate_system not set, defaulting to 'euclidean'.")
+        warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
         coordinate_system = "euclidean"
     if validate_input:
         validate_argument(locals(), "angsep", "float_array")
