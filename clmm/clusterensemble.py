@@ -377,16 +377,16 @@ class ClusterEnsemble:
         """
         self._check_empty_data()
 
-        n_catalogs = len(self.data)
-        self.cov["tan_sc"] = np.cov(self.data[tan_component].T, bias=False) / n_catalogs
-        self.cov["cross_sc"] = np.cov(self.data[cross_component].T, bias=False) / n_catalogs
+        _components = [("tan_sc", tan_component), ("cross_sc", cross_component)]
         if self.include_quadrupole:
-            self.cov["quad_4theta_sc"] = (
-                np.cov(self.data[quad_4theta_component].T, bias=False) / n_catalogs
-            )
-            self.cov["quad_const_sc"] = (
-                np.cov(self.data[quad_const_component].T, bias=False) / n_catalogs
-            )
+            _components += [
+                ("quad_4theta_sc", quad_4theta_component),
+                ("quad_const_sc", quad_const_component),
+            ]
+
+        n_catalogs = len(self.data)
+        for _cov_name_out, _col_name_in in _components:
+            self.cov[_cov_name_out] = np.cov(self.data[_col_name_in].T, bias=False) / n_catalogs
 
     def compute_bootstrap_covariance(
         self,
