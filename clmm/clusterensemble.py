@@ -273,17 +273,11 @@ class ClusterEnsemble:
         cl_cosmo = profile_table.meta.get("cosmo", None)
         self.data.update_info_ext_valid("cosmo", self.data, cl_cosmo, overwrite=False)
 
+        _quad_cols = ()
         if self.include_quadrupole:
-            tbcols = (
-                "radius",
-                tan_component,
-                cross_component,
-                quad_4theta_component,
-                quad_const_component,
-                weights,
-            )
-        else:
-            tbcols = ("radius", tan_component, cross_component, weights)
+            _quad_cols = (quad_4theta_component, quad_const_component)
+        tbcols = ("radius", tan_component, cross_component, *_quad_cols, weights)
+
         data_to_save = [
             galaxycluster.unique_id,
             galaxycluster.ra,
