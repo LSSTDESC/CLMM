@@ -136,7 +136,7 @@ def generate_galaxy_catalog(
         than zsrc_max.
     field_size : float, optional
         The size of the field (field_size x field_size) to be simulated.
-        Proper distance in Mpc  at the cluster redshift.
+        Proper distance in Mpc at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     mean_e_err : float, optional
@@ -166,12 +166,11 @@ def generate_galaxy_catalog(
     ngal_density : float, optional
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and
-        user-defined redshift range.  If specified, the ngals argument will be ignored.
+        user-defined redshift range. If specified, the ngals argument will be ignored.
     coordinate_system : str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
         If not set, defaults to 'euclidean'.
-
     validate_input: bool
         Validade each input argument
 
@@ -396,8 +395,11 @@ def _generate_galaxy_catalog(
     # Too many local variables (22/15)
     # pylint: disable=R0914
 
+    # Create empty GCData object with the given coordinate system
+    galaxy_catalog = _create_gcdata(coordinate_system)
+
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system)
+    galaxy_catalog = _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
@@ -490,15 +492,34 @@ def _generate_galaxy_catalog(
     return galaxy_catalog[cols]
 
 
-def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system):
+def _create_gcdata(coordinate_system):
+    """Create a GCData object with the given coordinate system.
+    
+    Parameters
+    ----------
+    coordinate_system : str
+        Coordinate system of the ellipticity components. Must be either 'celestial' or
+        'euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+
+    Returns
+    -------
+    galaxy_catalog : clmm.GCData
+        Empty GCData object with the given coordinate system.
+    """
+    return GCData(meta={"coordinate_system": coordinate_system})
+
+
+def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
-    distribution. Return a table (GCData) of the source galaxies
+    distribution.
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
 
     Parameters
     ----------
+    galaxy_catalog : clmm.GCData
+        Source galaxy catalog
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift.
@@ -517,7 +538,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system):
     Returns
     -------
     galaxy_catalog : clmm.GCData
-        Table of true and 'measured' photometric redshifts, which here the same. Redshift
+        Columns of true and 'measured' photometric redshifts, which here the same. Redshift
         photometric errors are then added using _compute_photoz_pdfs.
 
     Notes
@@ -546,9 +567,10 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals, coordinate_system):
     else:
         raise ValueError(f"zsrc must be a float, chang13 or desc_srd. You set: {zsrc}")
 
-    return GCData(
-        [zsrc_list, zsrc_list], names=("ztrue", "z"), meta={"coordinate_system": coordinate_system}
-    )
+    galaxy_catalog["ztrue"] = zsrc_list
+    galaxy_catalog["z"] = zsrc_list
+
+    return galaxy_catalog
 
 
 def _compute_photoz_pdfs(
