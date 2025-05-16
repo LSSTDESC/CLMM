@@ -91,9 +91,7 @@ class AstroPyCosmology(CLMMCosmology):
     def _eval_sigma_crit_core(self, z_len, z_src):
         # Constants
         clight_pc_s = const.CLIGHT_KMS.value * 1000.0 / const.PC_TO_METER.value
-        gnewt_pc3_msun_s2 = (
-            const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
-        )
+        gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
         d_l = self._eval_da_z1z2_core(0, z_len)
         d_s = self._eval_da_z1z2_core(0, z_src)

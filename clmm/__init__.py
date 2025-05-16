@@ -1,4 +1,4 @@
-""" CLMM is a cluster mass modeling code. """
+"""CLMM is a cluster mass modeling code."""
 
 from .gcdata import GCData
 from .galaxycluster import GalaxyCluster

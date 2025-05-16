@@ -38,6 +38,7 @@ class NumCosmoCLMModeling(CLMModeling):
     hdpm_dict: dict
         Dictionary with the definitions for profile
     """
+
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=abstract-method
 

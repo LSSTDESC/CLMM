@@ -50,6 +50,7 @@ class CCLCLMModeling(CLMModeling):
     conc: ccl.halos.ConcentrationConstant, None
         Internal ConcentrationConstant object
     """
+
     # pylint: disable=too-many-instance-attributes
 
     def __init__(
