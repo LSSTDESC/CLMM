@@ -256,13 +256,29 @@ class GCData(APtable):
         None
         """
         in_coordinate_system = self.meta["coordinate_system"]
-        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
-        if coordinate_system != in_coordinate_system:
-            for col in args:
-                if col in self.colnames:
-                    self[col] = -self[col]
-                else:
-                    raise ValueError(f"component {col} not found in data")
+        if coordinate_system == in_coordinate_system:
+            warnings.warn(
+                f"coordinate_system {coordinate_system} is the same as in data "
+                f"{in_coordinate_system}. No changes made."
+            )
+        else:
+            if args:
+                new_columns = {}
+                for col in args:
+                    if col in self.colnames:
+                        new_columns[col] = -self[col]
+                    else:
+                        raise ValueError(f"Component {col} not found in data. No changes made.")
+            self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
+            if args:
+                for col in args:
+                    self[col] = new_columns[col]
+                warnings.warn(f"Columns {args} have been updated.")
+            else:
+                warnings.warn(
+                    "No ellipticity columns provided. Coordinate system has been updated but "
+                    "no changes were made to the data."
+                )
 
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies
