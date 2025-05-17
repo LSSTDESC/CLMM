@@ -123,6 +123,8 @@ def compute_tangential_and_cross_components(
     phi_major : float, optional
         the direction of the major axis of the input cluster in the unit of radian. 
         only needed when `include_quadrupole` is `True`.
+        This quantity is always in Euclidean coordinates, for celestial coordinates only set
+        the coordinate_system=`celestial`.
         Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
     info_mem : list of array, optional
         RAs, DECs and weights of the member galaxies of the input cluster,
