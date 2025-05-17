@@ -491,6 +491,31 @@ def test_compute_tangential_and_cross_components(modeling_data):
             **TOLERANCE,
             err_msg="Constant Shear not correct when passing arrays and phi_major",
         )
+        ## Turn on quadrupole option with Celestial coordinates
+        angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=-gals["e2"],
+            geometry=geometry,
+            include_quadrupole=True,
+            phi_major=0.0,
+            coordinate_system="celestial"
+        )
+        assert_allclose(
+            ftshear,
+            expected["four_theta_shear"],
+            **TOLERANCE,
+            err_msg="4theta Shear not correct when passing phi_major for celestial coord.",
+        )
+        assert_allclose(
+            cnshear,
+            expected["const_shear"],
+            **TOLERANCE,
+            err_msg="Constant Shear not correct when passing phi_major for celestial coord.",
+        )
 
         ## Pass members info instead of major axis directly
         angsep, _, _, ftshear, cnshear = da.compute_tangential_and_cross_components(
