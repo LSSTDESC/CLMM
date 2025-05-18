@@ -43,6 +43,7 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
     Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
+    Use the template provided for a pull request, it will faciliate the process for everybody.
     Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
 
