@@ -239,7 +239,7 @@ class GCData(APtable):
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
 
-    def update_coordinate_system(self, coordinate_system, *args):
+    def update_coordinate_system(self, coordinate_system, ellipticity_columns=()):
         r"""Updates coordinate_system metadata and converts ellipticity
 
         Parameters
@@ -247,7 +247,7 @@ class GCData(APtable):
         coordinate_system : str
             Coordinate system of the ellipticity components. Must be either 'celestial' or
             euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        *args : tuple
+        ellipticity_columns : tuple
             Name of the columns holding the ellipticity components. Passing names not corresponding
             to these columns will have undesired effects.
 
@@ -255,29 +255,27 @@ class GCData(APtable):
         -------
         None
         """
-        in_coordinate_system = self.meta["coordinate_system"]
-        if coordinate_system == in_coordinate_system:
+        if coordinate_system == self.meta["coordinate_system"]:
             warnings.warn(
                 f"coordinate_system {coordinate_system} is the same as in data. No changes made."
             )
+            return
+
+        if ellipticity_columns:
+            missing_columns = list(
+                filter(lambda col: col not in self.colnames, ellipticity_columns)
+            )
+            if len(missing_columns) > 0:
+                raise ValueError(f"Components {missing_columns} not found in data. No changes made")
+            for col in ellipticity_columns:
+                self[col] *= -1
+            warnings.warn(f"Columns {ellipticity_columns} have been updated.")
         else:
-            if args:
-                new_columns = {}
-                for col in args:
-                    if col in self.colnames:
-                        new_columns[col] = -self[col]
-                    else:
-                        raise ValueError(f"Component {col} not found in data. No changes made.")
-            self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
-            if args:
-                for col in args:
-                    self[col] = new_columns[col]
-                warnings.warn(f"Columns {args} have been updated.")
-            else:
-                warnings.warn(
-                    "No ellipticity columns provided. Coordinate system has been updated but "
-                    "no changes were made to the data."
-                )
+            warnings.warn(
+                "No ellipticity columns provided. Coordinate system has been updated but "
+                "no changes were made to the data."
+            )
+        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
 
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies

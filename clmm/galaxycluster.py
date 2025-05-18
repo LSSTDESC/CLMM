@@ -717,7 +717,7 @@ class GalaxyCluster:
             self.galcat["ra"][self.galcat["ra"] < ra_low] += 360.0
             self.galcat["ra"][self.galcat["ra"] >= ra_low + 360.0] -= 360.0
 
-    def update_coordinate_system(self, coordinate_system, *args):
+    def update_coordinate_system(self, coordinate_system, ellipticity_columns=()):
         """Updates coordinate_system metadata of the galcat and converts ellipticity
 
         Parameters
@@ -725,11 +725,11 @@ class GalaxyCluster:
         coordinate_system : str
             Coordinate system of the ellipticity components. Must be either 'celestial' or
             euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        *args : tuple
+        ellipticity_columns : tuple
             Components to be converted, must be in data.
 
         Returns
         -------
         None
         """
-        self.galcat.update_coordinate_system(coordinate_system, *args)
+        self.galcat.update_coordinate_system(coordinate_system, ellipticity_columns)
