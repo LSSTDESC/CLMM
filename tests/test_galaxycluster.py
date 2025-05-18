@@ -529,7 +529,7 @@ def test_coordinate_system():
         err_msg="Cross component computation different between coordinate systems",
     )
 
-    cl_euclidean.update_coordinate_system("celestial", "e2", "ex")
+    cl_euclidean.update_coordinate_system("celestial", ("e2", "ex"))
 
     # assert components are updated correctly
     assert_allclose(
