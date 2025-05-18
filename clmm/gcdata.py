@@ -261,21 +261,21 @@ class GCData(APtable):
             )
             return
 
+        missing_columns = list(filter(lambda col: col not in self.colnames, ellipticity_columns))
+        if len(missing_columns) > 0:
+            raise ValueError(f"Components {missing_columns} not found in data. No changes made")
+
+        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
+        for col in ellipticity_columns:
+            self[col] *= -1
+
         if ellipticity_columns:
-            missing_columns = list(
-                filter(lambda col: col not in self.colnames, ellipticity_columns)
-            )
-            if len(missing_columns) > 0:
-                raise ValueError(f"Components {missing_columns} not found in data. No changes made")
-            for col in ellipticity_columns:
-                self[col] *= -1
             warnings.warn(f"Columns {ellipticity_columns} have been updated.")
         else:
             warnings.warn(
                 "No ellipticity columns provided. Coordinate system has been updated but "
                 "no changes were made to the data."
             )
-        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
 
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies
