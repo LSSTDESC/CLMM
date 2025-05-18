@@ -45,12 +45,35 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
     Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
-NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
 
-To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+### Requirements for every change <a name="adding_codes"></a>
 
-NOTE2: If the changes you are making affect which CCL versions are compatible with the code,
-please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+We want to make sure the code formatting in `CLMM` is standardized accordind to our guidelines, which facilitates the reading of the code.
+The code is also not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
+So remember these steps:
+
+- **Formatting the code:** there are tools that will format the code automatically for you, so you don't have to worry about the correct syntax when developing it.
+Once you add your changes, `black clmm/` and `isort clmm/` before you commit your changes. These tools will correctly format the spacing and importing order respectilely.
+**Tip:** `black` can also be run on notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
+
+- **Structuring the code:** Run `pylint clmm/`, this will produce a diagnostic about the implementation and tell you what needs to be improved.
+
+- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
+**Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
+In this case you will not have to reinstall it at every change.
+
+- **Unit tests:** To run all of the unit tests, run `pytest` in the root package directory.
+
+- **Coverage:** Check the coverage of the code, i. e. how many lines of the code are being tested in our unittests. To do it locally, you need the `pytest-cov` library (it can be insatalled with `pip`). Then run the command `pytest tests/ --cov=clmm --cov-report term-missing`, it will tell you what fraction of the code is being tested and which lines are not being tested.
+
+- **Notebooks:** Make sure all notebooks can run correctly. We provide a convenient bash script to compile the documentation, run `./run_notebooks` in the main `CLMM` directory. It will create an executed version of all notebooks in the `_executed_nbs/` directory. By default it uses a `python3` kernel, if you want to choose another one, just pass it to the command: `./run_notebooks -k MY_KERNEL`. (Note that depending on your theory backend, some cells in some notebooks will give an error. This expected behaviour is explicitely mentioned before the cells and should not be a cause of worry.)
+
+- **Build the documentation:** To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+
+> **NOTE:** If the changes you are making affect which CCL versions are compatible with the code,
+> please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+
+All these steps (except running the notebooks) are run automatically on each pull request on GitHub, so you will know if any of them require further attention before considering youre changes are ready to be reviewed. Check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR.
 
 ## Adding documentation <a name="adding_documentation"></a>
 
@@ -66,21 +89,14 @@ Once it has been added to the config file, simply run `./update_docs` from the t
 To review an open pull request submitted by another developer, there are several steps that you should take.
 
 1. **Code changes:** For each new or changed file, ensure that the changes are correct, well-documented, and easy to follow. If you notice anything that can be improved, leave an inline comment (click the line of code in the review interface on Github).
-2. **Documentation:** Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
-3. **Code formatting:** Make sure the code formatting is up to standards, you can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step. **Tips for formatting:** CLMM is setup to be formatted automatically with the `black` package (can be installed via `pip install black`). Just run `black {filename}` for specific file or `black .` inside the main CLMM directory for the whole repo. **Bonus tip:** This can also be done for notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
-4. **Check unittests:** For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
+1. **Documentation:** Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
+1. **Check unittests:** For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
 
-Now, make sure everything is ok with unit tests, notebooks and documentation. These steps (except running the notebooks) are run automatically on each pull request on github (check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR), but you can also run them manually on your local machine:
+1. **Tests for formatting, documentation and unit tests:** The CI runs automatically tests for code formatting, documentation and unit tests, so the checks will fail if there are any problems. To see how to perform these steps manually, check the [Requirements for every change](#adding_codes) section.
 
-5. **Run unittests:** Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
-6. **Check coverage:** Check the coverage of the code, i. e. how many lines of the code are being tested in our unittests. To do it locally, you need the `pytest-cov` library (it can be insatalled with `pip`). Then run the command `pytest tests/ --cov=clmm --cov-report term-missing`, it will tell you what fraction of the code is being tested and which lines are not being tested.
-7. **Notebooks:** Make sure all notebooks can run correctly. We provide a convenient bash script to compile the documentation, run `./run_notebooks` in the main `CLMM` directory. It will create an executed version of all notebooks in the `_executed_nbs/` directory. By default it uses a `python3` kernel, if you want to choose another one, just pass it to the command: `./run_notebooks -k MY_KERNEL`. (Note that depending on your theory backend, some cells in some notebooks will give an error. This expected behaviour is explicitely mentioned before the cells and should not be a cause of worry.)
-8. **Documentation:** We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./update_docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
-9. **Install:** Finally, install (`python setup.py install --user`), run tests (`pytest`) and notebooks (`./run_notebooks`), and compile documentation (`./update_docs`). If everything passes, accept the review!
+1. **Notebooks:** Make sure all notebooks can run correctly as this is not run by the CI, check [Requirements for every change](#adding_codes) for details.
 
-(Developer tip: you can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`)
-
-NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
+1. **Documentation:** Check that the documentation looks as it should, see [Requirements for every change](#adding_codes) for details.
 
 ## Steps to merging a pull request <a name="steps_to_merging_a_pull_request"></a>
 
@@ -122,10 +138,10 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (APC / LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (INAF / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
-* [Lucie Baumont](https://github.com/lbaumo) (SBU)
+* [Lucie Baumont](https://github.com/lbaumo) (INAF)
 * [Miyoung Choi](https://github.com/mchoi8739) (UTD)
 * [Celine Combet](https://github.com/combet) (LPSC)
 * [Matthew Fong](https://github.com/matthewwf2001) (UTD)
