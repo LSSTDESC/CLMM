@@ -198,6 +198,7 @@ def integrate_azimuthially_miscentered_surface_density(
     numpy.ndarray, float
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
+    r_proj = np.atleast_1d(r_proj)
     args_list = [(r, r_mis, *aux_args) for r in r_proj]
     if extra_integral:
         res = [
@@ -236,7 +237,7 @@ def integrate_azimuthially_miscentered_mean_surface_density(
     numpy.ndarray, float
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-
+    r_proj = np.atleast_1d(r_proj)
     r_lower = np.zeros_like(r_proj)
     r_lower[1:] = r_proj[:-1]
     args = (r_mis, *aux_args)
