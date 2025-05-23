@@ -191,7 +191,7 @@ def integrate_azimuthially_miscentered_surface_density(
     aux_args : list
         Auxiliary arguments used in the integral
     extra_integral : bool
-        Additional dimention for the integral
+        Additional dimension for the integral
 
     Returns
     -------
@@ -226,6 +226,10 @@ def integrate_azimuthially_miscentered_mean_surface_density(
         Projected miscenter distance in :math:`M\!pc`.
     r_s : array_like
         Scale radius
+    aux_args : list
+        Auxiliary arguments used in the integral
+    extra_integral : bool
+        Additional dimension for the integral
 
     Returns
     -------
