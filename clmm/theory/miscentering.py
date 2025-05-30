@@ -198,8 +198,7 @@ def integrate_azimuthially_miscentered_surface_density(
     numpy.ndarray, float
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    r_proj = np.atleast_1d(r_proj)
-    args_list = [(r, r_mis, *aux_args) for r in r_proj]
+    args_list = [(r, r_mis, *aux_args) for r in np.atleast_1d(r_proj)]
     if extra_integral:
         res = [
             dblquad(integrand, 0.0, np.pi, 0, np.inf, args=args, epsrel=1e-6)[0]
@@ -209,6 +208,9 @@ def integrate_azimuthially_miscentered_surface_density(
         res = [quad(integrand, 0.0, np.pi, args=args, epsrel=1e-6)[0] for args in args_list]
 
     res = np.array(res) * norm / np.pi
+
+    if not np.iterable(r_proj):
+        return res[0]
     return res
 
 
@@ -237,20 +239,22 @@ def integrate_azimuthially_miscentered_mean_surface_density(
     numpy.ndarray, float
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    r_proj = np.atleast_1d(r_proj)
-    r_lower = np.zeros_like(r_proj)
-    r_lower[1:] = r_proj[:-1]
+    r_proj_use = np.atleast_1d(r_proj)
+    r_lower = np.zeros_like(r_proj_use)
+    r_lower[1:] = r_proj_use[:-1]
     args = (r_mis, *aux_args)
 
     if extra_integral:
         res = [
             tplquad(integrand, r_low, r_high, 0, np.pi, 0, np.inf, args=args, epsrel=1e-6)[0]
-            for r_low, r_high in zip(r_lower, r_proj)
+            for r_low, r_high in zip(r_lower, r_proj_use)
         ]
     else:
         res = [
             dblquad(integrand, r_low, r_high, 0, np.pi, args=args, epsrel=1e-6)[0]
-            for r_low, r_high in zip(r_lower, r_proj)
+            for r_low, r_high in zip(r_lower, r_proj_use)
         ]
 
+    if not np.iterable(r_proj):
+        return res[0] * norm * 2 / np.pi / r_proj**2
     return np.cumsum(res) * norm * 2 / np.pi / r_proj**2
