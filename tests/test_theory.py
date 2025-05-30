@@ -366,6 +366,17 @@ def test_profiles(modeling_data, profile_init):
                 2.5e-2,
             )
             assert_allclose(
+                mod.eval_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    r_mis=0.1,
+                    verbose=True,
+                    mis_from_backend=True,
+                )[-40],
+                cfg["numcosmo_profiles"]["Sigma"][-40],
+                2.5e-2,
+            )
+            assert_allclose(
                 mod.eval_mean_surface_density(
                     cfg["SIGMA_PARAMS"]["r_proj"],
                     cfg["SIGMA_PARAMS"]["z_cl"],
@@ -384,6 +395,17 @@ def test_profiles(modeling_data, profile_init):
                     mis_from_backend=True,
                 )[-40:],
                 (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                mod.eval_mean_surface_density(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    r_mis=0.1,
+                    verbose=True,
+                    mis_from_backend=True,
+                )[-40],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40],
                 8.5e-3,
             )
             assert_allclose(
@@ -469,6 +491,18 @@ def test_profiles(modeling_data, profile_init):
                 2.5e-2,
             )
             assert_allclose(
+                theo.compute_surface_density(
+                    cosmo=cosmo,
+                    **cfg["SIGMA_PARAMS"],
+                    alpha_ein=alpha_ein,
+                    verbose=True,
+                    r_mis=0.1,
+                    mis_from_backend=True,
+                )[-40],
+                cfg["numcosmo_profiles"]["Sigma"][-40],
+                2.5e-2,
+            )
+            assert_allclose(
                 theo.compute_mean_surface_density(
                     cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True, r_mis=0.1
                 )[-40:],
@@ -485,6 +519,18 @@ def test_profiles(modeling_data, profile_init):
                     mis_from_backend=True,
                 )[-40:],
                 (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
+                8.5e-3,
+            )
+            assert_allclose(
+                theo.compute_mean_surface_density(
+                    cosmo=cosmo,
+                    **cfg["SIGMA_PARAMS"],
+                    alpha_ein=alpha_ein,
+                    verbose=True,
+                    r_mis=0.1,
+                    mis_from_backend=True,
+                )[-40],
+                (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40],
                 8.5e-3,
             )
             assert_allclose(
