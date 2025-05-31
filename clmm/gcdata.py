@@ -76,19 +76,9 @@ class GCData(APtable):
         *args, **kwargs: Same used for astropy tables
         """
         APtable.__init__(self, *args, **kwargs)
-        metakwargs = kwargs["meta"] if "meta" in kwargs else {}
-        metakwargs = {} if metakwargs is None else metakwargs
-        if (
-            "coordinate_system" not in metakwargs
-            and "copy_indices" not in kwargs
-            and "masked" not in kwargs
-            and "copy" not in kwargs
-        ):
-            warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
-            metakwargs["coordinate_system"] = "euclidean"
-        if "coordinate_system" in metakwargs:
-            _validate_coordinate_system(metakwargs, "coordinate_system")
-        self.meta = GCMetaData(**metakwargs)
+        if not kwargs.get("copy", False):
+            metakwargs = kwargs.get("meta", {})
+            self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
         self.pzpdf_info = {
             "type": None,
