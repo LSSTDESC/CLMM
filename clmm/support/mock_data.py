@@ -396,7 +396,7 @@ def _generate_galaxy_catalog(
     # pylint: disable=R0914
 
     # Create empty GCData object with the given coordinate system
-    galaxy_catalog = _create_gcdata(coordinate_system)
+    galaxy_catalog = GCData(meta={"coordinate_system": coordinate_system})
 
     # Set the source galaxy redshifts
     galaxy_catalog = _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals)
@@ -490,23 +490,6 @@ def _generate_galaxy_catalog(
         galaxy_catalog["e2"] *= -1  # flip e2 to match the celestial coordinate system
 
     return galaxy_catalog[cols]
-
-
-def _create_gcdata(coordinate_system):
-    """Create a GCData object with the given coordinate system.
-    
-    Parameters
-    ----------
-    coordinate_system : str
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        'euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Empty GCData object with the given coordinate system.
-    """
-    return GCData(meta={"coordinate_system": coordinate_system})
 
 
 def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
