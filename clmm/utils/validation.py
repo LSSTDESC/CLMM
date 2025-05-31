@@ -116,7 +116,7 @@ def validate_argument(
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
-            * 'int_array' - interger, interger array
+            * 'int_array' - integer, integer array
             * 'float_array' - float, float array
 
     none_ok: bool, optional
