@@ -55,6 +55,29 @@ class GCMetaData(OrderedDict):
         out = OrderedDict.__getitem__(self, item)
         return out
 
+    def __deepcopy__(self, memo):
+        """
+        Make sure that operations dependent on deepcopy avoid initializing an empty GCMetaData
+        and then setting cosmo and coordinate_system keys incorrectly.
+        """
+        items = {key: deepcopy(value, memo) for key, value in self.items()}
+        return GCMetaData(**items)
+
+    def __reduce__(self):
+        """
+        Make sure that metadata can be pickled without calling __setitem__ for cosmo and
+        coordinate_system keys.
+        """
+        return (self.__class__.__new__, (self.__class__,), dict(self))
+
+    def __setstate__(self, state):
+        """
+        Make sure that metadata can be unpickled without calling __setitem__ for cosmo and
+        coordinate_system keys.
+        """
+        self.clear()
+        self.update(state)
+
 
 class GCData(APtable):
     """
