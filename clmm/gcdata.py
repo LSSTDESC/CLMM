@@ -4,7 +4,9 @@ Define the custom data type
 
 import warnings
 from collections import OrderedDict
+from copy import deepcopy
 from astropy.table import Table as APtable
+from astropy.table.column import Column
 import qp
 import numpy as np
 from .utils import _validate_coordinate_system
@@ -156,6 +158,20 @@ class GCData(APtable):
         GCData
             Data with [] operations applied
         """
+        if self._is_list_or_tuple_of_str(item):
+            meta = deepcopy(self.meta)
+            out = self.__class__(
+                [self[x] for x in item], copy_indices=self._copy_indices, **{"meta": meta}
+            )
+            out.pzpdf_info = self.pzpdf_info
+            return out
+        if isinstance(item, slice):
+            meta = deepcopy(self.meta)
+            out = self.__class__(
+                APtable.__getitem__(self, item), copy_indices=self._copy_indices, **{"meta": meta}
+            )
+            out.pzpdf_info = self.pzpdf_info
+            return out
         if isinstance(item, str):
             name_dict = {n.lower(): n for n in self.colnames}
             item = item.lower()
@@ -165,6 +181,31 @@ class GCData(APtable):
         if not isinstance(item, (str, int, np.int64)):
             out.pzpdf_info = self.pzpdf_info
         return out
+
+    def _new_from_slice(self, slice_):
+        """
+        Create a new table as a referenced slice from self.
+        This a direct copy of APTable._new_from_slice (and should be kept as so), but with a slight
+        modification of the initialization of the meta attribute to ensure 'cosmo' and
+        'coordinate_system' keys are set correctly.
+        """
+        meta = deepcopy(self.meta)
+        table = self.__class__(masked=self.masked, **{"meta": meta})
+        table.primary_key = self.primary_key
+
+        newcols = []
+        for col in self.columns.values():
+            newcol = col[slice_]
+
+            if (col if isinstance(col, Column) else col.info).indices:
+                col.info._copy_indices = self._copy_indices
+                newcol = col.info.slice_indices(newcol, slice_, len(col))
+                col.info._copy_indices = True
+
+            newcols.append(newcol)
+
+        self._make_table_from_cols(table, newcols, verify=False, names=self.columns.keys())
+        return table
 
     def update_info_ext_valid(self, key, gcdata, ext_value, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
