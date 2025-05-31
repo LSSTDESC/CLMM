@@ -23,6 +23,13 @@ class GCMetaData(OrderedDict):
 
     def __init__(self, *args, **kwargs):
         OrderedDict.__init__(self, *args, **kwargs)
+        if "coordinate_system" not in self:
+            warnings.warn("coordinate_system not set, defaulting to 'euclidean'.")
+            coordinate_system = "euclidean"
+        else:
+            coordinate_system = kwargs["coordinate_system"]
+        _validate_coordinate_system(locals(), "coordinate_system")
+        OrderedDict.__setitem__(self, "coordinate_system", coordinate_system)
         if "cosmo" not in self:
             OrderedDict.__setitem__(self, "cosmo", None)
 
@@ -31,7 +38,7 @@ class GCMetaData(OrderedDict):
             raise ValueError(
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
             )
-        if item == "coordinate_system" and self.get("coordinate_system"):
+        if item == "coordinate_system" and self.get("coordinate_system", None):
             raise ValueError(
                 "coordinate_system must be changed via update_coordinate_system method"
             )
