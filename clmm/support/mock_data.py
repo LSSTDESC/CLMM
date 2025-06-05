@@ -399,12 +399,12 @@ def _generate_galaxy_catalog(
     galaxy_catalog = GCData(meta={"coordinate_system": coordinate_system})
 
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals)
+    _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
         galaxy_catalog.pzpdf_info["type"] = pzpdf_type
-        galaxy_catalog = _compute_photoz_pdfs(
+        _compute_photoz_pdfs(
             galaxy_catalog,
             photoz_sigma_unscaled,
             pz_bins=pz_bins,
@@ -412,7 +412,7 @@ def _generate_galaxy_catalog(
         )
 
     # Draw galaxy positions
-    galaxy_catalog = _draw_galaxy_positions(
+    _draw_galaxy_positions(
         galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size
     )
 
@@ -493,8 +493,8 @@ def _generate_galaxy_catalog(
 
 
 def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
-    """Set source galaxy redshifts either set to a fixed value or draw from a predefined
-    distribution.
+    """Add source galaxy redshifts, either set to a fixed value or draw from a predefined
+    distribution to the source catalog.
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
@@ -518,15 +518,12 @@ def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
     ngals : float
         Number of galaxies to generate
 
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Columns of true and 'measured' photometric redshifts, which here the same. Redshift
-        photometric errors are then added using _compute_photoz_pdfs.
-
     Notes
     -----
     Much of this code in this function was adapted from the Dallas group
+
+    Columns of true and 'measured' photometric redshifts are the same here.
+    Redshift photometric errors are then added using _compute_photoz_pdfs.
     """
     # Set zsrc to constant value
     if isinstance(zsrc, float):
@@ -553,8 +550,6 @@ def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
     galaxy_catalog["ztrue"] = zsrc_list
     galaxy_catalog["z"] = zsrc_list
 
-    return galaxy_catalog
-
 
 def _compute_photoz_pdfs(
     galaxy_catalog, photoz_sigma_unscaled, pz_bins=101, pz_quantiles_conf=(5, 31)
@@ -570,12 +565,6 @@ def _compute_photoz_pdfs(
     pz_bins: int, sequence of scalars or str
         Photo-z pdf bins in the given range. If int, the limits are set automatically.
         If is array, must be the bin edges.
-
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Output galaxy catalog with columns corresponding to the bins
-        and values of the redshift PDF for each galaxy.
     """
     galaxy_catalog["pzsigma"] = photoz_sigma_unscaled * (1.0 + galaxy_catalog["ztrue"])
     galaxy_catalog["z"] = galaxy_catalog["ztrue"] + galaxy_catalog[
@@ -620,13 +609,12 @@ def _compute_photoz_pdfs(
         raise ValueError(
             "Value of pzpdf_info['type'] " f"(={galaxy_catalog.pzpdf_info['type']}) " "not valid."
         )
-    return galaxy_catalog
 
 
 def _draw_galaxy_positions(
     galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size
 ):
-    """Draw positions of source galaxies around lens
+    """Draw positions of source galaxies around lens and add them to the source catalog.
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
     lensing cluster center. We then convert these to RA and DEC using the supplied cosmology
@@ -649,11 +637,6 @@ def _draw_galaxy_positions(
     field_size : float
         The size of the field (field_size x field_size) to be simulated around the cluster center.
         Proper distance in Mpc at the cluster redshift.
-
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Source galaxy catalog with positions added
     """
     lens_distance = cosmo.eval_da(cluster_z)  # Mpc
 
@@ -682,8 +665,6 @@ def _draw_galaxy_positions(
 
     galaxy_catalog["ra"] = new_coord.ra.degree
     galaxy_catalog["dec"] = new_coord.dec.degree
-
-    return galaxy_catalog
 
 
 def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
