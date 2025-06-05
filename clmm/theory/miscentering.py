@@ -14,16 +14,16 @@ def integrand_surface_density_nfw(theta, r_proj, r_mis, r_s):
     ----------
     theta : float
         Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     r_norm = np.sqrt(r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)) / r_s
@@ -45,22 +45,22 @@ def integrand_surface_density_einasto(r_par, theta, r_proj, r_mis, r_s, alpha_ei
 
     Parameters
     ----------
-    r_par : array_like
+    r_par : float
         Parallel radial position from the cluster center in :math:`M\!pc`.
     theta : float
         Angle of polar coordinates of the miscentering direction.
     r_proj : array_like
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
     alpha_ein : float
         Einasto slope
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     # Projected surface mass density element for numerical integration
@@ -79,16 +79,16 @@ def integrand_surface_density_hernquist(theta, r_proj, r_mis, r_s):
     ----------
     theta : float
         Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     r_norm = np.sqrt(r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)) / r_s
@@ -110,16 +110,16 @@ def integrand_mean_surface_density_nfw(theta, r_proj, r_mis, r_s):
     ----------
     theta : float
         Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     return r_proj * integrand_surface_density_nfw(theta, r_proj, r_mis, r_s)
@@ -130,22 +130,22 @@ def integrand_mean_surface_density_einasto(r_par, theta, r_proj, r_mis, r_s, alp
 
     Parameters
     ----------
-    r_par : array_like
+    r_par : float
         Parallel radial position from the cluster center in :math:`M\!pc`.
     theta : float
         Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
     alpha_ein : float
         Einasto slope
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     return r_proj * integrand_surface_density_einasto(r_par, theta, r_proj, r_mis, r_s, alpha_ein)
@@ -158,16 +158,16 @@ def integrand_mean_surface_density_hernquist(theta, r_proj, r_mis, r_s):
     ----------
     theta : float
         Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
+    r_s : float
         Scale radius
 
     Returns
     -------
-    numpy.ndarray, float
+    float
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     return r_proj * integrand_surface_density_hernquist(theta, r_proj, r_mis, r_s)
@@ -180,9 +180,9 @@ def integrate_azimuthially_miscentered_surface_density(
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : float, array_like
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
     integrand : function
         Function to be integrated
@@ -195,7 +195,7 @@ def integrate_azimuthially_miscentered_surface_density(
 
     Returns
     -------
-    numpy.ndarray, float
+    float, numpy.ndarray
         2D projected density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     args_list = [(r, r_mis, *aux_args) for r in np.atleast_1d(r_proj)]
@@ -221,14 +221,14 @@ def integrate_azimuthially_miscentered_mean_surface_density(
 
     Parameters
     ----------
-    theta : float
-        Angle of polar coordinates of the miscentering direction.
-    r_proj : array_like
+    r_proj : float, array_like
         Projected radial position from the cluster center in :math:`M\!pc`.
-    r_mis : float, optional
+    r_mis : float
         Projected miscenter distance in :math:`M\!pc`.
-    r_s : array_like
-        Scale radius
+    integrand : function
+        Function to be integrated
+    norm : float
+        Normalization value for integral
     aux_args : list
         Auxiliary arguments used in the integral
     extra_integral : bool
@@ -236,7 +236,7 @@ def integrate_azimuthially_miscentered_mean_surface_density(
 
     Returns
     -------
-    numpy.ndarray, float
+    float, numpy.ndarray
         Mean surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     r_proj_use = np.atleast_1d(r_proj)
