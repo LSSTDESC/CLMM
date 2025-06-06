@@ -51,6 +51,14 @@ def prep_plot(
     return fig
 
 
+def add_grid(ax, lw_major=0.5, lw_minor=0.1):
+
+    ax.minorticks_on()
+    ax.grid(lw=lw_major)
+    ax.grid(which="minor", lw=lw_minor)
+    ax.set_axisbelow(True)
+
+
 default = {
     "_internal.classic_mode": False,
     "agg.path.chunksize": 0,
