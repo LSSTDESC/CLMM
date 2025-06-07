@@ -6,6 +6,7 @@ def prep_plot(
     figsize=(9, 9),
     adjust=None,  # {'left':0.2, 'right':0.95, 'top':0.94, 'bottom':0.2},
     subplots=False,
+    subplots_kwargs=None,
 ):
     main_parameters = {
         "figure.dpi": 300.0,
@@ -34,10 +35,12 @@ def prep_plot(
     _figsize = list(x / 2.54 for x in figsize)
     print(_figsize)
     if subplots:
+        if subplots_kwargs is None:
+            subplots_kwargs = {}
         try:
-            fig, axes = plt.subplots(*subplots, figsize=_figsize)
+            fig, axes = plt.subplots(*subplots, figsize=_figsize, **subplots_kwargs)
         except:
-            fig, axes = plt.subplots(subplots, figsize=_figsize)
+            fig, axes = plt.subplots(subplots, figsize=_figsize, **subplots_kwargs)
     else:
         fig = plt.figure(figsize=_figsize)
     if adjust is not None:
