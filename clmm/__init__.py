@@ -11,6 +11,7 @@ from .theory import (
     compute_surface_density,
     compute_excess_surface_density,
     compute_mean_surface_density,
+    compute_excess_surface_density_triaxial,
     compute_excess_surface_density_2h,
     compute_surface_density_2h,
     compute_tangential_shear,
@@ -23,9 +24,6 @@ from .theory import (
     convert_profile_mass_concentration,
     Modeling,
     Cosmology,
-)
-from .theory.func_layer import (
-    compute_excess_surface_density_triaxial,
 )
 
 from . import support
