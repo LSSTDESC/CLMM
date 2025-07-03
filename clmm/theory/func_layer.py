@@ -1349,7 +1349,8 @@ def compute_excess_surface_density_triaxial(
     cosmo: clmm.cosmology.Cosmology object
         CLMM Cosmology object
     term: str
-        Component to return. Must be in: 'mono', 'quad_4theta', 'quad_const'
+        The component of the Taylor expansion to return as described in Shin et al. 2018.
+        Must be in: 'mono', 'quad_4theta', 'quad_const'
             'mono': the ellipticity corrected monopole term
             'quad_4theta': the 4theta component of the quadrupole term
             'quad_const': the constant component of the quadrupole term
