@@ -1,8 +1,9 @@
 import numpy as np
-from clmm.utils.constants import Constants as const
 from astropy import units as un
-from clmm.dataops import _compute_tangential_shear, _compute_cross_shear
 import clmm
+from clmm.utils.constants import Constants as const
+from clmm.dataops import _compute_tangential_shear, _compute_cross_shear
+
 
 class profiles:
     '''
