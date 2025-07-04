@@ -1,0 +1,8 @@
+snapshot: 12
+cosmo_name: C1
+sim_type: hydro
+l_proj: 20e3 
+r_max: 5e3
+resolution: 10
+
+
