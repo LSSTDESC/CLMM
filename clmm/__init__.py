@@ -26,4 +26,4 @@ from .theory import (
 )
 from . import support
 
-__version__ = "0.16.0"
+__version__ = "1.16.1"
