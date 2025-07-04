@@ -2,6 +2,7 @@ import numpy as np
 from clmm.utils.constants import Constants as const
 from astropy import units as un
 from clmm.dataops import _compute_tangential_shear, _compute_cross_shear
+import clmm
 
 class profiles:
     '''
@@ -9,31 +10,47 @@ class profiles:
 
     Attributes
     ----------
-    cosmo : CLMM.Cosmology
-        CLMM Cosmology object 
-    M: float
-        mass (units: M_sun)
-    c: float
-        concentration
+
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot`.
+    cdelta : float
+        Galaxy cluster concentration
     z_l: float
-        lens redshift
+        Redshift of the lens
     z_s: float
-        source redshift
+        Redshift of the source
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+    delta_mdef : int, optional
+        Mass overdensity definition; defaults to 200.
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
     compute_sigma: bool
         True for computing Sigma (surface density) profiles,
         False for computing kappa (convergence) profiles
     '''     
     
-    def __init__(self,cosmo,M,c,z_l,z_s,compute_sigma=False):
+    def __init__(self,cosmo,mdelta,cdelta,z_l,z_s,halo_profile_model='nfw',delta_mdef=200,massdef='mean',compute_sigma=False):
 
-        self.M = M  # M_sun
-        self.c = c
+        self.mdelta = mdelta  # M_sun
+        self.cdelta = cdelta
         self.z_l = z_l
         self.z_s = z_s
+        self.halo_profile_model = halo_profile_model
+        self.delta_mdef = delta_mdef
+        self.massdef = massdef
         self.compute_sigma = compute_sigma
         
         # physical constants with units (cosmological)
-        self.const_G = const.GNEWT_SOLAR_MASS* (un.Mpc/const.PC_TO_METER/1e6)**3 /un.M_sun / un.s**2.  # Mpc^3/Msun/s^2
+        self.const_G = const.GNEWT_SOLAR_MASS* (un.Mpc/const.PC_TO_METER/1e6)**3 /un.M_sun / un.s**2  # Mpc^3/Msun/s^2
         self.const_c = const.CLIGHT *  (un.Mpc/const.PC_TO_METER/1e6)/ un.s    # Mpc/s
 
         # cosmology
@@ -83,7 +100,7 @@ class profiles:
         self.r_vals = r_vals
         return self.r_vals
     
-    def kappa_NFW(self,r_vals=None):
+    def kappa_or_profile(self,r_vals=None):
         '''
         Compute kappa or surface density profiles
         
@@ -102,33 +119,16 @@ class profiles:
         if np.all(r_vals.value) == None:
             r_vals = self.r_vals
 
-
-        Hz = self.cosmo.get_E2(self.z_l)**0.5 * self.cosmo['H0'] * 1/(const.PC_TO_METER.value*1e3) / un.s   # units: 1/s
-        r_200 = (((self.const_G * self.M)/(100. * Hz**2) )**(1./3.))   # units: Mpc
-        r_s   = r_200 * self.c 
-        delta_c = (200./3.) * ( self.c**3 / ( np.log(1+self.c) - ( self.c/(1+self.c) ) ) )
-        
-        x = r_vals/r_s
-        
-        Sigma_crit_coeff = self.const_c**2 / (4. * np.pi * self.const_G)  # units: Msun/Mpc
-        
-        D_s  = self.cosmo.eval_da(self.z_s) *un.Mpc
-        D_d  = self.cosmo.eval_da(self.z_l) *un.Mpc
-        D_ds = self.cosmo.eval_da_z1z2(self.z_l,self.z_s) *un.Mpc
-        
-        Sigma_crit = Sigma_crit_coeff * D_s / (D_d * D_ds)
-        critical_density = self.cosmo.get_rho_c(self.z_l) * un.M_sun/un.Mpc**3 
-        k_s = critical_density * delta_c * r_s
-        
-        coeff = 2.*k_s / (x**2 - 1.)
-        f_internal = 1. - (2./np.lib.scimath.sqrt(1.-x**2)) * np.arctanh(np.lib.scimath.sqrt((1.-x)/(1.+x)))
-    
-        nfw = coeff * f_internal.real
-
         if self.compute_sigma:
-            return nfw   # units: Msun/Mpc^2
+            return clmm.compute_surface_density(r_vals.value,self.mdelta.value,self.cdelta,
+                                                self.z_l,self.cosmo,self.delta_mdef,
+                                                self.halo_profile_model,self.massdef) * un.M_sun/un.Mpc**2 
         else:
-            return nfw / Sigma_crit # units: adimensional
+            return clmm.compute_convergence(r_vals.value,self.mdelta.value,self.cdelta,
+                                            self.z_l,self.z_s,self.cosmo,self.delta_mdef,
+                                            self.halo_profile_model,self.massdef) * un.dimensionless_unscaled
+
+            
             
     def make_grid(self,npix,r_max):
         '''
@@ -150,10 +150,10 @@ class profiles:
         npix *= 1j #imaginary so that ogrid knows to interpret npix as array size
         y,x = np.ogrid[-r_max:r_max:npix,-r_max:r_max:npix]
         r_2D = np.hypot(y,x)
-        
+
         return r_2D
 
-    def kappa_NFW_2D(self,npix,r_max):
+    def kappa_or_profile_2D(self,npix,r_max):
         '''
         Create 2D NFW profile on a grid
         
@@ -166,16 +166,17 @@ class profiles:
 
         Returns
         ---------
-        kappa_nfw: array
+        kappa_or_profile: array
             NFW profile (Sigma or kappa) for each point of the 2D grid
         
         '''
         
         self.npix  = npix
-        self.r_max = r_max
+        self.r_max = r_max 
         r_2D = self.make_grid(self.npix,self.r_max)
-        
-        return self.kappa_NFW(r_2D)
+
+        kappa = np.array([self.kappa_or_profile(r_2D[i]) for i in range(self.npix)])
+        return kappa
 
 
 
@@ -212,7 +213,7 @@ def KaiserSquires(Sigma):
 
     return e1, e2
 
-def getTangential(e1, e2, center, dx=10./1000.):
+def get_Tangential_and_Cross(e1, e2, center, dx=10./1000.):
     '''
     Compute tangential shear profiles
     
@@ -251,7 +252,7 @@ def getTangential(e1, e2, center, dx=10./1000.):
 
     return et, ex, radius, angle
 
-def getRadial(radius_map,angle_map,r_bins,phi_bins,kappa_map,et_map):
+def get_Radial(radius_map,angle_map,r_bins,phi_bins,kappa_map,et_map):
     '''
      Calculate the radial convergence profile from the kappa map 
      and the radial tangential shear profile from the e_tangential map
