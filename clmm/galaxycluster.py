@@ -230,8 +230,8 @@ class GalaxyCluster:
         shape_component2="e2",
         tan_component="et",
         cross_component="ex",
-        quad_4theta_component="e4theta",
-        quad_const_component="econst",
+        quad_4theta_component="e_quad_4theta",
+        quad_const_component="e_quad_const",
         geometry="curve",
         is_deltasigma=False,
         use_pdz=False,
@@ -275,12 +275,12 @@ class GalaxyCluster:
             Name of the column to be added to the `galcat` astropy table that will contain the
             4theta quarupole component computed from columns `shape_component1`
             and `shape_component2`.
-            Default: `e4theta`
+            Default: `e_quad_4theta`
         quad_const_component: string, optional
             Name of the column to be added to the `galcat` astropy table that will contain the
             constant quarupole component computed from columns `shape_component1`
             and `shape_component2`.
-            Default: `econst`
+            Default: `e_quad_const`
         geometry: str, optional
             Sky geometry to compute angular separation.
             Options are curve (uses astropy) or flat.
@@ -551,12 +551,12 @@ class GalaxyCluster:
         cosmo=None,
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         tan_component_out="gt",
         cross_component_out="gx",
-        quad_4theta_component_out="g4theta",
-        quad_const_component_out="gconst",
+        quad_4theta_component_out="g_quad_4theta",
+        quad_const_component_out="g_quad_const",
         tan_component_in_err=None,
         cross_component_in_err=None,
         quad_4theta_component_in_err=None,
@@ -613,10 +613,10 @@ class GalaxyCluster:
             Default: 'ex'
         quad_4theta_component_in: string, optional
             Name of the 4theta quadrupole component column in `galcat` to be binned.
-            Default: 'e4theta'
+            Default: 'e_quad_4theta'
         quad_const_component_in: string, optional
             Name of the constant quadrupole component column in `galcat` to be binned.
-            Default: 'econst'
+            Default: 'e_quad_const'
         tan_component_out: string, optional
             Name of the tangetial component binned column to be added in profile table.
             Default: 'gt'
@@ -625,11 +625,11 @@ class GalaxyCluster:
             Default: 'gx'
         quad_4theta_component_out: string, optional
             Name of the 4theta quadrupole component binned column to be added in profile table.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component_out: string, optional
             Name of the constant quadrupole component binned profile column
             to be added in profile table.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         tan_component_in_err: string, None, optional
             Name of the tangential component error column in `galcat` to be binned.
             Default: None
@@ -762,10 +762,10 @@ class GalaxyCluster:
         tangential_component_error="gt_err",
         cross_component="gx",
         cross_component_error="gx_err",
-        quad_4theta_component="g4theta",
-        quad_4theta_component_error="g4theta_err",
-        quad_const_component="gconst",
-        quad_const_component_error="gconst_err",
+        quad_4theta_component="g_quad_4theta",
+        quad_4theta_component_error="g_quad_4theta_err",
+        quad_const_component="g_quad_const",
+        quad_const_component_error="g_quad_const_err",
         table_name="profile",
         xscale="linear",
         yscale="linear",
@@ -788,10 +788,10 @@ class GalaxyCluster:
             component of the shear or reduced shear. Default: 'gx_err'
         quad_4theta_component: str, optional
             Name of the column in the galcat Table corresponding to the 4theta quadrupole component
-            of the shear or reduced shear (Delta Sigma not yet implemented). Default: 'g4theta'
+            of the shear or reduced shear (Delta Sigma not yet implemented). Default: 'g_quad_4theta'
         quad_4theta_component_error: str, optional
             Name of the column in the galcat Table corresponding to the uncertainty in
-            4theta quadrupole component of the shear or reduced shear. Default: 'g4theta_err'
+            4theta quadrupole component of the shear or reduced shear. Default: 'g_quad_4theta_err'
         quad_const_component: str, optional
             Name of the column in the galcat Table corresponding to the constant quadrupole
             component of the shear or reduced shear. Default: 'gconst'
