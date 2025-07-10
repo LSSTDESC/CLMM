@@ -112,12 +112,12 @@ class ClusterEnsemble:
         cosmo=None,
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         tan_component_out="gt",
         cross_component_out="gx",
-        quad_4theta_component_out="g4theta",
-        quad_const_component_out="gconst",
+        quad_4theta_component_out="g_quad_4theta",
+        quad_const_component_out="g_quad_const",
         tan_component_in_err=None,
         cross_component_in_err=None,
         quad_4theta_component_in_err=None,
@@ -158,10 +158,10 @@ class ClusterEnsemble:
             Default: 'ex'
         quad_4theta_component_in: string, optional
             Name of the quadrupole 4theta component column in `galcat` to be binned.
-            Default: 'e4theta'
+            Default: 'e_quad_4theta'
         quad_const_component_in: string, optional
             Name of the quadrupole constant component column in `galcat` to be binned.
-            Default: 'econst'
+            Default: 'e_quad_const'
         tan_component_out: string, optional
             Name of the tangetial component binned column to be added in profile table.
             Default: 'gt'
@@ -171,11 +171,11 @@ class ClusterEnsemble:
         quad_4theta_component_out: string, optional
             Name of the quadrupole 4theta component binned profile column to be added
             in profile table.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component_out: string, optional
             Name of the quadrupole constant component binned profile column to be added
             in profile table.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         tan_component_in_err: string, None, optional
             Name of the tangential component error column in `galcat` to be binned.
             Default: None
@@ -235,8 +235,8 @@ class ClusterEnsemble:
         profile_table,
         tan_component="gt",
         cross_component="gx",
-        quad_4theta_component="g4theta",
-        quad_const_component="gconst",
+        quad_4theta_component="g_quad_4theta",
+        quad_const_component="g_quad_const",
         weights="W_l",
     ):
         """Compute the individual shear profile from a single GalaxyCluster object
@@ -257,10 +257,10 @@ class ClusterEnsemble:
             Default: 'gx'
         quad_4theta_component: string, optional
             Name of the quadrupole 4theta component binned profile column in the profile table.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component: string, optional
             Name of the quadrupole constant component binned profile column in the profile table.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         weights : str, None
             Name of the weight binned column in the profile table.
         """
@@ -304,8 +304,8 @@ class ClusterEnsemble:
         self,
         tan_component="gt",
         cross_component="gx",
-        quad_4theta_component="g4theta",
-        quad_const_component="gconst",
+        quad_4theta_component="g_quad_4theta",
+        quad_const_component="g_quad_const",
         weights="W_l",
     ):
         """Computes stacked profile and mean separation distances and add it internally
@@ -321,10 +321,10 @@ class ClusterEnsemble:
             Default: 'gx'
         quad_4theta_component : string, optional
             Name of the quadrupole 4theta component column in `data`.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component : string, optional
             Name of the quadrupole constant component column in `data`.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         weights : str
             Name of the weights column in `data`.
         """
@@ -354,8 +354,8 @@ class ClusterEnsemble:
         self,
         tan_component="gt",
         cross_component="gx",
-        quad_4theta_component="g4theta",
-        quad_const_component="gconst",
+        quad_4theta_component="g_quad_4theta",
+        quad_const_component="g_quad_const",
     ):
         """Compute Sample covariance matrix for cross and tangential and cross
         stacked profiles and updates .cov dict (`tan_sc`, `cross_sc`).
@@ -370,10 +370,10 @@ class ClusterEnsemble:
             Default: 'gx'
         quad_4theta_component : string, optional
             Name of the quadrupole 4theta component column in `data`.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component : string, optional
             Name of the quadrupole constant component column in `data`.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         """
         self._check_empty_data()
 
@@ -392,8 +392,8 @@ class ClusterEnsemble:
         self,
         tan_component="gt",
         cross_component="gx",
-        quad_4theta_component="g4theta",
-        quad_const_component="gconst",
+        quad_4theta_component="g_quad_4theta",
+        quad_const_component="g_quad_const",
         n_bootstrap=10,
     ):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
@@ -409,10 +409,10 @@ class ClusterEnsemble:
             Default: 'gx'
         quad_4theta_component : string, optional
             Name of the quadrupole 4theta component column in `data`.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component : string, optional
             Name of the quadrupole constant component column in `data`.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         n_bootstrap : int
             number of bootstrap resamplings
         """
@@ -460,8 +460,8 @@ class ClusterEnsemble:
         self,
         tan_component="gt",
         cross_component="gx",
-        quad_4theta_component="g4theta",
-        quad_const_component="gconst",
+        quad_4theta_component="g_quad_4theta",
+        quad_const_component="g_quad_const",
         n_side=16,
     ):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
@@ -479,10 +479,10 @@ class ClusterEnsemble:
             Default: 'gx'
         quad_4theta_component : string, optional
             Name of the quadrupole 4theta component column in `data`.
-            Default: 'g4theta'
+            Default: 'g_quad_4theta'
         quad_const_component : string, optional
             Name of the quadrupole constant component column in `data`.
-            Default: 'gconst'
+            Default: 'g_quad_const'
         n_side : int
             healpix sky area division parameter (number of sky area : 12*n_side^2)
         """
