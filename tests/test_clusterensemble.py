@@ -64,8 +64,8 @@ def test_cluster_ensemble():
         "cluster_ensemble",
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="radians",
@@ -87,8 +87,8 @@ def test_cluster_ensemble():
         cluster_quad,
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="radians",
@@ -115,8 +115,8 @@ def test_cluster_ensemble():
         gc_list_quad,
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="radians",
@@ -142,8 +142,8 @@ def test_cluster_ensemble():
         [cluster_quad],
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="radians",
@@ -186,8 +186,8 @@ def test_covariance():
         "2",
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="radians",
@@ -221,8 +221,8 @@ def test_covariance():
             "e2": e2,
             "et": et,
             "ex": ex,
-            "e4theta": eft,
-            "econst": ecn,
+            "e_quad_4theta": eft,
+            "e_quad_const": ecn,
             "w_ls": w_ls,
         }
         cl = clmm.GalaxyCluster("mock_cluster", cluster_ra[i], cluster_dec[i], 1.0, GCData(data))
@@ -249,8 +249,8 @@ def test_covariance():
             galaxycluster=cl_quad,
             tan_component_in="et",
             cross_component_in="ex",
-            quad_4theta_component_in="e4theta",
-            quad_const_component_in="econst",
+            quad_4theta_component_in="e_quad_4theta",
+            quad_const_component_in="e_quad_const",
             weights_in="w_ls",
             bins=bins,
             bin_units="Mpc",
@@ -258,7 +258,7 @@ def test_covariance():
         )
 
     ensemble_id = 1
-    names = ["id", "ra", "dec", "z", "radius", "gt", "gx", "g4theta", "gconst", "W_l"]
+    names = ["id", "ra", "dec", "z", "radius", "gt", "gx", "g_quad_4theta", "g_quad_const", "W_l"]
 
     # test without args, kwargs
     ce = ClusterEnsemble(ensemble_id)
@@ -282,8 +282,8 @@ def test_covariance():
         gclist_quad,
         tan_component_in="et",
         cross_component_in="ex",
-        quad_4theta_component_in="e4theta",
-        quad_const_component_in="econst",
+        quad_4theta_component_in="e_quad_4theta",
+        quad_const_component_in="e_quad_const",
         weights_in="w_ls",
         bins=bins,
         bin_units="Mpc",
@@ -307,7 +307,7 @@ def test_covariance():
 
     # comparing brut force calculation for cross and tangential component
     gt_individual, gx_individual = ce.data["gt"], ce.data["gx"]
-    gft_individual, gcn_individual = ce_quad.data["g4theta"], ce_quad.data["gconst"]
+    gft_individual, gcn_individual = ce_quad.data["g_quad_4theta"], ce_quad.data["g_quad_const"]
     Wl_individual = ce.data["W_l"]
     gt_stack = np.average(gt_individual, weights=Wl_individual, axis=0)
     gx_stack = np.average(gx_individual, weights=Wl_individual, axis=0)
@@ -315,8 +315,8 @@ def test_covariance():
     gcn_stack = np.average(gcn_individual, weights=Wl_individual, axis=0)
     gt_stack_method = ce.stacked_data["gt"]
     gx_stack_method = ce.stacked_data["gx"]
-    gft_stack_method = ce_quad.stacked_data["g4theta"]
-    gcn_stack_method = ce_quad.stacked_data["gconst"]
+    gft_stack_method = ce_quad.stacked_data["g_quad_4theta"]
+    gcn_stack_method = ce_quad.stacked_data["g_quad_const"]
     assert_equal(gt_stack, gt_stack_method)
     assert_equal(gx_stack, gx_stack_method)
     assert_equal(gft_stack, gft_stack_method)
