@@ -155,7 +155,7 @@ def test_cluster_ensemble():
     assert_equal(len(ce.data["W_l"][0]), len(bins_radians) - 1)
     assert_equal(ce.__getitem__("gt"), ce.data["gt"])
     assert_equal(len(ce_quad.data["W_l"][0]), len(bins_radians) - 1)
-    assert_equal(ce_quad.__getitem__("gconst"), ce_quad.data["gconst"])
+    assert_equal(ce_quad.__getitem__("g_quad_const"), ce_quad.data["g_quad_const"])
 
 
 def test_covariance():
