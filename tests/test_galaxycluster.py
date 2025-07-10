@@ -316,7 +316,7 @@ def test_integrity_of_lensfuncs():
         )
         for comp_name in ("et", "ex"):
             assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
-        for comp_name in ("e4theta", "econst"):
+        for comp_name in ("e_quad_4theta", "e_quad_const"):
             assert_equal(cluster_quad.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
 
 
