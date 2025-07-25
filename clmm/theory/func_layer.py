@@ -123,7 +123,7 @@ def compute_surface_density(
 
     where :math:`\rho(r)` is the 3d density profile.
 
-    If the `r_mis` keyword is specified, this function computes the miscentered surface 
+    If the `r_mis` keyword is specified, this function computes the miscentered surface
     density instead as
 
     .. math::
@@ -169,7 +169,7 @@ def compute_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical 
+        calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
@@ -266,7 +266,7 @@ def compute_mean_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical 
+        calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
@@ -360,7 +360,7 @@ def compute_excess_surface_density(
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical 
+        calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
@@ -682,7 +682,11 @@ def compute_tangential_shear(
         )
 
     tangential_shear = _modeling_object.eval_tangential_shear(
-        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
+        r_proj,
+        z_cluster,
+        z_src,
+        z_src_info=z_src_info,
+        verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -799,7 +803,11 @@ def compute_convergence(
         _modeling_object.set_einasto_alpha(alpha_ein)
 
     convergence = _modeling_object.eval_convergence(
-        r_proj, z_cluster, z_src, z_src_info=z_src_info, verbose=verbose,
+        r_proj,
+        z_cluster,
+        z_src,
+        z_src_info=z_src_info,
+        verbose=verbose,
     )
 
     _modeling_object.validate_input = True
@@ -1330,7 +1338,7 @@ def compute_excess_surface_density_triaxial(
     r_proj, mdelta, cdelta, z_cl, ell, cosmo, term, n_grid=10000, **kwargs
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
-    or constant quadrupole component given in Shin et al. 2018 
+    or constant quadrupole component given in Shin et al. 2018
     (https://doi.org/10.1093/mnras/stx3366)
 
     Parameters
@@ -1355,7 +1363,7 @@ def compute_excess_surface_density_triaxial(
             'quad_4theta': the 4theta component of the quadrupole term
             'quad_const': the constant component of the quadrupole term
     n_grid: int
-        Grid resolution for functions to be computed on. 
+        Grid resolution for functions to be computed on.
         Too low n_grid can lead to large deviations.
 
     Returns
@@ -1364,8 +1372,22 @@ def compute_excess_surface_density_triaxial(
         Component of delta sigma excess for the elliptical halo specified
     """
     grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-    sigma0_grid = compute_surface_density(grid, mdelta, cdelta, z_cl, cosmo, **kwargs,)
-    sigma0 = compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,)
+    sigma0_grid = compute_surface_density(
+        grid,
+        mdelta,
+        cdelta,
+        z_cl,
+        cosmo,
+        **kwargs,
+    )
+    sigma0 = compute_surface_density(
+        r_proj,
+        mdelta,
+        cdelta,
+        z_cl,
+        cosmo,
+        **kwargs,
+    )
     eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
     eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
@@ -1373,21 +1395,30 @@ def compute_excess_surface_density_triaxial(
         deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
         deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
         sigma_correction_grid = sigma0_grid * (
-            0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid)
+            0.5 * ell**2 * (eta_grid + 0.5 * eta_grid**2 + 0.5 * deta_dlnr_grid)
         )
-        sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
+        sigma_correction = sigma0 * (0.5 * ell**2 * (eta + 0.5 * eta**2 + 0.5 * deta_dlnr))
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
         )
-        delta_sigma = compute_excess_surface_density(
-            r_proj, mdelta, cdelta, z_cl, cosmo, **kwargs,) + (
-            2 / r_proj ** 2) * integral_vec(0, r_proj) - sigma_correction
+        delta_sigma = (
+            compute_excess_surface_density(
+                r_proj,
+                mdelta,
+                cdelta,
+                z_cl,
+                cosmo,
+                **kwargs,
+            )
+            + (2 / r_proj**2) * integral_vec(0, r_proj)
+            - sigma_correction
+        )
 
     elif term == "quad_4theta":
         integral_vec = np.vectorize(
-            InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5).integral
+            InterpolatedUnivariateSpline(grid, grid**3 * sigma0_grid * eta_grid, k=5).integral
         )
-        delta_sigma = 0.5 * ell * (2 * (3 / r_proj ** 4 * integral_vec(0, r_proj)) - sigma0 * eta)
+        delta_sigma = 0.5 * ell * (2 * (3 / r_proj**4 * integral_vec(0, r_proj)) - sigma0 * eta)
 
     elif term == "quad_const":
         integral_vec = np.vectorize(

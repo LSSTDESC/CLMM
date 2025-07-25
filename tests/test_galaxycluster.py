@@ -27,7 +27,7 @@ def test_initialization():
         "coordinate_system": "euclidean",
     }
     cl1 = clmm.GalaxyCluster(**testdict1)
-    cl2 = clmm.GalaxyCluster(**testdict1,include_quadrupole=True)
+    cl2 = clmm.GalaxyCluster(**testdict1, include_quadrupole=True)
 
     assert_equal(testdict1["unique_id"], cl1.unique_id)
     assert_equal(testdict1["ra"], cl1.ra)
@@ -541,6 +541,7 @@ def test_plot_profiles():
     # check it passes missing a component error
     cluster.plot_profiles(cross_component_error="made_up_component")
     cluster_quad.plot_profiles(quad_4theta_component_error="made_up_component")
+
 
 def test_coordinate_system():
     """test coordinate system"""

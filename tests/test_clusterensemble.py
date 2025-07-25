@@ -345,7 +345,7 @@ def test_covariance():
     assert_equal(ce_quad.cov["quad_4theta_sc"].shape, ce_quad.cov["quad_4theta_bs"].shape)
     assert_equal(ce_quad.cov["quad_4theta_bs"].shape, ce_quad.cov["quad_4theta_jk"].shape)
     assert_equal(ce_quad.cov["quad_4theta_jk"].shape, ce_quad.cov["quad_4theta_sc"].shape)
-    
+
     # comparing brute force calculation for sample variance
     std_gt_stack = np.std(gt_individual, axis=0) / np.sqrt(n_catalogs - 1)
     assert_allclose(ce.cov["tan_sc"].diagonal() ** 0.5, std_gt_stack, 1e-6)

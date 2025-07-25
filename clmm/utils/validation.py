@@ -226,6 +226,7 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
     if not is_deltasigma and sigma_c is not None:
         raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
 
+
 def _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_mem):
     r"""Validate the compatibility between include_quadrupole and [phi_major or info_mem].
 
@@ -243,6 +244,7 @@ def _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_m
         raise TypeError(
             "either phi_major or info_mem should be provided when include_quadrupole is True"
         )
+
 
 def _validate_coordinate_system(loc, coordinate_system, valid_type):
     r"""Validate the coordinate system.

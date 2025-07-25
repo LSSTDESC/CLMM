@@ -131,21 +131,27 @@ class CLMModeling:
     def massdef(self, massdef):
         """Set definition for the mass of cluster"""
         self.set_halo_density_profile(
-            halo_profile_model=self.halo_profile_model, massdef=massdef, delta_mdef=self.delta_mdef,
+            halo_profile_model=self.halo_profile_model,
+            massdef=massdef,
+            delta_mdef=self.delta_mdef,
         )
 
     @delta_mdef.setter
     def delta_mdef(self, delta_mdef):
         """Set number of deltas in mass definition of cluster"""
         self.set_halo_density_profile(
-            halo_profile_model=self.halo_profile_model, massdef=self.massdef, delta_mdef=delta_mdef,
+            halo_profile_model=self.halo_profile_model,
+            massdef=self.massdef,
+            delta_mdef=delta_mdef,
         )
 
     @halo_profile_model.setter
     def halo_profile_model(self, halo_profile_model):
         """Set halo profile model"""
         self.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=self.massdef, delta_mdef=self.delta_mdef,
+            halo_profile_model=halo_profile_model,
+            massdef=self.massdef,
+            delta_mdef=self.delta_mdef,
         )
 
     # 2. Functions to be implemented by children classes
@@ -232,7 +238,7 @@ class CLMModeling:
 
         l_values = np.logspace(loglbounds[0], loglbounds[1], lsteps)
         kernel = np.array([simpson(__integrand__(l_values, t), x=l_values) for t in theta])
-        return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da ** 2)
+        return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
     def _eval_surface_density_2h(
         self,
@@ -266,70 +272,67 @@ class CLMModeling:
 
     def _eval_excess_surface_density_triaxial_mono(self, r_proj, z_cl, ell, n_grid=10000):
         """eval individual terms of  excess surface density"""
-    
+
         grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-    
+
         sigma0_grid = self._eval_surface_density(grid, z_cl)
         sigma0 = self._eval_surface_density(r_proj, z_cl)
-    
+
         eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
         eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
-    
+
         deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
         deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
-    
-        sigma_correction_grid = sigma0_grid * ( 
-            0.5 * ell ** 2 * (eta_grid + 0.5 * eta_grid ** 2 + 0.5 * deta_dlnr_grid)
+
+        sigma_correction_grid = sigma0_grid * (
+            0.5 * ell**2 * (eta_grid + 0.5 * eta_grid**2 + 0.5 * deta_dlnr_grid)
         )
-        sigma_correction = sigma0 * (0.5 * ell ** 2 * (eta + 0.5 * eta ** 2 + 0.5 * deta_dlnr))
-    
+        sigma_correction = sigma0 * (0.5 * ell**2 * (eta + 0.5 * eta**2 + 0.5 * deta_dlnr))
+
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
         )
         integral = integral_vec(0, r_proj)
-    
-        correction = (2 / r_proj ** 2) * integral - sigma_correction
-    
+
+        correction = (2 / r_proj**2) * integral - sigma_correction
+
         return self._eval_excess_surface_density(r_proj, z_cl) + correction
-    
-    
+
     def _eval_excess_surface_density_triaxial_quad_4theta(self, r_proj, z_cl, ell, n_grid=10000):
         """eval individual terms of  excess surface density"""
-        
+
         grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-    
+
         sigma0_grid = self._eval_surface_density(grid, z_cl)
         sigma0 = self._eval_surface_density(r_proj, z_cl)
-    
+
         eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
         eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
-    
+
         integral_vec = np.vectorize(
-            InterpolatedUnivariateSpline(grid, grid ** 3 * sigma0_grid * eta_grid, k=5).integral
+            InterpolatedUnivariateSpline(grid, grid**3 * sigma0_grid * eta_grid, k=5).integral
         )
-        integral = 3 / r_proj ** 4 * integral_vec(0, r_proj)
-    
+        integral = 3 / r_proj**4 * integral_vec(0, r_proj)
+
         return 0.5 * ell * (2 * integral - sigma0 * eta)
-    
-    
+
     def _eval_excess_surface_density_triaxial_quad_const(self, r_proj, z_cl, ell, n_grid=10000):
         """eval individual terms of  excess surface density"""
-    
+
         grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-    
+
         sigma0_grid = self._eval_surface_density(grid, z_cl)
         sigma0 = self._eval_surface_density(r_proj, z_cl)
-    
+
         eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
         eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
-        
+
         integral_vec = np.vectorize(
             InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
         )
         integral = integral_vec(r_proj, np.inf)
-    
-        return 0.5 * ell * (2 * integral - sigma0 * eta)
 
+        return 0.5 * ell * (2 * integral - sigma0 * eta)
 
     def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         """eval individual terms of  excess surface density"""
@@ -345,11 +348,14 @@ class CLMModeling:
         if term == "mono":
             delta_sigma = self._eval_excess_surface_density_triaxial_mono(r_proj, z_cl, ell, n_grid)
         elif term == "quad_4theta":
-            delta_sigma = self._eval_excess_surface_density_triaxial_quad_4theta(r_proj, z_cl, ell, n_grid)
+            delta_sigma = self._eval_excess_surface_density_triaxial_quad_4theta(
+                r_proj, z_cl, ell, n_grid
+            )
         elif term == "quad_const":
-            delta_sigma = self._eval_excess_surface_density_triaxial_quad_const(r_proj, z_cl, ell, n_grid)
+            delta_sigma = self._eval_excess_surface_density_triaxial_quad_const(
+                r_proj, z_cl, ell, n_grid
+            )
         else:
-
             raise ValueError(f"Unsupported term (='{term}')")
 
         return delta_sigma
@@ -1152,7 +1158,14 @@ class CLMModeling:
                 + "\nConvergence = 0 for those galaxies."
             )
             kappa = compute_for_good_redshifts(
-                self._eval_convergence_core, z_cl, z_src, 0.0, warning_msg, "z_cl", "z_src", r_proj,
+                self._eval_convergence_core,
+                z_cl,
+                z_src,
+                0.0,
+                warning_msg,
+                "z_cl",
+                "z_src",
+                r_proj,
             )
         elif z_src_info == "beta":
             beta_s_mean = z_src[0]
@@ -1515,7 +1528,7 @@ class CLMModeling:
         if approx is None:
             if z_src_info == "distribution":
                 mu = self._pdz_weighted_avg(
-                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat ** 2),
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2),
                     z_src,
                     r_proj,
                     z_cl,
@@ -1547,7 +1560,7 @@ class CLMModeling:
             if approx == "order2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu += 3 * beta_s_square_mean * kappa_inf ** 2 + beta_s_square_mean * gammat_inf ** 2
+                mu += 3 * beta_s_square_mean * kappa_inf**2 + beta_s_square_mean * gammat_inf**2
 
         return mu
 
@@ -1683,7 +1696,7 @@ class CLMModeling:
             # z_src (float or array) is redshift
             if z_src_info == "distribution":
                 mu_bias = self._pdz_weighted_avg(
-                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat ** 2) ** (alpha - 1),
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1),
                     z_src,
                     r_proj,
                     z_cl,
@@ -1717,9 +1730,9 @@ class CLMModeling:
             if approx == "order2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf ** 2) + (
+                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
                     2 * alpha - 1
-                ) * (alpha - 1) * beta_s_square_mean * kappa_inf ** 2
+                ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
 
         return mu_bias
 

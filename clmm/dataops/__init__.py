@@ -211,7 +211,7 @@ def compute_tangential_and_cross_components(
         phi_major_ = phi_major
         if phi_major_ is None:
             # info_mem=[ra_mem,dec_mem,weight_mem]
-            phi_major_ = _calculate_major_axis(
+            phi_major_ = calculate_major_axis(
                 ra_lens, dec_lens, info_mem[0], info_mem[1], info_mem[2]
             )
         if coordinate_system == "celestial":
@@ -227,8 +227,11 @@ def compute_tangential_and_cross_components(
             const_comp *= _sigma_c_arr
         return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
     return angsep, tangential_comp, cross_comp
+
+
 def compute_background_probability(
-    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
+    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
+):
     r"""Probability for being a background galaxy, defined by:
 
         .. math::
@@ -495,7 +498,7 @@ def _compute_lensing_angles_astropy(
     return angsep, phi
 
 
-def _calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
+def calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
     r"""Compute the major axis of a given cluster from the distribution of
     its member galaxies using the position second moments.
 

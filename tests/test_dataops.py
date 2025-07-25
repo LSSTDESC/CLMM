@@ -82,7 +82,7 @@ def test_calculate_major_axis():
     ra_mem, dec_mem, weight_mem = [180.0, 180.0], [-0.5, 0.5], [1.0, 1.0]
     expected_major_axis = np.pi / 2.0
     assert_allclose(
-        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        da.calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
         expected_major_axis,
         **TOLERANCE,
     )
@@ -90,7 +90,7 @@ def test_calculate_major_axis():
     ra_mem, dec_mem, weight_mem = [179.5, 180.5], [0.0, 0.0], [1.0, 1.0]
     expected_major_axis = 0.0
     assert_allclose(
-        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        da.calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
         expected_major_axis,
         **TOLERANCE,
     )
@@ -98,7 +98,7 @@ def test_calculate_major_axis():
     ra_mem, dec_mem, weight_mem = [179.99, 180.01], [-0.01, 0.01], [1.0, 1.0]
     expected_major_axis = -np.pi / 4.0
     assert_allclose(
-        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        da.calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
         expected_major_axis,
         **TOLERANCE,
     )
@@ -106,7 +106,7 @@ def test_calculate_major_axis():
     ra_mem, dec_mem, weight_mem = [179.99, 180.01], [0.01, -0.01], [1.0, 1.0]
     expected_major_axis = np.pi / 4.0
     assert_allclose(
-        da._calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
+        da.calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem),
         expected_major_axis,
         **TOLERANCE,
     )
@@ -502,7 +502,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
             geometry=geometry,
             include_quadrupole=True,
             phi_major=0.0,
-            coordinate_system="celestial"
+            coordinate_system="celestial",
         )
         assert_allclose(
             ftshear,
@@ -705,18 +705,18 @@ def test_compute_tangential_and_cross_components(modeling_data):
 
         # Test for ValueError if neither phi_major or mem positions are given with quadrupole
         assert_raises(
-                ValueError,
-                da.compute_tangential_and_cross_components,
-                ra_lens=ra_lens,
-                dec_lens=dec_lens,
-                ra_source=list(gals["ra"]),
-                dec_source=list(gals["dec"]),
-                shear1=list(gals["e1"]),
-                shear2=list(gals["e2"]),
-                geometry=geometry,
-                include_quadrupole=True,
-                validate_input=False,
-                )
+            ValueError,
+            da.compute_tangential_and_cross_components,
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            include_quadrupole=True,
+            validate_input=False,
+        )
 
         # Test without validation and float arguments
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
