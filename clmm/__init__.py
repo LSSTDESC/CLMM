@@ -11,6 +11,7 @@ from .theory import (
     compute_surface_density,
     compute_excess_surface_density,
     compute_mean_surface_density,
+    compute_excess_surface_density_triaxial,
     compute_excess_surface_density_2h,
     compute_surface_density_2h,
     compute_tangential_shear,
@@ -24,6 +25,7 @@ from .theory import (
     Modeling,
     Cosmology,
 )
+
 from . import support
 
 __version__ = "1.16.1"
