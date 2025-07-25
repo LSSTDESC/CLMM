@@ -791,7 +791,8 @@ class GalaxyCluster:
             component of the shear or reduced shear. Default: 'gx_err'
         quad_4theta_component: str, optional
             Name of the column in the galcat Table corresponding to the 4theta quadrupole component
-            of the shear or reduced shear (Delta Sigma not yet implemented). Default: 'g_quad_4theta'
+            of the shear or reduced shear (Delta Sigma not yet implemented).
+            Default: 'g_quad_4theta'
         quad_4theta_component_error: str, optional
             Name of the column in the galcat Table corresponding to the uncertainty in
             4theta quadrupole component of the shear or reduced shear. Default: 'g_quad_4theta_err'
