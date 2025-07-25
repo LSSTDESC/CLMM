@@ -337,14 +337,6 @@ class CLMModeling:
     def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
         """eval individual terms of  excess surface density"""
 
-        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-
-        sigma0_grid = self._eval_surface_density(grid, z_cl)
-        sigma0 = self._eval_surface_density(r_proj, z_cl)
-
-        eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
-        eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
-
         if term == "mono":
             delta_sigma = self._eval_excess_surface_density_triaxial_mono(r_proj, z_cl, ell, n_grid)
         elif term == "quad_4theta":
