@@ -1,9 +1,11 @@
 """@file generic.py
 Model independent theory functions
 """
+
 # Functions to model halo profiles
 
 import warnings
+
 import numpy as np
 from scipy.optimize import fsolve
 from scipy.special import gamma, gammainc
