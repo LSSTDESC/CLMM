@@ -5,9 +5,11 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from copy import deepcopy
-from astropy.table import Table as APtable
-import qp
+
 import numpy as np
+import qp
+from astropy.table import Table as APtable
+
 from .utils import _validate_coordinate_system
 
 

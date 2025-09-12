@@ -1,12 +1,13 @@
 """@file numcosmo.py
 NumCosmo implementation of CLMModeling
 """
+
 import math
-import numpy as np
 
 import gi
-from gi.repository import NumCosmoMath as Ncm
+import numpy as np
 from gi.repository import NumCosmo as Nc
+from gi.repository import NumCosmoMath as Ncm
 
 from ..cosmology.numcosmo import NumCosmoCosmology
 from .parent_class import CLMModeling
@@ -37,6 +38,7 @@ class NumCosmoCLMModeling(CLMModeling):
     hdpm_dict: dict
         Dictionary with the definitions for profile
     """
+
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=abstract-method
 
