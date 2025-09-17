@@ -577,7 +577,7 @@ def _compute_photoz_pdfs(
     ] * np.random.standard_normal(len(galaxy_catalog))
 
     if galaxy_catalog.pzpdf_info["type"] is None:
-        return galaxy_catalog
+        return
 
     zmin = galaxy_catalog["z"] - 10.0 * galaxy_catalog["pzsigma"]
     zmax = galaxy_catalog["z"] + 10.0 * galaxy_catalog["pzsigma"]
