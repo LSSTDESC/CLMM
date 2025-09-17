@@ -1,21 +1,23 @@
 """Data operation for polar/azimuthal averages in radial bins and weights"""
 
 import warnings
+
 import numpy as np
-from astropy.coordinates import SkyCoord
 from astropy import units as u
+from astropy.coordinates import SkyCoord
+
 from ..gcdata import GCData
 from ..utils import (
-    compute_radial_averages,
-    make_bins,
-    convert_units,
-    arguments_consistency,
-    validate_argument,
-    _validate_ra,
+    _integ_pzfuncs,
+    _validate_coordinate_system,
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
-    _validate_coordinate_system,
-    _integ_pzfuncs,
+    _validate_ra,
+    arguments_consistency,
+    compute_radial_averages,
+    convert_units,
+    make_bins,
+    validate_argument,
 )
 
 
