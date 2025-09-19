@@ -1,7 +1,10 @@
 """
 Tests for datatype and galaxycluster
 """
-from numpy.testing import assert_raises, assert_equal
+
+import pickle
+import io
+from numpy.testing import assert_raises, assert_equal, assert_warns, assert_no_warnings
 
 from clmm import GCData
 from clmm import Cosmology
@@ -11,6 +14,19 @@ def test_init():
     """test init"""
     gcdata = GCData()
     assert_equal(None, gcdata.meta["cosmo"])
+    assert_equal("euclidean", gcdata.meta["coordinate_system"])
+
+    # assert that default coordinate_system warning is raised
+    assert_warns(UserWarning, GCData)
+
+    # assert that no warning is raised when coordinate_system is set
+    assert_no_warnings(GCData, meta={"coordinate_system": "celestial"})
+
+    # assert errors are raised when coordinate_system is not valid
+    assert_raises(ValueError, GCData, meta={"coordinate_system": "other"})
+    assert_raises(TypeError, GCData, meta={"coordinate_system": 2})
+    assert_raises(TypeError, GCData, meta={"coordinate_system": None})
+    assert_raises(TypeError, GCData, meta={"coordinate_system": ["celestial", 2]})
 
 
 def test_update_cosmo():
@@ -164,3 +180,149 @@ def test_pzfuncs():
     assert isinstance(gcdata._repr_html_(), str)
     assert_raises(NotImplementedError, gcdata.has_pzpdfs)
     assert_raises(NotImplementedError, gcdata.get_pzpdfs)
+
+
+def test_update_coordinate_system():
+    ngals = 5
+    e1 = [0.1] * ngals
+    e2 = [0.2] * ngals
+    ex = [0.3] * ngals
+
+    # raise error if not updated from update_coordinate_system
+    gcdata = GCData(meta={"coordinate_system": "celestial"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_raises(ValueError, gcdata.meta.__setitem__, "coordinate_system", "euclidean")
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
+
+    # raise error if column is not present
+    gcdata = GCData(meta={"coordinate_system": "euclidean"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_raises(ValueError, gcdata.update_coordinate_system, "celestial", ("et",))
+    assert_equal("euclidean", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
+
+    # update coordinate system with bogus system
+    gcdata = GCData(meta={"coordinate_system": "celestial"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_raises(ValueError, gcdata.update_coordinate_system, "other")
+    assert_raises(TypeError, gcdata.update_coordinate_system, 2)
+    assert_raises(TypeError, gcdata.update_coordinate_system, None)
+    assert_raises(TypeError, gcdata.update_coordinate_system, ["celestial", (2,)])
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
+
+    # update coordinate system without conversion
+    gcdata = GCData(meta={"coordinate_system": "euclidean"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "celestial")
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
+
+    # update coordinate system to the same system
+    gcdata = GCData(meta={"coordinate_system": "celestial"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "celestial")
+    assert_equal("celestial", gcdata.meta["coordinate_system"])
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "celestial", ("e2", "ex"))
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, gcdata["e2"])
+    assert_equal(ex, gcdata["ex"])
+
+    # update coordinate system with conversion
+    gcdata = GCData(meta={"coordinate_system": "celestial"})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+    assert_warns(UserWarning, gcdata.update_coordinate_system, "euclidean", ("e2", "ex"))
+    assert_equal("euclidean", gcdata.meta["coordinate_system"])
+    assert_equal(e1, gcdata["e1"])
+    assert_equal(e2, -gcdata["e2"])
+    assert_equal(ex, -gcdata["ex"])
+
+
+def test_copy_gcdata():
+    ngals = 5
+    e1 = [0.1] * ngals
+    e2 = [0.2] * ngals
+    ex = [0.3] * ngals
+    cosmo = Cosmology(H0=70.0, Omega_dm0=0.3 - 0.045, Omega_b0=0.045)
+    desc = cosmo.get_desc()
+
+    # raise error if not updated from update_coordinate_system
+    gcdata = GCData(meta={"coordinate_system": "celestial", "cosmo": desc})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+
+    with assert_no_warnings():
+        gcdata_copy = gcdata.copy()
+        gcdata_cols = gcdata["e1", "e2"]
+        gdata_col = gcdata["e1"]
+        gcdata_slice = gcdata[0:2]
+
+    assert isinstance(gcdata_copy, GCData)
+    assert_equal(gcdata_copy.meta["coordinate_system"], "celestial")
+    assert_equal(gcdata_copy.meta["cosmo"], desc)
+
+    assert isinstance(gcdata_cols, GCData)
+    assert_equal(gcdata_cols.meta["coordinate_system"], "celestial")
+    assert_equal(gcdata_cols.meta["cosmo"], desc)
+
+    assert not isinstance(gdata_col, GCData)
+    assert_equal(gdata_col, e1)
+    assert_raises(KeyError, gdata_col.meta.__getitem__, "coordinate_system")
+    assert_raises(KeyError, gdata_col.meta.__getitem__, "cosmo")
+
+    assert isinstance(gcdata_slice, GCData)
+    assert_equal(gcdata_slice.meta["coordinate_system"], "celestial")
+    assert_equal(gcdata_slice.meta["cosmo"], desc)
+
+
+def test_pickling_gcdata():
+    ngals = 5
+    e1 = [0.1] * ngals
+    e2 = [0.2] * ngals
+    ex = [0.3] * ngals
+    cosmo = Cosmology(H0=70.0, Omega_dm0=0.3 - 0.045, Omega_b0=0.045)
+    desc = cosmo.get_desc()
+
+    # raise error if not updated from update_coordinate_system
+    gcdata = GCData(meta={"coordinate_system": "celestial", "cosmo": desc})
+    gcdata["e1"] = e1
+    gcdata["e2"] = e2
+    gcdata["ex"] = ex
+
+    buffer = io.BytesIO()
+
+    pickle.dump(gcdata, buffer)
+
+    buffer.seek(0)
+
+    with assert_no_warnings():
+        gcdata_loaded = pickle.load(buffer)
+
+    assert isinstance(gcdata_loaded, GCData)
+    assert_equal(gcdata_loaded.meta["coordinate_system"], "celestial")
+    assert_equal(gcdata_loaded.meta["cosmo"], desc)
+    assert_equal(gcdata_loaded["e1"], e1)
+    assert_equal(gcdata_loaded["e2"], e2)
+    assert_equal(gcdata_loaded["ex"], ex)

@@ -15,7 +15,6 @@ from .gcdata import GCData
 from .theory import compute_critical_surface_density_eff
 from .utils import (
     _draw_random_points_from_tab_distribution,
-    _validate_coordinate_system,
     _validate_dec,
     _validate_ra,
     validate_argument,
@@ -38,10 +37,6 @@ class GalaxyCluster:
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
-    coordinate_system : str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
     validate_input: bool
         Validade each input argument
     """
@@ -65,7 +60,6 @@ class GalaxyCluster:
         dec: float,
         z: float,
         galcat: GCData,
-        coordinate_system: str = "euclidean",
     ):
         """Add values for all attributes"""
         self.unique_id = unique_id
@@ -73,7 +67,6 @@ class GalaxyCluster:
         self.dec = dec
         self.z = z
         self.galcat = galcat
-        self.coordinate_system = coordinate_system
 
     def _check_types(self):
         """Check types of all attributes"""
@@ -82,7 +75,6 @@ class GalaxyCluster:
         _validate_dec(vars(self), "dec", False)
         validate_argument(vars(self), "z", (float, str), argmin=0, eqmin=True)
         validate_argument(vars(self), "galcat", GCData)
-        _validate_coordinate_system(vars(self), "coordinate_system", str)
         self.unique_id = str(self.unique_id)
         self.ra = float(self.ra)
         self.dec = float(self.dec)
@@ -242,6 +234,7 @@ class GalaxyCluster:
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
+        coordinate_system: `galcat` coordinate_system
 
         Parameters
         ----------
@@ -298,7 +291,7 @@ class GalaxyCluster:
             dec_lens=self.dec,
             geometry=geometry,
             validate_input=self.validate_input,
-            coordinate_system=self.coordinate_system,
+            coordinate_system=self.galcat.meta["coordinate_system"],
             **cols,
         )
         if add:
@@ -608,6 +601,7 @@ class GalaxyCluster:
                 for n in (tan_component_in_err, cross_component_in_err, None)
             ],
             weights=self.galcat[weights_in].data if use_weights else None,
+            coordinate_system=self.galcat.meta["coordinate_system"],
         )
         # Reaname table columns
         for i, name in enumerate([tan_component_out, cross_component_out, "z"]):
@@ -723,3 +717,20 @@ class GalaxyCluster:
         if "ra" in self.galcat.columns:
             self.galcat["ra"][self.galcat["ra"] < ra_low] += 360.0
             self.galcat["ra"][self.galcat["ra"] >= ra_low + 360.0] -= 360.0
+
+    def update_coordinate_system(self, coordinate_system, ellipticity_columns=()):
+        """Updates coordinate_system metadata of the galcat and converts ellipticity
+
+        Parameters
+        ----------
+        coordinate_system : str
+            Coordinate system of the ellipticity components. Must be either 'celestial' or
+            euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        ellipticity_columns : tuple
+            Components to be converted, must be in data.
+
+        Returns
+        -------
+        None
+        """
+        self.galcat.update_coordinate_system(coordinate_system, ellipticity_columns)
