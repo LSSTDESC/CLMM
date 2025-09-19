@@ -1,10 +1,11 @@
 """@file miscentering.py
 Model functions with miscentering
 """
+
 # Functions to model halo profiles
 
 import numpy as np
-from scipy.integrate import quad, dblquad, tplquad
+from scipy.integrate import dblquad, quad, tplquad
 
 
 def integrand_surface_density_nfw(theta, r_proj, r_mis, r_s):
@@ -65,8 +66,7 @@ def integrand_surface_density_einasto(r_par, theta, r_proj, r_mis, r_s, alpha_ei
     """
     # Projected surface mass density element for numerical integration
     r_norm = (
-        np.sqrt(r_par**2.0 + r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta))
-        / r_s
+        np.sqrt(r_par**2.0 + r_proj**2.0 + r_mis**2.0 - 2.0 * r_proj * r_mis * np.cos(theta)) / r_s
     )
 
     return np.exp(-2.0 * (r_norm**alpha_ein - 1.0) / alpha_ein)

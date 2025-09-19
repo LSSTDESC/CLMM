@@ -1,6 +1,7 @@
 """General utility functions that are used in multiple modules"""
 
 import numpy as np
+
 from ..utils.constants import Constants as const
 
 

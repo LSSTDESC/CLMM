@@ -8,25 +8,24 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simpson, quad
-from scipy.interpolate import splrep, splev
+from scipy.integrate import quad, simpson
+from scipy.interpolate import splev, splrep
 from scipy.special import gamma, gammainc, jv
 
-from .generic import (
-    compute_reduced_shear_from_convergence,
-    compute_magnification_bias_from_magnification,
-    compute_rdelta,
-    compute_profile_mass_in_radius,
-    convert_profile_mass_concentration,
-)
 from ..utils import (
-    validate_argument,
-    compute_beta_s_func,
     _integ_pzfuncs,
+    compute_beta_s_func,
     compute_for_good_redshifts,
+    validate_argument,
 )
 from . import miscentering
-
+from .generic import (
+    compute_magnification_bias_from_magnification,
+    compute_profile_mass_in_radius,
+    compute_rdelta,
+    compute_reduced_shear_from_convergence,
+    convert_profile_mass_concentration,
+)
 
 warnings.filterwarnings("always", module="(clmm).*")
 
