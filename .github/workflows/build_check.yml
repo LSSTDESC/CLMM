@@ -16,7 +16,7 @@ jobs:
     - name: Install prereq and NumCosmo using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject numcosmo cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
+        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
@@ -39,16 +39,18 @@ jobs:
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         pip install .
-    - name: Run the unit tests
-      run: |
-        pip install pytest pytest-cov
-        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
-      env:
-        DISPLAY: test
 # temporarily moved up due to libarchive issue - see PR 620
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+    - name: Analysing the code formatting with black
+      run: |
+        pip install black black-configparser
+        black --check --diff clmm
+    - name: Analysing the code import order with isort
+      run: |
+        pip install isort
+        isort --check --diff clmm
     - name: Analysing the code with pylint
       run: |
         pip install pylint
@@ -56,6 +58,12 @@ jobs:
     - name: Run the docs
       run: |
         make -C docs/ html
+    - name: Run the unit tests
+      run: |
+        pip install pytest pytest-cov
+        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+      env:
+        DISPLAY: test
     - name: Coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

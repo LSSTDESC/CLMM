@@ -1,12 +1,15 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
-import pickle
-import numpy as np
-import healpy
 
-from .gcdata import GCData
+import pickle
+import warnings
+
+import healpy
+import numpy as np
+
 from .dataops import make_stacked_radial_profile
+from .gcdata import GCData
 from .utils import DiffArray
 
 
@@ -50,6 +53,12 @@ class ClusterEnsemble:
         self.data = GCData(meta={"bin_units": None, "radius_min": None, "radius_max": None})
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
+            weights_out = kwargs.get("weights_out", "W_l")
+            if (self.data[weights_out] == 0).any():
+                warnings.warn(
+                    "There are empty bins in some of the profile tables,"
+                    f" filter them with {weights_out}>0 for visualization."
+                )
         self.stacked_data = None
         self.cov = {
             "tan_sc": None,

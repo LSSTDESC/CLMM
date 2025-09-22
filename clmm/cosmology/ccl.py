@@ -1,13 +1,12 @@
 """@file ccl.py
 Cosmology using CCL
 """
-import numpy as np
 
+import numpy as np
 import pyccl as ccl
 
-from .parent_class import CLMMCosmology
-
 from ..utils import _patch_rho_crit_to_cd2018
+from .parent_class import CLMMCosmology
 
 __all__ = []
 

@@ -1,21 +1,24 @@
 """Data operation for polar/azimuthal averages in radial bins and weights"""
+
 import warnings
+
 import numpy as np
-from astropy.coordinates import SkyCoord
 from astropy import units as u
+from astropy.coordinates import SkyCoord
+
 from ..gcdata import GCData
 from ..utils import (
-    compute_radial_averages,
-    make_bins,
-    convert_units,
-    arguments_consistency,
-    validate_argument,
-    _validate_ra,
+    _integ_pzfuncs,
+    _validate_coordinate_system,
     _validate_dec,
     _validate_is_deltasigma_sigma_c,
-    _validate_coordinate_system,
+    _validate_ra,
+    arguments_consistency,
+    compute_radial_averages,
+    convert_units,
+    make_bins,
+    validate_argument,
 )
-from ..redshift import _integ_pzfuncs
 
 
 def compute_tangential_and_cross_components(
@@ -482,6 +485,7 @@ def make_radial_profile(
     z_lens=None,
     validate_input=True,
     weights=None,
+    empty_bins_value=np.nan,
 ):
     r"""Compute the angular profile of given components
 
@@ -535,6 +539,8 @@ def make_radial_profile(
     weights: array-like, optional
         Array of individual galaxy weights. If specified, the radial binned profile is
         computed using a weighted average
+    empty_bins_value: float, None
+        Values to be assigned to empty bins.
 
     Returns
     -------
@@ -595,10 +601,40 @@ def make_radial_profile(
     profile_table["weights_sum"] = wts_sum
     # return empty bins?
     if not include_empty_bins:
-        profile_table = profile_table[nsrc > 1]
+        profile_table = profile_table[nsrc >= 1]
+    else:
+        for col in (
+            "radius",
+            *(_col for i in range(len(components)) for _col in (f"p_{i}", f"p_{i}_err")),
+        ):
+            profile_table[col][nsrc < 1] = empty_bins_value
     if return_binnumber:
         return profile_table, binnumber
     return profile_table
+
+
+def not_nan_average(values, axis=0, weights=None):
+    """Computes averages using only not nan values
+
+    Parameters
+    ----------
+    values: nd array
+        Values to be averaged
+    axis: int
+        axis to make the average on
+    weighs: nd array
+        Weights, must have same shape as values
+
+    Returns
+    -------
+    array
+        Averaged values
+    """
+    _values = np.copy(values)
+    _weights = np.ones(_values.shape) if weights is None else np.copy(weights)
+    _values[np.isnan(values)] = 0
+    _weights[np.isnan(values)] = 0
+    return np.average(_values, axis=axis, weights=_weights)
 
 
 def make_stacked_radial_profile(angsep, weights, components):
@@ -621,8 +657,9 @@ def make_stacked_radial_profile(angsep, weights, components):
     stacked_components: list of arrays
         List of stacked components.
     """
-    staked_angsep = np.average(angsep, axis=0, weights=None)
+    # rm nan values
+    staked_angsep = not_nan_average(angsep, axis=0, weights=None)
     stacked_components = [
-        np.average(component, axis=0, weights=weights) for component in components
+        not_nan_average(component, axis=0, weights=weights) for component in components
     ]
     return staked_angsep, stacked_components

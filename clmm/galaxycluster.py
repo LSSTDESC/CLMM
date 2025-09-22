@@ -4,22 +4,23 @@ The GalaxyCluster class
 
 import pickle
 import warnings
-from .gcdata import GCData
+
 from .dataops import (
+    compute_background_probability,
+    compute_galaxy_weights,
     compute_tangential_and_cross_components,
     make_radial_profile,
-    compute_galaxy_weights,
-    compute_background_probability,
 )
+from .gcdata import GCData
 from .theory import compute_critical_surface_density_eff
-from .plotting import plot_profiles
 from .utils import (
-    validate_argument,
-    _validate_ra,
-    _validate_dec,
     _draw_random_points_from_tab_distribution,
     _validate_coordinate_system,
+    _validate_dec,
+    _validate_ra,
+    validate_argument,
 )
+from .utils.plotting import plot_profiles
 
 
 class GalaxyCluster:
