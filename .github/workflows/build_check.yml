@@ -19,11 +19,6 @@ jobs:
           mamba-version: "*"
           activate-environment: clmm
           environment-file: environment.yml
-      - name: Debug environment
-        shell: bash -l {0}
-        run: |
-          conda list
-          pip list
       - name: Install the package
         shell: bash -l {0}
         run: |
