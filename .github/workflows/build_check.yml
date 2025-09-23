@@ -19,6 +19,10 @@ jobs:
           mamba-version: "*"
           activate-environment: clmm
           environment-file: environment.yml
+      - name: Prepare environment
+        shell: bash -l {0}
+        run: |
+          mamba install setuptools_scm
       - name: Install the package
         shell: bash -l {0}
         run: |
