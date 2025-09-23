@@ -4,21 +4,26 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python==3.10.2
-  - pip>=21.0
-  - jupyter>=1.0
-  - numpy==1.25.2
-  - scipy==1.11.2
-  - astropy==5.3.2
-  - healpy == 1.16.5
-  - matplotlib==3.7.2
-  - gsl==2.7
-  - cmake==3.30.0
-  - pyccl==3.0
-  - numcosmo==0.18.2
-  - pytest=7.4.0
-  - sphinx==7.2.4
-  - black==25.1.0
-  - isort==5.13.2
+  - python >= 3.8
+  - astropy >= 4.0, !=5.0
+  - black
+  - cmake
+  - hatch
+  - healpy
+  - isort
+  - jupyter
+  - matplotlib
+  - numcosmo <= 0.22.0
+  - numpy >= 1.17
+  - pandoc
+  - pip
+  - pyccl
+  - pylint
+  - pytest
+  - pytest-cov
+  - scipy >= 1.3
+  - sphinx
+  - sphinx_rtd_theme
   - pip:
-        - qp-prob @ git+https://github.com/LSSTDESC/qp.git
+    - qp-prob @ git+https://github.com/LSSTDESC/qp.git
+    - cluster-toolkit @ git+https://github.com/tmcclintock/cluster_toolkit.git

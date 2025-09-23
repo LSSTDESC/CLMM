@@ -12,9 +12,7 @@ description = "A comprehensive package for galaxy cluster weak lensing"
 readme = "README.md"
 license = "bsd-3-clause"
 requires-python = ">=3.8"
-authors = [
-    { name = "The LSST DESC CLMM Contributors" },
-]
+authors = [{ name = "The LSST DESC CLMM Contributors" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -29,9 +27,8 @@ dependencies = [
     "numpy>=1.17",
     "scipy>=1.3",
     "healpy",
-    "qp-prob"
+    "qp-prob",
 ]
-
 
 
 [project.urls]
@@ -41,12 +38,10 @@ Repository = "https://github.com/LSSTDESC/CLMM"
 path = "clmm/__init__.py"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/clmm",
-]
+include = ["/clmm"]
 
 [tool.black]
-line-length  = 100
+line-length = 100
 
 [tool.isort]
 profile = "black"
@@ -54,13 +49,33 @@ profile = "black"
 [tool.pylint]
 max-line-length = 100
 disable = ["R0913", "R0917"]
-good-names = ["ra", "z", "z1", "z2", "a", "a1", "a2",
-              "gt", "gx", "mu", "da", "i",
-              "H0", "Omega_b0", "Omega_dm0", "Omega_k0",
-              "h", "Omega_m", "Omega_b",
-              "get_Omega_m", "get_E2", "get_E2Omega_m", 
-              "_get_Omega_m", "_get_E2", "_get_E2Omega_m", 
-              ]
+good-names = [
+    "ra",
+    "z",
+    "z1",
+    "z2",
+    "a",
+    "a1",
+    "a2",
+    "gt",
+    "gx",
+    "mu",
+    "da",
+    "i",
+    "H0",
+    "Omega_b0",
+    "Omega_dm0",
+    "Omega_k0",
+    "h",
+    "Omega_m",
+    "Omega_b",
+    "get_Omega_m",
+    "get_E2",
+    "get_E2Omega_m",
+    "_get_Omega_m",
+    "_get_E2",
+    "_get_E2Omega_m",
+]
 max-public-methods = 30
 ignored-modules = ["scipy.special"]
 
