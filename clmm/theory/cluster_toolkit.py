@@ -2,9 +2,8 @@
 Modeling using cluster_toolkit
 """
 
-import cluster_toolkit as ct
-
 # Functions to model halo profiles
+import cluster_toolkit as ct
 import numpy as np
 
 from ..cosmology.cluster_toolkit import AstroPyCosmology
