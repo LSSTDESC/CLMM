@@ -7,9 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build-gcc-ubuntu:
+  build-and-check:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
