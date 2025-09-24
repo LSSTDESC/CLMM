@@ -1,0 +1,47 @@
+name: Publish
+
+on:
+  release:
+    types: [released]
+  pull_request:
+
+jobs:
+  build-for-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          channels: conda-forge
+          channel-priority: strict
+          mamba-version: "*"
+          activate-environment: clmm
+          environment-file: environment.yml
+      - name: Build the package
+        shell: bash -l {0}
+        run: |
+          hatch build
+      - name: Store the distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: clmm-dist
+          path: dist/
+
+  pypi-publish:
+    name: Upload release to PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://test.pypi.org/project/clmm/
+    permissions:
+      id-token: write
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: clmm-dist
+          path: dist/
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
