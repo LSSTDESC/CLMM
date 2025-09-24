@@ -1,13 +1,12 @@
-name: Publish
+name: Publish to PyPI
 
 on:
   release:
     types: [released]
-  pull_request:
-  workflow_dispatch:
 
 jobs:
-  build-for-publish:
+  build-to-publish:
+    name: Build the package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://test.pypi.org/project/clmm/
+      url: https://pypi.org/project/clmm/
     permissions:
       id-token: write
     steps:
@@ -44,5 +43,5 @@ jobs:
         with:
           name: clmm-dist
           path: dist/
-      - name: Publish package distributions to TestPyPI
+      - name: Publish package distributions to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1
