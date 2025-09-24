@@ -31,7 +31,7 @@ jobs:
   pypi-publish:
     name: Upload release to PyPI
     needs:
-      - build
+      - build-for-publish
     runs-on: ubuntu-latest
     environment:
       name: pypi
