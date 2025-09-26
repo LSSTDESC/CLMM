@@ -52,10 +52,8 @@ CLMM has the following dependencies:
 - [Astropy](https://www.astropy.org/) (v4.0 or later for units and cosmology dependence)
 (Please avoid Astropy v5.0 since there is bug breaking CCL backend. It has been fixed in Astropy v5.0.1.)
 - [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
-
-```
-  pip install numpy scipy astropy matplotlib
-```
+- [healpy](https://healpy.readthedocs.io/en/latest/index.html)
+- [qp-prob](https://github.com/LSSTDESC/qp)
 
 ### Back-ends <a name="backends"></a>
 
