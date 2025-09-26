@@ -51,7 +51,7 @@ class NumCosmoCLMModeling(CLMModeling):
     ):
         CLMModeling.__init__(self, validate_input)
         # Update class attributes
-        Ncm.cfg_init()
+        Ncm.cfg_init()  # pylint: disable=no-value-for-parameter
         self.backend = "nc"
         self.mdef_dict = {
             "mean": Nc.HaloDensityProfileMassDef.MEAN,
@@ -187,7 +187,7 @@ class NumCosmoCLMModeling(CLMModeling):
         r"""
         Gets a mass set (NumCosmo internal use)
         """
-        mset = Ncm.MSet.empty_new()
+        mset = Ncm.MSet.empty_new()  # pylint: disable=no-value-for-parameter
         mset.set(self.cosmo.be_cosmo)
         mset.set(self.hdpm)
         mset.set(self.cosmo.smd)
@@ -197,10 +197,12 @@ class NumCosmoCLMModeling(CLMModeling):
         r"""
         Sets a mass set (NumCosmo internal use)
         """
-        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
+        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))  # pylint: disable=no-value-for-parameter
 
-        self.hdpm = mset.get(Nc.HaloDensityProfile.id())
-        self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
+        self.hdpm = mset.get(Nc.HaloDensityProfile.id())  # pylint: disable=no-value-for-parameter
+        self.cosmo.smd = mset.get(
+            Nc.WLSurfaceMassDensity.id()  # pylint: disable=no-value-for-parameter
+        )
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 
