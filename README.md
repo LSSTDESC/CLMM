@@ -66,34 +66,6 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
 
-### Developers <a name="developers"></a>
-
-For developers, you will also need to install:
-
-- [pytest](https://docs.pytest.org/en/latest/) (3.x or later for testing)
-- [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
-
-These are also pip installable:
-```
-  pip install pytest sphinx sphinx_rtd_theme
-```
-Note, the last item, `sphinx_rtd_theme` is to make the docs.
-
-## Manual installation <a name="installation"></a>
-
-To install CLMM manually, you need to build it from source:
-
-```
-  git clone https://github.com/LSSTDESC/CLMM.git
-  cd CLMM
-  python setup.py install --user   # Add --user flag to install it locally
-```
-See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.
-
-To run the tests you can do:
-
-  `pytest`
-
 # Using CLMM <a name="using"></a>
 
 This code has been released by DESC, although it is still under active

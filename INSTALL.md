@@ -1,53 +1,43 @@
 # Installation instructions
 
-We strongly recommend you make a new conda environment for the installation of CLMM so you can avoid conflicts with versions of
+We strongly recommend you make a new `conda` environment for the installation of CLMM so you can avoid conflicts with versions of
 libraries used for other programs.
 Here we present several ways to do it.
 
 ## Table of contents
 1. [Basic installation](#basic_install)
-2. [Manual installation](#manual_install)
+2. [Developer installation](#dev_install)
     * [Setting up the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
 3. [An alternative installation at NERSC or at CC-IN2P3 for DESC members](#from_desc_conda_env)
 4. [Making a local copy of CLMM](#making_a_local_copy_of_clmm)
 
 
-## Basic procedure <a name="basic_install"></a>
+## Basic installation <a name="basic_install"></a>
 
-These commands will create a new local environment ready for CLMM installation:
-
-```bash
-    conda env create -f environment.yml
-    conda activate clmm
-```
-
-You can now install CLMM in a local and stable environment with the usual procedure.
-
-## Manual procedure <a name="basic_install"></a>
-
-Here we provide a quick guide for a maual instalation, this will install all the packages in your current environment.
-
-To create your conda environment, run:
+To create a `conda` environment, run:
 
 ```bash
-    module load python  # Also loads anaconda
-    conda create --name clmmenv  # Create an anaconda environment for clmm
-    source activate clmmenv  # switch to your newly created environment
+    conda env create -n clmm
 ```
 
-
-Install some basic packages you will need:
+CLMM can be found both on PyPI and conda-forge repositories and can be easily installed with
 
 ```bash
-    conda install pip  # need pip to install everything else necessary for clmm
-    conda install ipython # need to have the ipython tied to this environment
-    conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks
+    pip install clmm
 ```
+
+or
+
+```bash
+    conda install -C conda-forge clmm
+```
+
+This should automatically pull all necessary dependencies, with the exception of the theory backend libraries.
 
 ### Theory backend installation
 First, choose and install a theory backend for CLMM.
 This can be CCL (versions 3.1.2 or later),
-NumCosmo (v0.19 or later),
+NumCosmo (versions between v0.19 and v0.22),
 or cluster_toolkit and they are installable as follows.
 
 To install CCL as the theory/cosmology backend, run
@@ -79,19 +69,25 @@ Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll al
 
 Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
 
-### CLMM and dependency installation
+## Developer installation <a name="dev_install"></a>
 
-Now, you can install CLMM and its dependencies as
+Here we provide a quick guide for a developer instalation, using `environment.yml` to create a suitable conda environment and install all necessary packages.
+
+If you're creating this environment on NERSC, it is necessary to run this before creating the environment:
 
 ```bash
-    pip install numpy scipy astropy matplotlib healpy
-    pip install pytest sphinx sphinx_rtd_theme black isort
-    pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
-    pip install git+https://github.com/LSSTDESC/qp.git # Install qp package
-    git clone https://github.com/LSSTDESC/CLMM.git  # If you'd like to contribute but don't have edit permissions to the CLMM repo, see below how to fork the repo instead.
-    cd CLMM
-    python setup.py install     # build from source
+    module load python
 ```
+
+To create and activate your conda environment, run:
+
+```bash
+    conda env create -f environment.yml
+    conda activate clmm
+```
+
+This procedure installs all available theory backends as well as the tools necessary for development.
+
 
 ### Setting up the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
