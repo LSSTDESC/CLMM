@@ -25,5 +25,6 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - pip:
+    - black-configparser
     - qp-prob @ git+https://github.com/LSSTDESC/qp.git
     - cluster-toolkit @ git+https://github.com/tmcclintock/cluster_toolkit.git

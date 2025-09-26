@@ -32,17 +32,14 @@ jobs:
       - name: Analysing the code formatting with black
         shell: bash -l {0}
         run: |
-          pip install black black-configparser
           black --check --diff clmm
       - name: Analysing the code import order with isort
         shell: bash -l {0}
         run: |
-          pip install isort
           isort --check --diff clmm
       - name: Analysing the code with pylint
         shell: bash -l {0}
         run: |
-          pip install pylint
           pylint clmm --ignored-classes=astropy.units
       - name: Run the docs
         shell: bash -l {0}
@@ -51,7 +48,6 @@ jobs:
       - name: Run the unit tests
         shell: bash -l {0}
         run: |
-          pip install pytest pytest-cov
           pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
         env:
           DISPLAY: test
