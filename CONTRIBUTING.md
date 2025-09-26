@@ -60,7 +60,7 @@ Once you add your changes, `black clmm/` and `isort clmm/` before you commit you
 
 - **Structuring the code:** Run `pylint clmm/`, this will produce a diagnostic about the implementation and tell you what needs to be improved.
 
-- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
+- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `pip install .` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
 **Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
 In this case you will not have to reinstall it at every change.
 
@@ -72,8 +72,9 @@ In this case you will not have to reinstall it at every change.
 
 - **Build the documentation:** To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
 
-> **NOTE:** If the changes you are making affect which CCL versions are compatible with the code,
-> please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+> **NOTE:** If the changes you are making affect which CCL or NumCosmo versions are compatible with the code,
+> please update `clmm/theory/_ccl_supported_versions.py`, `environment.yml`, `README.md` and `INSTALL.md` accordingly.
+> Also, any changes on the constraints on CLMM dependencies should be reflected on `environment.yml` and `pyproject.toml`. It is also necessary to update those constraints on conda-forge after a specific release. Please notify the maintainers if that's necessary.
 
 All these steps (except running the notebooks) are run automatically on each pull request on GitHub, so you will know if any of them require further attention before considering youre changes are ready to be reviewed. Check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR.
 
