@@ -62,7 +62,7 @@ CLMM has the following dependencies:
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
-- [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.7.1.dev10+gf81b59a4 and 3)
+- [CCL](https://ccl.readthedocs.io/en/latest/) (versions 3.1.2 or later)
 - [NumCosmo](https://numcosmo.github.io/) (v0.19 or later)
 
 

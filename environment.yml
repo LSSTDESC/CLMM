@@ -17,7 +17,7 @@ dependencies:
   - numpy >= 2.0
   - pandoc
   - pip
-  - pyccl
+  - pyccl >= 3.1.2
   - pylint
   - pytest
   - pytest-cov

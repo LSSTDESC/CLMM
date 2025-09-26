@@ -14,14 +14,21 @@ from ..utils import _patch_rho_crit_to_cd2018
 from . import _ccl_supported_versions
 from .parent_class import CLMModeling
 
-if (
-    parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)
-    or parse(ccl.__version__).major > parse(_ccl_supported_versions.VMAX).major
-):
-    raise EnvironmentError(
-        f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
-        f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
-    )
+if _ccl_supported_versions.VMAX:
+    if (
+        parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)
+        or parse(ccl.__version__).major > parse(_ccl_supported_versions.VMAX).major
+    ):
+        raise EnvironmentError(
+            f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
+            f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
+        )
+else:
+    if parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN):
+        raise EnvironmentError(
+            f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
+            f"It must be at least {_ccl_supported_versions.VMIN}."
+        )
 
 
 class CCLCLMModeling(CLMModeling):

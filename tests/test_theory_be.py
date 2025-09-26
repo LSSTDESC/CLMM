@@ -52,11 +52,16 @@ def test_base(monkeypatch):
 
 
 def get_ccl_versions_from_md(filename):
-    lines = [l for l in open(filename).readlines() if "CCL" and "versions between" in l]
+    lines = [l for l in open(filename).readlines() if "CCL" in l and "versions" in l]
+    print(lines)
     if len(lines) != 1:
         raise SyntaxError(f"Number of lines with CCL version (={len(lines)}) is not 1.")
-    vmin = lines[0].split("versions between ")[1].split(" and ")[0]
-    vmax = lines[0].split(" and ")[1].split(")")[0]
+    if "between" in lines:
+        vmin = lines[0].split("versions between ")[1].split(" and ")[0]
+        vmax = lines[0].split(" and ")[1].split(")")[0]
+    else:
+        vmin = lines[0].split("versions ")[1].split(" or later")[0]
+        vmax = None
     return vmin, vmax
 
 

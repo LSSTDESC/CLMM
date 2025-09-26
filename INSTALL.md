@@ -46,7 +46,7 @@ Install some basic packages you will need:
 
 ### Theory backend installation
 First, choose and install a theory backend for CLMM.
-This can be CCL (versions between 2.7.1.dev10+gf81b59a4 and 3),
+This can be CCL (versions 3.1.2 or later),
 NumCosmo (v0.19 or later),
 or cluster_toolkit and they are installable as follows.
 

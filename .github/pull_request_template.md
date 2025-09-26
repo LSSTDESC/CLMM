@@ -28,3 +28,4 @@ After the PR has been approved by two reviewers:
 
 - [ ] Update the code version in `clmm/__ini__.py`.
 - [ ] Keep only relevant points in the squash and merge commit message.
+- [ ] Update `clmm/theory/_ccl_supported_versions.py` and `clmm/theory/ccl.py` if pyccl's version constraints have been altered.
