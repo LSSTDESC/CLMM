@@ -423,38 +423,30 @@ class ClusterEnsemble:
         cluster_index_bootstrap = [
             np.random.choice(cluster_index, n_catalogs) for n_boot in range(n_bootstrap)
         ]
-
+        _shear_components = [tan_component, cross_component]
         if self.include_quadrupole:
-            g_boot_components = make_stacked_radial_profile(
-                self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                [
-                    self[tan_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[quad_4theta_component][None, cluster_index_bootstrap][0].transpose(
-                        1, 2, 0
-                    ),
-                    self[quad_const_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                ],
-            )[1]
-            gt_boot, gx_boot, g4theta_boot, gconst_boot = g_boot_components
-        else:
-            g_boot_components = make_stacked_radial_profile(
-                self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                [
-                    self[tan_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                    self[cross_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-                ],
-            )[1]
-            gt_boot, gx_boot = g_boot_components
+            _shear_components += [quad_4theta_component, quad_const_component]
+
+        g_boot_components = make_stacked_radial_profile(
+            self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+            self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
+            [
+                self[_component][None, cluster_index_bootstrap][0].transpose(1, 2, 0)
+                for _component in _shear_components
+            ],
+        )[1]
 
         coeff = (n_catalogs / (n_catalogs - 1)) ** 2
-        self.cov["tan_bs"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
-        self.cov["cross_bs"] = coeff * np.cov(np.array(gx_boot), bias=False)
+        self.cov["tan_bs"] = coeff * np.cov(np.array(g_boot_components[0]), bias=False, ddof=0)
+        self.cov["cross_bs"] = coeff * np.cov(np.array(g_boot_components[1]), bias=False)
         if self.include_quadrupole:
-            self.cov["quad_4theta_bs"] = coeff * np.cov(np.array(g4theta_boot), bias=False, ddof=0)
-            self.cov["quad_const_bs"] = coeff * np.cov(np.array(gconst_boot), bias=False, ddof=0)
+            gt_boot, gx_boot, g4theta_boot, gconst_boot = g_boot_components
+            self.cov["quad_4theta_bs"] = coeff * np.cov(
+                np.array(g_boot_components[2]), bias=False, ddof=0
+            )
+            self.cov["quad_const_bs"] = coeff * np.cov(
+                np.array(g_boot_components[3]), bias=False, ddof=0
+            )
 
     def compute_jackknife_covariance(
         self,
