@@ -210,24 +210,17 @@ class ClusterEnsemble:
             include_empty_bins=True, gal_ids_in_bins=False, add=False, **tb_kwargs
         )
 
-        if self.include_quadrupole:
-            self.add_individual_radial_profile(
-                galaxycluster,
-                profile_table,
-                tan_component=tan_component_out,
-                cross_component=cross_component_out,
-                quad_4theta_component=quad_4theta_component_out,
-                quad_const_component=quad_const_component_out,
-                weights=weights_out,
-            )
-        else:
-            self.add_individual_radial_profile(
-                galaxycluster,
-                profile_table,
-                tan_component=tan_component_out,
-                cross_component=cross_component_out,
-                weights=weights_out,
-            )
+        
+        self.add_individual_radial_profile(
+            galaxycluster,
+            profile_table,
+            tan_component=tan_component_out,
+            cross_component=cross_component_out,
+            quad_4theta_component=quad_4theta_component_out,
+            quad_const_component=quad_const_component_out,
+            weights=weights_out
+        )
+    
 
     def add_individual_radial_profile(
         self,
