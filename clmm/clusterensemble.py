@@ -4,11 +4,12 @@ The Cluster Ensemble class
 
 import pickle
 import warnings
-import numpy as np
-import healpy
 
-from .gcdata import GCData
+import healpy
+import numpy as np
+
 from .dataops import make_stacked_radial_profile
+from .gcdata import GCData
 from .utils import DiffArray
 
 

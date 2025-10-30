@@ -18,5 +18,7 @@ dependencies:
   - numcosmo==0.18.2
   - pytest=7.4.0
   - sphinx==7.2.4
+  - black==25.1.0
+  - isort==5.13.2
   - pip:
         - qp-prob @ git+https://github.com/LSSTDESC/qp.git

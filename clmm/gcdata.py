@@ -1,16 +1,21 @@
 """
 Define the custom data type
 """
+
 import warnings
 from collections import OrderedDict
-from astropy.table import Table as APtable
-import numpy as np
+from copy import deepcopy
 
+import numpy as np
 import qp
+from astropy.table import Table as APtable
+
+from .utils import _validate_coordinate_system
 
 
 class GCMetaData(OrderedDict):
-    r"""Object to store metadata, it always has a cosmo key with protective changes
+    r"""Object to store metadata, it always has a cosmo and coordinate_system keys with protective
+    changes
 
     Attributes
     ----------
@@ -21,6 +26,13 @@ class GCMetaData(OrderedDict):
 
     def __init__(self, *args, **kwargs):
         OrderedDict.__init__(self, *args, **kwargs)
+        if "coordinate_system" not in self:
+            warnings.warn("coordinate_system not set, defaulting to 'euclidean'.")
+            coordinate_system = "euclidean"
+        else:
+            coordinate_system = kwargs["coordinate_system"]
+        _validate_coordinate_system(locals(), "coordinate_system")
+        OrderedDict.__setitem__(self, "coordinate_system", coordinate_system)
         if "cosmo" not in self:
             OrderedDict.__setitem__(self, "cosmo", None)
 
@@ -28,6 +40,10 @@ class GCMetaData(OrderedDict):
         if item == "cosmo" and self.get("cosmo", None):
             raise ValueError(
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
+            )
+        if item == "coordinate_system" and self.get("coordinate_system", None):
+            raise ValueError(
+                "coordinate_system must be changed via update_coordinate_system method"
             )
         OrderedDict.__setitem__(self, item, value)
 
@@ -40,10 +56,36 @@ class GCMetaData(OrderedDict):
         out = OrderedDict.__getitem__(self, item)
         return out
 
+    def __deepcopy__(self, memo):
+        """
+        Make sure that operations dependent on deepcopy avoid initializing an empty GCMetaData
+        and then setting cosmo and coordinate_system keys incorrectly.
+        """
+        items = {key: deepcopy(value, memo) for key, value in self.items()}
+        return GCMetaData(**items)
+
+    def __reduce__(self):
+        """
+        Make sure that metadata can be pickled without calling __setitem__ for cosmo and
+        coordinate_system keys.
+        """
+        return (self.__class__.__new__, (self.__class__,), dict(self))
+
+    def __setstate__(self, state):
+        """
+        Make sure that metadata can be unpickled without calling __setitem__ for cosmo and
+        coordinate_system keys.
+        """
+        self.clear()
+        self.update(state)
+
+    def copy(self):
+        return GCMetaData(**self)
+
 
 class GCData(APtable):
     """
-    GCData: A data objetc for gcdata. Right now it behaves as an astropy table, with the following
+    GCData: A data object for gcdata. Right now it behaves as an astropy table, with the following
     modifications: `__getitem__` is case independent;
     The attribute .meta['cosmo'] is protected and
     can only be changed via update_cosmo or update_cosmo_ext_valid methods;
@@ -63,9 +105,9 @@ class GCData(APtable):
         *args, **kwargs: Same used for astropy tables
         """
         APtable.__init__(self, *args, **kwargs)
-        metakwargs = kwargs["meta"] if "meta" in kwargs else {}
-        metakwargs = {} if metakwargs is None else metakwargs
-        self.meta = GCMetaData(**metakwargs)
+        if not ("copy" in kwargs or "copy_indices" in kwargs or "masked" in kwargs):
+            metakwargs = kwargs.get("meta", {})
+            self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
         self.pzpdf_info = {
             "type": None,
@@ -171,6 +213,8 @@ class GCData(APtable):
         -------
         None
         """
+        if key == "coordinate_system":
+            _validate_coordinate_system(locals(), "ext_value")
         if ext_value:
             in_value = gcdata.meta[key]
             if in_value and in_value != ext_value:
@@ -220,6 +264,44 @@ class GCData(APtable):
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+
+    def update_coordinate_system(self, coordinate_system, ellipticity_columns=()):
+        r"""Updates coordinate_system metadata and converts ellipticity
+
+        Parameters
+        ----------
+        coordinate_system : str
+            Coordinate system of the ellipticity components. Must be either 'celestial' or
+            euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        ellipticity_columns : tuple
+            Name of the columns holding the ellipticity components. Passing names not corresponding
+            to these columns will have undesired effects.
+
+        Returns
+        -------
+        None
+        """
+        if coordinate_system == self.meta["coordinate_system"]:
+            warnings.warn(
+                f"coordinate_system {coordinate_system} is the same as in data. No changes made."
+            )
+            return
+
+        missing_columns = list(filter(lambda col: col not in self.colnames, ellipticity_columns))
+        if len(missing_columns) > 0:
+            raise ValueError(f"Components {missing_columns} not found in data. No changes made")
+
+        self.update_info_ext_valid("coordinate_system", self, coordinate_system, overwrite=True)
+        for col in ellipticity_columns:
+            self[col] *= -1
+
+        if ellipticity_columns:
+            warnings.warn(f"Columns {ellipticity_columns} have been updated.")
+        else:
+            warnings.warn(
+                "No ellipticity columns provided. Coordinate system has been updated but "
+                "no changes were made to the data."
+            )
 
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies

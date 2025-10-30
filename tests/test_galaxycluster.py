@@ -24,7 +24,6 @@ def test_initialization():
         "dec": 34.0,
         "z": 0.3,
         "galcat": GCData(),
-        "coordinate_system": "euclidean",
     }
     cl1 = clmm.GalaxyCluster(**testdict1)
     cl2 = clmm.GalaxyCluster(**testdict1, include_quadrupole=True)
@@ -35,7 +34,6 @@ def test_initialization():
     assert_equal(testdict1["z"], cl1.z)
     assert_equal(testdict1["z"], cl2.z)
     assert isinstance(cl1.galcat, GCData)
-    assert_equal(testdict1["coordinate_system"], cl1.coordinate_system)
 
 
 def test_integrity():  # Converge on name
@@ -55,7 +53,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -65,7 +62,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -75,7 +71,6 @@ def test_integrity():  # Converge on name
         dec=95.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -85,7 +80,6 @@ def test_integrity():  # Converge on name
         dec=-95.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         ValueError,
@@ -95,17 +89,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=-0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
-    )
-    assert_raises(
-        ValueError,
-        clmm.GalaxyCluster,
-        unique_id=1,
-        ra=161.3,
-        dec=34.0,
-        z=0.3,
-        galcat=GCData(),
-        coordinate_system="blah",
     )
 
     # Test that inputs are the correct type
@@ -117,7 +100,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -127,7 +109,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=1,
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -137,7 +118,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=[],
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -147,7 +127,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -157,7 +136,6 @@ def test_integrity():  # Converge on name
         dec=None,
         z=0.3,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -167,7 +145,6 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=None,
         galcat=GCData(),
-        coordinate_system="euclidean",
     )
     assert_raises(
         TypeError,
@@ -177,20 +154,15 @@ def test_integrity():  # Converge on name
         dec=34.0,
         z=0.3,
         galcat=None,
-        coordinate_system=2,
     )
 
     # Test that id can support numbers and strings
     assert isinstance(
-        clmm.GalaxyCluster(
-            unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="euclidean"
-        ).unique_id,
+        clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34.0, z=0.3, galcat=GCData()).unique_id,
         str,
     )
     assert isinstance(
-        clmm.GalaxyCluster(
-            unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData(), coordinate_system="euclidean"
-        ).unique_id,
+        clmm.GalaxyCluster(unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=GCData()).unique_id,
         str,
     )
 
@@ -551,11 +523,9 @@ def test_coordinate_system():
     dec_source = [41.9, 42.2]
     z_src = [1.0, 2.0]
     shear1 = [0.2, 0.4]
-    shear2_euclidean = [-0.3, -0.5]
-    shear2_celestial = [0.3, 0.5]
-    # Set up radial values
-    bins_radians = [0.002, 0.003, 0.004]
-    bin_units = "radians"
+    shear2_euclidean = [0.3, 0.5]
+    shear2_celestial = [-0.3, -0.5]
+
     # create cluster
     cl_euclidean = clmm.GalaxyCluster(
         unique_id="test",
@@ -565,8 +535,8 @@ def test_coordinate_system():
         galcat=GCData(
             [ra_source, dec_source, shear1, shear2_euclidean, z_src],
             names=("ra", "dec", "e1", "e2", "z"),
+            meta={"coordinate_system": "euclidean"},
         ),
-        coordinate_system="euclidean",
     )
     cl_celestial = clmm.GalaxyCluster(
         unique_id="test",
@@ -576,22 +546,39 @@ def test_coordinate_system():
         galcat=GCData(
             [ra_source, dec_source, shear1, shear2_celestial, z_src],
             names=("ra", "dec", "e1", "e2", "z"),
+            meta={"coordinate_system": "celestial"},
         ),
-        coordinate_system="celestial",
     )
 
     cl_euclidean.compute_tangential_and_cross_components()
     cl_celestial.compute_tangential_and_cross_components()
 
+    # assert tangential and cross components are computed consistently
     assert_allclose(
         cl_euclidean.galcat["et"],
         cl_celestial.galcat["et"],
         **TOLERANCE,
-        err_msg="Tangential component conversion between ellipticity coordinate systems failed",
+        err_msg="Tangential component computation different between coordinate systems",
     )
     assert_allclose(
         cl_euclidean.galcat["ex"],
         -cl_celestial.galcat["ex"],
         **TOLERANCE,
-        err_msg="Cross component conversion between ellipticity coordinate systems failed",
+        err_msg="Cross component computation different between coordinate systems",
+    )
+
+    cl_euclidean.update_coordinate_system("celestial", ("e2", "ex"))
+
+    # assert components are updated correctly
+    assert_allclose(
+        cl_euclidean.galcat["e2"],
+        cl_celestial.galcat["e2"],
+        **TOLERANCE,
+        err_msg="e2 column update failed",
+    )
+    assert_allclose(
+        cl_euclidean.galcat["ex"],
+        cl_celestial.galcat["ex"],
+        **TOLERANCE,
+        err_msg="ex column update failed",
     )

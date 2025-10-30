@@ -1,35 +1,35 @@
 """@file __init__.py
 Theory package
 """
+
 # ------------------------------------------------------------------------------
 # Modeling backend loader
 import importlib
-import warnings
 import os
-from . import func_layer
-from . import generic
+import warnings
 
-from .generic import (
-    compute_reduced_shear_from_convergence,
-    compute_magnification_bias_from_magnification,
-    compute_rdelta,
-    compute_profile_mass_in_radius,
-    convert_profile_mass_concentration,
-)
+from . import func_layer, generic
 from .func_layer import (
     compute_3d_density,
-    compute_surface_density,
-    compute_mean_surface_density,
+    compute_convergence,
+    compute_critical_surface_density_eff,
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
-    compute_surface_density_2h,
     compute_excess_surface_density_triaxial,
-    compute_critical_surface_density_eff,
-    compute_tangential_shear,
-    compute_convergence,
-    compute_reduced_tangential_shear,
     compute_magnification,
     compute_magnification_bias,
+    compute_mean_surface_density,
+    compute_reduced_tangential_shear,
+    compute_surface_density,
+    compute_surface_density_2h,
+    compute_tangential_shear,
+)
+from .generic import (
+    compute_magnification_bias_from_magnification,
+    compute_profile_mass_in_radius,
+    compute_rdelta,
+    compute_reduced_shear_from_convergence,
+    convert_profile_mass_concentration,
 )
 
 # Functions that do the loading of different backends
