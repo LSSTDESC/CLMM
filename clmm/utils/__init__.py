@@ -33,9 +33,6 @@ from .statistic import (
 )
 from .units import (
     convert_units,
-    _validate_ra,
-    arguments_consistency,
-    validate_argument,
 )
 from .validation import (
     DiffArray,
@@ -44,4 +41,7 @@ from .validation import (
     _validate_dec,
     _validate_include_quadrupole_phi_major,
     _validate_is_deltasigma_sigma_c,
+    _validate_ra,
+    arguments_consistency,
+    validate_argument,
 )
