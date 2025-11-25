@@ -1,20 +1,23 @@
 """@file ccl.py
 Modeling using CCL
 """
-# Functions to model halo profiles
-from packaging.version import parse
 
 import pyccl as ccl
 
-from ..utils import _patch_rho_crit_to_cd2018
+# Functions to model halo profiles
+from packaging.version import parse
+
 from ..cosmology.ccl import CCLCosmology
-from .parent_class import CLMModeling
+from ..utils import _patch_rho_crit_to_cd2018
 
 # Check which versions of ccl are currently supported
 from . import _ccl_supported_versions
+from .parent_class import CLMModeling
 
-if (parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)
-    or parse(ccl.__version__).major > parse(_ccl_supported_versions.VMAX).major):
+if (
+    parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN)
+    or parse(ccl.__version__).major > parse(_ccl_supported_versions.VMAX).major
+):
     raise EnvironmentError(
         f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
         f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
@@ -47,6 +50,7 @@ class CCLCLMModeling(CLMModeling):
     conc: ccl.halos.ConcentrationConstant, None
         Internal ConcentrationConstant object
     """
+
     # pylint: disable=too-many-instance-attributes
 
     def __init__(

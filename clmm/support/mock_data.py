@@ -1,23 +1,22 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 
 import warnings
+
 import numpy as np
-
-from scipy.special import erfc
-
 from astropy import units as u
 from astropy.coordinates import SkyCoord
+from scipy.special import erfc
 
 from ..gcdata import GCData
-from ..theory import compute_tangential_shear, compute_convergence
+from ..theory import compute_convergence, compute_tangential_shear
 from ..utils import (
-    convert_units,
-    compute_lensed_ellipticity,
-    validate_argument,
     _draw_random_points_from_distribution,
-    gaussian,
     _validate_coordinate_system,
-    redshift_distributions as zdist,
+    compute_lensed_ellipticity,
+    convert_units,
+    gaussian,
+    redshift_distributions,
+    validate_argument,
 )
 
 
@@ -44,7 +43,7 @@ def generate_galaxy_catalog(
     pz_bins=101,
     pz_quantiles_conf=(5, 31),
     pzpdf_type="shared_bins",
-    coordinate_system="euclidean",
+    coordinate_system=None,
     validate_input=True,
 ):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -136,7 +135,7 @@ def generate_galaxy_catalog(
         than zsrc_max.
     field_size : float, optional
         The size of the field (field_size x field_size) to be simulated.
-        Proper distance in Mpc  at the cluster redshift.
+        Proper distance in Mpc at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     mean_e_err : float, optional
@@ -166,12 +165,11 @@ def generate_galaxy_catalog(
     ngal_density : float, optional
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and
-        user-defined redshift range.  If specified, the ngals argument will be ignored.
+        user-defined redshift range. If specified, the ngals argument will be ignored.
     coordinate_system : str, optional
         Coordinate system of the ellipticity components. Must be either 'celestial' or
         euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
-
+        If not set, defaults to 'euclidean'.
     validate_input: bool
         Validade each input argument
 
@@ -187,6 +185,10 @@ def generate_galaxy_catalog(
     # pylint: disable=too-many-arguments
     # Too many local variables (25/15)
     # pylint: disable=R0914
+
+    if not coordinate_system:
+        warnings.warn("coordinate_system not set, defaulting to 'euclidean'")
+        coordinate_system = "euclidean"
 
     if validate_input:
         validate_argument(locals(), "cluster_m", float, argmin=0, eqmin=True)
@@ -224,7 +226,7 @@ def generate_galaxy_catalog(
         validate_argument(locals(), "ngals", float, none_ok=True)
         validate_argument(locals(), "ngal_density", float, none_ok=True)
         validate_argument(locals(), "pz_bins", (int, "array"))
-        _validate_coordinate_system(locals(), "coordinate_system", str)
+        _validate_coordinate_system(locals(), "coordinate_system")
 
     if zsrc_min is None:
         zsrc_min = cluster_z + 0.1
@@ -347,7 +349,11 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     if isinstance(zsrc, float):
         ngals = int(ngals)
     elif zsrc in ("chang13", "desc_srd"):
-        z_distrib_func = zdist.chang2013 if zsrc == "chang13" else zdist.desc_srd
+        z_distrib_func = (
+            redshift_distributions.chang2013
+            if zsrc == "chang13"
+            else redshift_distributions.desc_srd
+        )
         # Compute the normalisation for the redshift distribution function (z=[0, inf))
         # z_distrib_func(0, is_cdf=True)=0
         norm = z_distrib_func(np.inf, is_cdf=True)
@@ -392,13 +398,16 @@ def _generate_galaxy_catalog(
     # Too many local variables (22/15)
     # pylint: disable=R0914
 
+    # Create empty GCData object with the given coordinate system
+    galaxy_catalog = GCData(meta={"coordinate_system": coordinate_system})
+
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals)
+    _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
         galaxy_catalog.pzpdf_info["type"] = pzpdf_type
-        galaxy_catalog = _compute_photoz_pdfs(
+        _compute_photoz_pdfs(
             galaxy_catalog,
             photoz_sigma_unscaled,
             pz_bins=pz_bins,
@@ -406,7 +415,7 @@ def _generate_galaxy_catalog(
         )
 
     # Draw galaxy positions
-    galaxy_catalog = _draw_galaxy_positions(
+    _draw_galaxy_positions(
         galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size
     )
 
@@ -486,15 +495,17 @@ def _generate_galaxy_catalog(
     return galaxy_catalog[cols]
 
 
-def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
-    """Set source galaxy redshifts either set to a fixed value or draw from a predefined
-    distribution. Return a table (GCData) of the source galaxies
+def _draw_source_redshifts(galaxy_catalog, zsrc, zsrc_min, zsrc_max, ngals):
+    """Add source galaxy redshifts, either set to a fixed value or draw from a predefined
+    distribution to the source catalog.
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
 
     Parameters
     ----------
+    galaxy_catalog : clmm.GCData
+        Source galaxy catalog
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift.
@@ -510,15 +521,12 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     ngals : float
         Number of galaxies to generate
 
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Table of true and 'measured' photometric redshifts, which here the same. Redshift
-        photometric errors are then added using _compute_photoz_pdfs.
-
     Notes
     -----
     Much of this code in this function was adapted from the Dallas group
+
+    Columns of true and 'measured' photometric redshifts are the same here.
+    Redshift photometric errors are then added using _compute_photoz_pdfs.
     """
     # Set zsrc to constant value
     if isinstance(zsrc, float):
@@ -527,12 +535,14 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     # Draw zsrc from Chang et al. 2013
     elif zsrc == "chang13":
         zsrc_list = _draw_random_points_from_distribution(
-            zsrc_min, zsrc_max, ngals, zdist.chang2013
+            zsrc_min, zsrc_max, ngals, redshift_distributions.chang2013
         )
 
     # Draw zsrc from the distribution used in the DESC SRD (arxiv:1809.01669)
     elif zsrc == "desc_srd":
-        zsrc_list = _draw_random_points_from_distribution(zsrc_min, zsrc_max, ngals, zdist.desc_srd)
+        zsrc_list = _draw_random_points_from_distribution(
+            zsrc_min, zsrc_max, ngals, redshift_distributions.desc_srd
+        )
 
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == "uniform":
@@ -542,7 +552,8 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     else:
         raise ValueError(f"zsrc must be a float, chang13 or desc_srd. You set: {zsrc}")
 
-    return GCData([zsrc_list, zsrc_list], names=("ztrue", "z"))
+    galaxy_catalog["ztrue"] = zsrc_list
+    galaxy_catalog["z"] = zsrc_list
 
 
 def _compute_photoz_pdfs(
@@ -559,12 +570,6 @@ def _compute_photoz_pdfs(
     pz_bins: int, sequence of scalars or str
         Photo-z pdf bins in the given range. If int, the limits are set automatically.
         If is array, must be the bin edges.
-
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Output galaxy catalog with columns corresponding to the bins
-        and values of the redshift PDF for each galaxy.
     """
     galaxy_catalog["pzsigma"] = photoz_sigma_unscaled * (1.0 + galaxy_catalog["ztrue"])
     galaxy_catalog["z"] = galaxy_catalog["ztrue"] + galaxy_catalog[
@@ -572,7 +577,7 @@ def _compute_photoz_pdfs(
     ] * np.random.standard_normal(len(galaxy_catalog))
 
     if galaxy_catalog.pzpdf_info["type"] is None:
-        return galaxy_catalog
+        return
 
     zmin = galaxy_catalog["z"] - 10.0 * galaxy_catalog["pzsigma"]
     zmax = galaxy_catalog["z"] + 10.0 * galaxy_catalog["pzsigma"]
@@ -609,13 +614,12 @@ def _compute_photoz_pdfs(
         raise ValueError(
             "Value of pzpdf_info['type'] " f"(={galaxy_catalog.pzpdf_info['type']}) " "not valid."
         )
-    return galaxy_catalog
 
 
 def _draw_galaxy_positions(
     galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size
 ):
-    """Draw positions of source galaxies around lens
+    """Draw positions of source galaxies around lens and add them to the source catalog.
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
     lensing cluster center. We then convert these to RA and DEC using the supplied cosmology
@@ -638,11 +642,6 @@ def _draw_galaxy_positions(
     field_size : float
         The size of the field (field_size x field_size) to be simulated around the cluster center.
         Proper distance in Mpc at the cluster redshift.
-
-    Returns
-    -------
-    galaxy_catalog : clmm.GCData
-        Source galaxy catalog with positions added
     """
     lens_distance = cosmo.eval_da(cluster_z)  # Mpc
 
@@ -671,8 +670,6 @@ def _draw_galaxy_positions(
 
     galaxy_catalog["ra"] = new_coord.ra.degree
     galaxy_catalog["dec"] = new_coord.dec.degree
-
-    return galaxy_catalog
 
 
 def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
