@@ -12,6 +12,7 @@ from .theory import (
     compute_convergence,
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
+    compute_excess_surface_density_triaxial,
     compute_magnification,
     compute_magnification_bias,
     compute_magnification_bias_from_magnification,
@@ -21,12 +22,10 @@ from .theory import (
     compute_reduced_shear_from_convergence,
     compute_reduced_tangential_shear,
     compute_surface_density,
-    compute_excess_surface_density_triaxial,
     compute_surface_density_2h,
     compute_tangential_shear,
     convert_profile_mass_concentration,
 )
-
 from . import support
 from .utils import compute_radial_averages, convert_units, make_bins
 
