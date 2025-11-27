@@ -210,7 +210,6 @@ class ClusterEnsemble:
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False, **tb_kwargs
         )
-
         
         self.add_individual_radial_profile(
             galaxycluster,
@@ -219,9 +218,8 @@ class ClusterEnsemble:
             cross_component=cross_component_out,
             quad_4theta_component=quad_4theta_component_out,
             quad_const_component=quad_const_component_out,
-            weights=weights_out
+            weights=weights_out,
         )
-    
 
     def add_individual_radial_profile(
         self,
