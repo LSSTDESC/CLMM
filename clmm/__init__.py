@@ -26,7 +26,6 @@ from .theory import (
     compute_tangential_shear,
     convert_profile_mass_concentration,
 )
-from . import support
 from .utils import compute_radial_averages, convert_units, make_bins
 
 __version__ = "1.16.5"
