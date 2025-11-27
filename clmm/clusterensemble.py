@@ -432,12 +432,8 @@ class ClusterEnsemble:
         self.cov["cross_bs"] = coeff * np.cov(np.array(g_boot_components[1]), bias=False)
         if self.include_quadrupole:
             _, _, g4theta_boot, gconst_boot = g_boot_components
-            self.cov["quad_4theta_bs"] = coeff * np.cov(
-                np.array(g4theta_boot), bias=False, ddof=0
-            )
-            self.cov["quad_const_bs"] = coeff * np.cov(
-                np.array(gconst_boot), bias=False, ddof=0
-            )
+            self.cov["quad_4theta_bs"] = coeff * np.cov(np.array(g4theta_boot), bias=False, ddof=0)
+            self.cov["quad_const_bs"] = coeff * np.cov(np.array(gconst_boot), bias=False, ddof=0)
 
     def compute_jackknife_covariance(
         self,
