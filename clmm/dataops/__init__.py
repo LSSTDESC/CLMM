@@ -214,18 +214,16 @@ def compute_tangential_and_cross_components(
     if include_quadrupole:
         if (phi_major is None) and (info_mem is None):
             raise ValueError("Either phi_major or (ra_mem, dec_mem, weight_mem) should be provided")
-        phi_major_ = phi_major
-        if phi_major_ is None:
+        if phi_major is None:
             # info_mem=[ra_mem,dec_mem,weight_mem]
-            phi_major_ = calculate_major_axis(
+            phi_major = calculate_major_axis(
                 ra_lens, dec_lens, info_mem[0], info_mem[1], info_mem[2]
             )
         if coordinate_system == "celestial":
-            phi_major_ = np.pi - phi_major_
-        rotated_phi = phi - phi_major_
-        rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major_)
+            phi_major = np.pi - phi_major
+        rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major)
         # Compute the quadrupole shear components
-        four_theta_comp = _compute_4theta_shear(rotated_shear1, rotated_shear2, rotated_phi)
+        four_theta_comp = _compute_4theta_shear(rotated_shear1, rotated_shear2, phi - phi_major)
         const_comp = rotated_shear1
         # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
         if sigma_c is not None:
