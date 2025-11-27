@@ -9,7 +9,7 @@ import numpy as np
 
 # functions for the 2h term
 from scipy.integrate import quad, simpson
-from scipy.interpolate import InterpolatedUnivariateSpline, splrep, splev
+from scipy.interpolate import InterpolatedUnivariateSpline, splev, splrep
 from scipy.special import gamma, gammainc, jv
 
 from ..utils import (
