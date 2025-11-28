@@ -75,7 +75,7 @@ jobs:
     name: Verify code version update
     runs-on: ubuntu-latest
     steps:
-    - name: Set up the title updater function
+      - name: Set up the title updater function
         run: |
           # Define a function for the repeated operation
           update_pr_title() {
