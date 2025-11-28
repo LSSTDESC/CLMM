@@ -152,7 +152,7 @@ def compute_tangential_and_cross_components(
         const_component: array_like
             constant shear component (or assimilated quantity) for each source galaxy
     """
-    # pylint: disable-msg=too-many-locals
+    # pylint: disable-msg=too-many-locals,too-many-branches
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if coordinate_system is None:
