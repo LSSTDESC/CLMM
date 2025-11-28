@@ -75,16 +75,6 @@ jobs:
     name: Verify code version update
     runs-on: ubuntu-latest
     steps:
-      - name: Set up the title updater function
-        run: |
-          # Define a function for the repeated operation
-          update_pr_title() {
-            curl -s -X PATCH \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d "{\"title\":\"$1\"}" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
-          }
       # Get current version
       - name: Check out the code
         uses: actions/checkout@v4
@@ -131,7 +121,11 @@ jobs:
             echo "Version at clmm/__init__.py has not been updated!"
             # Use the GitHub API to update the PR title
             echo "Removing version from PR title: $NEW_TITLE"
-            update_pr_title $NEW_TITLE
+            curl -s -X PATCH \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"title\":\"$NEW_TITLE\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
             exit 1
           fi
           echo "[ok] Version has changed!"
@@ -143,7 +137,11 @@ jobs:
             echo "Current version ($CURRENT_VERSION) < Main version ($MAIN_VERSION)"
             # Use the GitHub API to update the PR title
             echo "Removing version from PR title: $NEW_TITLE"
-            update_pr_title $NEW_TITLE
+            curl -s -X PATCH \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"title\":\"$NEW_TITLE\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
             exit 1
           fi
           echo "[ok] Version increased changed!"
@@ -159,4 +157,8 @@ jobs:
         run: |
           # Use the GitHub API to update the PR title
           echo "Updating PR #$PR_NUMBER with new title: $NEW_TITLE"
-          update_pr_title $NEW_TITLE
+          curl -s -X PATCH \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"title\":\"$NEW_TITLE\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
