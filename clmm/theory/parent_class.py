@@ -82,12 +82,19 @@ class CLMModeling:
         self.mdef_dict = {}
         self.hdpm_dict = {}
 
-        self.validate_input = validate_input
         self.cosmo_class = lambda *args: None
 
         self.z_inf = z_inf
+        self.__validate_input = True
+        self.validate_input = validate_input
+
 
     # 1. Object properties
+
+    @property
+    def validate_input(self):
+        """Mass of cluster"""
+        return self.__validate_input
 
     @property
     def mdelta(self):
@@ -115,6 +122,13 @@ class CLMModeling:
         return self.__halo_profile_model
 
     # 1.a Object properties setter
+
+    @validate_input.setter
+    def validate_input(self, validate_input):
+        """Mass of cluster"""
+        self.__validate_input = validate_input
+        if self.cosmo is not None:
+            self.cosmo.validate_input = validate_input
 
     @mdelta.setter
     def mdelta(self, mdelta):
