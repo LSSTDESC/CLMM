@@ -88,7 +88,6 @@ class CLMModeling:
         self.__validate_input = True
         self.validate_input = validate_input
 
-
     # 1. Object properties
 
     @property
@@ -218,10 +217,6 @@ class CLMModeling:
         raise NotImplementedError
 
     # 3. Functions that can be used by all subclasses
-
-    def _set_cosmo(self, cosmo):
-        r"""Sets the cosmology to the internal cosmology object"""
-        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_2halo_term_generic(
         self,
@@ -505,7 +500,7 @@ class CLMModeling:
             if self.cosmo_class() is None:
                 raise NotImplementedError
             validate_argument(locals(), "cosmo", self.cosmo_class, none_ok=True)
-        self._set_cosmo(cosmo)
+        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
         self.cosmo.validate_input = self.validate_input
 
     def set_halo_density_profile(self, halo_profile_model="nfw", massdef="mean", delta_mdef=200):
