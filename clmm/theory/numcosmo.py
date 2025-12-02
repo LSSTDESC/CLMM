@@ -1,12 +1,13 @@
 """@file numcosmo.py
 NumCosmo implementation of CLMModeling
 """
+
 import math
-import numpy as np
 
 import gi
-from gi.repository import NumCosmoMath as Ncm
+import numpy as np
 from gi.repository import NumCosmo as Nc
+from gi.repository import NumCosmoMath as Ncm
 
 from ..cosmology.numcosmo import NumCosmoCosmology
 from .parent_class import CLMModeling
@@ -37,6 +38,7 @@ class NumCosmoCLMModeling(CLMModeling):
     hdpm_dict: dict
         Dictionary with the definitions for profile
     """
+
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=abstract-method
 
@@ -115,6 +117,12 @@ class NumCosmoCLMModeling(CLMModeling):
         """get the value of the Einasto slope"""
         # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
+
+    def _get_delta_mdef_virial(self, z_cl):
+        "Gets the virial overdensity"
+        # This fuction can return the overdensity for all mass definitions,
+        # but in CLMM, we only use it in the case of massdef='virial'.
+        return self.hdpm.Delta(self.cosmo.be_cosmo, z_cl)
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear considering a single redshift plane
