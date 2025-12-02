@@ -23,6 +23,8 @@ ignored-modules = [
     "astropy.table",
     "astropy.units",
     "cluster_toolkit",
+    "gi.repository.NumCosmo",
+    "gi.repository.NumCosmoMath",
     "healpy",
     "matplotlib",
     "matplotlib.pyplot",
