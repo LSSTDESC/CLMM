@@ -16,7 +16,17 @@ good-names = ["ra", "z", "z1", "z2", "a", "a1", "a2",
               "_get_Omega_m", "_get_E2", "_get_E2Omega_m", 
               ]
 max-public-methods = 30
-ignored-modules = ["scipy.special"]
+ignored-modules = [
+    "astropy.units",
+    "cluster_toolkit",
+    "gi",
+    "gi.repository",
+    "healpy",
+    "pyccl",
+    "qp",
+    "scipy.special",
+]
+
 
 [tool.pylint.'DESIGN']
 max-locals = 20
