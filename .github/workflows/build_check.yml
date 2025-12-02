@@ -28,9 +28,6 @@ jobs:
       run: |
         pip install pylint
         pylint clmm
-    - name: Run the docs
-      run: |
-        make -C docs/ html
   doc-valid:
     name: Documentation Validation
     runs-on: ubuntu-latest
