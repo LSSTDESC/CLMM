@@ -7,9 +7,64 @@ on:
   pull_request:
 
 jobs:
-  build-gcc-ubuntu:
+  check-formatting:
+    name: Code formatting
     runs-on: ubuntu-latest
-
+    steps:
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
+    - name: Analysing the code formatting with black
+      run: |
+        pip install black black-configparser
+        black --check --diff clmm
+    - name: Analysing the code import order with isort
+      run: |
+        pip install isort
+        isort --check --diff clmm
+    - name: Install pylint requirements
+      run: |
+        pip install swig sphinx sphinx_rtd_theme nbconvert pandoc ipython
+    - name: Analysing the code with pylint
+      run: |
+        pip install pylint
+        pylint clmm --ignored-classes=astropy.units
+    - name: Run the docs
+      run: |
+        make -C docs/ html
+  doc-valid:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
+    - name: Install prereq and NumCosmo using conda
+      run: |
+        echo "$CONDA/bin" >> $GITHUB_PATH
+        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
+    - name: Install prereq using pip
+      run: |
+        pip install -r requirements.txt
+    - name: Install the package
+      run: |
+        pip install .
+    - name: Install cluster_toolkit from source
+      run: |
+        git clone https://github.com/tmcclintock/cluster_toolkit.git
+        cd cluster_toolkit
+        pip install .
+    - name: Install CCL from source
+      run: |
+        # temporarily moved up due to libarchive issue - see PR 620
+        #conda install -c conda-forge cmake swig setuptools_scm
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        pip install .
+    - name: Run the docs
+      run: |
+        make -C docs/ html
+  build-gcc-ubuntu:
+    name: Unit tests
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v3
@@ -43,22 +98,6 @@ jobs:
 #    - name: Install Sphinx prereq
 #      run: |
 #        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
-    - name: Analysing the code formatting with black
-      run: |
-        pip install black black-configparser
-        black --check --diff clmm
-    - name: Analysing the code import order with isort
-      run: |
-        pip install isort
-        isort --check --diff clmm
-    - name: Analysing the code with pylint
-      run: |
-        pip install pylint
-        pylint clmm --ignored-classes=astropy.units
-    - name: Run the docs
-      run: |
-        make -C docs/ html
-    - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
@@ -72,7 +111,7 @@ jobs:
         coveralls --service=github
 
   check-code-version:
-    name: Verify code version update
+    name: Code version number
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/main'
     steps:
