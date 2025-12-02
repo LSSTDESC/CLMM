@@ -27,7 +27,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pip install pylint
-        pylint clmm --ignored-classes=astropy.units
+        pylint clmm
     - name: Run the docs
       run: |
         make -C docs/ html
