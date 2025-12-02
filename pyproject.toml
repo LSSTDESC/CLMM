@@ -3,6 +3,7 @@ line-length  = 100
 
 [tool.isort]
 profile = "black"
+known_third_party = "cluster_toolkit"
 
 [tool.pylint]
 max-line-length = 100
