@@ -17,14 +17,24 @@ good-names = ["ra", "z", "z1", "z2", "a", "a1", "a2",
               ]
 max-public-methods = 30
 ignored-modules = [
+    "astropy",
+    "astropy.coordinates",
+    "astropy.cosmology",
+    "astropy.table",
     "astropy.units",
     "cluster_toolkit",
-    "gi",
-    "gi.repository",
     "healpy",
+    "matplotlib",
+    "matplotlib.pyplot",
+    "numpy",
     "pyccl",
     "qp",
+    "scipy",
+    "scipy.integrate",
+    "scipy.interpolate",
+    "scipy.optimize",
     "scipy.special",
+    "scipy.stats",
 ]
 
 
