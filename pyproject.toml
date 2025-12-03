@@ -45,6 +45,7 @@ line-length = 100
 
 [tool.isort]
 profile = "black"
+known_first_party = ["cluster_toolkit"]
 
 [tool.pylint]
 max-line-length = 100
@@ -77,7 +78,29 @@ good-names = [
     "_get_E2Omega_m",
 ]
 max-public-methods = 30
-ignored-modules = ["scipy.special"]
+ignored-modules = [
+    "astropy",
+    "astropy.coordinates",
+    "astropy.cosmology",
+    "astropy.table",
+    "astropy.units",
+    "cluster_toolkit",
+    "gi.repository.NumCosmo",
+    "gi.repository.NumCosmoMath",
+    "healpy",
+    "matplotlib",
+    "matplotlib.pyplot",
+    "numpy",
+    "pyccl",
+    "qp",
+    "scipy",
+    "scipy.integrate",
+    "scipy.interpolate",
+    "scipy.optimize",
+    "scipy.special",
+    "scipy.stats",
+]
+
 
 [tool.pylint.'DESIGN']
 max-locals = 20
