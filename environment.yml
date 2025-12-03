@@ -13,7 +13,7 @@ dependencies:
   - isort
   - jupyter
   - matplotlib
-  - numcosmo <= 0.22.0
+  - numcosmo <= 0.24
   - numpy >= 2.0
   - pandoc
   - pip
