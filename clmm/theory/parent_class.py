@@ -82,12 +82,18 @@ class CLMModeling:
         self.mdef_dict = {}
         self.hdpm_dict = {}
 
-        self.validate_input = validate_input
         self.cosmo_class = lambda *args: None
 
         self.z_inf = z_inf
+        self.__validate_input = True
+        self.validate_input = validate_input
 
     # 1. Object properties
+
+    @property
+    def validate_input(self):
+        """Input format check"""
+        return self.__validate_input
 
     @property
     def mdelta(self):
@@ -115,6 +121,13 @@ class CLMModeling:
         return self.__halo_profile_model
 
     # 1.a Object properties setter
+
+    @validate_input.setter
+    def validate_input(self, validate_input):
+        """Set input format check"""
+        self.__validate_input = validate_input
+        if self.cosmo is not None:
+            self.cosmo.validate_input = validate_input
 
     @mdelta.setter
     def mdelta(self, mdelta):
@@ -204,10 +217,6 @@ class CLMModeling:
         raise NotImplementedError
 
     # 3. Functions that can be used by all subclasses
-
-    def _set_cosmo(self, cosmo):
-        r"""Sets the cosmology to the internal cosmology object"""
-        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_2halo_term_generic(
         self,
@@ -491,7 +500,7 @@ class CLMModeling:
             if self.cosmo_class() is None:
                 raise NotImplementedError
             validate_argument(locals(), "cosmo", self.cosmo_class, none_ok=True)
-        self._set_cosmo(cosmo)
+        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
         self.cosmo.validate_input = self.validate_input
 
     def set_halo_density_profile(self, halo_profile_model="nfw", massdef="mean", delta_mdef=200):
