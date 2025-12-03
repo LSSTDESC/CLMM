@@ -57,7 +57,7 @@ Now, you can install CLMM and its dependencies as
 
 ```bash
     pip install numpy scipy astropy matplotlib healpy
-    pip install pytest sphinx sphinx_rtd_theme
+    pip install pytest sphinx sphinx_rtd_theme black isort
     pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
     pip install git+https://github.com/LSSTDESC/qp.git # Install qp package
     git clone https://github.com/LSSTDESC/CLMM.git  # If you'd like to contribute but don't have edit permissions to the CLMM repo, see below how to fork the repo instead.
