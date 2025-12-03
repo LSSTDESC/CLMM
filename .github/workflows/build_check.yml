@@ -7,9 +7,61 @@ on:
   pull_request:
 
 jobs:
-  build-gcc-ubuntu:
+  check-formatting:
+    name: Code formatting
     runs-on: ubuntu-latest
-
+    steps:
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
+    - name: Analysing the code formatting with black
+      run: |
+        pip install black black-configparser
+        black --check --diff clmm
+    - name: Analysing the code import order with isort
+      run: |
+        pip install isort
+        isort --check --diff clmm
+    - name: Install pylint requirements
+      run: |
+        pip install swig sphinx sphinx_rtd_theme nbconvert pandoc ipython
+    - name: Analysing the code with pylint
+      run: |
+        pip install pylint
+        pylint clmm
+  doc-valid:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
+    - name: Install prereq and NumCosmo using conda
+      run: |
+        echo "$CONDA/bin" >> $GITHUB_PATH
+        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
+    - name: Install prereq using pip
+      run: |
+        pip install -r requirements.txt
+    - name: Install the package
+      run: |
+        pip install .
+    - name: Install cluster_toolkit from source
+      run: |
+        git clone https://github.com/tmcclintock/cluster_toolkit.git
+        cd cluster_toolkit
+        pip install .
+    - name: Install CCL from source
+      run: |
+        # temporarily moved up due to libarchive issue - see PR 620
+        #conda install -c conda-forge cmake swig setuptools_scm
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        pip install .
+    - name: Run the docs
+      run: |
+        make -C docs/ html
+  build-gcc-ubuntu:
+    name: Unit tests
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v3
@@ -39,26 +91,112 @@ jobs:
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         pip install .
+# temporarily moved up due to libarchive issue - see PR 620
+#    - name: Install Sphinx prereq
+#      run: |
+#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
-# temporarily moved up due to libarchive issue - see PR 620
-#    - name: Install Sphinx prereq
-#      run: |
-#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
-    - name: Analysing the code with pylint
-      run: |
-        pip install pylint
-        pylint clmm --ignored-classes=astropy.units
-    - name: Run the docs
-      run: |
-        make -C docs/ html
     - name: Coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         pip install coveralls
         coveralls --service=github
+
+  check-code-version:
+    name: Code version number
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      # Get current version
+      - name: Check out the code
+        uses: actions/checkout@v4
+      - name: Get version from current branch
+        id: current_version
+        run: |
+          CURRENT_VERSION="$(grep -oP '__version__ = "\K[^"]+' clmm/__init__.py)"
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+      # Get main version
+      - name: Checkout the main branch to get its version
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Get version from main branch
+        id: main_version
+        run: |
+          if [[ "$(git show origin/main:clmm/__init__.py)" == *"__version__"* ]]; then
+            MAIN_VERSION="$(grep -oP '__version__ = "\K[^"]+' clmm/__init__.py)"
+          else
+            echo "No version found at main, assuming version 0.0.0"
+            MAIN_VERSION="0.0.0"
+          fi
+          echo "MAIN_VERSION=$MAIN_VERSION" >> $GITHUB_ENV
+      # Get PR title to be updated with version
+      - name : Get PR title and clean version number from it
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          NEW_TITLE="${TITLE% [version:*}"
+          echo "New title: $NEW_TITLE"
+          echo "NEW_TITLE=$NEW_TITLE" >> $GITHUB_ENV
+      - name: Get PR number
+        id: pr_number
+        run: |
+          # Fetch the pull request number from the GitHub context
+          PR_NUMBER=$(echo $GITHUB_REF | sed 's/refs\/pull\/\([0-9]*\)\/merge/\1/')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+      # Compare
+      - name: Check version change
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "$CURRENT_VERSION" == "$MAIN_VERSION" ]; then
+            echo "Version at clmm/__init__.py has not been updated!"
+            # Use the GitHub API to update the PR title
+            echo "Removing version from PR title: $NEW_TITLE"
+            curl -s -X PATCH \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"title\":\"$NEW_TITLE\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
+            exit 1
+          fi
+          echo "[ok] Version has changed!"
+      - name: Check version update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "$(printf "%s\n%s" "$CURRENT_VERSION" "$MAIN_VERSION" | sort -V | tail -n 1)" != "$CURRENT_VERSION" ]; then
+            echo "Current version ($CURRENT_VERSION) < Main version ($MAIN_VERSION)"
+            # Use the GitHub API to update the PR title
+            echo "Removing version from PR title: $NEW_TITLE"
+            curl -s -X PATCH \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"title\":\"$NEW_TITLE\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
+            exit 1
+          fi
+          echo "[ok] Version increased changed!"
+      # Add version number to PR title
+      - name : Make new title for PR
+        run: |
+          NEW_TITLE="${NEW_TITLE} [version:$CURRENT_VERSION]"
+          echo "New title: $NEW_TITLE"
+          echo "NEW_TITLE=$NEW_TITLE" >> $GITHUB_ENV
+      - name: Update PR title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Use the GitHub API to update the PR title
+          echo "Updating PR #$PR_NUMBER with new title: $NEW_TITLE"
+          curl -s -X PATCH \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"title\":\"$NEW_TITLE\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" > /dev/null
