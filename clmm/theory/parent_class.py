@@ -92,7 +92,7 @@ class CLMModeling:
 
     @property
     def validate_input(self):
-        """Mass of cluster"""
+        """Input format check"""
         return self.__validate_input
 
     @property
@@ -124,7 +124,7 @@ class CLMModeling:
 
     @validate_input.setter
     def validate_input(self, validate_input):
-        """Mass of cluster"""
+        """Set input format check"""
         self.__validate_input = validate_input
         if self.cosmo is not None:
             self.cosmo.validate_input = validate_input
