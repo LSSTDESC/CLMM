@@ -52,11 +52,6 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install . -vv --no-deps --no-build-isolation
-      - name: Install cluster_toolkit from source
-        run: |
-          git clone https://github.com/tmcclintock/cluster_toolkit.git
-          cd cluster_toolkit
-          pip install .
       - name: Install CCL from source
         run: |
           # temporarily moved up due to libarchive issue - see PR 620
@@ -85,11 +80,6 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install . -vv --no-deps --no-build-isolation
-      - name: Install cluster_toolkit from source
-        run: |
-          git clone https://github.com/tmcclintock/cluster_toolkit.git
-          cd cluster_toolkit
-          pip install .
       - name: Install CCL from source
         run: |
           # temporarily moved up due to libarchive issue - see PR 620
