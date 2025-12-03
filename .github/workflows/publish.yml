@@ -3,7 +3,6 @@ name: Publish to PyPI
 on:
   release:
     types: [released]
-  pull_request:
 
 jobs:
   build-to-publish:
@@ -35,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://test.pypi.org/project/clmm/
+      url: https://pypi.org/project/clmm/
     permissions:
       id-token: write
     steps:
