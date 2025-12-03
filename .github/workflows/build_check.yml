@@ -52,13 +52,6 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install . -vv --no-deps --no-build-isolation
-      - name: Install CCL from source
-        run: |
-          # temporarily moved up due to libarchive issue - see PR 620
-          #conda install -c conda-forge cmake swig setuptools_scm
-          git clone https://github.com/LSSTDESC/CCL
-          cd CCL
-          pip install .
       - name: Run the docs
         shell: bash -l {0}
         run: |
@@ -80,13 +73,6 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install . -vv --no-deps --no-build-isolation
-      - name: Install CCL from source
-        run: |
-          # temporarily moved up due to libarchive issue - see PR 620
-          #conda install -c conda-forge cmake swig setuptools_scm
-          git clone https://github.com/LSSTDESC/CCL
-          cd CCL
-          pip install .
       - name: Run the unit tests
         shell: bash -l {0}
         run: |
