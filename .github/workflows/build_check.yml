@@ -6,107 +6,110 @@ on:
       - main
   pull_request:
 
+env:
+  CONDA_ENV_NAME: clmm
+
 jobs:
   check-formatting:
     name: Code formatting
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v3
-    - name: Analysing the code formatting with black
-      run: |
-        pip install black black-configparser
-        black --check --diff clmm
-    - name: Analysing the code import order with isort
-      run: |
-        pip install isort
-        isort --check --diff clmm
-    - name: Install pylint requirements
-      run: |
-        pip install swig sphinx sphinx_rtd_theme nbconvert pandoc ipython
-    - name: Analysing the code with pylint
-      run: |
-        pip install pylint
-        pylint clmm
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ${{ env.CONDA_ENV_NAME }}
+          environment-file: environment.yml
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.CONDA }}/pkgs
+          key: ${{ runner.os }}-conda-${{ env.CONDA_ENV_NAME }}
+      - name: Analysing the code formatting with black
+        shell: bash -l {0}
+        run: |
+          black --check --diff clmm
+      - name: Analysing the code import order with isort
+        shell: bash -l {0}
+        run: |
+          isort --check --diff clmm
+      - name: Analysing the code with pylint
+        shell: bash -l {0}
+        run: |
+          pylint clmm
   doc-valid:
     name: Documentation Validation
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v3
-    - name: Install prereq and NumCosmo using conda
-      run: |
-        echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
-    - name: Install prereq using pip
-      run: |
-        pip install -r requirements.txt
-    - name: Install the package
-      run: |
-        pip install .
-    - name: Install cluster_toolkit from source
-      run: |
-        git clone https://github.com/tmcclintock/cluster_toolkit.git
-        cd cluster_toolkit
-        pip install .
-    - name: Install CCL from source
-      run: |
-        # temporarily moved up due to libarchive issue - see PR 620
-        #conda install -c conda-forge cmake swig setuptools_scm
-        git clone https://github.com/LSSTDESC/CCL
-        cd CCL
-        pip install .
-    - name: Run the docs
-      run: |
-        make -C docs/ html
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ${{ env.CONDA_ENV_NAME }}
+          environment-file: environment.yml
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.CONDA }}/pkgs
+          key: ${{ runner.os }}-conda-${{ env.CONDA_ENV_NAME }}
+      - name: Install the package
+        shell: bash -l {0}
+        run: |
+          pip install . -vv --no-deps --no-build-isolation
+      - name: Install cluster_toolkit from source
+        run: |
+          git clone https://github.com/tmcclintock/cluster_toolkit.git
+          cd cluster_toolkit
+          pip install .
+      - name: Install CCL from source
+        run: |
+          # temporarily moved up due to libarchive issue - see PR 620
+          #conda install -c conda-forge cmake swig setuptools_scm
+          git clone https://github.com/LSSTDESC/CCL
+          cd CCL
+          pip install .
+      - name: Run the docs
+        shell: bash -l {0}
+        run: |
+          make -C docs/ html
   build-gcc-ubuntu:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v3
-    - name: Install prereq and NumCosmo using conda
-      run: |
-        echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject 'numcosmo<=0.22.0' cmake swig setuptools_scm sphinx sphinx_rtd_theme nbconvert pandoc ipython
-    - name: Install prereq using pip
-      run: |
-        pip install -r requirements.txt
-    - name: Install the package
-      run: |
-        pip install .
-# temporarily moved up due to libarchive issue - see PR 620
-#    - name: Install NumCosmo from conda-forge
-#      run: |
-#        conda install -c conda-forge numcosmo
-    - name: Install cluster_toolkit from source
-      run: |
-        git clone https://github.com/tmcclintock/cluster_toolkit.git
-        cd cluster_toolkit
-        pip install .
-    - name: Install CCL from source
-      run: |
-        # temporarily moved up due to libarchive issue - see PR 620
-        #conda install -c conda-forge cmake swig setuptools_scm
-        git clone https://github.com/LSSTDESC/CCL
-        cd CCL
-        pip install .
-# temporarily moved up due to libarchive issue - see PR 620
-#    - name: Install Sphinx prereq
-#      run: |
-#        conda install -c conda-forge sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
-    - name: Run the unit tests
-      run: |
-        pip install pytest pytest-cov
-        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
-      env:
-        DISPLAY: test
-    - name: Coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        pip install coveralls
-        coveralls --service=github
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ${{ env.CONDA_ENV_NAME }}
+          environment-file: environment.yml
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.CONDA }}/pkgs
+          key: ${{ runner.os }}-conda-${{ env.CONDA_ENV_NAME }}
+      - name: Install the package
+        shell: bash -l {0}
+        run: |
+          pip install . -vv --no-deps --no-build-isolation
+      - name: Install cluster_toolkit from source
+        run: |
+          git clone https://github.com/tmcclintock/cluster_toolkit.git
+          cd cluster_toolkit
+          pip install .
+      - name: Install CCL from source
+        run: |
+          # temporarily moved up due to libarchive issue - see PR 620
+          #conda install -c conda-forge cmake swig setuptools_scm
+          git clone https://github.com/LSSTDESC/CCL
+          cd CCL
+          pip install .
+      - name: Run the unit tests
+        shell: bash -l {0}
+        run: |
+          pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        env:
+          DISPLAY: test
+      - name: Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash -l {0}
+        run: |
+          pip install coveralls
+          coveralls --service=github
 
   check-code-version:
     name: Code version number
@@ -137,7 +140,7 @@ jobs:
           fi
           echo "MAIN_VERSION=$MAIN_VERSION" >> $GITHUB_ENV
       # Get PR title to be updated with version
-      - name : Get PR title and clean version number from it
+      - name: Get PR title and clean version number from it
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
@@ -184,7 +187,7 @@ jobs:
           fi
           echo "[ok] Version increased changed!"
       # Add version number to PR title
-      - name : Make new title for PR
+      - name: Make new title for PR
         run: |
           NEW_TITLE="${NEW_TITLE} [version:$CURRENT_VERSION]"
           echo "New title: $NEW_TITLE"
