@@ -133,30 +133,20 @@ All these steps should be done on the `publish-docs` branch (just `git checkout 
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
 ## Creating installation via pip and conda <a name="creating_pip_conda"></a>
-After new changes to the main code have been made, you will want to update the existing clmm package at the Pypi repository to create an installation via `pip`. To do so, the following steps must be followed:
-1. First, install the `hatch` package with pip with the following command:
-    ```bash
-    pip install hatch
-    ```
-You can check [Publish your Python package with Hatch](https://www.pyopensci.org/python-package-guide/tutorials/publish-pypi.html) for more information.
+`PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository. However, sometimes it might be necessary to manually perform this process. In, this case, follow these instructions:
 
-2. In the `CLMM` repository, create the virtual environment with the command:
-    ```bash
-    cd CLMM
-    hatch env create
-    ```
-3. If new packages are required as dependencies, add the packages to the `pyproject.toml` file in the repository in the dependencies section. The installation files will be generated from this file, so if any changes are required, look carefully inside the `pyproject.toml` file for the sections related to the changes.
-4. Next, build the needed files for publication with the command:
+1. Build the needed files for publication with the command:
     ```bash
     hatch build
     ```
-This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
 
-5. To publish the package to pip, we will use `twine`, which should be installed with the following:
+This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
+2. To publish the package to pip, we will use `twine`, which should be installed with the following:
     ```bash
     pip install twine
     ```
-6. To make sure that the package is working properly, we can first publish `clmm` to `PypiTest` running the command:
+
+3. To make sure that the package is working properly, we can first publish `clmm` to `PyPITest` running the command:
     ```bash
     twine upload --repository testpypi dist/* --verbose
     ```
@@ -164,16 +154,19 @@ Once the package is published, one can install it by running:
     ```bash
     pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
     ```
-with the proper version number. This step will require an account at [PypiTest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PypiTest` and thus we need the extra index url to import the packages from `Pypi`. If the package was properly installed, we are now ready to publish it to `Pypi`.
+with the proper version number. This step will require an account at [PyPITest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PyPITest` and thus we need the extra index url to import the packages from `PyPI`. If the package was properly installed, we are now ready to publish it to `PyPI`.
 
-7. To publish to `Pypi`, run the command:
+4. To publish to `PyPI`, run the command:
 ```bash
 twine upload dist/*
 ``` 
-This last step must be done with the token used to publish `CLMM` from the right account at `Pypi`. Once this is done, you will find the latest version of `CLMM` at the `Pypi` repository. To test it, try running
+This last step must be done with the token used to publish `CLMM` from the right account at `PyPI`. Once this is done, you will find the latest version of `CLMM` at the `PyPI` repository. To test it, try running
 ```bash
 pip install clmm
 ```
+
+5. The package published to `PyPI` will then automatically be picked up by `conda-forge` and published on that repository.
+
 ## Additional resources <a name="additional_resources"></a>
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
