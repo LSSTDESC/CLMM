@@ -11,8 +11,9 @@ This is a brief guide to contributing to CLMM, including information about ident
 4. [Reviewing an open pull request](#reviewing_an_open_pull_request)
 5. [Steps to merging a pull request](#steps_to_merging_a_pull_request)
 6. [Updating Public Documentation on lsstdesc.org](#updating_public_docs)
-7. [Additional resources](#additional_resources)
-8. [Contact](#contact)
+7. [Creating installation via pip and conda](#creating_pip_conda)
+8. [Additional resources](#additional_resources)
+9. [Contact](#contact)
 
 ## Identifying Issues <a name="identifying_issues"></a>
 
@@ -59,7 +60,7 @@ Once you add your changes, `black clmm/` and `isort clmm/` before you commit you
 
 - **Structuring the code:** Run `pylint clmm/`, this will produce a diagnostic about the implementation and tell you what needs to be improved.
 
-- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
+- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `pip install .` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
 **Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
 In this case you will not have to reinstall it at every change.
 
@@ -71,8 +72,9 @@ In this case you will not have to reinstall it at every change.
 
 - **Build the documentation:** To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
 
-> **NOTE:** If the changes you are making affect which CCL versions are compatible with the code,
-> please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+> **NOTE:** If the changes you are making affect which CCL or NumCosmo versions are compatible with the code,
+> please update `clmm/theory/_ccl_supported_versions.py`, `environment.yml`, `README.md` and `INSTALL.md` accordingly.
+> Also, any changes on the constraints on CLMM dependencies should be reflected on `environment.yml` and `pyproject.toml`. It is also necessary to update those constraints on conda-forge after a specific release. Please notify the maintainers if that's necessary.
 
 All these steps (except running the notebooks) are run automatically on each pull request on GitHub, so you will know if any of them require further attention before considering youre changes are ready to be reviewed. Check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR.
 
@@ -130,6 +132,48 @@ All these steps should be done on the `publish-docs` branch (just `git checkout 
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
+## Creating installation via pip and conda <a name="creating_pip_conda"></a>
+`PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository,
+and the developer usually won't have to worry about this issue.
+However, if necessary, it is also possible to manually perform this process.
+Intructions below:
+
+<details>
+<summary><h3>Manual publication to `PyPI` and `conda-forge`</h3></summary>
+
+1. Build the needed files for publication with the command:
+    ```bash
+    hatch build
+    ```
+
+This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
+2. To publish the package to pip, we will use `twine`, which should be installed with the following:
+    ```bash
+    pip install twine
+    ```
+
+3. To make sure that the package is working properly, we can first publish `clmm` to `PyPITest` running the command:
+    ```bash
+    twine upload --repository testpypi dist/* --verbose
+    ```
+Once the package is published, one can install it by running:
+    ```bash
+    pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
+    ```
+with the proper version number. This step will require an account at [PyPITest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PyPITest` and thus we need the extra index url to import the packages from `PyPI`. If the package was properly installed, we are now ready to publish it to `PyPI`.
+
+4. To publish to `PyPI`, run the command:
+```bash
+twine upload dist/*
+``` 
+This last step must be done with the token used to publish `CLMM` from the right account at `PyPI`. Once this is done, you will find the latest version of `CLMM` at the `PyPI` repository. To test it, try running
+```bash
+pip install clmm
+```
+
+5. The package published to `PyPI` will then automatically be picked up by `conda-forge` and published on that repository.
+</details>
+
 ## Additional resources <a name="additional_resources"></a>
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
@@ -165,4 +209,4 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Heidi Wu](https://github.com/hywu) (Ohio)
 * [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
-The current administrators of the repository are Michel Aguena, Camille Avestruz, Céline Combet, Matthew Kirby, and Alex Malz.
+The current administrators of the repository are Michel Aguena and Céline Combet.
