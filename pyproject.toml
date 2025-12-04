@@ -1,5 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project]
+name = "clmm"
+dynamic = ["version"]
+description = "A comprehensive package for galaxy cluster weak lensing"
+readme = "README.md"
+license = "bsd-3-clause"
+requires-python = ">=3.8"
+authors = [{ name = "The LSST DESC CLMM Contributors" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "astropy>=4, !=5.0",
+    "matplotlib",
+    "numpy>=2.0",
+    "scipy>=1.6",
+    "healpy",
+    "qp-prob",
+]
+
+
+[project.urls]
+Repository = "https://github.com/LSSTDESC/CLMM"
+
+[tool.hatch.version]
+path = "clmm/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["/clmm"]
+
 [tool.black]
-line-length  = 100
+line-length = 100
 
 [tool.isort]
 profile = "black"
@@ -8,13 +50,33 @@ known_first_party = ["cluster_toolkit"]
 [tool.pylint]
 max-line-length = 100
 disable = ["R0913", "R0917"]
-good-names = ["ra", "z", "z1", "z2", "a", "a1", "a2",
-              "gt", "gx", "mu", "da", "i",
-              "H0", "Omega_b0", "Omega_dm0", "Omega_k0",
-              "h", "Omega_m", "Omega_b",
-              "get_Omega_m", "get_E2", "get_E2Omega_m", 
-              "_get_Omega_m", "_get_E2", "_get_E2Omega_m", 
-              ]
+good-names = [
+    "ra",
+    "z",
+    "z1",
+    "z2",
+    "a",
+    "a1",
+    "a2",
+    "gt",
+    "gx",
+    "mu",
+    "da",
+    "i",
+    "H0",
+    "Omega_b0",
+    "Omega_dm0",
+    "Omega_k0",
+    "h",
+    "Omega_m",
+    "Omega_b",
+    "get_Omega_m",
+    "get_E2",
+    "get_E2Omega_m",
+    "_get_Omega_m",
+    "_get_E2",
+    "_get_E2Omega_m",
+]
 max-public-methods = 30
 ignored-modules = [
     "astropy",
