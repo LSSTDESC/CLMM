@@ -122,7 +122,7 @@ If you have comments, questions, or feedback, please [write us an
 issue](https://github.com/LSSTDESC/CLMM/issues).
 
 The current leads of the LSST DESC CLMM Topical Team are Michel Aguena
-(m-aguena, aguena@apc.in2p3.fr) and Marina Ricci (mricci,
+(m-aguena, aguena@inaf.it) and Marina Ricci (mricci,
 marina.ricci@apc.in2p3.fr)
 
 
