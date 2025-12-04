@@ -133,7 +133,13 @@ All these steps should be done on the `publish-docs` branch (just `git checkout 
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
 ## Creating installation via pip and conda <a name="creating_pip_conda"></a>
-`PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository. However, sometimes it might be necessary to manually perform this process. In, this case, follow these instructions:
+`PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository,
+and the developer usually won't have to worry about this issue.
+However, if necessary, it is also possible to manually perform this process.
+Intructions below:
+
+<details>
+<summary><h3>Manual publication to `PyPI` and `conda-forge`</h3></summary>
 
 1. Build the needed files for publication with the command:
     ```bash
@@ -166,6 +172,7 @@ pip install clmm
 ```
 
 5. The package published to `PyPI` will then automatically be picked up by `conda-forge` and published on that repository.
+</details>
 
 ## Additional resources <a name="additional_resources"></a>
 
@@ -202,4 +209,4 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Heidi Wu](https://github.com/hywu) (Ohio)
 * [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
-The current administrators of the repository are Michel Aguena, Camille Avestruz, Céline Combet, Matthew Kirby, and Alex Malz.
+The current administrators of the repository are Michel Aguena and Céline Combet.
