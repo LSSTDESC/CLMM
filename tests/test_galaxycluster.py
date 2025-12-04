@@ -26,11 +26,13 @@ def test_initialization():
         "galcat": GCData(),
     }
     cl1 = clmm.GalaxyCluster(**testdict1)
+    cl2 = clmm.GalaxyCluster(**testdict1, include_quadrupole=True)
 
     assert_equal(testdict1["unique_id"], cl1.unique_id)
     assert_equal(testdict1["ra"], cl1.ra)
     assert_equal(testdict1["dec"], cl1.dec)
     assert_equal(testdict1["z"], cl1.z)
+    assert_equal(testdict1["z"], cl2.z)
     assert isinstance(cl1.galcat, GCData)
 
 
@@ -259,18 +261,35 @@ def test_integrity_of_lensfuncs():
     # Check metadata addition
     pzbins = np.linspace(0.0001, 5, 100)
     cluster = clmm.GalaxyCluster(unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=galcat)
+    cluster_quad = clmm.GalaxyCluster(
+        unique_id="1", ra=161.3, dec=34.0, z=0.3, galcat=galcat, include_quadrupole=True
+    )
     cluster.galcat.pzpdf_info["zbins"] = pzbins
     cluster.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
     cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
+    cluster_quad.galcat.pzpdf_info["zbins"] = pzbins
+    cluster_quad.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
+    cluster_quad.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
 
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
+        cluster_quad.galcat.pzpdf_info["type"] = pztype
 
         cluster.compute_tangential_and_cross_components(
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
+        cluster_quad.compute_tangential_and_cross_components(
+            is_deltasigma=True,
+            use_pdz=True,
+            cosmo=cosmo,
+            add=True,
+            phi_major=0.0,
+            info_mem=[np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0])],
+        )
         for comp_name in ("et", "ex"):
             assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
+        for comp_name in ("e_quad_4theta", "e_quad_const"):
+            assert_equal(cluster_quad.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
 
 
 def test_integrity_of_probfuncs():
@@ -465,16 +484,35 @@ def test_plot_profiles():
             [ra_source, dec_source, shear1, shear2, z_src], names=("ra", "dec", "e1", "e2", "z")
         ),
     )
+    cluster_quad = clmm.GalaxyCluster(
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=GCData(
+            [ra_source, dec_source, shear1, shear2, z_src], names=("ra", "dec", "e1", "e2", "z")
+        ),
+        include_quadrupole=True,
+    )
     cluster.compute_tangential_and_cross_components()
+    cluster_quad.compute_tangential_and_cross_components(
+        phi_major=0.0,
+        info_mem=[np.array([119.9, 120, 1]), np.array([41.9, 42.1]), np.array([1.0, 1.0])],
+    )
     cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
+    cluster_quad.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
     # missing profile name
     assert_raises(ValueError, cluster.plot_profiles, table_name="made_up_table")
+    assert_raises(ValueError, cluster_quad.plot_profiles, table_name="made_up_table")
     # missing shear component
     assert_raises(ValueError, cluster.plot_profiles, cross_component="made_up_component")
+    assert_raises(ValueError, cluster_quad.plot_profiles, quad_4theta_component="made_up_component")
     # check basic plot is working
     cluster.plot_profiles()
+    cluster_quad.plot_profiles()
     # check it passes missing a component error
     cluster.plot_profiles(cross_component_error="made_up_component")
+    cluster_quad.plot_profiles(quad_4theta_component_error="made_up_component")
 
 
 def test_coordinate_system():

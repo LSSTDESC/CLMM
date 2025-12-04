@@ -9,7 +9,7 @@ import numpy as np
 
 # functions for the 2h term
 from scipy.integrate import quad, simpson
-from scipy.interpolate import splev, splrep
+from scipy.interpolate import InterpolatedUnivariateSpline, splev, splrep
 from scipy.special import gamma, gammainc, jv
 
 from ..utils import (
@@ -277,6 +277,88 @@ class CLMModeling:
         return self._eval_2halo_term_generic(
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
+
+    def _eval_excess_surface_density_triaxial_mono(self, r_proj, z_cl, ell, n_grid=10000):
+        """eval individual terms of  excess surface density"""
+
+        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
+
+        sigma0_grid = self._eval_surface_density(grid, z_cl)
+        sigma0 = self._eval_surface_density(r_proj, z_cl)
+
+        eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+        eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+        deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
+        deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
+
+        sigma_correction_grid = sigma0_grid * (
+            0.5 * ell**2 * (eta_grid + 0.5 * eta_grid**2 + 0.5 * deta_dlnr_grid)
+        )
+        sigma_correction = sigma0 * (0.5 * ell**2 * (eta + 0.5 * eta**2 + 0.5 * deta_dlnr))
+
+        integral_vec = np.vectorize(
+            InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
+        )
+        integral = integral_vec(0, r_proj)
+
+        correction = (2 / r_proj**2) * integral - sigma_correction
+
+        return self._eval_excess_surface_density(r_proj, z_cl) + correction
+
+    def _eval_excess_surface_density_triaxial_quad_4theta(self, r_proj, z_cl, ell, n_grid=10000):
+        """eval individual terms of  excess surface density"""
+
+        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
+
+        sigma0_grid = self._eval_surface_density(grid, z_cl)
+        sigma0 = self._eval_surface_density(r_proj, z_cl)
+
+        eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+        eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+        integral_vec = np.vectorize(
+            InterpolatedUnivariateSpline(grid, grid**3 * sigma0_grid * eta_grid, k=5).integral
+        )
+        integral = 3 / r_proj**4 * integral_vec(0, r_proj)
+
+        return 0.5 * ell * (2 * integral - sigma0 * eta)
+
+    def _eval_excess_surface_density_triaxial_quad_const(self, r_proj, z_cl, ell, n_grid=10000):
+        """eval individual terms of  excess surface density"""
+
+        grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
+
+        sigma0_grid = self._eval_surface_density(grid, z_cl)
+        sigma0 = self._eval_surface_density(r_proj, z_cl)
+
+        eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
+        eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
+
+        integral_vec = np.vectorize(
+            InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
+        )
+        integral = integral_vec(r_proj, np.inf)
+
+        return 0.5 * ell * (2 * integral - sigma0 * eta)
+
+    def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
+        """eval individual terms of  excess surface density"""
+
+        if term == "mono":
+            delta_sigma = self._eval_excess_surface_density_triaxial_mono(r_proj, z_cl, ell, n_grid)
+        elif term == "quad_4theta":
+            delta_sigma = self._eval_excess_surface_density_triaxial_quad_4theta(
+                r_proj, z_cl, ell, n_grid
+            )
+        elif term == "quad_const":
+            delta_sigma = self._eval_excess_surface_density_triaxial_quad_const(
+                r_proj, z_cl, ell, n_grid
+            )
+        else:
+            raise ValueError(f"Unsupported term (='{term}')")
+
+        return delta_sigma
 
     def _eval_rdelta(self, z_cl):
         delta_mdef = self._get_delta_mdef(z_cl)
@@ -884,6 +966,48 @@ class CLMModeling:
         return self._eval_surface_density_2h(
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
+
+    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
+        r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
+
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of lens cluster
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        term: str
+            The expansion term wanted.
+                * 'mono': The monopole term with the ellipticity corrections applied. This will
+                    give the usual excess surface density but for a triaxial halo.
+                * 'quad_4theta': The 4theta component of the quadrupole term.
+                * 'quad_const': The constant component of the quadrupole term.
+        n_grid: int
+            Grid steps for gradient calculations.
+
+        Returns
+        -------
+        numpy.ndarry, float
+            Requested component of the excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
+            validate_argument(locals(), "term", str)
+            validate_argument(locals(), "n_grid", int, argmin=2)
+
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial-4theta term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term, n_grid)
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear
