@@ -61,7 +61,7 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
 - [CCL](https://ccl.readthedocs.io/en/latest/) (versions 3.1.2 or later)
-- [NumCosmo](https://numcosmo.github.io/) (versions between v0.19 and v0.22)
+- [NumCosmo](https://numcosmo.github.io/) (version v0.24)
 
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
