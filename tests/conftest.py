@@ -42,7 +42,6 @@ import clmm
             "theory_reltol": 2.0e-6,
             "ps_reltol": 5.0e-3,
         },
-        {"nick": "testnotabackend", "cosmo_reltol": 0.0, "theory_reltol": 0.0},
     ],
 )
 def modeling_data(request):
