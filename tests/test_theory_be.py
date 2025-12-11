@@ -30,6 +30,9 @@ def test_base(monkeypatch):
             "prereqs": ["notaprereq"],
         },
     }
+
+    assert clmm.theory.backend_is_available("testnotabackend") is False
+
     assert_raises(ImportError, clmm.theory.load_backend_env)
     # broken backend
     clmm.theory.__backends["notabackend"]["prereqs"] = []
