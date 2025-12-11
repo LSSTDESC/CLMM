@@ -37,7 +37,7 @@ This should automatically pull all necessary dependencies, with the exception of
 ### Theory backend installation
 First, choose and install a theory backend for CLMM.
 This can be CCL (versions 3.1.2 or later),
-NumCosmo (versions between v0.19 and v0.22),
+NumCosmo (version v0.24),
 or cluster_toolkit and they are installable as follows.
 
 To install CCL as the theory/cosmology backend, run
