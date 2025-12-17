@@ -1,4 +1,5 @@
 """Redshift distribution functions"""
+
 import numpy as np
 from scipy.special import gamma, gammainc
 

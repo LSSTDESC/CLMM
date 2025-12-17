@@ -1,9 +1,9 @@
 """@file numcosmo.py
 Cosmology using NumCosmo
 """
-import numpy as np
 
 import gi
+import numpy as np
 
 # pylint: disable=wrong-import-position
 gi.require_version("NumCosmo", "1.0")
@@ -54,7 +54,6 @@ class NumCosmoCosmology(CLMMCosmology):
 
         self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
         self.smd.prepare_if_needed(self.be_cosmo)
-
 
     def _init_from_cosmo(self, be_cosmo):
         assert isinstance(be_cosmo, Nc.HICosmo)
@@ -145,7 +144,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_rho_c(self, z):
         return (
-            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
+            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()  # pylint: disable=no-value-for-parameter
             * self._get_param("h") ** 2
             * self._get_E2(z)
         )
@@ -154,7 +153,7 @@ class NumCosmoCosmology(CLMMCosmology):
         # total matter density in physical units [Msun/Mpc3]
         rho_m = (
             self._get_E2Omega_m(z)
-            * Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
+            * Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()  # pylint: disable=no-value-for-parameter
             * self._get_param("h")
             * self._get_param("h")
         )
@@ -163,7 +162,9 @@ class NumCosmoCosmology(CLMMCosmology):
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         # Using the EH transfer function as this is the
         # default for the CCL backend as well
-        pow_spec = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
+        pow_spec = Nc.PowspecMLTransfer.new(
+            Nc.TransferFuncEH.new()  # pylint: disable=no-value-for-parameter
+        )
         pow_spec.set_kmin(self.additional_config["pk_kmin"])
         pow_spec.set_kmax(self.additional_config["pk_kmax"])
 
@@ -172,10 +173,10 @@ class NumCosmoCosmology(CLMMCosmology):
         # pow_spec.peek_cbe().props.use_ppf = True
 
         if self.be_cosmo.reion is None:
-            reion = Nc.HIReionCamb.new()
+            reion = Nc.HIReionCamb.new()  # pylint: disable=no-value-for-parameter
             self.be_cosmo.add_submodel(reion)
         if self.be_cosmo.prim is None:
-            prim = Nc.HIPrimPowerLaw.new()
+            prim = Nc.HIPrimPowerLaw.new()  # pylint: disable=no-value-for-parameter
             self.be_cosmo.add_submodel(prim)
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly

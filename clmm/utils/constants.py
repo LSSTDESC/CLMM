@@ -1,4 +1,5 @@
-""" Provide a consistent set of constants to use through CLMM """
+"""Provide a consistent set of constants to use through CLMM"""
+
 from enum import Enum
 
 

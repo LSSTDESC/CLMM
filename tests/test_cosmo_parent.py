@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
-from clmm.constants import Constants as const
+from clmm.utils.constants import Constants as const
 
 # ----------- Some Helper Functions for the Validation Tests ---------------
 

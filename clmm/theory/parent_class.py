@@ -8,27 +8,24 @@ import warnings
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simpson, quad
-from scipy.interpolate import splrep, splev
+from scipy.integrate import quad, simpson
+from scipy.interpolate import splev, splrep
 from scipy.special import gamma, gammainc, jv
 
-from .generic import (
-    compute_reduced_shear_from_convergence,
-    compute_magnification_bias_from_magnification,
-    compute_rdelta,
-    compute_profile_mass_in_radius,
-    convert_profile_mass_concentration,
-)
 from ..utils import (
-    validate_argument,
-    compute_beta_s_func,
-)
-from ..redshift import (
     _integ_pzfuncs,
+    compute_beta_s_func,
     compute_for_good_redshifts,
+    validate_argument,
 )
 from . import miscentering
-
+from .generic import (
+    compute_magnification_bias_from_magnification,
+    compute_profile_mass_in_radius,
+    compute_rdelta,
+    compute_reduced_shear_from_convergence,
+    convert_profile_mass_concentration,
+)
 
 warnings.filterwarnings("always", module="(clmm).*")
 
@@ -85,12 +82,18 @@ class CLMModeling:
         self.mdef_dict = {}
         self.hdpm_dict = {}
 
-        self.validate_input = validate_input
         self.cosmo_class = lambda *args: None
 
         self.z_inf = z_inf
+        self.__validate_input = True
+        self.validate_input = validate_input
 
     # 1. Object properties
+
+    @property
+    def validate_input(self):
+        """Input format check"""
+        return self.__validate_input
 
     @property
     def mdelta(self):
@@ -118,6 +121,13 @@ class CLMModeling:
         return self.__halo_profile_model
 
     # 1.a Object properties setter
+
+    @validate_input.setter
+    def validate_input(self, validate_input):
+        """Set input format check"""
+        self.__validate_input = validate_input
+        if self.cosmo is not None:
+            self.cosmo.validate_input = validate_input
 
     @mdelta.setter
     def mdelta(self, mdelta):
@@ -186,6 +196,10 @@ class CLMModeling:
         if defined"""
         raise NotImplementedError
 
+    def _get_delta_mdef_virial(self, z_cl):
+        "Gets the overdensity delta value for massdef='virial' from the backends"
+        raise NotImplementedError
+
     def _set_projected_quad(self, use_projected_quad):
         """Implemented for the CCL backend only"""
         raise NotImplementedError
@@ -203,10 +217,6 @@ class CLMModeling:
         raise NotImplementedError
 
     # 3. Functions that can be used by all subclasses
-
-    def _set_cosmo(self, cosmo):
-        r"""Sets the cosmology to the internal cosmology object"""
-        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def _eval_2halo_term_generic(
         self,
@@ -269,10 +279,12 @@ class CLMModeling:
         )
 
     def _eval_rdelta(self, z_cl):
-        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+        delta_mdef = self._get_delta_mdef(z_cl)
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, delta_mdef)
 
     def _eval_mass_in_radius(self, r3d, z_cl):
         alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef = self._get_delta_mdef(z_cl)
         return compute_profile_mass_in_radius(
             r3d,
             z_cl,
@@ -280,7 +292,7 @@ class CLMModeling:
             self.mdelta,
             self.cdelta,
             self.massdef,
-            self.delta_mdef,
+            delta_mdef,
             self.halo_profile_model,
             alpha,
         )
@@ -289,13 +301,14 @@ class CLMModeling:
         self, z_cl, massdef=None, delta_mdef=None, halo_profile_model=None, alpha=None
     ):
         alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model == "einasto" else None
+        delta_mdef1 = self._get_delta_mdef(z_cl)
         return convert_profile_mass_concentration(
             self.mdelta,
             self.cdelta,
             z_cl,
             self.cosmo,
             massdef=self.massdef,
-            delta_mdef=self.delta_mdef,
+            delta_mdef=delta_mdef1,
             halo_profile_model=self.halo_profile_model,
             alpha=alpha1,
             massdef2=massdef,
@@ -303,6 +316,11 @@ class CLMModeling:
             halo_profile_model2=halo_profile_model,
             alpha2=alpha,
         )
+
+    def _get_delta_mdef(self, z_cl):
+        if self.massdef == "virial":
+            return int(self._get_delta_mdef_virial(z_cl))
+        return self.delta_mdef
 
     # 3.1. Miscentering functions
 
@@ -363,12 +381,16 @@ class CLMModeling:
             params = 1, (z_cl,)
 
         else:
-            rho_def = self.cosmo.get_rho_m(z_cl)
+            rho_def = (
+                self.cosmo.get_rho_m(z_cl) if self.massdef == "mean" else self.cosmo.get_rho_c(z_cl)
+            )
             r_s = self.eval_rdelta(z_cl) / self.cdelta
+
+            delta_mdef = self._get_delta_mdef(z_cl)
 
             if self.halo_profile_model == "nfw":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -379,7 +401,7 @@ class CLMModeling:
             elif self.halo_profile_model == "einasto":
                 alpha_ein = self._get_einasto_alpha(z_cl)
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -395,7 +417,7 @@ class CLMModeling:
 
             elif self.halo_profile_model == "hernquist":
                 rho_s = (
-                    self.delta_mdef
+                    delta_mdef
                     / 3.0
                     * self.cdelta**3.0
                     * rho_def
@@ -478,7 +500,7 @@ class CLMModeling:
             if self.cosmo_class() is None:
                 raise NotImplementedError
             validate_argument(locals(), "cosmo", self.cosmo_class, none_ok=True)
-        self._set_cosmo(cosmo)
+        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
         self.cosmo.validate_input = self.validate_input
 
     def set_halo_density_profile(self, halo_profile_model="nfw", massdef="mean", delta_mdef=200):
@@ -493,7 +515,7 @@ class CLMModeling:
             Mass definition, supported options are 'mean', 'critical', 'virial'
             (letter case independent)
         delta_mdef: int
-            Overdensity number
+            Overdensity number. No effect if massdef='virial'.
         """
         # make case independent
         validate_argument(locals(), "massdef", str)
@@ -1608,6 +1630,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), "z_cl", float, argmin=0)
+
         return self._eval_rdelta(z_cl)
 
     def eval_mass_in_radius(self, r3d, z_cl, verbose=False):

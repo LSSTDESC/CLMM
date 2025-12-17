@@ -11,8 +11,9 @@ This is a brief guide to contributing to CLMM, including information about ident
 4. [Reviewing an open pull request](#reviewing_an_open_pull_request)
 5. [Steps to merging a pull request](#steps_to_merging_a_pull_request)
 6. [Updating Public Documentation on lsstdesc.org](#updating_public_docs)
-7. [Additional resources](#additional_resources)
-8. [Contact](#contact)
+7. [Creating installation via pip and conda](#creating_pip_conda)
+8. [Additional resources](#additional_resources)
+9. [Contact](#contact)
 
 ## Identifying Issues <a name="identifying_issues"></a>
 
@@ -43,14 +44,39 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
     Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
+    Use the template provided for a pull request, it will faciliate the process for everybody.
     Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
-NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
 
-To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+### Requirements for every change <a name="adding_codes"></a>
 
-NOTE2: If the changes you are making affect which CCL versions are compatible with the code,
-please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+We want to make sure the code formatting in `CLMM` is standardized accordind to our guidelines, which facilitates the reading of the code.
+The code is also not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
+So remember these steps:
+
+- **Formatting the code:** there are tools that will format the code automatically for you, so you don't have to worry about the correct syntax when developing it.
+Once you add your changes, `black clmm/` and `isort clmm/` before you commit your changes. These tools will correctly format the spacing and importing order respectilely.
+**Tip:** `black` can also be run on notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
+
+- **Structuring the code:** Run `pylint clmm/`, this will produce a diagnostic about the implementation and tell you what needs to be improved.
+
+- **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `pip install .` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
+**Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
+In this case you will not have to reinstall it at every change.
+
+- **Unit tests:** To run all of the unit tests, run `pytest` in the root package directory.
+
+- **Coverage:** Check the coverage of the code, i. e. how many lines of the code are being tested in our unittests. To do it locally, you need the `pytest-cov` library (it can be insatalled with `pip`). Then run the command `pytest tests/ --cov=clmm --cov-report term-missing`, it will tell you what fraction of the code is being tested and which lines are not being tested.
+
+- **Notebooks:** Make sure all notebooks can run correctly. We provide a convenient bash script to compile the documentation, run `./run_notebooks` in the main `CLMM` directory. It will create an executed version of all notebooks in the `_executed_nbs/` directory. By default it uses a `python3` kernel, if you want to choose another one, just pass it to the command: `./run_notebooks -k MY_KERNEL`. (Note that depending on your theory backend, some cells in some notebooks will give an error. This expected behaviour is explicitely mentioned before the cells and should not be a cause of worry.)
+
+- **Build the documentation:** To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+
+> **NOTE:** If the changes you are making affect which CCL or NumCosmo versions are compatible with the code,
+> please update `clmm/theory/_ccl_supported_versions.py`, `environment.yml`, `README.md` and `INSTALL.md` accordingly.
+> Also, any changes on the constraints on CLMM dependencies should be reflected on `environment.yml` and `pyproject.toml`. It is also necessary to update those constraints on conda-forge after a specific release. Please notify the maintainers if that's necessary.
+
+All these steps (except running the notebooks) are run automatically on each pull request on GitHub, so you will know if any of them require further attention before considering youre changes are ready to be reviewed. Check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR.
 
 ## Adding documentation <a name="adding_documentation"></a>
 
@@ -66,21 +92,14 @@ Once it has been added to the config file, simply run `./update_docs` from the t
 To review an open pull request submitted by another developer, there are several steps that you should take.
 
 1. **Code changes:** For each new or changed file, ensure that the changes are correct, well-documented, and easy to follow. If you notice anything that can be improved, leave an inline comment (click the line of code in the review interface on Github).
-2. **Documentation:** Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
-3. **Code formatting:** Make sure the code formatting is up to standards, you can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step. **Tips for formatting:** CLMM is setup to be formatted automatically with the `black` package (can be installed via `pip install black`). Just run `black {filename}` for specific file or `black .` inside the main CLMM directory for the whole repo. **Bonus tip:** This can also be done for notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
-4. **Check unittests:** For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
+1. **Documentation:** Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
+1. **Check unittests:** For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
 
-Now, make sure everything is ok with unit tests, notebooks and documentation. These steps (except running the notebooks) are run automatically on each pull request on github (check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR), but you can also run them manually on your local machine:
+1. **Tests for formatting, documentation and unit tests:** The CI runs automatically tests for code formatting, documentation and unit tests, so the checks will fail if there are any problems. To see how to perform these steps manually, check the [Requirements for every change](#adding_codes) section.
 
-5. **Run unittests:** Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
-6. **Check coverage:** Check the coverage of the code, i. e. how many lines of the code are being tested in our unittests. To do it locally, you need the `pytest-cov` library (it can be insatalled with `pip`). Then run the command `pytest tests/ --cov=clmm --cov-report term-missing`, it will tell you what fraction of the code is being tested and which lines are not being tested.
-7. **Notebooks:** Make sure all notebooks can run correctly. We provide a convenient bash script to compile the documentation, run `./run_notebooks` in the main `CLMM` directory. It will create an executed version of all notebooks in the `_executed_nbs/` directory. By default it uses a `python3` kernel, if you want to choose another one, just pass it to the command: `./run_notebooks -k MY_KERNEL`. (Note that depending on your theory backend, some cells in some notebooks will give an error. This expected behaviour is explicitely mentioned before the cells and should not be a cause of worry.)
-8. **Documentation:** We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./update_docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
-9. **Install:** Finally, install (`python setup.py install --user`), run tests (`pytest`) and notebooks (`./run_notebooks`), and compile documentation (`./update_docs`). If everything passes, accept the review!
+1. **Notebooks:** Make sure all notebooks can run correctly as this is not run by the CI, check [Requirements for every change](#adding_codes) for details.
 
-(Developer tip: you can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`)
-
-NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
+1. **Documentation:** Check that the documentation looks as it should, see [Requirements for every change](#adding_codes) for details.
 
 ## Steps to merging a pull request <a name="steps_to_merging_a_pull_request"></a>
 
@@ -113,6 +132,48 @@ All these steps should be done on the `publish-docs` branch (just `git checkout 
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
+## Creating installation via pip and conda <a name="creating_pip_conda"></a>
+`PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository,
+and the developer usually won't have to worry about this issue.
+However, if necessary, it is also possible to manually perform this process.
+Intructions below:
+
+<details>
+<summary><h3>Manual publication to `PyPI` and `conda-forge`</h3></summary>
+
+1. Build the needed files for publication with the command:
+    ```bash
+    hatch build
+    ```
+
+This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
+2. To publish the package to pip, we will use `twine`, which should be installed with the following:
+    ```bash
+    pip install twine
+    ```
+
+3. To make sure that the package is working properly, we can first publish `clmm` to `PyPITest` running the command:
+    ```bash
+    twine upload --repository testpypi dist/* --verbose
+    ```
+Once the package is published, one can install it by running:
+    ```bash
+    pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
+    ```
+with the proper version number. This step will require an account at [PyPITest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PyPITest` and thus we need the extra index url to import the packages from `PyPI`. If the package was properly installed, we are now ready to publish it to `PyPI`.
+
+4. To publish to `PyPI`, run the command:
+```bash
+twine upload dist/*
+``` 
+This last step must be done with the token used to publish `CLMM` from the right account at `PyPI`. Once this is done, you will find the latest version of `CLMM` at the `PyPI` repository. To test it, try running
+```bash
+pip install clmm
+```
+
+5. The package published to `PyPI` will then automatically be picked up by `conda-forge` and published on that repository.
+</details>
+
 ## Additional resources <a name="additional_resources"></a>
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
@@ -122,10 +183,10 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (APC / LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (INAF / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
-* [Lucie Baumont](https://github.com/lbaumo) (SBU)
+* [Lucie Baumont](https://github.com/lbaumo) (INAF)
 * [Miyoung Choi](https://github.com/mchoi8739) (UTD)
 * [Celine Combet](https://github.com/combet) (LPSC)
 * [Matthew Fong](https://github.com/matthewwf2001) (UTD)
@@ -148,4 +209,4 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Heidi Wu](https://github.com/hywu) (Ohio)
 * [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
-The current administrators of the repository are Michel Aguena, Camille Avestruz, Céline Combet, Matthew Kirby, and Alex Malz.
+The current administrators of the repository are Michel Aguena and Céline Combet.

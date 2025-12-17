@@ -1,6 +1,8 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
+
 # Set mpl backend run plots on github actions
 import os
+
 import matplotlib as mpl
 
 # pylint: disable=wrong-import-position

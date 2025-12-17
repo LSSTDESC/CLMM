@@ -1,13 +1,14 @@
 """@file cluster_toolkit.py
 Modeling using cluster_toolkit
 """
+
 # Functions to model halo profiles
 import numpy as np
 
 import cluster_toolkit as ct
 
-from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.cluster_toolkit import AstroPyCosmology
+from ..utils import _patch_rho_crit_to_cd2018
 from .parent_class import CLMModeling
 
 
@@ -55,6 +56,7 @@ class CTCLMModeling(CLMModeling):
     hdpm_dict: dict
         Dictionary with the definitions for profile
     """
+
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=abstract-method
 
