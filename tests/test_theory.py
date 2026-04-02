@@ -556,6 +556,136 @@ def test_profiles(modeling_data, profile_init):
                 assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
 
+def test_triaxial(modeling_data):
+    cfg = load_validation_config()
+    cosmo = cfg["cosmo"]
+
+    # Object Oriented tests
+    mod = theo.Modeling()
+    mod.set_cosmo(cosmo)
+    mod.set_concentration(cfg["SIGMA_PARAMS"]["cdelta"])
+    mod.set_mass(cfg["SIGMA_PARAMS"]["mdelta"])
+
+    if mod.backend not in ["ccl", "nc"]:
+        assert_raises(
+            NotImplementedError,
+            mod.eval_excess_surface_density_triaxial,
+            1.0,
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            "mono",
+            100,
+        )
+    else:
+        # Just checking that it runs and returns array of the right length
+        # To be updated with proper comparison to benchmark when available
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 100
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_4theta",
+                    100,
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+        assert_equal(
+            len(
+                mod.eval_excess_surface_density_triaxial(
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "quad_const",
+                    100,
+                )
+            ),
+            len(cfg["SIGMA_PARAMS"]["r_proj"]),
+        )
+
+        # Check that wrong term value is caught in OO-oriented and functional interface.
+        assert_raises(
+            ValueError,
+            theo.compute_excess_surface_density_triaxial,
+            cfg["SIGMA_PARAMS"]["r_proj"],
+            cfg["SIGMA_PARAMS"]["mdelta"],
+            cfg["SIGMA_PARAMS"]["cdelta"],
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            cosmo,
+            term="bleh",
+            n_grid=500,
+        )
+        assert_raises(
+            ValueError,
+            mod.eval_excess_surface_density_triaxial,
+            cfg["SIGMA_PARAMS"]["r_proj"],
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            "bleh",
+            500,
+        )
+
+        # Checks that OO-oriented and functional interface give the same results
+        assert_allclose(
+            theo.compute_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                cosmo,
+                term="quad_4theta",
+                n_grid=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 500
+            ),
+            **TOLERANCE,
+        )
+        assert_allclose(
+            theo.compute_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                cosmo,
+                term="quad_const",
+                n_grid=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 500
+            ),
+            **TOLERANCE,
+        )
+        assert_allclose(
+            theo.compute_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                cosmo,
+                term="mono",
+                n_grid=500,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 500
+            ),
+            **TOLERANCE,
+        )
+
+
 def test_2halo_term(modeling_data):
     cfg = load_validation_config()
     cosmo = cfg["cosmo"]
@@ -1304,7 +1434,7 @@ def test_mass_conversion(modeling_data, profile_init):
 def test_delta_mdef_virial(modeling_data):
     if modeling_data["nick"] in ["nc", "ccl"]:
         cfg = load_validation_config()
-        cosmo = cfg['cosmo']
+        cosmo = cfg["cosmo"]
         mod = theo.Modeling(massdef="virial")
         mod.set_cosmo(cosmo)
         assert_equal(mod._get_delta_mdef(0.1), 111)
