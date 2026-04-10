@@ -1183,18 +1183,24 @@ class CLMModeling:
                       {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
-                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-                  'beta':
+                * ``order0`` : approach with all sources at the same redshift (Eq. 5 in
+                  `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                       {1-\left<\beta_s\right>\kappa_{\infty}}
 
-                * 'order2' : Same approach as in Cluster Mass Calibration at High
-                  Redshift (equation 12 in Schrabback et al. 2017;
-                  https://arxiv.org/abs/1611.03866).
-                  `z_src_info` must be 'beta':
+                * ``order1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
+                  `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
+                  Eq. A2.4 from `Seitz & Schneider 1997 <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
+
+                  .. math::
+                      g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+                      {1-\left<\beta_s\right>\kappa_{\infty}}
+
+                * ``order2`` : Same approach as in Cluster Mass Calibration at High
+                  Redshift (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_,
+                  Eq. 7 in `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -1202,15 +1208,17 @@ class CLMModeling:
                       \left(1+\left(\frac{\left<\beta_s^2\right>}
                       {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
+            **Note**: if ``approx='order#'``, ``z_src_info`` must be ``beta``.
+
         integ_kwargs: None, dict
             Extra arguments for the redshift integration (when
-            `approx=None, z_src_info='distribution'`). Possible keys are:
+            ``approx=None, z_src_info='distribution'``). Possible keys are:
 
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+                * ``zmin`` (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+                * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                * ``delta_z_cut`` (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
                   `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
@@ -1264,22 +1272,27 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-        elif approx in ("order1", "order2"):
-            beta_s_mean = z_src[0]
+        elif approx in ("order0", "order1", "order2"):
 
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
 
-            gt = beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
+            beta_s_mean = z_src[0]
+            beta_s_square_mean = z_src[1]
 
+            if approx == "order1":
+                gt = beta_s_mean * gammat_inf / (1.0 - beta_s_square_mean/beta_s_mean * kappa_inf)
+            else: # for order0 and order2
+                gt = beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
             if approx == "order2":
-                beta_s_square_mean = z_src[1]
                 gt *= (
                     1.0
                     + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0)
                     * beta_s_mean
                     * kappa_inf
                 )
+        else:
+            raise ValueError(f"approx={approx} not valid, must be None or orderN (N=0,1,2)")
 
         return gt
 
