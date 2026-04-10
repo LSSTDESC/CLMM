@@ -924,8 +924,8 @@ def compute_reduced_tangential_shear(
               Eq. A2.4 from `Seitz & Schneider 1997 <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
 
               .. math::
-                  g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
-                  {1-\left<\beta_s\right>\kappa_{\infty}}
+                  g_t\approx\frac{\langle\beta_s\rangle\gamma_\infty}
+                  {1-\frac{\langle\beta_s^2\rangle}{\langle\beta_s\rangle}\kappa_\infty}
 
             * ``type2`` : Same approach as in Cluster Mass Calibration at High
               Redshift (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_,
