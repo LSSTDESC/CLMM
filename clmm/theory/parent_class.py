@@ -1170,7 +1170,6 @@ class CLMModeling:
 
         approx : str, optional
             Type of computation to be made for reduced tangential shears, options are:
-            **Note**: if ``approx='order#'``, ``z_src_info`` must be ``beta``.
 
                 * None (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
                   If ``z_src_info='discrete'``, full computation is made for each
@@ -1184,14 +1183,14 @@ class CLMModeling:
                       {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * ``order0`` : approach with all sources at the same redshift (Eq. 5 in
+                * ``type0`` : approach with all sources at the same redshift (Eq. 5 in
                   `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                       {1-\left<\beta_s\right>\kappa_{\infty}}
 
-                * ``order1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
+                * ``type1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
                   `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
                   Eq. A2.4 from `Seitz & Schneider 1997 <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
 
@@ -1199,7 +1198,7 @@ class CLMModeling:
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                       {1-\left<\beta_s\right>\kappa_{\infty}}
 
-                * ``order2`` : Same approach as in Cluster Mass Calibration at High
+                * ``type2`` : Same approach as in Cluster Mass Calibration at High
                   Redshift (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_,
                   Eq. 7 in `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
@@ -1209,7 +1208,7 @@ class CLMModeling:
                       \left(1+\left(\frac{\left<\beta_s^2\right>}
                       {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
-            **Note**: if ``approx='order#'``, ``z_src_info`` must be ``beta``.
+            **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
 
         integ_kwargs: None, dict
             Extra arguments for the redshift integration (when
@@ -1273,7 +1272,7 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-        elif approx in ("order0", "order1", "order2"):
+        elif approx in ("type0", "type1", "type2"):
 
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1281,11 +1280,11 @@ class CLMModeling:
             beta_s_mean = z_src[0]
             beta_s_square_mean = z_src[1]
 
-            if approx == "order1":
+            if approx == "type1":
                 gt = beta_s_mean * gammat_inf / (1.0 - beta_s_square_mean / beta_s_mean * kappa_inf)
-            else:  # for order0 and order2
+            else:  # for type0 and type2
                 gt = beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
-            if approx == "order2":
+            if approx == "type2":
                 gt *= (
                     1.0
                     + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0)
@@ -1293,7 +1292,7 @@ class CLMModeling:
                     * kappa_inf
                 )
         else:
-            raise ValueError(f"approx={approx} not valid, must be None or orderN (N=0,1,2)")
+            raise ValueError(f"approx={approx} not valid, must be None or typeN (N=0,1,2)")
 
         return gt
 
@@ -1364,13 +1363,13 @@ class CLMModeling:
                       -\left(\beta_s(z)\gamma_{\infty}\right)^2}}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * ``order1`` : Uses the weak lensing approximation of the magnification with up to
+                * ``type1`` : Uses the weak lensing approximation of the magnification with up to
                   first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
                   .. math::
                       \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
-                * ``order2`` : Uses the weak lensing approximation of the magnification with up to
+                * ``type2`` : Uses the weak lensing approximation of the magnification with up to
                   second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
                   .. math::
@@ -1378,7 +1377,7 @@ class CLMModeling:
                       + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
                       + \left<\beta_s^2\right>\gamma_{\infty}^2
 
-            **Note**: if ``approx='order#'``, ``z_src_info`` must be ``beta``.
+            **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
 
         integ_kwargs: None, dict
             Extra arguments for the redshift integration (when
@@ -1439,7 +1438,7 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-        elif approx in ("order1", "order2"):
+        elif approx in ("type1", "type2"):
             beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1447,7 +1446,7 @@ class CLMModeling:
 
             mu = 1 + 2 * beta_s_mean * kappa_inf
 
-            if approx == "order2":
+            if approx == "type2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
                 mu += 3 * beta_s_square_mean * kappa_inf**2 + beta_s_square_mean * gammat_inf**2
@@ -1525,14 +1524,14 @@ class CLMModeling:
                       -\left(\beta_s(z)\gamma_{\infty}\right)^2\right)^{\alpha-1}}}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * ``order1`` : Uses the weak lensing approximation of the magnification bias with up
+                * ``type1`` : Uses the weak lensing approximation of the magnification bias with up
                   to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
                   .. math::
                       \mu^{\alpha-1} \approx
                       1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
-                * ``order2`` : Uses the weak lensing approximation of the magnification bias with up
+                * ``type2`` : Uses the weak lensing approximation of the magnification bias with up
                   to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
                   .. math::
@@ -1544,7 +1543,7 @@ class CLMModeling:
                       &+ \left(2\alpha-1\right)\left(\alpha-1\right)
                       \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
-            **Note**: if ``approx='order#'``, ``z_src_info`` must be ``beta``.
+            **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
 
         integ_kwargs: None, dict
             Extra arguments for the redshift integration (when
@@ -1609,7 +1608,7 @@ class CLMModeling:
                     alpha=alpha,
                 )
 
-        elif approx in ("order1", "order2"):
+        elif approx in ("type1", "type2"):
             beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1617,7 +1616,7 @@ class CLMModeling:
 
             mu_bias = 1 + (alpha - 1) * (2 * beta_s_mean * kappa_inf)
 
-            if approx == "order2":
+            if approx == "type2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
                 mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
@@ -1790,7 +1789,7 @@ class CLMModeling:
         r"""Validation for compatility between approx and z_src_info. The conditions are:
 
             * approx=None: z_src_info must be 'discrete' or 'distribution'
-            * approx='order1' or 'order2': z_src_info must be 'beta'
+            * approx='type1' or 'type2': z_src_info must be 'beta'
             * approx=other: raises error
 
         Parameters
@@ -1806,7 +1805,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f" z_src_info='{z_src_info}' was provided."
                 )
-        elif approx in ("order0", "order1", "order2"):
+        elif approx in ("type0", "type1", "type2"):
             if z_src_info != "beta":
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='beta', "
