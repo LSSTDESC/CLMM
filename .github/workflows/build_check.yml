@@ -26,7 +26,7 @@ jobs:
       - name: Analysing the code formatting with black
         shell: bash -l {0}
         run: |
-          black --check --target-version py313 --diff clmm
+          black --check --diff clmm
       - name: Analysing the code import order with isort
         shell: bash -l {0}
         run: |
