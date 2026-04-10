@@ -921,7 +921,8 @@ def compute_reduced_tangential_shear(
 
             * ``type1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
               `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
-              Eq. A2.4 from `Seitz & Schneider 1997 <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
+              Eq. A2.4 from `Seitz & Schneider 1997
+              <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
 
               .. math::
                   g_t\approx\frac{\langle\beta_s\rangle\gamma_\infty}

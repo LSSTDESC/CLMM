@@ -1192,15 +1192,16 @@ class CLMModeling:
 
                 * ``type1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
                   `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
-                  Eq. A2.4 from `Seitz & Schneider 1997 <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
+                  Eq.  A2.4 from `Seitz & Schneider 1997
+                  <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
 
                   .. math::
                       g_t\approx\frac{\langle\beta_s\rangle\gamma_\infty}
                       {1-\frac{\langle\beta_s^2\rangle}{\langle\beta_s\rangle}\kappa_\infty}
 
-                * ``type2`` : Same approach as in Cluster Mass Calibration at High
-                  Redshift (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_,
-                  Eq. 7 in `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
+                * ``type2`` : Same approach as in Cluster Mass Calibration at High Redshift
+                  (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_, Eq.
+                  7 in `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -1349,10 +1350,10 @@ class CLMModeling:
         approx : str, optional
             Type of computation to be made for magnifications, options are:
 
-                * None (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
-                  If ``z_src_info='discrete'``, full computation is made for each
-                  ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``, magnification
-                  at each value of ``r_proj`` is calculated as
+                * ``None`` (default): Requires ``z_src_info`` to be ``discrete`` or
+                  ``distribution``. If ``z_src_info='discrete'``, full computation is made for each
+                  ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``,
+                  magnification at each value of ``r_proj`` is calculated as
 
                   .. math::
                       \mu
@@ -1509,10 +1510,10 @@ class CLMModeling:
         approx : str, optional
             Type of computation to be made for magnification biases, options are:
 
-                * ``None`` (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
-                  If ``z_src_info='discrete'``, full computation is made for each
-                  ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``, magnification
-                  bias at each value of ``r_proj`` is calculated as
+                * ``None`` (default): Requires ``z_src_info`` to be ``discrete`` or
+                  ``distribution``. If ``z_src_info='discrete'``, full computation is made for each
+                  ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``,
+                  magnification bias at each value of ``r_proj`` is calculated as
 
                   .. math::
                       \mu^{\alpha-1}
