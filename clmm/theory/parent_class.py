@@ -1806,7 +1806,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f" z_src_info='{z_src_info}' was provided."
                 )
-        elif approx in ("order1", "order2"):
+        elif approx in ("order0", "order1", "order2"):
             if z_src_info != "beta":
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='beta', "
