@@ -1,5 +1,5 @@
 # pylint: disable=no-member, protected-access
-""" Tests for utils.py """
+"""Tests for utils.py"""
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from scipy.integrate import quad
@@ -109,68 +109,68 @@ def test_compute_radial_averages():
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins1)[:4],
         [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals) / np.sqrt(len(binvals))], [6]],
-        **TOLERANCE
+        **TOLERANCE,
     )
     # Test weights
     # Normalized
     assert_allclose(
         compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[0.5, 0.5])[:3],
         ([1], [2.5], [1 / np.sqrt(8)]),
-        **TOLERANCE
+        **TOLERANCE,
     )
     # Not normalized
     assert_allclose(
         compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[5, 5])[:3],
         ([1], [2.5], [1 / np.sqrt(8)]),
-        **TOLERANCE
+        **TOLERANCE,
     )
     # Values outside bins
     assert_allclose(
         compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2], weights=[0.5, 0.5, 100])[:3],
         ([1], [2.5], [1 / np.sqrt(8)]),
-        **TOLERANCE
+        **TOLERANCE,
     )
     # Weighted values == Repeated values (std only)
     assert_allclose(
         compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[1, 2], error_model="std")[:3],
         compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model="std")[:3],
-        **TOLERANCE
+        **TOLERANCE,
     )
     # Zero yerr
     assert_allclose(
         compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[0.5, 0.5], yerr=[0, 0])[:3],
         ([1], [2.5], [1 / np.sqrt(8)]),
-        **TOLERANCE
+        **TOLERANCE,
     )
     # With yerr
     assert_allclose(
         compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[0.5, 0.5], yerr=[1, 1])[:3],
         ([1], [2.5], [np.sqrt(5 / 8)]),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Test 3 objects in one bin with various error models
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins1, error_model="ste")[:4],
         [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals) / np.sqrt(len(binvals))], [6]],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins1, error_model="std")[:4],
         [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]],
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Repeat test with different error_model case
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins1, error_model="STE")[:4],
         [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals) / np.sqrt(len(binvals))], [6]],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins1, error_model="STD")[:4],
         [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]],
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # A slightly more complicated case with two bins
@@ -184,7 +184,7 @@ def test_compute_radial_averages():
             [np.std(inbin1) / np.sqrt(len(inbin1)), np.std(inbin2) / np.sqrt(len(inbin2))],
             [3, 3],
         ],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins2, error_model="std")[:4],
@@ -194,7 +194,7 @@ def test_compute_radial_averages():
             [np.std(inbin1), np.std(inbin2)],
             [3, 3],
         ],
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Test a much larger, random sample with unevenly spaced bins
@@ -215,7 +215,7 @@ def test_compute_radial_averages():
             ],
             [inbin1.size, inbin2.size, inbin3.size],
         ],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         compute_radial_averages(binvals, binvals, xbins2, error_model="std")[:4],
@@ -225,7 +225,7 @@ def test_compute_radial_averages():
             [np.std(inbin1), np.std(inbin2), np.std(inbin3)],
             [inbin1.size, inbin2.size, inbin3.size],
         ],
-        **TOLERANCE
+        **TOLERANCE,
     )
 
 
@@ -251,7 +251,7 @@ def test_make_bins():
     assert_allclose(
         make_bins(0.0, 10.0, nbins=10),
         make_bins(0.0, 10.0, nbins=10, method="evenwidth"),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Test the different binning methods
@@ -261,7 +261,7 @@ def test_make_bins():
     assert_allclose(
         make_bins(1.0, 10.0, nbins=10, method="evenlog10width"),
         np.logspace(np.log10(1.0), np.log10(10.0), 11),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Repeat test with different error_model case
@@ -271,7 +271,7 @@ def test_make_bins():
     assert_allclose(
         make_bins(1.0, 10.0, nbins=10, method="EVENLOG10WIDTH"),
         np.logspace(np.log10(1.0), np.log10(10.0), 11),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Test equaloccupation method. It needs a source_seps array, so create one
@@ -360,7 +360,7 @@ def test_build_ellipticities():
     assert_allclose(
         utils.build_ellipticities(q11, q22, q12),
         (0.25, 0.05, 0.12710007580505459, 0.025420015161010917),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # second moments are numpy array
@@ -376,7 +376,7 @@ def test_build_ellipticities():
             [-0.11697033, 0.10106221],
             [0.00779802, 0.02021244],
         ),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
 
@@ -446,7 +446,7 @@ def test_compute_lensed_ellipticities():
     assert_allclose(
         utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
         ([0.4, 0.38656171], [0.4, 0.52769188]),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
 
@@ -592,14 +592,14 @@ def test_beta_functions(modeling_data):
                 z_cl, z_inf, cosmo, zmax, z_distrib_func=model
             ),
             quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
-            **TOLERANCE
+            **TOLERANCE,
         )
         assert_allclose(
-            utils.compute_beta_s_square_mean_from_distribution(
-                z_cl, z_inf, cosmo, zmax, z_distrib_func=model
+            utils.compute_beta_s_mean_from_distribution(
+                z_cl, z_inf, cosmo, zmax, z_distrib_func=model, k=2
             ),
             quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
-            **TOLERANCE
+            **TOLERANCE,
         )
 
     # beta mean from weights
@@ -609,28 +609,28 @@ def test_beta_functions(modeling_data):
         np.sum(
             shape_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) / np.sum(shape_weights)
         ),
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
-        utils.compute_beta_s_square_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights),
+        utils.compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights, k=2),
         np.sum(
             shape_weights
             * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) ** 2
             / np.sum(shape_weights)
         ),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     no_weights = [1, 1]
     assert_allclose(
         utils.compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, None),
         np.sum(no_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) / np.sum(no_weights)),
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
-        utils.compute_beta_s_square_mean_from_weights(z_src, z_cl, z_inf, cosmo, None),
+        utils.compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, None, k=2),
         np.sum(
             no_weights * utils.compute_beta_s(z_src, z_cl, z_inf, cosmo) ** 2 / np.sum(no_weights)
         ),
-        **TOLERANCE
+        **TOLERANCE,
     )

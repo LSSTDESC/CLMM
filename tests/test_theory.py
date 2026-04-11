@@ -9,7 +9,6 @@ from clmm.utils.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
 from clmm.utils import (
-    compute_beta_s_square_mean_from_distribution,
     compute_beta_s_mean_from_distribution,
     compute_beta_s_func,
     redshift_distributions as zdist,
@@ -720,8 +719,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         beta_s_mean = compute_beta_s_mean_from_distribution(
             cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_src"], cosmo
         )
-        beta_s_square_mean = compute_beta_s_square_mean_from_distribution(
-            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_src"], cosmo
+        beta_s_square_mean = compute_beta_s_mean_from_distribution(
+            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_src"], cosmo, k=2
         )
 
         gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
