@@ -639,19 +639,13 @@ def compute_tangential_shear(
             * 'distribution' : A redshift distribution function is provided by `z_src`.
               `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
-              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-              the lensing efficiency and square of the lensing efficiency averaged over
-              the galaxy redshift distribution repectively.
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing ( :math:`\langle \beta_s \rangle`,),
+              the lensing efficiency averaged over the galaxy redshift distribution:
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                    {D_{L,\infty}}\right\rangle
-
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right) \right\rangle
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -764,19 +758,13 @@ def compute_convergence(
             * 'distribution' : A redshift distribution function is provided by `z_src`.
               `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
-              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-              the lensing efficiency and square of the lensing efficiency averaged over
-              the galaxy redshift distribution repectively.
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing ( :math:`\langle \beta_s \rangle`,),
+              the lensing efficiency averaged over the galaxy redshift distribution:
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                    {D_{L,\infty}}\right\rangle
-
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right) \right\rangle
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -883,19 +871,15 @@ def compute_reduced_tangential_shear(
             * 'distribution' : A redshift distribution function is provided by `z_src`.
               `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
-              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-              the lensing efficiency and square of the lensing efficiency averaged over
-              the galaxy redshift distribution repectively.
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing ( :math:`\langle \beta_s \rangle, \langle
+              \beta_s^2 \rangle, ..., \langle \beta_s^n \rangle`), an increasing sequence of the
+              lensing efficiency to the power of ``n`` averaged over the galaxy redshift
+              distribution, where the value of ``n`` depends on ``approx``.
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                    {D_{L,\infty}}\right\rangle
-
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s^n \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^n \right\rangle
 
     approx : str, optional
         Type of computation to be made for reduced tangential shears, options are:
@@ -1062,19 +1046,15 @@ def compute_magnification(
             * 'distribution' : A redshift distribution function is provided by `z_src`.
               `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
-              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-              the lensing efficiency and square of the lensing efficiency averaged over
-              the galaxy redshift distribution repectively.
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing ( :math:`\langle \beta_s \rangle, \langle
+              \beta_s^2 \rangle, ..., \langle \beta_s^n \rangle`), an increasing sequence of the
+              lensing efficiency to the power of ``n`` averaged over the galaxy redshift
+              distribution, where the value of ``n`` depends on ``approx``.
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                    {D_{L,\infty}}\right\rangle
-
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s^n \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^n \right\rangle
 
     approx : str, optional
         Type of computation to be made for magnifications, options are:
@@ -1244,19 +1224,15 @@ def compute_magnification_bias(
             * 'distribution' : A redshift distribution function is provided by `z_src`.
               `z_src` must be a one dimensional function (Used when `approx=None`).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
-              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-              the lensing efficiency and square of the lensing efficiency averaged over
-              the galaxy redshift distribution repectively.
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing ( :math:`\langle \beta_s \rangle, \langle
+              \beta_s^2 \rangle, ..., \langle \beta_s^n \rangle`), an increasing sequence of the
+              lensing efficiency to the power of ``n`` averaged over the galaxy redshift
+              distribution, where the value of ``n`` depends on ``approx``.
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                    {D_{L,\infty}}\right\rangle
-
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s^n \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^n \right\rangle
 
     approx : str, optional
         Type of computation to be made for magnification biases, options are:
