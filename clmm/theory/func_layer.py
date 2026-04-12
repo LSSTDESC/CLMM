@@ -897,7 +897,8 @@ def compute_reduced_tangential_shear(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * ``type0`` : approach with all sources at the same redshift (Eq. 5 in
-              `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
+              `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_)
+              (requires ``z_src`` to contain ``beta`` up to ``n=1``):
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -906,7 +907,8 @@ def compute_reduced_tangential_shear(
             * ``type1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
               `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
               Eq. A2.4 from `Seitz & Schneider 1997
-              <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
+              <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_)
+              (requires ``z_src`` to contain ``beta`` up to ``n=2``):
 
               .. math::
                   g_t\approx\frac{\langle\beta_s\rangle\gamma_\infty}
@@ -1074,13 +1076,15 @@ def compute_magnification(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * ``type1`` : Uses the weak lensing approximation of the magnification with up to
-              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
+              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (requires ``z_src`` to contain ``beta`` up to ``n=1``):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
             * ``type2`` : Uses the weak lensing approximation of the magnification with up to
-              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
+              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (requires ``z_src`` to contain ``beta`` up to ``n=2``):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
@@ -1253,14 +1257,16 @@ def compute_magnification_bias(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * ``type1`` : Uses the weak lensing approximation of the magnification bias with up
-              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
+              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (requires ``z_src`` to contain ``beta`` up to ``n=1``):
 
               .. math::
                   \mu^{\alpha-1} \approx
                   1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
             * ``type2`` : Uses the weak lensing approximation of the magnification bias with up
-              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
+              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (requires ``z_src`` to contain ``beta`` up to ``n=2``):
 
               .. math::
                   \mu^{\alpha-1} \approx
