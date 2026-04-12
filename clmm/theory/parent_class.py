@@ -1257,25 +1257,32 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-        elif approx in ("type0", "type1", "type2"):
+        elif approx in ("type0", "type1", "type2", "type3"):
 
-            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            beta_gammat_inf = z_src[0] * self._eval_tangential_shear_core(
+                r_proj, z_cl, z_src=self.z_inf
+            )
 
-            beta_s_mean = z_src[0]
-            beta_s_square_mean = z_src[1]
+            _b2_over_b1_kappa = None
+            if approx != "type0":
+                _b2_over_b1_kappa = z_src[1] / z_src[0] * kappa_inf
 
-            if approx == "type1":
-                gt = beta_s_mean * gammat_inf / (1.0 - beta_s_square_mean / beta_s_mean * kappa_inf)
-            else:  # for type0 and type2
-                gt = beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
-            if approx == "type2":
-                gt *= (
-                    1.0
-                    + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0)
-                    * beta_s_mean
-                    * kappa_inf
+            if approx in ("type0", "type2"):
+                _b1_kappa = z_src[0] * kappa_inf
+                gt = beta_gammat_inf / (1.0 - _b1_kappa)
+                if approx == "type2":
+                    gt *= 1.0 + _b2_over_b1_kappa - _b1_kappa
+            elif approx == "type1":
+                gt = beta_gammat_inf / (1.0 - _b2_over_b1_kappa)
+            elif approx == "type3":
+                _b3_over_b2_kappa = z_src[2] / z_src[1] * kappa_inf
+                gt = (
+                    beta_gammat_inf
+                    * (1 - _b3_over_b2_kappa + _b2_over_b1_kappa)
+                    / (1 - _b3_over_b2_kappa)
                 )
+
         else:
             raise ValueError(f"approx={approx} not valid, must be None or typeN (N=0,1,2)")
 
