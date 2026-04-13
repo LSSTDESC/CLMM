@@ -662,16 +662,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg["cosmo"]
 
-    _gt_type0 = lambda beta_s_mean, gammat_inf, kappa_inf: (
-        beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
-    )
-    _gt_type1 = lambda beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf: (
-        beta_s_mean * gammat_inf / (1.0 - beta_s_square_mean / beta_s_mean * kappa_inf)
-    )
-    _gt_type2 = lambda beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf: (
-        (1.0 + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0) * beta_s_mean * kappa_inf)
-        * (beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf))
-    )
     if profile_init == "nfw" or modeling_data["nick"] in ["nc", "ccl"]:
         if profile_init == "nfw":
             reltol = modeling_data["theory_reltol"]
@@ -795,72 +785,35 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         beta_s_mean, beta_s_square_mean = 0.9, 0.6
         cfg_inf["GAMMA_PARAMS"]["z_src"] = (beta_s_mean, beta_s_square_mean)
         cfg_inf["GAMMA_PARAMS"]["z_src_info"] = "beta"
-        # tangential shear
-        assert_allclose(
-            theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            beta_s_mean * gammat_inf,
-            1.0e-10,
-        )
-
-        # convergence
-        assert_allclose(
-            theo.compute_convergence(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            beta_s_mean * kappa_inf,
-            1.0e-10,
-        )
-
         # reduced tangential shear
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type0"
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            _gt_type0(beta_s_mean, gammat_inf, kappa_inf),
-            1.0e-10,
-        )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            _gt_type1(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
-            1.0e-10,
-        )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            _gt_type2(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
-            1.0e-10,
-        )
-
-        # magnification
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
-        assert_allclose(
-            theo.compute_magnification(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            1 + 2 * beta_s_mean * kappa_inf,
-            1.0e-10,
-        )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
-        assert_allclose(
-            theo.compute_magnification(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            1
-            + 2 * beta_s_mean * kappa_inf
-            + beta_s_square_mean * gammat_inf**2
-            + 3 * beta_s_square_mean * kappa_inf**2,
-            1.0e-10,
-        )
-
-        # magnification bias
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"], alpha=alpha),
-            1 + (alpha - 1) * (2 * beta_s_mean * kappa_inf),
-            1.0e-10,
-        )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"], alpha=alpha),
-            1
-            + (alpha - 1) * (2 * beta_s_mean * kappa_inf + beta_s_square_mean * gammat_inf**2)
-            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf**2,
-            1.0e-10,
-        )
+        for func, approx_dict in (
+            (theo.compute_tangential_shear, {None: _gammat_notype}),
+            (theo.compute_convergence, {None: _kappa_notype}),
+            (
+                theo.compute_reduced_tangential_shear,
+                {"type0": _gt_type0, "type1": _gt_type1, "type2": _gt_type2},
+            ),
+            (
+                theo.compute_magnification,
+                {"type1": _magnif_type1, "type2": _magnif_type2},
+            ),
+            (
+                lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=alpha),
+                {
+                    "type1": lambda *args: _magnif_bias_type1(*args, alpha=alpha),
+                    "type2": lambda *args: _magnif_bias_type2(*args, alpha=alpha),
+                },
+            ),
+        ):
+            for approx_type, approx_func in approx_dict.items():
+                if approx_type is not None:
+                    cfg_inf["GAMMA_PARAMS"]["approx"] = approx_type
+                print(func, approx_func)
+                assert_allclose(
+                    func(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
+                    approx_func(cfg_inf["GAMMA_PARAMS"]["z_src"], gammat_inf, kappa_inf),
+                    1.0e-10,
+                )
 
         # Check that shear, reduced shear and convergence return zero
         # and magnification and magnification bias return one
@@ -992,60 +945,35 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         )
         kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf)
 
-        # Validate reduced tangential shear
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type1"
-            ),
-            _gt_type1(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
-            1.0e-10,
-        )
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type2"
-            ),
-            _gt_type2(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
-            1.0e-10,
-        )
-
-        # Validate magnification
+        # reduced tangential shear
         alpha = -1.78
-        assert_allclose(
-            mod.eval_magnification(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type1"
+        for func, approx_dict in (
+            (
+                mod.eval_reduced_tangential_shear,
+                {"type0": _gt_type0, "type1": _gt_type1, "type2": _gt_type2},
             ),
-            1 + 2 * beta_s_mean * kappa_inf,
-            1.0e-10,
-        )
-        assert_allclose(
-            mod.eval_magnification(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type2"
+            (
+                mod.eval_magnification,
+                {"type1": _magnif_type1, "type2": _magnif_type2},
             ),
-            1
-            + 2 * beta_s_mean * kappa_inf
-            + 3 * beta_s_square_mean * kappa_inf**2
-            + beta_s_square_mean * gammat_inf**2,
-            1.0e-10,
-        )
-
-        # Validate magnification bias
-        assert_allclose(
-            mod.eval_magnification_bias(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "type1"
+            (
+                lambda *args: mod.eval_magnification_bias(*args[:3], alpha, *args[3:]),
+                {
+                    "type1": lambda *args: _magnif_bias_type1(*args, alpha=alpha),
+                    "type2": lambda *args: _magnif_bias_type2(*args, alpha=alpha),
+                },
             ),
-            1 + (alpha - 1) * (2 * beta_s_mean * kappa_inf),
-            1.0e-10,
-        )
-        assert_allclose(
-            mod.eval_magnification_bias(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "type2"
-            ),
-            1
-            + (alpha - 1) * (2 * beta_s_mean * kappa_inf)
-            + (alpha - 1) * (beta_s_square_mean * gammat_inf**2)
-            + (2 * alpha - 1) * (alpha - 1) * beta_s_square_mean * kappa_inf**2,
-            1.0e-10,
-        )
+        ):
+            for approx_type, approx_func in approx_dict.items():
+                if approx_type is not None:
+                    cfg_inf["GAMMA_PARAMS"]["approx"] = approx_type
+                print(func, approx_func)
+                print(*profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", approx_type)
+                assert_allclose(
+                    func(*profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", approx_type),
+                    approx_func((beta_s_mean, beta_s_square_mean), gammat_inf, kappa_inf),
+                    1.0e-10,
+                )
 
         # Check that shear, reduced shear and convergence return zero
         # and magnification and magnification_bias return one
@@ -1175,3 +1103,53 @@ def test_delta_mdef_virial(modeling_data):
         mod = theo.Modeling(massdef="virial")
         mod.set_cosmo(cosmo)
         assert_equal(mod._get_delta_mdef(0.1), 111)
+
+
+###########################################
+### Helper functions for approximations ###
+###########################################
+def _gammat_notype(beta_s_means, gammat_inf, kappa_inf):
+    return beta_s_means[0] * gammat_inf
+
+
+def _kappa_notype(beta_s_means, gammat_inf, kappa_inf):
+    return beta_s_means[0] * kappa_inf
+
+
+def _gt_type0(beta_s_means, gammat_inf, kappa_inf):
+    return beta_s_means[0] * gammat_inf / (1.0 - beta_s_means[0] * kappa_inf)
+
+
+def _gt_type1(beta_s_means, gammat_inf, kappa_inf):
+    return beta_s_means[0] * gammat_inf / (1.0 - beta_s_means[1] / beta_s_means[0] * kappa_inf)
+
+
+def _gt_type2(beta_s_means, gammat_inf, kappa_inf):
+    return (1.0 + (beta_s_means[1] / beta_s_means[0] ** 2 - 1.0) * beta_s_means[0] * kappa_inf) * (
+        beta_s_means[0] * gammat_inf / (1.0 - beta_s_means[0] * kappa_inf)
+    )
+
+
+def _magnif_type1(beta_s_means, gammat_inf, kappa_inf):
+    return 1 + 2 * beta_s_means[0] * kappa_inf
+
+
+def _magnif_type2(beta_s_means, gammat_inf, kappa_inf):
+    return (
+        1
+        + 2 * beta_s_means[0] * kappa_inf
+        + beta_s_means[1] * gammat_inf**2
+        + 3 * beta_s_means[1] * kappa_inf**2
+    )
+
+
+def _magnif_bias_type1(beta_s_means, gammat_inf, kappa_inf, alpha):
+    return 1 + (alpha - 1) * (2 * beta_s_means[0] * kappa_inf)
+
+
+def _magnif_bias_type2(beta_s_means, gammat_inf, kappa_inf, alpha):
+    return (
+        1
+        + (alpha - 1) * (2 * beta_s_means[0] * kappa_inf + beta_s_means[1] * gammat_inf**2)
+        + (2 * alpha - 1) * (alpha - 1) * beta_s_means[1] * kappa_inf**2
+    )
