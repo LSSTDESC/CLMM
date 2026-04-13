@@ -47,7 +47,7 @@ class CLMModeling:
         Mass overdensity definition.
     halo_profile_model : str
         Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
-    cosmo: Cosmology
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         Cosmology object
     hdpm: Object
         Backend object with halo profiles
@@ -1072,7 +1072,7 @@ class CLMModeling:
                 * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
                 * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
-                  ``delta_z_cut`` is ignored if ``z_min`` is already provided. (default=0.1)
+                  ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
         Returns
         -------
@@ -1206,8 +1206,8 @@ class CLMModeling:
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                       {1-\left<\beta_s\right>\kappa_{\infty}}
-                      \left(1+\left(\frac{\left<\beta_s^2\right>}
-                      {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
+                      \left[1+\left(\frac{\left<\beta_s^2\right>}
+                      {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right]
 
             **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
 
@@ -1220,7 +1220,7 @@ class CLMModeling:
                 * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
                 * ``delta_z_cut`` (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  ``delta_z_cut`` is ignored if ``z_min`` is already provided. (default=0.1)
+                  ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1240,7 +1240,7 @@ class CLMModeling:
             validate_argument(locals(), "z_cl", float, argmin=0)
             validate_argument(locals(), "z_src_info", str)
             validate_argument(locals(), "approx", str, none_ok=True)
-            self._validate_approx_z_src_info(locals())
+            self._validate_approx_z_src_info(locals(), valid_approx=("type0", "type1", "type2"))
             self._validate_z_src(locals())
 
         if self.halo_profile_model == "einasto" and verbose:
@@ -1248,7 +1248,6 @@ class CLMModeling:
 
         # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
         # pylint: disable=possibly-used-before-assignment
-
         if approx is None:
             if z_src_info == "distribution":
                 gt = self._pdz_weighted_avg(
@@ -1292,8 +1291,6 @@ class CLMModeling:
                     * beta_s_mean
                     * kappa_inf
                 )
-        else:
-            raise ValueError(f"approx={approx} not valid, must be None or typeN (N=0,1,2)")
 
         return gt
 
@@ -1389,7 +1386,7 @@ class CLMModeling:
                 * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
                 * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
-                  ``delta_z_cut`` is ignored if ``z_min`` is already provided. (default=0.1)
+                  ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1555,7 +1552,7 @@ class CLMModeling:
                 * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
                 * ``delta_z_cut`` (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  ``delta_z_cut`` is ignored if ``z_min`` is already provided. (default=0.1)
+                  ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1786,7 +1783,7 @@ class CLMModeling:
         else:
             raise ValueError(f"Unsupported z_src_info (='{loc_dict['z_src_info']}')")
 
-    def _validate_approx_z_src_info(self, loc_dict):
+    def _validate_approx_z_src_info(self, loc_dict, valid_approx=("type1", "type2")):
         r"""Validation for compatility between approx and z_src_info. The conditions are:
 
             * approx=None: z_src_info must be 'discrete' or 'distribution'
@@ -1797,6 +1794,8 @@ class CLMModeling:
         ----------
         locals_dict: dict
             Should be the call locals()
+        valid_approx: tuple
+            Valida possible values for approach.
         """
         # check compatility between approx and z_src_info
         z_src_info, approx = loc_dict["z_src_info"], loc_dict["approx"]
@@ -1806,7 +1805,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f" z_src_info='{z_src_info}' was provided."
                 )
-        elif approx in ("type0", "type1", "type2"):
+        elif approx in valid_approx:
             if z_src_info != "beta":
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='beta', "
