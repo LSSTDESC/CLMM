@@ -746,79 +746,50 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # test errors and also prepare for the next round of tests
         # test ValueError from unsupported approx
-        assert_raises(
-            ValueError,
+        for func in (
             theo.compute_reduced_tangential_shear,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            approx="notvalid",
-        )
-        assert_raises(
-            ValueError,
             theo.compute_magnification,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            approx="notvalid",
-        )
-        assert_raises(
-            ValueError,
-            theo.compute_magnification_bias,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            alpha=alpha,
-            approx="notvalid",
-        )
+            lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=alpha),
+        ):
+            print(func)
+            assert_raises(
+                ValueError,
+                func,
+                cosmo=cosmo,
+                **cfg_inf["GAMMA_PARAMS"],
+                approx="notvalid",
+            )
+
         # test KeyError from invalid key in integ_kwargs
-        assert_raises(
-            KeyError,
+        for func in (
             theo.compute_reduced_tangential_shear,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            integ_kwargs={"notavalidkey": 0.0},
-        )
-        assert_raises(
-            KeyError,
             theo.compute_magnification,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            integ_kwargs={"notavalidkey": 0.0},
-        )
-        assert_raises(
-            KeyError,
-            theo.compute_magnification_bias,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            alpha=alpha,
-            integ_kwargs={"notavalidkey": 0.0},
-        )
+            lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=alpha),
+        ):
+            print(func)
+            assert_raises(
+                KeyError,
+                func,
+                cosmo=cosmo,
+                **cfg_inf["GAMMA_PARAMS"],
+                integ_kwargs={"notavalidkey": 0.0},
+            )
         # test ValueError from unsupported z_src_info
         cfg_inf["GAMMA_PARAMS"]["z_src_info"] = "notvalid"
-        assert_raises(
-            ValueError, theo.compute_tangential_shear, cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]
-        )
-        assert_raises(ValueError, theo.compute_convergence, cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
-        assert_raises(
-            ValueError,
+        for func in (
+            theo.compute_tangential_shear,
+            theo.compute_convergence,
             theo.compute_reduced_tangential_shear,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            approx="type1",
-        )
-        assert_raises(
-            ValueError,
             theo.compute_magnification,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            approx="type1",
-        )
-        assert_raises(
-            ValueError,
-            theo.compute_magnification_bias,
-            cosmo=cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            alpha=2,
-            approx="type1",
-        )
+            lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=alpha),
+        ):
+            print(func)
+            assert_raises(
+                ValueError,
+                func,
+                cosmo=cosmo,
+                **cfg_inf["GAMMA_PARAMS"],
+            )
 
         # test z_src_info = 'beta'
         beta_s_mean, beta_s_square_mean = 0.9, 0.6
@@ -896,136 +867,48 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # if source is in front of the cluster
 
         # First, check for a array of radius and single source z
-        radius = np.logspace(-2, 2, 10)
-        z_cluster = 0.3
-        z_src = 0.2
-
-        assert_allclose(
-            theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(radius)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(radius)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(radius)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.ones(len(radius)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification_bias(
-                radius,
-                alpha=-1,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.ones(len(radius)),
-            1.0e-10,
-        )
+        for func in (
+            theo.compute_convergence,
+            theo.compute_tangential_shear,
+            theo.compute_reduced_tangential_shear,
+            lambda **kwargs: theo.compute_magnification(**kwargs) - 1,
+            lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=-1) - 1,
+        ):
+            print(func)
+            assert_allclose(
+                func(
+                    r_proj=np.logspace(-2, 2, 10),
+                    mdelta=1.0e15,
+                    cdelta=4.0,
+                    z_cluster=0.3,
+                    z_src=0.2,
+                    cosmo=cosmo,
+                ),
+                np.zeros(10),
+                1.0e-10,
+            )
 
         # Second, check a single radius and array of source z
-        radius = 1.0
-        z_src = [0.25, 0.1, 0.14, 0.02]
-        assert_allclose(
-            theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.ones(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification_bias(
-                radius,
-                alpha=-1,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.ones(len(z_src)),
-            1.0e-10,
-        )
+        for func in (
+            theo.compute_convergence,
+            theo.compute_tangential_shear,
+            theo.compute_reduced_tangential_shear,
+            lambda **kwargs: theo.compute_magnification(**kwargs) - 1,
+            lambda **kwargs: theo.compute_magnification_bias(**kwargs, alpha=-1) - 1,
+        ):
+            print(func)
+            assert_allclose(
+                func(
+                    r_proj=1.0,
+                    mdelta=1.0e15,
+                    cdelta=4.0,
+                    z_cluster=0.3,
+                    z_src=[0.25, 0.1, 0.14, 0.02],
+                    cosmo=cosmo,
+                ),
+                np.zeros(4),
+                1.0e-10,
+            )
 
         # Object Oriented tests
         mod = theo.Modeling()
@@ -1169,53 +1052,30 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # if source is in front of the cluster
 
         # First, check for a array of radius and single source z
-        radius = np.logspace(-2, 2, 10)
-        z_cluster = 0.3
-        z_src = 0.2
-
-        assert_allclose(
-            mod.eval_convergence(radius, z_cluster, z_src), np.zeros(len(radius)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_tangential_shear(radius, z_cluster, z_src), np.zeros(len(radius)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(radius, z_cluster, z_src),
-            np.zeros(len(radius)),
-            1.0e-10,
-        )
-        assert_allclose(
-            mod.eval_magnification(radius, z_cluster, z_src), np.ones(len(radius)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_magnification_bias(radius, z_cluster, z_src, alpha),
-            np.ones(len(radius)),
-            1.0e-10,
-        )
+        for func in (
+            mod.eval_convergence,
+            mod.eval_tangential_shear,
+            mod.eval_reduced_tangential_shear,
+            lambda **kwargs: mod.eval_magnification(**kwargs) - 1,
+            lambda **kwargs: mod.eval_magnification_bias(**kwargs, alpha=alpha) - 1,
+        ):
+            print(func)
+            assert_allclose(
+                func(r_proj=np.logspace(-2, 2, 10), z_cl=0.3, z_src=0.2), np.zeros(10), 1.0e-10
+            )
 
         # Second, check a single radius and array of source z
-        radius = 1.0
-        z_src = [0.25, 0.1, 0.14, 0.02]
-
-        assert_allclose(
-            mod.eval_convergence(radius, z_cluster, z_src), np.zeros(len(z_src)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_tangential_shear(radius, z_cluster, z_src), np.zeros(len(z_src)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(radius, z_cluster, z_src),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            mod.eval_magnification(radius, z_cluster, z_src), np.ones(len(z_src)), 1.0e-10
-        )
-        assert_allclose(
-            mod.eval_magnification_bias(radius, z_cluster, z_src, alpha),
-            np.ones(len(z_src)),
-            1.0e-10,
-        )
+        for func in (
+            mod.eval_convergence,
+            mod.eval_tangential_shear,
+            mod.eval_reduced_tangential_shear,
+            lambda **kwargs: mod.eval_magnification(**kwargs) - 1,
+            lambda **kwargs: mod.eval_magnification_bias(**kwargs, alpha=alpha) - 1,
+        ):
+            print(func)
+            assert_allclose(
+                func(r_proj=1.0, z_cl=0.3, z_src=[0.25, 0.1, 0.14, 0.02]), np.zeros(4), 1.0e-10
+            )
 
 
 def test_compute_magnification_bias(modeling_data):
