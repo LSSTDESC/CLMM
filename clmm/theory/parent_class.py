@@ -1183,16 +1183,9 @@ class CLMModeling:
                       {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * ``type0`` : approach with all sources at the same redshift (Eq. 5 in
-                  `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
-
-                  .. math::
-                      g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
-                      {1-\left<\beta_s\right>\kappa_{\infty}}
-
-                * ``type1`` : Same approach as in Weighing the Giants - III (Eq. 6 in
-                  `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
-                  Eq.  A2.4 from `Seitz & Schneider 1997
+                * ``type1`` : First order expansion, the approach of Weighing the Giants - III (Eq.
+                  6 in `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
+                  Eq. A2.4 from `Seitz & Schneider 1997
                   <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
 
                   .. math::
@@ -1245,6 +1238,16 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        # There is a type0 option for approx that does not really have a scientific application,
+        # but it is implemented (and hidden from the main documentation).
+        # We have to decide if it is going to be removed.
+        #       * ``type0`` : approach with all sources at the same redshift (Eq. 5 in
+        #         `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
+        #
+        #         .. math::
+        #             g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+        #             {1-\left<\beta_s\right>\kappa_{\infty}}
 
         # functions _validate_z_src, _validate_approx_z_src_info already safekeeps from this error:
         # pylint: disable=possibly-used-before-assignment
