@@ -44,26 +44,26 @@ def compute_3d_density(
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
@@ -140,26 +140,26 @@ def compute_surface_density(
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
@@ -240,26 +240,26 @@ def compute_mean_surface_density(
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope. Option only
         available for the NumCosmo backend
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
@@ -332,26 +332,26 @@ def compute_excess_surface_density(
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
@@ -420,7 +420,7 @@ def compute_excess_surface_density_2h(
         Projected radial position from the cluster center in :math:`M\!pc`.
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     halobias : float, optional
         Value of the halo bias
@@ -487,7 +487,7 @@ def compute_surface_density_2h(
         Projected radial position from the cluster center in :math:`M\!pc`.
     z_cl: float
         Redshift of the cluster
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     halobias : float, optional
         Value of the halo bias
@@ -540,7 +540,7 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
 
     Parameters
     ----------
-    cosmo : clmm.cosmology.Cosmology object
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     z_cluster : float
         Galaxy cluster redshift
@@ -604,43 +604,43 @@ def compute_tangential_shear(
         Galaxy cluster redshift
     z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
-    cosmo : clmm.cosmology.Cosmology object
+        ``z_src_info`` (see below).
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
+        Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an array
-              or all sources are at the same redshift when `z_src` is a float.
+            * ``discrete`` (default) : The redshift of sources is provided by ``z_src``.
+              It can be individual redshifts for each source galaxy when ``z_src`` is an array
+              or all sources are at the same redshift when ``z_src`` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimensional function.
+            * ``distrubution`` : A redshift distribution function is provided by ``z_src``.
+              ``z_src`` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -729,43 +729,43 @@ def compute_convergence(
         Galaxy cluster redshift
     z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
-    cosmo : clmm.cosmology.Cosmology object
+        ``z_src_info`` (see below).
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
+        Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an array
-              or all sources are at the same redshift when `z_src` is a float.
+            * ``discrete`` (default) : The redshift of sources is provided by ``z_src``.
+              It can be individual redshifts for each source galaxy when ``z_src`` is an array
+              or all sources are at the same redshift when ``z_src`` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimensional function.
+            * ``distrubution`` : A redshift distribution function is provided by ``z_src``.
+              ``z_src`` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -847,44 +847,44 @@ def compute_reduced_tangential_shear(
         Galaxy cluster redshift
     z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
-    cosmo : clmm.cosmology.Cosmology object
+        ``z_src_info`` (see below).
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * ``mean`` (default);
+            * ``critical`` - not in cluster_toolkit;
+            * ``virial`` - not in cluster_toolkit;
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
+        Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an array
-              or all sources are at the same redshift when `z_src` is a float
-              (Used for `approx=None`).
+            * ``discrete`` (default) : The redshift of sources is provided by ``z_src``.
+              It can be individual redshifts for each source galaxy when ``z_src`` is an array
+              or all sources are at the same redshift when ``z_src`` is a float
+              (Used for ``approx=None``).
 
-            * 'distribution' : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimensional function (Used when `approx=None`).
+            * ``distrubution`` : A redshift distribution function is provided by ``z_src``.
+              ``z_src`` must be a one dimensional function (Used when ``approx=None``).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -900,10 +900,10 @@ def compute_reduced_tangential_shear(
     approx : str, optional
         Type of computation to be made for reduced tangential shears, options are:
 
-            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
-              If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
-              tangential shear at each value of `r_proj` is calculated as
+            * None (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
+              If ``z_src_info='discrete'``, full computation is made for each
+              ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``, reduced
+              tangential shear at each value of ``r_proj`` is calculated as
 
               .. math::
                   g_t
@@ -912,38 +912,40 @@ def compute_reduced_tangential_shear(
                   {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-            * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
-              Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
-              `z_src_info` must be 'beta':
+            * ``type1`` : First order expansion, the approach of Weighing the Giants - III (Eq. 6
+              in `Applegate et al. 2014 <https://iopscience.iop.org/article/10.1086/308556>`_,
+              Eq. A2.4 from `Seitz & Schneider 1997
+              <https://ui.adsabs.harvard.edu/abs/1997A%26A...318..687S>`_).
+
+              .. math::
+                  g_t\approx\frac{\langle\beta_s\rangle\gamma_\infty}
+                  {1-\frac{\langle\beta_s^2\rangle}{\langle\beta_s\rangle}\kappa_\infty}
+
+            * ``type2`` : Same approach as in Cluster Mass Calibration at High
+              Redshift (Eq. 12 in `Schrabback et al. 2017 <https://doi.org/10.1093/mnras/stx2666>`_,
+              Eq. 7 in `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                   {1-\left<\beta_s\right>\kappa_{\infty}}
+                  \left[1+\left(\frac{\left<\beta_s^2\right>}
+                  {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right]
 
-            * 'order2' : Same approach as in Cluster Mass Calibration at High
-              Redshift (equation 12 in Schrabback et al. 2017;
-              https://arxiv.org/abs/1611.03866).
-              `z_src_info` must be 'beta':
-
-              .. math::
-                  g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
-                  {1-\left<\beta_s\right>\kappa_{\infty}}
-                  \left(1+\left(\frac{\left<\beta_s^2\right>}
-                  {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
+        **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
 
     integ_kwargs: None, dict
         Extra arguments for the redshift integration (when
-        `approx=None, z_src_info='distribution'`). Possible keys are:
+        ``approx=None, z_src_info='distribution'``). Possible keys are:
 
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+            * ``zmin`` (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+            * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
+            * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
+              ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
@@ -959,6 +961,17 @@ def compute_reduced_tangential_shear(
         Reduced tangential shear
 
     """
+
+    # There is a type0 option for approx that does not really have a scientific application,
+    # but it is implemented (and hidden from the main documentation).
+    # We have to decide if it is going to be removed.
+    #       * ``type0`` : approach with all sources at the same redshift (Eq. 5 in
+    #         `Hoekstra et al 1998 <https://iopscience.iop.org/article/10.1086/308556>`_).
+    #
+    #         .. math::
+    #             g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+    #             {1-\left<\beta_s\right>\kappa_{\infty}}
+
     _modeling_object.validate_input = validate_input
     _modeling_object.set_cosmo(cosmo)
     _modeling_object.set_halo_density_profile(
@@ -1017,44 +1030,44 @@ def compute_magnification(
         Galaxy cluster redshift
     z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
-    cosmo : clmm.cosmology.Cosmology object
+        ``z_src_info`` (see below).
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
+        Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an array
-              or all sources are at the same redshift when `z_src` is a float
-              (Used for `approx=None`).
+            * ``discrete`` (default) : The redshift of sources is provided by ``z_src``.
+              It can be individual redshifts for each source galaxy when ``z_src`` is an array
+              or all sources are at the same redshift when ``z_src`` is a float
+              (Used for ``approx=None``).
 
-            * 'distribution' : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimensional function (Used when `approx=None`).
+            * ``distrubution`` : A redshift distribution function is provided by ``z_src``.
+              ``z_src`` must be a one dimensional function (Used when ``approx=None``).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1070,10 +1083,10 @@ def compute_magnification(
     approx : str, optional
         Type of computation to be made for magnifications, options are:
 
-            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
-              If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
-              at each value of `r_proj` is calculated as
+            * None (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
+              If ``z_src_info='discrete'``, full computation is made for each
+              ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``, magnification
+              at each value of ``r_proj`` is calculated as
 
               .. math::
                   \mu
@@ -1084,32 +1097,32 @@ def compute_magnification(
                   -\left(\beta_s(z)\gamma_{\infty}\right)^2}}
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-            * 'order1' : Uses the weak lensing approximation of the magnification with up to
-              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
-              (`z_src_info` must be 'beta'):
+            * ``type1`` : Uses the weak lensing approximation of the magnification with up to
+              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
-            * 'order2' : Uses the weak lensing approximation of the magnification with up to
-              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
-              (`z_src_info` must be 'beta'):
+            * ``type2`` : Uses the weak lensing approximation of the magnification with up to
+              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
                   + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
                   + \left<\beta_s^2\right>\gamma_{\infty}^2
 
+        **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
+
     integ_kwargs: None, dict
         Extra arguments for the redshift integration (when
-        `approx=None, z_src_info='distribution'`). Possible keys are:
+        ``approx=None, z_src_info='distribution'``). Possible keys are:
 
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+            * ``zmin`` (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+            * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
+            * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
+              ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -1199,44 +1212,44 @@ def compute_magnification_bias(
         Galaxy cluster redshift
     z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
-    cosmo : clmm.cosmology.Cosmology object
+        ``z_src_info`` (see below).
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     alpha_ein : float, None, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default)
-            * 'einasto' - not in cluster_toolkit
-            * 'hernquist' - not in cluster_toolkit
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
 
     z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
+        Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an array
-              or all sources are at the same redshift when `z_src` is a float
-              (Used for `approx=None`).
+            * ``discrete`` (default) : The redshift of sources is provided by ``z_src``.
+              It can be individual redshifts for each source galaxy when ``z_src`` is an array
+              or all sources are at the same redshift when ``z_src`` is a float
+              (Used for ``approx=None``).
 
-            * 'distribution' : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimensional function (Used when `approx=None`).
+            * ``distrubution`` : A redshift distribution function is provided by ``z_src``.
+              ``z_src`` must be a one dimensional function (Used when ``approx=None``).
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-              `z_src` must be a tuple containing
+            * ``beta`` : The averaged lensing efficiency is provided by ``z_src``.
+              ``z_src`` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1252,10 +1265,10 @@ def compute_magnification_bias(
     approx : str, optional
         Type of computation to be made for magnification biases, options are:
 
-            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
-              If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
-              bias at each value of `r_proj` is calculated as
+            * ``None`` (default): Requires ``z_src_info`` to be ``discrete`` or ``distribution``.
+              If ``z_src_info='discrete'``, full computation is made for each
+              ``r_proj, z_src`` pair individually. If ``z_src_info='distribution'``, magnification
+              bias at each value of ``r_proj`` is calculated as
 
               .. math::
                   \mu^{\alpha-1}
@@ -1267,17 +1280,15 @@ def compute_magnification_bias(
                   -\left(\beta_s(z)\gamma_{\infty}\right)^2\right)^{\alpha-1}}}
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-            * 'order1' : Uses the weak lensing approximation of the magnification bias with up
-              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
-              (`z_src_info` must be 'beta'):
+            * ``type1`` : Uses the weak lensing approximation of the magnification bias with up
+              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
               .. math::
                   \mu^{\alpha-1} \approx
                   1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
-            * 'order2' : Uses the weak lensing approximation of the magnification bias with up
-              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
-              `z_src_info` must be 'beta':
+            * ``type2`` : Uses the weak lensing approximation of the magnification bias with up
+              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`:
 
               .. math::
                   \mu^{\alpha-1} \approx
@@ -1288,16 +1299,18 @@ def compute_magnification_bias(
                   &+ \left(2\alpha-1\right)\left(\alpha-1\right)
                   \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
+        **Note**: if ``approx='type#'``, ``z_src_info`` must be ``beta``.
+
     integ_kwargs: None, dict
         Extra arguments for the redshift integration (when
-        `approx=None, z_src_info='distribution'`). Possible keys are:
+        ``approx=None, z_src_info='distribution'``). Possible keys are:
 
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+            * ``zmin`` (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+            * ``zmax`` (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
+            * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
+              ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
