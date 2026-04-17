@@ -42,7 +42,6 @@ import clmm
             "theory_reltol": 2.0e-6,
             "ps_reltol": 5.0e-3,
         },
-        {"nick": "testnotabackend", "cosmo_reltol": 0.0, "theory_reltol": 0.0},
     ],
 )
 def modeling_data(request):
@@ -51,7 +50,7 @@ def modeling_data(request):
     try:
         avail = clmm.theory.backend_is_available(param["nick"])
     except ValueError:
-        pytest.skip(f"Unsupported backend '{param}'.")
+        pytest.fail(f"Unsupported backend '{param}'.")
 
     if avail or param["nick"] == "notabackend":
         os.environ["CLMM_MODELING_BACKEND"] = param["nick"]
@@ -60,7 +59,7 @@ def modeling_data(request):
         importlib.reload(clmm)
         return param
     else:
-        pytest.skip(f"Backend not available '{param}'.")
+        pytest.fail(f"Backend not available '{param}'.")
 
 
 @pytest.fixture(
