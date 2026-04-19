@@ -30,4 +30,4 @@ from .theory import (
 from . import support
 from .utils import compute_radial_averages, convert_units, make_bins
 
-__version__ = "1.16.10"
+__version__ = "1.17.0"
