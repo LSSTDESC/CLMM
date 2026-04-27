@@ -12,6 +12,7 @@ from .theory import (
     compute_convergence,
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
+    compute_excess_surface_density_triaxial,
     compute_magnification,
     compute_magnification_bias,
     compute_magnification_bias_from_magnification,
