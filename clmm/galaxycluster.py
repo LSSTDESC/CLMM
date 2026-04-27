@@ -517,8 +517,8 @@ class GalaxyCluster:
 
         if zcol_out in self.galcat.columns and overwrite is False:
             raise TypeError(
-                f"Column {zcol_out} already exists in galcat. \
-                            Set overwrite=True to overwrite or use other column name"
+                f"Column {zcol_out} already exists in galcat. "
+                "Set overwrite=True to overwrite or use other column name"
             )
 
         zdata = self._get_input_galdata({"pzpdf": "pzpdf", "pzbins": "pzbins"})
