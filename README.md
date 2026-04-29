@@ -1,6 +1,8 @@
 # CLMM
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
 [![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
+[![Documentation](https://readthedocs.org/projects/clmm/badge/?version=latest)](http://lsstdesc.org/CLMM/)
+[![DOI](https://img.shields.io/badge/DOI-10.3847%2F1538--4365%2Fab1658-B31B1B.svg)](https://doi.org/10.1093/mnras/stab2764)
 
 The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a DESC tool consisting of a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
 <!---CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.--->
@@ -17,54 +19,52 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 
 # Installing CLMM <a name="installing"></a>
 
+CLMM can be installed with `pip` or `conda`.
+There commands will install most of the dependencies for CLMM,
+with the exception of the backend to be used on theoretical predictions,
+check [this](#backends) section for details.
+
+For a `pip` installation, run:
+
+```bash
+    pip install clmm
+```
+
+For a `conda` installation, run:
+
+```bash
+    conda install -c conda-forge clmm
+```
+
+We highly recommend you make a new conda environment for the installation of CLMM,
+see [INSTALL documentation](INSTALL.md) for instructions on how to do it.
+
 ## Requirements <a name="requirements"></a>
 
-CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
+CLMM requires Python version 3.8 or later.
+
+### Dependencies <a name="dependencies"></a>
+
+CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
 - [SciPy](https://scipy.org/) (v1.6 or later)
 - [Astropy](https://www.astropy.org/) (v4.0 or later for units and cosmology dependence)
 (Please avoid Astropy v5.0 since there is bug breaking CCL backend. It has been fixed in Astropy v5.0.1.)
 - [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
+- [healpy](https://healpy.readthedocs.io/en/latest/index.html)
+- [qp-prob](https://github.com/LSSTDESC/qp)
 
-```
-  pip install numpy scipy astropy matplotlib
-```
+### Back-ends <a name="backends"></a>
 
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
-- [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.7.1.dev10+gf81b59a4 and 3)
-- [NumCosmo](https://numcosmo.github.io/) (v0.19 or later)
+- [CCL](https://ccl.readthedocs.io/en/latest/) (versions 3.1.2 or later)
+- [NumCosmo](https://numcosmo.github.io/) (versions between v0.19 and v0.22)
 
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
-
-For developers, you will also need to install:
-
-- [pytest](https://docs.pytest.org/en/latest/) (3.x or later for testing)
-- [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
-
-These are also pip installable:
-```
-  pip install pytest sphinx sphinx_rtd_theme
-```
-Note, the last item, `sphinx_rtd_theme` is to make the docs.
-
-## Installation <a name="installation"></a>
-
-To install CLMM you currently need to build it from source:
-
-```
-  git clone https://github.com/LSSTDESC/CLMM.git
-  cd CLMM
-  python setup.py install --user   # Add --user flag to install it locally
-```
-See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.
-
-To run the tests you can do:
-
-  `pytest`
 
 # Using CLMM <a name="using"></a>
 
@@ -122,7 +122,7 @@ If you have comments, questions, or feedback, please [write us an
 issue](https://github.com/LSSTDESC/CLMM/issues).
 
 The current leads of the LSST DESC CLMM Topical Team are Michel Aguena
-(m-aguena, aguena@apc.in2p3.fr) and Marina Ricci (mricci,
+(m-aguena, aguena@inaf.it) and Marina Ricci (mricci,
 marina.ricci@apc.in2p3.fr)
 
 

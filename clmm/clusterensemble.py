@@ -210,8 +210,6 @@ class ClusterEnsemble:
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False, **tb_kwargs
         )
-
-        
         self.add_individual_radial_profile(
             galaxycluster,
             profile_table,
@@ -219,9 +217,8 @@ class ClusterEnsemble:
             cross_component=cross_component_out,
             quad_4theta_component=quad_4theta_component_out,
             quad_const_component=quad_const_component_out,
-            weights=weights_out
+            weights=weights_out,
         )
-    
 
     def add_individual_radial_profile(
         self,
@@ -434,13 +431,9 @@ class ClusterEnsemble:
         self.cov["tan_bs"] = coeff * np.cov(np.array(g_boot_components[0]), bias=False, ddof=0)
         self.cov["cross_bs"] = coeff * np.cov(np.array(g_boot_components[1]), bias=False)
         if self.include_quadrupole:
-            gt_boot, gx_boot, g4theta_boot, gconst_boot = g_boot_components
-            self.cov["quad_4theta_bs"] = coeff * np.cov(
-                np.array(g_boot_components[2]), bias=False, ddof=0
-            )
-            self.cov["quad_const_bs"] = coeff * np.cov(
-                np.array(g_boot_components[3]), bias=False, ddof=0
-            )
+            _, _, g4theta_boot, gconst_boot = g_boot_components
+            self.cov["quad_4theta_bs"] = coeff * np.cov(np.array(g4theta_boot), bias=False, ddof=0)
+            self.cov["quad_const_bs"] = coeff * np.cov(np.array(gconst_boot), bias=False, ddof=0)
 
     def compute_jackknife_covariance(
         self,
