@@ -321,14 +321,14 @@ class ClusterEnsemble:
         """
         self._check_empty_data()
 
-        _col_names = [tan_component, cross_component]
+        prof_cols = [tan_component, cross_component]
         if self.include_quadrupole:
-            _col_names += [quad_4theta_component, quad_const_component]
+            prof_cols += [quad_4theta_component, quad_const_component]
 
         radius, components = make_stacked_radial_profile(
             self.data["radius"],
             self.data[weights],
-            [self.data[_col] for _col in _col_names],
+            [self.data[_col] for _col in prof_cols],
         )
         self.stacked_data = GCData(
             [
@@ -338,7 +338,7 @@ class ClusterEnsemble:
                 *components,
             ],
             meta={k: v for k, v in self.data.meta.items() if k not in ("radius_min", "radius_max")},
-            names=("radius_min", "radius_max", "radius", *_col_names),
+            names=("radius_min", "radius_max", "radius", *prof_cols),
         )
 
     def compute_sample_covariance(
@@ -368,14 +368,14 @@ class ClusterEnsemble:
         """
         self._check_empty_data()
 
-        use_cols = [tan_component, cross_component]
+        prof_cols = [tan_component, cross_component]
         if self.include_quadrupole:
-            use_cols += [quad_4theta_component, quad_const_component]
+            prof_cols += [quad_4theta_component, quad_const_component]
 
         n_catalogs = len(self.data)
         for name, col in zip(
             ("tan_sc", "cross_sc", "quad_4theta_sc", "quad_const_sc"),
-            use_cols,
+            prof_cols,
         ):
             self.cov[name] = np.cov(self.data[col].T, bias=False) / n_catalogs
 
@@ -411,14 +411,14 @@ class ClusterEnsemble:
         n_catalogs = len(self)
         cluster_index_bootstrap = np.random.choice(np.arange(n_catalogs), (n_bootstrap, n_catalogs))
 
-        use_cols = [tan_component, cross_component]
+        prof_cols = [tan_component, cross_component]
         if self.include_quadrupole:
-            use_cols += [quad_4theta_component, quad_const_component]
+            prof_cols += [quad_4theta_component, quad_const_component]
 
         g_boot_components = make_stacked_radial_profile(
             self["radius"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
             self["W_l"][None, cluster_index_bootstrap][0].transpose(1, 2, 0),
-            [self[col][None, cluster_index_bootstrap][0].transpose(1, 2, 0) for col in use_cols],
+            [self[col][None, cluster_index_bootstrap][0].transpose(1, 2, 0) for col in prof_cols],
         )[1]
 
         coeff = (n_catalogs / (n_catalogs - 1)) ** 2
@@ -465,18 +465,18 @@ class ClusterEnsemble:
         pixels = healpy.ang2pix(n_side, self.data["ra"], self.data["dec"], nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
 
-        use_cols = [tan_component, cross_component]
+        prof_cols = [tan_component, cross_component]
         if self.include_quadrupole:
-            use_cols += [quad_4theta_component, quad_const_component]
+            prof_cols += [quad_4theta_component, quad_const_component]
 
-        g_jack_components = [[] for _ in use_cols]
+        g_jack_components = [[] for _ in prof_cols]
         for hp_list_delete in pixels_list_unique:
             mask = ~np.isin(pixels, hp_list_delete)
             for i, component in enumerate(
                 make_stacked_radial_profile(
                     self["radius"][mask],
                     self["W_l"][mask],
-                    [self[col][mask] for col in use_cols],
+                    [self[col][mask] for col in prof_cols],
                 )[1]
             ):
                 g_jack_components[i].append(component)
