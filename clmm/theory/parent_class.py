@@ -704,8 +704,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -745,8 +744,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -787,8 +785,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -948,8 +945,7 @@ class CLMModeling:
             validate_argument(locals(), "ell", float, argmin=0, argmax=1)
             validate_argument(locals(), "term", str)
             validate_argument(locals(), "n_grid", int, argmin=2)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")

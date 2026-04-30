@@ -696,6 +696,55 @@ def test_triaxial(modeling_data):
             ),
             **TOLERANCE,
         )
+        # just to test with miscentering
+        assert_allclose(
+            theo.compute_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["mdelta"],
+                cfg["SIGMA_PARAMS"]["cdelta"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                cosmo,
+                term="mono",
+                n_grid=500,
+                r_mis=1e-3,
+            ),
+            mod.eval_excess_surface_density_triaxial(
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "mono",
+                n_grid=500,
+                r_mis=1e-3,
+            ),
+            **TOLERANCE,
+        )
+        # just to run with verbose
+        theo.compute_excess_surface_density_triaxial(
+            cfg["SIGMA_PARAMS"]["r_proj"],
+            cfg["SIGMA_PARAMS"]["mdelta"],
+            cfg["SIGMA_PARAMS"]["cdelta"],
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            cosmo,
+            term="mono",
+            n_grid=20,
+            halo_profile_model="einasto",
+            verbose=True,
+        )
+        # just to run with einasto
+        theo.compute_excess_surface_density_triaxial(
+            cfg["SIGMA_PARAMS"]["r_proj"],
+            cfg["SIGMA_PARAMS"]["mdelta"],
+            cfg["SIGMA_PARAMS"]["cdelta"],
+            cfg["SIGMA_PARAMS"]["z_cl"],
+            0.1,
+            cosmo,
+            term="mono",
+            n_grid=20,
+            halo_profile_model="einasto",
+            alpha_ein=1.0,
+        )
 
 
 def test_2halo_term(modeling_data):

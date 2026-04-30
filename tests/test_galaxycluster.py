@@ -181,6 +181,13 @@ def test_integrity():  # Converge on name
     assert_equal(cl.ra, -10)
     assert_equal(cl.galcat["ra"], [-10])
 
+    # tests for phi_major
+    assert_raises(TypeError, cl.set_phi_major, phi_major=None, info_mem=None)
+    assert_raises(TypeError, cl.set_phi_major, phi_major="None", info_mem="None")
+
+    cl.set_phi_major(1.0)
+    assert_equal(cl.phi_major, 1.0)
+
 
 def test_save_load():
     """test save load"""
