@@ -9,7 +9,6 @@ Main functions to encapsule oo calls
 # "_modeling_object".
 
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline
 
 if "_modeling_object" not in globals():
     _modeling_object = None
@@ -1179,6 +1178,8 @@ def compute_excess_surface_density_triaxial(
         Component of delta sigma excess for the elliptical halo specified
     """
     config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
+    if kwargs.get("halo_profile_model", "nfw") == "einasto" and _modeling_object.backend == "ccl":
+        _modeling_object.set_projected_quad(use_projected_quad)
 
     delta_sigma = _modeling_object.eval_excess_surface_density_triaxial(
         r_proj,

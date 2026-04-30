@@ -2,9 +2,6 @@
 Model functions with triaxiality
 """
 
-# pylint: disable=too-many-lines
-import warnings
-
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline
 
@@ -91,7 +88,7 @@ def _sigma0_correction(ell, sigma_sph, eta, deta_dlnr):
 
 
 def excess_surface_density_mono_correction(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
-    """
+    r"""
     Compute the ellipticity correction for the monopole term.
 
     Parameters
@@ -136,7 +133,7 @@ def excess_surface_density_mono_correction(surface_density_func, r_proj, z_cl, e
 
 
 def excess_surface_density_quad_4theta(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
-    """
+    r"""
     Compute the 4theta component of the quadrupole term.
 
     Parameters
@@ -172,7 +169,7 @@ def excess_surface_density_quad_4theta(surface_density_func, r_proj, z_cl, ell, 
 
 
 def excess_surface_density_quad_const(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
-    """
+    r"""
     Compute the constant component of the quadrupole term.
 
     Parameters

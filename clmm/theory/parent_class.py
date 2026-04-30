@@ -955,9 +955,12 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if r_mis is not None:
-            surface_density_func = lambda r_proj, z_cl: self._eval_surface_density_miscentered(
-                r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend
-            )
+
+            def surface_density_func(r_proj, z_cl):
+                return self._eval_surface_density_miscentered(
+                    r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend
+                )
+
         else:
             surface_density_func = self._eval_surface_density
 
