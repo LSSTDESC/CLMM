@@ -6,6 +6,7 @@ import pickle
 import warnings
 
 from .dataops import (
+    calculate_major_axis,
     compute_background_probability,
     compute_galaxy_weights,
     compute_tangential_and_cross_components,
@@ -329,8 +330,11 @@ class GalaxyCluster:
                 geometry=geometry,
                 validate_input=self.validate_input,
                 include_quadrupole=self.include_quadrupole,
-                phi_major=phi_major,
-                info_mem=info_mem,
+                phi_major=(
+                    phi_major
+                    if phi_major is not None
+                    else calculate_major_axis(self.ra, self.dec, *info_mem)
+                ),
                 coordinate_system=self.galcat.meta["coordinate_system"],
                 **cols,
             )

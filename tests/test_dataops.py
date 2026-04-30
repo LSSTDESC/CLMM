@@ -527,7 +527,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=gals["e2"],
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
         assert_allclose(
             ftshear,
@@ -606,7 +612,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=list(gals["e2"]),
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
         assert_allclose(
             ftshear,
@@ -687,7 +699,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=list(gals["e2"]),
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
             validate_input=False,
         )
         assert_allclose(
@@ -875,7 +893,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     )
     # check validation between include_quadrupole and {phi_major|info_mem}
     assert_raises(
-        TypeError,
+        ValueError,
         da.compute_tangential_and_cross_components,
         ra_lens=ra_lens,
         dec_lens=dec_lens,
@@ -933,7 +951,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             sigma_c=sigma_c,
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
         assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
         assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")

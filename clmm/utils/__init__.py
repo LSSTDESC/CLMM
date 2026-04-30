@@ -39,7 +39,6 @@ from .validation import (
     _patch_rho_crit_to_cd2018,
     _validate_coordinate_system,
     _validate_dec,
-    _validate_include_quadrupole_phi_major,
     _validate_is_deltasigma_sigma_c,
     _validate_ra,
     arguments_consistency,

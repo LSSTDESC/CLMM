@@ -11,7 +11,6 @@ from ..utils import (
     _integ_pzfuncs,
     _validate_coordinate_system,
     _validate_dec,
-    _validate_include_quadrupole_phi_major,
     _validate_is_deltasigma_sigma_c,
     _validate_ra,
     arguments_consistency,
@@ -35,7 +34,6 @@ def compute_tangential_and_cross_components(
     sigma_c=None,
     include_quadrupole=False,
     phi_major=None,
-    info_mem=None,
     validate_input=True,
 ):
     r"""Computes tangential- and cross- components for shear or ellipticity
@@ -123,18 +121,12 @@ def compute_tangential_and_cross_components(
     include_quadrupole: bool
         If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
     phi_major : float, optional
-        the direction of the major axis of the input cluster in the unit of radian. 
+        Direction of the major axis of the input cluster in the unit of radian. 
         only needed when `include_quadrupole` is `True`.
         This quantity is always in Euclidean coordinates, for celestial coordinates only set
         the coordinate_system=`celestial`.
-        Users could choose to provide ra_mem, dec_mem and weight_mem instead of this quantity.
-    info_mem : list of array, optional
-        RAs, DECs and weights of the member galaxies of the input cluster,
-        to calcualte the direction of the major axis of the cluster.
-        Only needed when `include_quadrupole` is `True` and `phi_major` is not provided.
-        The shape must be in `[ra_mem,dec_mem,weight_mem]`, where each element is an array.
-        The weights could be `1` (no weights) or 
-        `membership probability (p_mem)` or any user choice. 
+        ``CLMM`` also provides a function to compute ``phi_major`` from the cluster members,
+        check :class:`clmm.data.calculate_major_axis` for details.
     validate_input: bool
         Validade each input argument
 
@@ -177,9 +169,7 @@ def compute_tangential_and_cross_components(
             prefix="Tangential- and Cross- shape components sources",
         )
         _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
-        _validate_include_quadrupole_phi_major(include_quadrupole, phi_major, info_mem)
         validate_argument(locals(), "phi_major", float, none_ok=True)
-        validate_argument(locals(), "info_mem", list, none_ok=True)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -210,12 +200,7 @@ def compute_tangential_and_cross_components(
 
     if include_quadrupole:
         if phi_major is None:
-            if info_mem is None:
-                raise ValueError(
-                    "Either phi_major or (ra_mem, dec_mem, weight_mem) should be provided"
-                )
-            # info_mem=(ra_mem, dec_mem, weight_mem)
-            phi_major = calculate_major_axis(ra_lens, dec_lens, *info_mem)
+            raise ValueError("phi_major should be provided for quadrupole computation")
         if coordinate_system == "celestial":
             phi_major = np.pi - phi_major
         rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major)
