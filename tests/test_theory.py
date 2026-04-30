@@ -241,14 +241,24 @@ def helper_profiles(func):
     cclcosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05)
 
     # Fail vals
-    assert_raises(ValueError, func, r3d, 0, cdelta, z_cl, cclcosmo, 200)
-    assert_raises(ValueError, func, r3d, mdelta, 0, z_cl, cclcosmo, 200)
+    assert_raises(ValueError, func, r3d, 0, cdelta, z_cl, cclcosmo, delta_mdef=200)
+    assert_raises(ValueError, func, r3d, mdelta, 0, z_cl, cclcosmo, delta_mdef=200)
     # r<0
-    assert_raises(ValueError, func, -1, mdelta, cdelta, z_cl, cclcosmo, 200)
+    assert_raises(ValueError, func, -1, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200)
     # r=0
-    assert_raises(ValueError, func, 0, mdelta, cdelta, z_cl, cclcosmo, 200)
+    assert_raises(ValueError, func, 0, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200)
     # other profiles models are passed
-    assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, "bleh")
+    assert_raises(
+        ValueError,
+        func,
+        r3d,
+        mdelta,
+        cdelta,
+        z_cl,
+        cclcosmo,
+        delta_mdef=200,
+        halo_profile_model="bleh",
+    )
 
     # Test defaults
 
