@@ -197,7 +197,7 @@ def compute_surface_density(
     another structure to take the arguments necessary for specific models.
     """
     config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
-    if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
+    if kwargs.get("halo_profile_model", "nfw") == "einasto" and _modeling_object.backend == "ccl":
         _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(
