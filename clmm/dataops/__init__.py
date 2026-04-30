@@ -203,34 +203,34 @@ def compute_tangential_and_cross_components(
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
-    tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
-    cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
-    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
-    if sigma_c is not None:
-        _sigma_c_arr = np.array(sigma_c)
-        tangential_comp *= _sigma_c_arr
-        cross_comp *= _sigma_c_arr
+    output_components = [
+        _compute_tangential_shear(shear1_, shear2_, phi),
+        _compute_cross_shear(shear1_, shear2_, phi),
+    ]
 
     if include_quadrupole:
-        if (phi_major is None) and (info_mem is None):
-            raise ValueError("Either phi_major or (ra_mem, dec_mem, weight_mem) should be provided")
         if phi_major is None:
-            # info_mem=[ra_mem,dec_mem,weight_mem]
-            phi_major = calculate_major_axis(
-                ra_lens, dec_lens, info_mem[0], info_mem[1], info_mem[2]
-            )
+            if info_mem is None:
+                raise ValueError(
+                    "Either phi_major or (ra_mem, dec_mem, weight_mem) should be provided"
+                )
+            # info_mem=(ra_mem, dec_mem, weight_mem)
+            phi_major = calculate_major_axis(ra_lens, dec_lens, *info_mem)
         if coordinate_system == "celestial":
             phi_major = np.pi - phi_major
         rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major)
         # Compute the quadrupole shear components
-        four_theta_comp = _compute_4theta_shear(rotated_shear1, rotated_shear2, phi - phi_major)
-        const_comp = rotated_shear1
-        # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
-        if sigma_c is not None:
-            four_theta_comp *= _sigma_c_arr
-            const_comp *= _sigma_c_arr
-        return angsep, tangential_comp, cross_comp, four_theta_comp, const_comp
-    return angsep, tangential_comp, cross_comp
+        output_components += [
+            _compute_4theta_shear(rotated_shear1, rotated_shear2, phi - phi_major),
+            rotated_shear1,  # const_comp
+        ]
+
+    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
+    if sigma_c is not None:
+        _sigma_c_arr = np.array(sigma_c)
+        output_components = [component * _sigma_c_arr for component in output_components]
+
+    return angsep, *output_components
 
 
 def compute_background_probability(
