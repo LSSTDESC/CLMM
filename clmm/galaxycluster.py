@@ -354,16 +354,16 @@ class GalaxyCluster:
 
         if add:
 
-            _add_cols = [tan_component, cross_component]
+            prof_cols = [tan_component, cross_component]
             if self.include_quadrupole:
-                _add_cols += [quad_4theta_component, quad_const_component]
+                prof_cols += [quad_4theta_component, quad_const_component]
 
             self.galcat["theta"] = angsep_and_components[0]
-            for _col, _comp_val in zip(_add_cols, angsep_and_components[1:]):
+            for _col, _comp_val in zip(prof_cols, angsep_and_components[1:]):
                 self.galcat[_col] = _comp_val
             if is_deltasigma:
                 sigmac_type = "effective" if use_pdz else "standard"
-                for _col in _add_cols:
+                for _col in prof_cols:
                     self.galcat.meta[f"{_col}_sigmac_type"] = sigmac_type
 
         return angsep_and_components
@@ -785,89 +785,38 @@ class GalaxyCluster:
         if not hasattr(self, table_name):
             raise ValueError(f"GalaxyClusters does not have a '{table_name}' table.")
         profile = getattr(self, table_name)
-        if self.include_quadrupole:
-            for col in (
-                tangential_component,
-                cross_component,
-                quad_4theta_component,
-                quad_const_component,
-            ):
-                if col not in profile.columns:
-                    raise ValueError(f"Column for plotting '{col}' does not exist.")
-            for col in (
-                tangential_component_error,
-                cross_component_error,
-                quad_4theta_component_error,
-                quad_const_component_error,
-            ):
-                if col not in profile.columns:
-                    warnings.warn(f"Column for plotting '{col}' does not exist.")
-            return (
-                plot_profiles(
-                    rbins=profile["radius"],
-                    r_units=profile.meta["bin_units"],
-                    tangential_component=profile[tangential_component],
-                    tangential_component_error=(
-                        profile[tangential_component_error]
-                        if tangential_component_error in profile.columns
-                        else None
-                    ),
-                    cross_component=profile[cross_component],
-                    cross_component_error=(
-                        profile[cross_component_error]
-                        if cross_component_error in profile.columns
-                        else None
-                    ),
-                    xscale=xscale,
-                    yscale=yscale,
-                    tangential_component_label=tangential_component,
-                    cross_component_label=cross_component,
-                ),
-                plot_profiles(
-                    rbins=profile["radius"],
-                    r_units=profile.meta["bin_units"],
-                    tangential_component=profile[quad_4theta_component],
-                    tangential_component_error=(
-                        profile[quad_4theta_component_error]
-                        if quad_4theta_component_error in profile.columns
-                        else None
-                    ),
-                    cross_component=profile[quad_const_component],
-                    cross_component_error=(
-                        profile[quad_const_component_error]
-                        if quad_const_component_error in profile.columns
-                        else None
-                    ),
-                    xscale=xscale,
-                    yscale=yscale,
-                    tangential_component_label=quad_4theta_component,
-                    cross_component_label=quad_const_component,
-                ),
-            )
 
-        for col in (tangential_component, cross_component):
-            if col not in profile.columns:
-                raise ValueError(f"Column for plotting '{col}' does not exist.")
-        for col in (tangential_component_error, cross_component_error):
-            if col not in profile.columns:
-                warnings.warn(f"Column for plotting '{col}' does not exist.")
-        return plot_profiles(
-            rbins=profile["radius"],
-            r_units=profile.meta["bin_units"],
-            tangential_component=profile[tangential_component],
-            tangential_component_error=(
-                profile[tangential_component_error]
-                if tangential_component_error in profile.columns
-                else None
-            ),
-            cross_component=profile[cross_component],
-            cross_component_error=(
-                profile[cross_component_error] if cross_component_error in profile.columns else None
-            ),
-            xscale=xscale,
-            yscale=yscale,
-            tangential_component_label=tangential_component,
-            cross_component_label=cross_component,
+        prof_cols = [tangential_component, cross_component]
+        prof_cols_err = [tangential_component_error, cross_component_error]
+        if self.include_quadrupole:
+            prof_cols += [quad_4theta_component, quad_const_component]
+            prof_cols_err += [quad_4theta_component_error, quad_const_component_error]
+
+        for col in filter(lambda col: col not in profile.columns, prof_cols):
+            raise ValueError(f"Column for plotting '{col}' does not exist.")
+        for col in filter(lambda col: col not in profile.columns, prof_cols_err):
+            warnings.warn(f"Column for plotting '{col}' does not exist.")
+
+        return (
+            plot_profiles(
+                rbins=profile["radius"],
+                r_units=profile.meta["bin_units"],
+                tangential_component=profile[comp1],
+                tangential_component_error=(
+                    profile[comp1_err] if comp1_err in profile.columns else None
+                ),
+                cross_component=profile[comp2],
+                cross_component_error=(
+                    profile[comp2_err] if comp2_err in profile.columns else None
+                ),
+                xscale=xscale,
+                yscale=yscale,
+                tangential_component_label=comp1,
+                cross_component_label=comp2,
+            )
+            for comp1, comp2, comp1_err, comp2_err in zip(
+                prof_cols[::2], prof_cols[1::2], prof_cols_err[::2], prof_cols_err[1::2]
+            )
         )
 
     def set_ra_lower(self, ra_low=0):
