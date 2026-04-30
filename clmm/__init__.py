@@ -28,4 +28,4 @@ from .theory import (
 )
 from .utils import compute_radial_averages, convert_units, make_bins
 
-__version__ = "1.17.0"
+__version__ = "1.18.0"
