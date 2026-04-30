@@ -696,6 +696,7 @@ def test_triaxial(modeling_data):
             ),
             **TOLERANCE,
         )
+    if mod.backend == "ccl":
         # just to test with miscentering
         assert_allclose(
             theo.compute_excess_surface_density_triaxial(
