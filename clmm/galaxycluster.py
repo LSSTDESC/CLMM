@@ -662,40 +662,14 @@ class GalaxyCluster:
         """
         # Too many local variables (19/15)
         # pylint: disable=R0914
-        input_var_plus_theta = (tan_component_in, cross_component_in, "theta")
-        input_var_plus_z = (tan_component_in, cross_component_in, "z")
-        input_err = (tan_component_in_err, cross_component_in_err, None)
-        output_var_plus_z = [tan_component_out, cross_component_out, "z"]
+        prof_col_in = [tan_component_in, cross_component_in]
+        prof_col_in_err = [tan_component_in_err, cross_component_in_err]
+        prof_col_out = [tan_component_out, cross_component_out]
         if self.include_quadrupole:
-            input_var_plus_theta = (
-                tan_component_in,
-                cross_component_in,
-                quad_4theta_component_in,
-                quad_const_component_in,
-                "theta",
-            )
-            input_var_plus_z = (
-                tan_component_in,
-                cross_component_in,
-                quad_4theta_component_in,
-                quad_const_component_in,
-                "z",
-            )
-            input_err = (
-                tan_component_in_err,
-                cross_component_in_err,
-                quad_4theta_component_in_err,
-                quad_const_component_in_err,
-                None,
-            )
-            output_var_plus_z = [
-                tan_component_out,
-                cross_component_out,
-                quad_4theta_component_out,
-                quad_const_component_out,
-                "z",
-            ]
-        if not all(t_ in self.galcat.columns for t_ in input_var_plus_theta):
+            prof_col_in += [quad_4theta_component_in, quad_const_component_in]
+            prof_col_in_err += [quad_4theta_component_in_err, quad_const_component_in_err]
+            prof_col_out += [quad_4theta_component_out, quad_const_component_out]
+        if not all(t_ in self.galcat.columns for t_ in (*prof_col_in, "theta")):
             raise TypeError(
                 "Shear or ellipticity information is missing. Galaxy catalog must have tangential"
                 "and cross shears (gt, gx) or ellipticities (et, ex). "
@@ -705,7 +679,7 @@ class GalaxyCluster:
             raise TypeError("Missing galaxy redshifts!")
         # Compute the binned averages and associated errors
         profile_table, binnumber = make_radial_profile(
-            [self.galcat[n].data for n in input_var_plus_z],
+            [self.galcat[n].data for n in (*prof_col_in, "z")],
             angsep=self.galcat["theta"],
             angsep_units="radians",
             bin_units=bin_units,
@@ -716,12 +690,14 @@ class GalaxyCluster:
             cosmo=cosmo,
             z_lens=self.z,
             validate_input=self.validate_input,
-            components_error=[None if n is None else self.galcat[n].data for n in input_err],
+            components_error=[
+                None if n is None else self.galcat[n].data for n in (*prof_col_in_err, None)
+            ],
             weights=self.galcat[weights_in].data if use_weights else None,
             coordinate_system=self.galcat.meta["coordinate_system"],
         )
         # Reaname table columns
-        for i, name in enumerate(output_var_plus_z):
+        for i, name in enumerate([*prof_col_out, "z"]):
             profile_table.rename_column(f"p_{i}", name)
             profile_table.rename_column(f"p_{i}_err", f"{name}_err")
         # Reaname weights columns
