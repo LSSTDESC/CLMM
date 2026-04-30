@@ -278,13 +278,14 @@ def test_integrity_of_lensfuncs():
         cluster.compute_tangential_and_cross_components(
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0]))
+        )
         cluster_quad.compute_tangential_and_cross_components(
             is_deltasigma=True,
             use_pdz=True,
             cosmo=cosmo,
             add=True,
-            phi_major=0.0,
-            info_mem=[np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0])],
         )
         for comp_name in ("et", "ex"):
             assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
@@ -495,10 +496,10 @@ def test_plot_profiles():
         include_quadrupole=True,
     )
     cluster.compute_tangential_and_cross_components()
-    cluster_quad.compute_tangential_and_cross_components(
-        phi_major=0.0,
-        info_mem=[np.array([119.9, 120, 1]), np.array([41.9, 42.1]), np.array([1.0, 1.0])],
+    cluster_quad.set_phi_major(
+        info_mem=(np.array([119.9, 120]), np.array([41.9, 42.1]), np.array([1.0, 1.0]))
     )
+    cluster_quad.compute_tangential_and_cross_components()
     cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
     cluster_quad.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
     # missing profile name

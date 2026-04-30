@@ -1,6 +1,7 @@
 """
 tests for clusterensemble.py
 """
+
 import os
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_array_equal
 import clmm
@@ -43,10 +44,10 @@ def test_cluster_ensemble():
         unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat, include_quadrupole=True
     )
     cluster.compute_tangential_and_cross_components()
-    cluster_quad.compute_tangential_and_cross_components(
-        phi_major=0.0,
-        info_mem=[np.array([119.9, 120.1]), np.array([41.9, 42.1]), np.array([1.0, 1.0])],
+    cluster_quad.set_phi_major(
+        info_mem=(np.array([119.9, 120.1]), np.array([41.9, 42.1]), np.array([1.0, 1.0]))
     )
+    cluster_quad.compute_tangential_and_cross_components()
     bins = bins_radians
     gc_list = [cluster]
     gc_list_quad = [cluster_quad]

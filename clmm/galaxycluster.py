@@ -36,6 +36,8 @@ class GalaxyCluster:
         Declination of galaxy cluster center (in degrees)
     z : float
         Redshift of galaxy cluster center
+    phi_major : float, None
+        Direction of the major axis of the cluster in radians, only used for triaxiality.
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     validate_input: bool
@@ -53,6 +55,7 @@ class GalaxyCluster:
         self.dec = None
         self.z = None
         self.galcat = None
+        self.phi_major = None
         self.validate_input = validate_input
         self.include_quadrupole = include_quadrupole
         if len(args) > 0 or len(kwargs) > 0:
@@ -67,6 +70,7 @@ class GalaxyCluster:
         dec: float,
         z: float,
         galcat: GCData,
+        phi_major: float = None,
     ):
         """Add values for all attributes"""
         self.unique_id = unique_id
@@ -74,6 +78,7 @@ class GalaxyCluster:
         self.dec = dec
         self.z = z
         self.galcat = galcat
+        self.phi_major = phi_major
 
     def _check_types(self):
         """Check types of all attributes"""
@@ -129,6 +134,25 @@ class GalaxyCluster:
             f"<br>> {len(self.galcat)} source galaxies"
             f"<br>{self.galcat._html_table()}"
         )
+
+    def set_phi_major(self, phi_major=None, info_mem=None):
+        r"""Sets the phi_major value for the cluster, is
+        obtained either from ``phi_major`` or from ``info_mem``.
+
+        Parameters
+        ----------
+        phi_major: float, optional
+            Cluster major axis direction (in radian with respect to +x).
+        info_mem: tuple, optional
+            (RA, DEC, weights) of cluster member galaxies as a tuple of array.
+        """
+        if phi_major is None:
+            if info_mem is None:
+                raise TypeError("Either phi_major or info_mem should be provided.")
+            phi_major = calculate_major_axis(self.ra, self.dec, *info_mem)
+        elif info_mem is not None:
+            raise TypeError("Only phi_major OR info_mem should be provided.")
+        self.phi_major = phi_major
 
     def add_critical_surface_density(self, cosmo, use_pdz=False, force=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
@@ -231,8 +255,6 @@ class GalaxyCluster:
         use_pdz=False,
         cosmo=None,
         add=True,
-        phi_major=None,
-        info_mem=None,
     ):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
@@ -248,7 +270,6 @@ class GalaxyCluster:
         coordinate_system: `galcat` coordinate_system
         include_quadrupole: `input` include_quadrupole
         phi_major: `cluster` major axis direction (in radian with respect to +x)
-        info_mem: `cluster` [RAs, DECs, weights] of member galaxies as a list of array
 
         Parameters
         ----------
@@ -286,13 +307,6 @@ class GalaxyCluster:
             Specifying a cosmology is required if `is_deltasigma` is `True`
         add: bool
             If `True`, adds the computed shears to the `galcat`
-        phi_major: string, optional
-            `cluster` major axis direction (in radian with respect to +x).
-            If include_quadrupole is `True`, either phi_major or info_mem needs to be supplied.
-        info_mem: string, optional
-            `cluster` [RAs, DECs, weights] of member galaxies as a list of array,
-            for calculating major axis of a given cluster.
-            If include_quadrupole is `True`, either phi_major or info_mem needs to be supplied.
 
         Returns
         -------
@@ -323,6 +337,8 @@ class GalaxyCluster:
 
         # compute shears
         if self.include_quadrupole:
+            if self.phi_major is None:
+                raise ValueError("Cluster phi_major is not set, run set_phi_major before.")
             angsep_and_components = compute_tangential_and_cross_components(
                 is_deltasigma=is_deltasigma,
                 ra_lens=self.ra,
@@ -330,11 +346,7 @@ class GalaxyCluster:
                 geometry=geometry,
                 validate_input=self.validate_input,
                 include_quadrupole=self.include_quadrupole,
-                phi_major=(
-                    phi_major
-                    if phi_major is not None
-                    else calculate_major_axis(self.ra, self.dec, *info_mem)
-                ),
+                phi_major=self.phi_major,
                 coordinate_system=self.galcat.meta["coordinate_system"],
                 **cols,
             )

@@ -829,8 +829,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
         # include_quadrupole=True, with phi_major input
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftshear2, cnshear2 = cluster_quad.compute_tangential_and_cross_components(
-            geometry=geometry, phi_major=0.0
+            geometry=geometry,
         )
         assert_allclose(
             ftshear2,
@@ -845,9 +848,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Constant Shear not correct when using cluster method w/ phi_major",
         )
         # include_quadrupole=True, with info_mem instead of phi_major input
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftshear3, cnshear3 = cluster_quad.compute_tangential_and_cross_components(
             geometry=geometry,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
         )
         assert_allclose(
             ftshear3,
@@ -1008,8 +1013,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
         # Turn on include_quadrupole w/ phi_major
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
-            cosmo=cosmo, is_deltasigma=True, geometry=geometry, phi_major=0.0
+            cosmo=cosmo,
+            is_deltasigma=True,
+            geometry=geometry,
         )
         assert_allclose(
             ftDS,
@@ -1024,11 +1034,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Constant Shear not correct when using cluster method w/ phi_major",
         )
         # Turn on include_quadrupole w/ info_mem
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
             cosmo=cosmo,
             is_deltasigma=True,
             geometry=geometry,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
         )
         assert_allclose(
             ftDS,
