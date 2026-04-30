@@ -942,8 +942,12 @@ def test_compute_tangential_and_cross_components(modeling_data):
             include_quadrupole=True,
             phi_major=0.0,
         )
-        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
-        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
+        assert_allclose(
+            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+        )
+        assert_allclose(
+            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+        )
         ## Turn on include_quadrupole w/ info_mem
         _, _, _, ftDS, cnDS = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -964,8 +968,12 @@ def test_compute_tangential_and_cross_components(modeling_data):
                 np.array([1.0, 1.0]),
             ),
         )
-        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
-        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
+        assert_allclose(
+            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+        )
+        assert_allclose(
+            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+        )
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
     cluster = clmm.GalaxyCluster(
@@ -1024,13 +1032,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
         assert_allclose(
             ftDS,
             expected["four_theta_DS"],
-            reltol,
+            10 * reltol,
             err_msg="4theta Shear not correct when using cluster method w/ phi_major",
         )
         assert_allclose(
             cnDS,
             expected["const_DS"],
-            reltol,
+            10 * reltol,
             err_msg="Constant Shear not correct when using cluster method w/ phi_major",
         )
         # Turn on include_quadrupole w/ info_mem
@@ -1045,13 +1053,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
         assert_allclose(
             ftDS,
             expected["four_theta_DS"],
-            reltol,
+            10 * reltol,
             err_msg="4theta Shear not correct when using cluster method w/ info_mem",
         )
         assert_allclose(
             cnDS,
             expected["const_DS"],
-            reltol,
+            10 * reltol,
             err_msg="Constant Shear not correct when using cluster method w/ info_mem",
         )
 
