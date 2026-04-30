@@ -278,10 +278,12 @@ class CLMModeling:
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def _eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
+    def _eval_excess_surface_density_triaxial(
+        self, surface_density_func, r_proj, z_cl, ell, term, n_grid=10000
+    ):
         """eval individual terms of  excess surface density"""
 
-        args = (self._eval_surface_density, r_proj, z_cl, ell, n_grid)
+        args = (surface_density_func, r_proj, z_cl, ell, n_grid)
 
         if term == "mono":
             delta_sigma = self._eval_excess_surface_density(
@@ -903,7 +905,17 @@ class CLMModeling:
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
 
-    def eval_excess_surface_density_triaxial(self, r_proj, z_cl, ell, term, n_grid=10000):
+    def eval_excess_surface_density_triaxial(
+        self,
+        r_proj,
+        z_cl,
+        ell,
+        term,
+        r_mis=None,
+        mis_from_backend=False,
+        verbose=False,
+        n_grid=10000,
+    ):
         r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
 
         Parameters
@@ -936,6 +948,20 @@ class CLMModeling:
             validate_argument(locals(), "ell", float, argmin=0, argmax=1)
             validate_argument(locals(), "term", str)
             validate_argument(locals(), "n_grid", int, argmin=2)
+            if r_mis is not None:
+                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+
+        if self.halo_profile_model == "einasto" and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        if r_mis is not None:
+            surface_density_func = (
+                lambda r_proj, z_cl: self._eval_excess_surface_density_miscentered(
+                    r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend
+                )
+            )
+        else:
+            surface_density_func = self._eval_excess_surface_density
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
@@ -943,7 +969,9 @@ class CLMModeling:
                 "Use the CCL or NumCosmo backend instead"
             )
 
-        return self._eval_excess_surface_density_triaxial(r_proj, z_cl, ell, term, n_grid)
+        return self._eval_excess_surface_density_triaxial(
+            surface_density_func, r_proj, z_cl, ell, term, n_grid
+        )
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
         r"""Computes the tangential shear

@@ -574,7 +574,7 @@ def test_triaxial(modeling_data):
             cfg["SIGMA_PARAMS"]["z_cl"],
             0.1,
             "mono",
-            100,
+            n_grid=100,
         )
     else:
         # Just checking that it runs and returns array of the right length
@@ -582,7 +582,11 @@ def test_triaxial(modeling_data):
         assert_equal(
             len(
                 mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 100
+                    cfg["SIGMA_PARAMS"]["r_proj"],
+                    cfg["SIGMA_PARAMS"]["z_cl"],
+                    0.1,
+                    "mono",
+                    n_grid=100,
                 )
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
@@ -594,7 +598,7 @@ def test_triaxial(modeling_data):
                     cfg["SIGMA_PARAMS"]["z_cl"],
                     0.1,
                     "quad_4theta",
-                    100,
+                    n_grid=100,
                 )
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
@@ -606,7 +610,7 @@ def test_triaxial(modeling_data):
                     cfg["SIGMA_PARAMS"]["z_cl"],
                     0.1,
                     "quad_const",
-                    100,
+                    n_grid=100,
                 )
             ),
             len(cfg["SIGMA_PARAMS"]["r_proj"]),
@@ -632,7 +636,7 @@ def test_triaxial(modeling_data):
             cfg["SIGMA_PARAMS"]["z_cl"],
             0.1,
             "bleh",
-            500,
+            n_grid=500,
         )
 
         # Checks that OO-oriented and functional interface give the same results
@@ -648,7 +652,11 @@ def test_triaxial(modeling_data):
                 n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
-                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_4theta", 500
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "quad_4theta",
+                n_grid=500,
             ),
             **TOLERANCE,
         )
@@ -664,7 +672,11 @@ def test_triaxial(modeling_data):
                 n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
-                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "quad_const", 500
+                cfg["SIGMA_PARAMS"]["r_proj"],
+                cfg["SIGMA_PARAMS"]["z_cl"],
+                0.1,
+                "quad_const",
+                n_grid=500,
             ),
             **TOLERANCE,
         )
@@ -680,7 +692,7 @@ def test_triaxial(modeling_data):
                 n_grid=500,
             ),
             mod.eval_excess_surface_density_triaxial(
-                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", 500
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], 0.1, "mono", n_grid=500
             ),
             **TOLERANCE,
         )
