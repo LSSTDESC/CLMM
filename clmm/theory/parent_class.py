@@ -956,12 +956,12 @@ class CLMModeling:
 
         if r_mis is not None:
             surface_density_func = (
-                lambda r_proj, z_cl: self._eval_excess_surface_density_miscentered(
+                lambda r_proj, z_cl: self._eval_surface_density_miscentered(
                     r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend
                 )
             )
         else:
-            surface_density_func = self._eval_excess_surface_density
+            surface_density_func = self._eval_surface_density
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
