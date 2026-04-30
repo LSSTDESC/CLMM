@@ -409,11 +409,7 @@ class ClusterEnsemble:
         """
         self._check_empty_data()
         n_catalogs = len(self)
-
-        cluster_index = np.arange(n_catalogs)
-        cluster_index_bootstrap = [
-            np.random.choice(cluster_index, n_catalogs) for n_boot in range(n_bootstrap)
-        ]
+        cluster_index_bootstrap = np.random.choice(np.arange(n_catalogs), (n_bootstrap, n_catalogs))
 
         use_cols = [tan_component, cross_component]
         if self.include_quadrupole:
