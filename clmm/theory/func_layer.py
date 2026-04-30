@@ -1348,7 +1348,23 @@ def compute_magnification_bias(
 
 
 def compute_excess_surface_density_triaxial(
-    r_proj, mdelta, cdelta, z_cl, ell, cosmo, term, n_grid=10000, **kwargs
+    r_proj,
+    mdelta,
+    cdelta,
+    z_cl,
+    ell,
+    cosmo,
+    term,
+    n_grid=10000,
+    delta_mdef=200,
+    halo_profile_model="nfw",
+    massdef="mean",
+    alpha_ein=None,
+    r_mis=None,
+    mis_from_backend=False,
+    verbose=False,
+    use_projected_quad=False,
+    validate_input=True,
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
     or constant quadrupole component given in Shin et al. 2018
@@ -1378,68 +1394,70 @@ def compute_excess_surface_density_triaxial(
     n_grid : int
         Grid resolution for functions to be computed on.
         Too low n_grid can lead to large deviations.
+    delta_mdef : int, optional
+        Mass overdensity definition; defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
+
+    alpha_ein : float, None, optional
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+
+    r_mis : float, optional
+        Projected miscenter distance in :math:`M\!pc`
+    mis_from_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. If False, use the (faster) CLMM exact analytical
+        implementation instead. (Default: False)
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
+    use_projected_quad : bool
+        Only available for Einasto profile with CCL as the backend. If True, CCL will use
+        quad_vec instead of default FFTLog to calculate the surface density profile.
+        Default: False
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
 
     Returns
     -------
     dsmono : array
         Component of delta sigma excess for the elliptical halo specified
     """
-    grid = np.logspace(-3, np.log10(3 * np.max(r_proj)), n_grid)
-    sigma0_grid = compute_surface_density(
-        grid,
-        mdelta,
-        cdelta,
-        z_cl,
-        cosmo,
-        **kwargs,
+
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    sigma0 = compute_surface_density(
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
+    if halo_profile_model == "einasto" or alpha_ein is not None:
+        _modeling_object.set_einasto_alpha(alpha_ein)
+
+    delta_sigma = _modeling_object.eval_excess_surface_density_triaxial(
         r_proj,
-        mdelta,
-        cdelta,
         z_cl,
-        cosmo,
-        **kwargs,
+        ell,
+        term,
+        r_mis=r_mis,
+        mis_from_backend=mis_from_backend,
+        verbose=verbose,
+        n_grid=n_grid,
     )
-    eta_grid = grid * np.gradient(np.log(sigma0_grid), grid)
-    eta = InterpolatedUnivariateSpline(grid, eta_grid, k=5)(r_proj)
 
-    if term == "mono":
-        deta_dlnr_grid = grid * np.gradient(eta_grid, grid)
-        deta_dlnr = InterpolatedUnivariateSpline(grid, deta_dlnr_grid, k=5)(r_proj)
-        sigma_correction_grid = sigma0_grid * (
-            0.5 * ell**2 * (eta_grid + 0.5 * eta_grid**2 + 0.5 * deta_dlnr_grid)
-        )
-        sigma_correction = sigma0 * (0.5 * ell**2 * (eta + 0.5 * eta**2 + 0.5 * deta_dlnr))
-        integral_vec = np.vectorize(
-            InterpolatedUnivariateSpline(grid, grid * sigma_correction_grid, k=5).integral
-        )
-        delta_sigma = (
-            compute_excess_surface_density(
-                r_proj,
-                mdelta,
-                cdelta,
-                z_cl,
-                cosmo,
-                **kwargs,
-            )
-            + (2 / r_proj**2) * integral_vec(0, r_proj)
-            - sigma_correction
-        )
-
-    elif term == "quad_4theta":
-        integral_vec = np.vectorize(
-            InterpolatedUnivariateSpline(grid, grid**3 * sigma0_grid * eta_grid, k=5).integral
-        )
-        delta_sigma = 0.5 * ell * (2 * (3 / r_proj**4 * integral_vec(0, r_proj)) - sigma0 * eta)
-
-    elif term == "quad_const":
-        integral_vec = np.vectorize(
-            InterpolatedUnivariateSpline(grid, sigma0_grid * eta_grid / grid, k=5).integral
-        )
-        delta_sigma = 0.5 * ell * (2 * integral_vec(r_proj, np.inf) - sigma0 * eta)
-
-    else:
-        raise ValueError(f"Unsupported term (='{term}')")
-
+    _modeling_object.validate_input = True
     return delta_sigma
