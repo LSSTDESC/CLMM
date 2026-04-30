@@ -23,7 +23,6 @@ def config_halo_profile(
     halo_profile_model="nfw",
     massdef="mean",
     alpha_ein=None,
-    verbose=False,
     validate_input=True,
 ):
     r"""Configure up the halo profile.
@@ -57,9 +56,6 @@ def config_halo_profile(
         Option only available for the NumCosmo and CCL backends.
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
-    verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
-        backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -85,6 +81,7 @@ def compute_3d_density(
     cdelta,
     z_cl,
     cosmo,
+    verbose=False,
     **kwargs,
 ):
     r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -106,6 +103,9 @@ def compute_3d_density(
         Redshift of the cluster
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -138,6 +138,7 @@ def compute_surface_density(
     r_mis=None,
     mis_from_backend=False,
     use_projected_quad=False,
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the surface mass density
@@ -177,6 +178,9 @@ def compute_surface_density(
         Only available for Einasto profile with CCL as the backend. If True, CCL will use
         quad_vec instead of default FFTLog to calculate the surface density profile.
         Default: False
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -212,6 +216,7 @@ def compute_mean_surface_density(
     cosmo,
     r_mis=None,
     mis_from_backend=False,
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the mean value of surface density inside radius `r_proj`
@@ -237,6 +242,9 @@ def compute_mean_surface_density(
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -271,6 +279,7 @@ def compute_excess_surface_density(
     cosmo,
     r_mis=None,
     mis_from_backend=False,
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the excess surface density
@@ -296,6 +305,9 @@ def compute_excess_surface_density(
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -501,6 +513,7 @@ def compute_tangential_shear(
     z_src,
     cosmo,
     z_src_info="discrete",
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the tangential shear
@@ -553,6 +566,9 @@ def compute_tangential_shear(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -590,6 +606,7 @@ def compute_convergence(
     z_src,
     cosmo,
     z_src_info="discrete",
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the mass convergence
@@ -642,6 +659,9 @@ def compute_convergence(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -677,6 +697,7 @@ def compute_reduced_tangential_shear(
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the reduced tangential shear
@@ -772,6 +793,9 @@ def compute_reduced_tangential_shear(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -819,6 +843,7 @@ def compute_magnification(
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
+    verbose=False,
     **kwargs,
 ):
     r"""Computes the magnification
@@ -911,6 +936,9 @@ def compute_magnification(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -949,6 +977,7 @@ def compute_magnification_bias(
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
+    verbose=False,
     **kwargs,
 ):
     r""" Computes magnification bias from magnification :math:`\mu`
@@ -1063,6 +1092,9 @@ def compute_magnification_bias(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
@@ -1102,6 +1134,7 @@ def compute_excess_surface_density_triaxial(
     r_mis=None,
     mis_from_backend=False,
     use_projected_quad=False,
+    verbose=False,
     **kwargs,
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
@@ -1132,6 +1165,9 @@ def compute_excess_surface_density_triaxial(
     n_grid : int
         Grid resolution for functions to be computed on.
         Too low n_grid can lead to large deviations.
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
     **kwargs
         Additional arguments to set up the halo profile definition
         such as the profile model and mass definition, see
