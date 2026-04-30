@@ -15,11 +15,9 @@ if "_modeling_object" not in globals():
     _modeling_object = None
 
 
-def compute_3d_density(
-    r3d,
+def config_halo_profile(
     mdelta,
     cdelta,
-    z_cl,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -28,23 +26,14 @@ def compute_3d_density(
     verbose=False,
     validate_input=True,
 ):
-    r"""Retrieve the 3d density :math:`\rho(r)`.
-
-    Profiles implemented so far are:
-
-        `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}
-        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` (Navarro et al. 1996)
+    r"""Configure up the halo profile.
 
     Parameters
     ----------
-    r3d : array_like, float
-        Radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
-    z_cl: float
-        Redshift of the cluster
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -74,11 +63,6 @@ def compute_3d_density(
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
-    Returns
-    -------
-    rho : numpy.ndarray, float
-        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
-
     Notes
     -----
     Need to refactor later so we only require arguments that are necessary for all profiles
@@ -94,6 +78,51 @@ def compute_3d_density(
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
 
+
+def compute_3d_density(
+    r3d,
+    mdelta,
+    cdelta,
+    z_cl,
+    cosmo,
+    **kwargs,
+):
+    r"""Retrieve the 3d density :math:`\rho(r)`.
+
+    Profiles implemented so far are:
+
+        `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}
+        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` (Navarro et al. 1996)
+
+    Parameters
+    ----------
+    r3d : array_like, float
+        Radial position from the cluster center in :math:`M\!pc`.
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot`.
+    cdelta : float
+        Galaxy cluster concentration
+    z_cl: float
+        Redshift of the cluster
+    cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
+        CLMM Cosmology object
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
+
+    Returns
+    -------
+    rho : numpy.ndarray, float
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
+
+    Notes
+    -----
+    Need to refactor later so we only require arguments that are necessary for all profiles
+    and use another structure to take the arguments necessary for specific models
+    """
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
+
     rho = _modeling_object.eval_3d_density(r3d, z_cl, verbose=verbose)
 
     _modeling_object.validate_input = True
@@ -106,15 +135,10 @@ def compute_surface_density(
     cdelta,
     z_cl,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     r_mis=None,
     mis_from_backend=False,
-    verbose=False,
     use_projected_quad=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the surface mass density
 
@@ -143,43 +167,20 @@ def compute_surface_density(
         Redshift of the cluster
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition; defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
-
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
-    verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
-        backends.
     use_projected_quad : bool
         Only available for Einasto profile with CCL as the backend. If True, CCL will use
         quad_vec instead of default FFTLog to calculate the surface density profile.
         Default: False
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
@@ -191,15 +192,7 @@ def compute_surface_density(
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
     if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
         _modeling_object.set_projected_quad(use_projected_quad)
 
@@ -217,14 +210,9 @@ def compute_mean_surface_density(
     cdelta,
     z_cl,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     r_mis=None,
     mis_from_backend=False,
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the mean value of surface density inside radius `r_proj`
 
@@ -243,36 +231,16 @@ def compute_mean_surface_density(
         Redshift of the cluster
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition; defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
-    verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
 
     Returns
@@ -285,15 +253,7 @@ def compute_mean_surface_density(
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     sigma_bar = _modeling_object.eval_mean_surface_density(
         r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
@@ -309,14 +269,9 @@ def compute_excess_surface_density(
     cdelta,
     z_cl,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     r_mis=None,
     mis_from_backend=False,
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the excess surface density
 
@@ -335,53 +290,23 @@ def compute_excess_surface_density(
         Redshift of the cluster
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition; defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
     r_mis : float, optional
         Projected miscenter distance in :math:`M\!pc`
     mis_from_backend : bool, optional
         If True, use the projected surface density from the backend for miscentering
         calculations. If False, use the (faster) CLMM exact analytical
         implementation instead. (Default: False)
-    verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
     deltasigma : numpy.ndarray, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     deltasigma = _modeling_object.eval_excess_surface_density(
         r_proj, z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend, verbose=verbose
@@ -575,13 +500,8 @@ def compute_tangential_shear(
     z_cluster,
     z_src,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     z_src_info="discrete",
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the tangential shear
 
@@ -608,27 +528,6 @@ def compute_tangential_shear(
         ``z_src_info`` (see below).
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
@@ -654,27 +553,17 @@ def compute_tangential_shear(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
     gammat : numpy.ndarray, float
         Tangential shear
     """
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
     if np.min(r_proj) < 1.0e-11:
         raise ValueError(
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
@@ -700,13 +589,8 @@ def compute_convergence(
     z_cluster,
     z_src,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     z_src_info="discrete",
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the mass convergence
 
@@ -733,27 +617,6 @@ def compute_convergence(
         ``z_src_info`` (see below).
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
@@ -779,11 +642,10 @@ def compute_convergence(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
@@ -791,16 +653,7 @@ def compute_convergence(
         Mass convergence, kappa.
 
     """
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     convergence = _modeling_object.eval_convergence(
         r_proj,
@@ -821,15 +674,10 @@ def compute_reduced_tangential_shear(
     z_cluster,
     z_src,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
-    alpha_ein=None,
-    validate_input=True,
-    verbose=False,
+    **kwargs,
 ):
     r"""Computes the reduced tangential shear
 
@@ -851,27 +699,6 @@ def compute_reduced_tangential_shear(
         ``z_src_info`` (see below).
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default);
-            * ``critical`` - not in cluster_toolkit;
-            * ``virial`` - not in cluster_toolkit;
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
@@ -945,16 +772,10 @@ def compute_reduced_tangential_shear(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
-    verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
@@ -972,16 +793,7 @@ def compute_reduced_tangential_shear(
     #         .. math::
     #             g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
     #             {1-\left<\beta_s\right>\kappa_{\infty}}
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     red_tangential_shear = _modeling_object.eval_reduced_tangential_shear(
         r_proj,
@@ -1004,15 +816,10 @@ def compute_magnification(
     z_cluster,
     z_src,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Computes the magnification
 
@@ -1034,27 +841,6 @@ def compute_magnification(
         ``z_src_info`` (see below).
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
@@ -1125,11 +911,10 @@ def compute_magnification(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
-    verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
-        backends.
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
@@ -1137,16 +922,7 @@ def compute_magnification(
         Magnification :math:`\mu`.
 
     """
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     magnification = _modeling_object.eval_magnification(
         r_proj,
@@ -1170,15 +946,10 @@ def compute_magnification_bias(
     z_cluster,
     z_src,
     cosmo,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     z_src_info="discrete",
     approx=None,
     integ_kwargs=None,
-    verbose=False,
-    validate_input=True,
+    **kwargs,
 ):
     r""" Computes magnification bias from magnification :math:`\mu`
     and slope parameter :math:`\alpha` as :
@@ -1216,27 +987,6 @@ def compute_magnification_bias(
         ``z_src_info`` (see below).
     cosmo : :class:`~clmm.cosmology.parent_class.CLMMCosmology`
         CLMM Cosmology object
-    delta_mdef : int, optional
-        Mass overdensity definition.  Defaults to 200.
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
     z_src_info : str, optional
         Type of redshift information provided by the ``z_src`` argument.
         The following supported options are:
@@ -1313,24 +1063,17 @@ def compute_magnification_bias(
             * ``delta_z_cut`` (float) : Redshift cut so that ``zmin = z_cl + delta_z_cut``.
               ``delta_z_cut`` is ignored if ``zmin`` is already provided. (default=0.1)
 
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
     magnification_bias : numpy.ndarray
         magnification bias
     """
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     magnification_bias = _modeling_object.eval_magnification_bias(
         r_proj,
@@ -1356,15 +1099,10 @@ def compute_excess_surface_density_triaxial(
     cosmo,
     term,
     n_grid=10000,
-    delta_mdef=200,
-    halo_profile_model="nfw",
-    massdef="mean",
-    alpha_ein=None,
     r_mis=None,
     mis_from_backend=False,
-    verbose=False,
     use_projected_quad=False,
-    validate_input=True,
+    **kwargs,
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
     or constant quadrupole component given in Shin et al. 2018
@@ -1394,59 +1132,17 @@ def compute_excess_surface_density_triaxial(
     n_grid : int
         Grid resolution for functions to be computed on.
         Too low n_grid can lead to large deviations.
-    delta_mdef : int, optional
-        Mass overdensity definition; defaults to 200.
-    halo_profile_model : str, optional
-        Profile model parameterization (letter case independent):
-
-            * ``nfw`` (default)
-            * ``einasto`` - not in cluster_toolkit
-            * ``hernquist`` - not in cluster_toolkit
-
-    massdef : str, optional
-        Profile mass definition, with the following supported options (letter case independent):
-
-            * ``mean`` (default)
-            * ``critical``
-            * ``virial``
-
-    alpha_ein : float, None, optional
-        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
-        Option only available for the NumCosmo and CCL backends.
-        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
-        cosmology-dependent value for the CCL backend.)
-
-    r_mis : float, optional
-        Projected miscenter distance in :math:`M\!pc`
-    mis_from_backend : bool, optional
-        If True, use the projected surface density from the backend for miscentering
-        calculations. If False, use the (faster) CLMM exact analytical
-        implementation instead. (Default: False)
-    verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
-        backends.
-    use_projected_quad : bool
-        Only available for Einasto profile with CCL as the backend. If True, CCL will use
-        quad_vec instead of default FFTLog to calculate the surface density profile.
-        Default: False
-    validate_input : bool, optional
-        If True (default), the types of the arguments are checked before proceeding.
+    **kwargs
+        Additional arguments to set up the halo profile definition
+        such as the profile model and mass definition, see
+        clmm.theory.func_layer.config_halo_profile for details.
 
     Returns
     -------
     dsmono : array
         Component of delta sigma excess for the elliptical halo specified
     """
-
-    _modeling_object.validate_input = validate_input
-    _modeling_object.set_cosmo(cosmo)
-    _modeling_object.set_halo_density_profile(
-        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
-    )
-    _modeling_object.set_concentration(cdelta)
-    _modeling_object.set_mass(mdelta)
-    if halo_profile_model == "einasto" or alpha_ein is not None:
-        _modeling_object.set_einasto_alpha(alpha_ein)
+    config_halo_profile(mdelta, cdelta, cosmo, **kwargs)
 
     delta_sigma = _modeling_object.eval_excess_surface_density_triaxial(
         r_proj,
