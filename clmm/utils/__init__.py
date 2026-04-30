@@ -31,9 +31,7 @@ from .statistic import (
     gaussian,
     make_bins,
 )
-from .units import (
-    convert_units,
-)
+from .units import convert_units
 from .validation import (
     DiffArray,
     _patch_rho_crit_to_cd2018,
