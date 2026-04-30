@@ -278,6 +278,9 @@ def test_integrity_of_lensfuncs():
     cluster_quad.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
     cluster_quad.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
 
+    # check for missing quadrupole
+    assert_raises(ValueError, cluster_quad.compute_tangential_and_cross_components)
+
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster_quad.galcat.pzpdf_info["type"] = pztype

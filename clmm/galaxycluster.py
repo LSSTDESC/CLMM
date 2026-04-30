@@ -323,6 +323,10 @@ class GalaxyCluster:
             constatnt quadrupole shear (or assimilated quantity) for each source galaxy
             Returned only if include_quadrupole is `True`.
         """
+        # Check quadrupole input
+        if self.include_quadrupole and self.phi_major is None:
+            raise ValueError("Cluster phi_major is not set, run set_phi_major before.")
+
         # Check is all the required data is available
         col_dict = {
             "ra_source": "ra",
@@ -336,58 +340,33 @@ class GalaxyCluster:
         cols = self._get_input_galdata(col_dict)
 
         # compute shears
-        if self.include_quadrupole:
-            if self.phi_major is None:
-                raise ValueError("Cluster phi_major is not set, run set_phi_major before.")
-            angsep_and_components = compute_tangential_and_cross_components(
-                is_deltasigma=is_deltasigma,
-                ra_lens=self.ra,
-                dec_lens=self.dec,
-                geometry=geometry,
-                validate_input=self.validate_input,
-                include_quadrupole=self.include_quadrupole,
-                phi_major=self.phi_major,
-                coordinate_system=self.galcat.meta["coordinate_system"],
-                **cols,
-            )
-            if add:
-                self.galcat["theta"] = angsep_and_components[0]
-                self.galcat[tan_component] = angsep_and_components[1]
-                self.galcat[cross_component] = angsep_and_components[2]
-                self.galcat[quad_4theta_component] = angsep_and_components[3]
-                self.galcat[quad_const_component] = angsep_and_components[4]
-                if is_deltasigma:
-                    sigmac_type = "effective" if use_pdz else "standard"
-                    self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
-                    self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
-                    self.galcat.meta[f"{quad_4theta_component}_sigmac_type"] = sigmac_type
-                    self.galcat.meta[f"{quad_const_component}_sigmac_type"] = sigmac_type
-            return (
-                angsep_and_components[0],
-                angsep_and_components[1],
-                angsep_and_components[2],
-                angsep_and_components[3],
-                angsep_and_components[4],
-            )
-
         angsep_and_components = compute_tangential_and_cross_components(
             is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
             geometry=geometry,
             validate_input=self.validate_input,
+            include_quadrupole=self.include_quadrupole,
+            phi_major=self.phi_major,
             coordinate_system=self.galcat.meta["coordinate_system"],
             **cols,
         )
+
         if add:
+
+            _add_cols = [tan_component, cross_component]
+            if self.include_quadrupole:
+                _add_cols += [quad_4theta_component, quad_const_component]
+
             self.galcat["theta"] = angsep_and_components[0]
-            self.galcat[tan_component] = angsep_and_components[1]
-            self.galcat[cross_component] = angsep_and_components[2]
+            for _col, _comp_val in zip(_add_cols, angsep_and_components[1:]):
+                self.galcat[_col] = _comp_val
             if is_deltasigma:
                 sigmac_type = "effective" if use_pdz else "standard"
-                self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
-                self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
-        return angsep_and_components[0], angsep_and_components[1], angsep_and_components[2]
+                for _col in _add_cols:
+                    self.galcat.meta[f"{_col}_sigmac_type"] = sigmac_type
+
+        return angsep_and_components
 
     def compute_background_probability(
         self, use_pdz=False, add=True, p_background_name="p_background"
