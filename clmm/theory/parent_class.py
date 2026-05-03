@@ -1670,7 +1670,7 @@ class CLMModeling:
             # z_src (float or array) is redshift
             if z_src_info == "distribution":
                 mu_bias = self._pdz_weighted_avg(
-                    lambda gammat, kappa: (1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1)),
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1),
                     z_src,
                     r_proj,
                     z_cl,
@@ -1704,9 +1704,9 @@ class CLMModeling:
             if approx == "type2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
-                    2 * alpha - 1
-                ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
+                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (2 * alpha - 1) * (
+                    alpha - 1
+                ) * beta_s_square_mean * kappa_inf**2
 
         return mu_bias
 

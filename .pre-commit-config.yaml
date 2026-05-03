@@ -1,8 +1,10 @@
 repos:
-  - repo: https://github.com/ambv/black
-    rev: 25.11.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
     hooks:
-      - id: black
+      - id: ruff-check
+        args: [--fix, --unsafe-fixes]
+      - id: ruff-format
         args: ["--line-length=100"]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -21,11 +23,5 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
       - id: trailing-whitespace
-
-  - repo: https://github.com/ambv/black
-    rev: 25.11.0
-    hooks:
-      - id: black
-        args: ["--line-length=100"]
 
 #exclude: tests_cluster/

@@ -612,7 +612,7 @@ def _compute_photoz_pdfs(
         )
     else:
         raise ValueError(
-            "Value of pzpdf_info['type'] " f"(={galaxy_catalog.pzpdf_info['type']}) " "not valid."
+            f"Value of pzpdf_info['type'] (={galaxy_catalog.pzpdf_info['type']}) not valid."
         )
 
 

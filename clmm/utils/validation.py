@@ -173,9 +173,7 @@ def validate_argument(
     # Check for shape
     if shape is not None:
         if np.shape(var) != shape:
-            err = (
-                f"{argname} must be of shape {shape}," f"received shape({argname}): {np.shape(var)}"
-            )
+            err = f"{argname} must be of shape {shape},received shape({argname}): {np.shape(var)}"
             raise ValueError(err)
 
 

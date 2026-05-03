@@ -188,7 +188,7 @@ def compute_profile_mass_in_radius(
 
     else:
         raise ValueError(
-            f"halo_profile_model=(={halo_profile_model=}) must be " "nfw, einasto, or hernquist!"
+            f"halo_profile_model=(={halo_profile_model=}) must be nfw, einasto, or hernquist!"
         )
     r3d_norm = np.array(r3d) / (rdelta / cdelta)
     return mdelta * prof_integ(r3d_norm) / prof_integ(cdelta)
