@@ -1043,7 +1043,9 @@ class CLMModeling:
             )
         elif z_src_info == "beta":
             beta_s_mean = z_src[0]
-            gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(
+                r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf
+            )
             gammat = beta_s_mean * gammat_inf
 
         return gammat

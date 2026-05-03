@@ -255,7 +255,9 @@ def convert_profile_mass_concentration(
     # Eq. to solve
     def delta_mass(params):
         mdelta2, cdelta2 = params
-        rdelta2 = compute_rdelta(mdelta2, redshift, cosmo, kwargs2["massdef"], kwargs2["delta_mdef"])
+        rdelta2 = compute_rdelta(
+            mdelta2, redshift, cosmo, kwargs2["massdef"], kwargs2["delta_mdef"]
+        )
         mdelta2_rad1 = compute_profile_mass_in_radius(
             rdelta, redshift, cosmo, mdelta2, cdelta2, **kwargs2
         )
