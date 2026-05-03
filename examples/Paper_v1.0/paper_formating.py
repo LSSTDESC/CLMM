@@ -21,15 +21,6 @@ def prep_plot(
         #'errorbar.capthick': 0.4,
         #'errorbar.elinewidth': 0.4,
     }
-    other_parameters = {
-        "legend": {
-            "fontsize": 10,
-        },
-        "xlabel": {},  # {'fontsize': 2,},
-        "ylabel": {},  # {'fontsize': 20,},
-        "xtick": {"labelsize": 10},
-        "ytick": {"labelsize": 10},
-    }
     plt.clf()
     _figsize = list(x / 2.54 for x in figsize)
     print(_figsize)
@@ -43,8 +34,6 @@ def prep_plot(
     if adjust is not None:
         plt.subplots_adjust(**adjust)
     mpl.rcParams.update(main_parameters)
-    # mpl.rc('xtick', **other_parameters['xtick'])
-    # mpl.rc('ytick', **other_parameters['ytick'])
 
     if subplots:
         return fig, axes
