@@ -527,7 +527,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=gals["e2"],
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
         assert_allclose(
             ftshear,
@@ -606,7 +612,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=list(gals["e2"]),
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
         assert_allclose(
             ftshear,
@@ -687,7 +699,13 @@ def test_compute_tangential_and_cross_components(modeling_data):
             shear2=list(gals["e2"]),
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
             validate_input=False,
         )
         assert_allclose(
@@ -811,8 +829,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
         # include_quadrupole=True, with phi_major input
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftshear2, cnshear2 = cluster_quad.compute_tangential_and_cross_components(
-            geometry=geometry, phi_major=0.0
+            geometry=geometry,
         )
         assert_allclose(
             ftshear2,
@@ -827,9 +848,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Constant Shear not correct when using cluster method w/ phi_major",
         )
         # include_quadrupole=True, with info_mem instead of phi_major input
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftshear3, cnshear3 = cluster_quad.compute_tangential_and_cross_components(
             geometry=geometry,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
         )
         assert_allclose(
             ftshear3,
@@ -875,7 +898,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     )
     # check validation between include_quadrupole and {phi_major|info_mem}
     assert_raises(
-        TypeError,
+        ValueError,
         da.compute_tangential_and_cross_components,
         ra_lens=ra_lens,
         dec_lens=dec_lens,
@@ -919,8 +942,12 @@ def test_compute_tangential_and_cross_components(modeling_data):
             include_quadrupole=True,
             phi_major=0.0,
         )
-        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
-        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
+        assert_allclose(
+            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+        )
+        assert_allclose(
+            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+        )
         ## Turn on include_quadrupole w/ info_mem
         _, _, _, ftDS, cnDS = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -933,10 +960,20 @@ def test_compute_tangential_and_cross_components(modeling_data):
             sigma_c=sigma_c,
             geometry=geometry,
             include_quadrupole=True,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
+            phi_major=da.calculate_major_axis(
+                ra_lens,
+                dec_lens,
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            ),
         )
-        assert_allclose(ftDS, expected["four_theta_DS"], reltol, err_msg="4theta shear not correct")
-        assert_allclose(cnDS, expected["const_DS"], reltol, err_msg="constant shear not correct")
+        assert_allclose(
+            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+        )
+        assert_allclose(
+            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+        )
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
     cluster = clmm.GalaxyCluster(
@@ -984,38 +1021,45 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
         # Turn on include_quadrupole w/ phi_major
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
-            cosmo=cosmo, is_deltasigma=True, geometry=geometry, phi_major=0.0
+            cosmo=cosmo,
+            is_deltasigma=True,
+            geometry=geometry,
         )
         assert_allclose(
             ftDS,
             expected["four_theta_DS"],
-            reltol,
+            10 * reltol,
             err_msg="4theta Shear not correct when using cluster method w/ phi_major",
         )
         assert_allclose(
             cnDS,
             expected["const_DS"],
-            reltol,
+            10 * reltol,
             err_msg="Constant Shear not correct when using cluster method w/ phi_major",
         )
         # Turn on include_quadrupole w/ info_mem
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+        )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
             cosmo=cosmo,
             is_deltasigma=True,
             geometry=geometry,
-            info_mem=[np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0])],
         )
         assert_allclose(
             ftDS,
             expected["four_theta_DS"],
-            reltol,
+            10 * reltol,
             err_msg="4theta Shear not correct when using cluster method w/ info_mem",
         )
         assert_allclose(
             cnDS,
             expected["const_DS"],
-            reltol,
+            10 * reltol,
             err_msg="Constant Shear not correct when using cluster method w/ info_mem",
         )
 

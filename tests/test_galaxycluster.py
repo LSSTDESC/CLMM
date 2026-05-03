@@ -181,6 +181,13 @@ def test_integrity():  # Converge on name
     assert_equal(cl.ra, -10)
     assert_equal(cl.galcat["ra"], [-10])
 
+    # tests for phi_major
+    assert_raises(TypeError, cl.set_phi_major, phi_major=None, info_mem=None)
+    assert_raises(TypeError, cl.set_phi_major, phi_major="None", info_mem="None")
+
+    cl.set_phi_major(1.0)
+    assert_equal(cl.phi_major, 1.0)
+
 
 def test_save_load():
     """test save load"""
@@ -271,6 +278,9 @@ def test_integrity_of_lensfuncs():
     cluster_quad.galcat["pzbins"] = [pzbins for i in range(len(z_src))]
     cluster_quad.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
 
+    # check for missing quadrupole
+    assert_raises(ValueError, cluster_quad.compute_tangential_and_cross_components)
+
     for pztype in ("individual_bins", "shared_bins"):
         cluster.galcat.pzpdf_info["type"] = pztype
         cluster_quad.galcat.pzpdf_info["type"] = pztype
@@ -278,13 +288,14 @@ def test_integrity_of_lensfuncs():
         cluster.compute_tangential_and_cross_components(
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
+        cluster_quad.set_phi_major(
+            info_mem=(np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0]))
+        )
         cluster_quad.compute_tangential_and_cross_components(
             is_deltasigma=True,
             use_pdz=True,
             cosmo=cosmo,
             add=True,
-            phi_major=0.0,
-            info_mem=[np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0])],
         )
         for comp_name in ("et", "ex"):
             assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
@@ -495,10 +506,10 @@ def test_plot_profiles():
         include_quadrupole=True,
     )
     cluster.compute_tangential_and_cross_components()
-    cluster_quad.compute_tangential_and_cross_components(
-        phi_major=0.0,
-        info_mem=[np.array([119.9, 120, 1]), np.array([41.9, 42.1]), np.array([1.0, 1.0])],
+    cluster_quad.set_phi_major(
+        info_mem=(np.array([119.9, 120]), np.array([41.9, 42.1]), np.array([1.0, 1.0]))
     )
+    cluster_quad.compute_tangential_and_cross_components()
     cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
     cluster_quad.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True)
     # missing profile name
