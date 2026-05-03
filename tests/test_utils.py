@@ -16,7 +16,6 @@ from clmm.utils import (
     redshift_distributions as zdist,
 )
 
-
 TOLERANCE = {"rtol": 1.0e-6, "atol": 0}
 
 
@@ -96,7 +95,9 @@ def test_correct_with_boost_model():
     for boost_model in utils.boost_models.keys():
         # Check for no nans or inf with positive-definite rvals and sigma vals
         assert np.all(
-            np.isfinite(utils.correct_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale))
+            np.isfinite(
+                utils.correct_with_boost_model(rvals, sigma_vals, boost_model, boost_rscale)
+            )
         )
 
     # Test requesting unsupported boost model
@@ -390,7 +391,9 @@ def test_convert_units():
     #    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
     d_a = cosmo.eval_da(redshift) * 1.0e3  # kpc
     truth = r_kpc * (1.0 / d_a) * (180.0 / np.pi) * 60.0
-    assert_allclose(utils.convert_units(r_kpc, "kpc", "arcmin", redshift, cosmo), truth, **TOLERANCE)
+    assert_allclose(
+        utils.convert_units(r_kpc, "kpc", "arcmin", redshift, cosmo), truth, **TOLERANCE
+    )
 
 
 def test_build_ellipticities():
@@ -505,7 +508,9 @@ def test_arguments_consistency():
     assert_allclose(arguments_consistency([1, 2]), [1, 2], **TOLERANCE)
     assert_allclose(arguments_consistency([1, 2], names=["a", "b"]), [1, 2], **TOLERANCE)
     assert_allclose(arguments_consistency([1, 2], names="ab"), [1, 2], **TOLERANCE)
-    assert_allclose(arguments_consistency([1, 2], names=["a", "b"], prefix="x"), [1, 2], **TOLERANCE)
+    assert_allclose(
+        arguments_consistency([1, 2], names=["a", "b"], prefix="x"), [1, 2], **TOLERANCE
+    )
 
     assert_allclose(arguments_consistency([[1], [2]]), [[1], [2]], **TOLERANCE)
     assert_allclose(arguments_consistency([[1], [2]], names=["a", "b"]), [[1], [2]], **TOLERANCE)

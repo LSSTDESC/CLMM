@@ -42,7 +42,9 @@ class GCMetaData(OrderedDict):
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
             )
         if item == "coordinate_system" and self.get("coordinate_system", None):
-            raise ValueError("coordinate_system must be changed via update_coordinate_system method")
+            raise ValueError(
+                "coordinate_system must be changed via update_coordinate_system method"
+            )
         OrderedDict.__setitem__(self, item, value)
 
     def __getitem__(self, item):

@@ -1327,7 +1327,9 @@ def _test_profile_table_output(
         **TOLERANCE,
         err_msg="Tangential shear in bin not expected",
     )
-    assert_allclose(profile[p1], expected_p1, **TOLERANCE, err_msg="Cross shear in bin not expected")
+    assert_allclose(
+        profile[p1], expected_p1, **TOLERANCE, err_msg="Cross shear in bin not expected"
+    )
     assert_array_equal(profile["n_src"], expected_nsrc)
     if expected_gal_id is not None:
         assert_array_equal(profile["gal_id"], np.array(expected_gal_id, dtype=object))

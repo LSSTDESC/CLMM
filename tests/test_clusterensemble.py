@@ -39,7 +39,9 @@ def test_cluster_ensemble():
         [ra_source, dec_source, theta_source, w_ls, shear1, shear2, z_src], names=names
     )
     # create cluster
-    cluster = clmm.GalaxyCluster(unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat)
+    cluster = clmm.GalaxyCluster(
+        unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat
+    )
     cluster_quad = clmm.GalaxyCluster(
         unique_id="test",
         ra=ra_lens,

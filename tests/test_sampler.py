@@ -12,5 +12,7 @@ def test_samplers():
         return (x + a) ** 2
 
     assert_allclose(samplers["minimize"](test_func, 0, args=[-1]), 1, 1e-3)
-    assert_allclose(samplers["basinhopping"](test_func, 0, minimizer_kwargs={"args": [-1]}), 1, 1e-3)
+    assert_allclose(
+        samplers["basinhopping"](test_func, 0, minimizer_kwargs={"args": [-1]}), 1, 1e-3
+    )
     assert_allclose(fitters["curve_fit"](test_func, [0, 0], [1, 1], [0.01, 0.01])[0], 1, 1e-3)

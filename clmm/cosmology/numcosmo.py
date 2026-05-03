@@ -135,7 +135,7 @@ class NumCosmoCosmology(CLMMCosmology):
             )
         )
         self._eval_sigma_crit_core = np.vectorize(
-            lambda z_len, z_src: (self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len))
+            lambda z_len, z_src: self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len)
         )
         if self.dist is not None:
             self.dist.prepare_if_needed(self.be_cosmo)

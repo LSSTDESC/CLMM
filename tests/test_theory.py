@@ -49,7 +49,9 @@ def load_validation_config(halo_profile_model=None):
     elif halo_profile_model == "hernquist":
         with open(numcosmo_path + "config_hernquist_benchmarks.json", "r") as fin:
             testcase = json.load(fin)
-        numcosmo_profile = np.genfromtxt(numcosmo_path + "radial_profiles_hernquist.txt", names=True)
+        numcosmo_profile = np.genfromtxt(
+            numcosmo_path + "radial_profiles_hernquist.txt", names=True
+        )
     else:
         # defaults to nfw profile
         with open(numcosmo_path + "config.json", "r") as fin:
@@ -1315,7 +1317,9 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         beta_s_mean = 0.6
         beta_s_square_mean = 0.4
         source_redshift_inf = 1000.0
-        gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf)
+        gammat_inf = mod.eval_tangential_shear(
+            profile_pars[0], profile_pars[1], source_redshift_inf
+        )
         kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf)
 
         # Validate reduced tangential shear
@@ -1470,7 +1474,9 @@ def test_compute_magnification_bias(modeling_data):
         **TOLERANCE,
     )
     assert_allclose(
-        theo.compute_magnification_bias_from_magnification(np.array(magnification), np.array(alpha)),
+        theo.compute_magnification_bias_from_magnification(
+            np.array(magnification), np.array(alpha)
+        ),
         np.array(truth),
         **TOLERANCE,
     )
