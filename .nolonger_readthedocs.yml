@@ -13,4 +13,4 @@ sphinx:
 
 # Required for notebook execution on rtd. Not 100% yet though.
 conda:
-    environment: .conda.yml
+  environment: .conda.yml

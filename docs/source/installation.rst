@@ -18,7 +18,7 @@ These are pip installable::
 
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
-- `cluster-toolkit <https://cluster-toolkit.readthedocs.io/en/latest/>`_ 
+- `cluster-toolkit <https://cluster-toolkit.readthedocs.io/en/latest/>`_
 - `CCL <https://ccl.readthedocs.io/en/latest/>`_
 - `NumCosmo <https://numcosmo.github.io/>`_
 
@@ -37,7 +37,7 @@ Installation
 ============
 To install CLMM you currently need to build it from source::
 
-  git clone https://github.com/LSSTDESC/CLMM.git 
+  git clone https://github.com/LSSTDESC/CLMM.git
   cd CLMM
   python setup.py install
 

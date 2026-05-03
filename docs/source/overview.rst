@@ -1,15 +1,15 @@
 ******************
 Rapid overview
 ******************
-CLMM is a tool to estimate cluster masses from weak lensing data. 
-CLMM provides the initial building blocks for an end-to-end cluster weak 
-lensing pipeline that can be validated on mock data and run on real data 
+CLMM is a tool to estimate cluster masses from weak lensing data.
+CLMM provides the initial building blocks for an end-to-end cluster weak
+lensing pipeline that can be validated on mock data and run on real data
 from LSST or other telescopes.
 
-It is based on a data operations package to prepare the data vector, 
-a theory package to predict the signal from cluster properties and also 
+It is based on a data operations package to prepare the data vector,
+a theory package to predict the signal from cluster properties and also
 includes ways to generate mock catalogs of various complexity levels.
-A set of examples is also provided, ranging from demos of base functionalities 
+A set of examples is also provided, ranging from demos of base functionalities
 to end-to-end WL mass estimations. All are available in the `examples` folder of the project and some have been included in
 this documentation (see below).
 

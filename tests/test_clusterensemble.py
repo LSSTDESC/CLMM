@@ -3,14 +3,17 @@ tests for clusterensemble.py
 """
 
 import os
-from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_array_equal
+from numpy.testing import (
+    assert_raises,
+    assert_equal,
+    assert_allclose,
+    assert_array_equal,
+)
 import clmm
 import numpy as np
 from clmm import ClusterEnsemble
 from clmm import Cosmology
 from clmm import GCData
-from clmm.support import mock_data as mock
-import matplotlib.pyplot as plt
 import clmm.dataops as da
 
 TOLERANCE = {"rtol": 5.0e-4, "atol": 1.0e-4}
@@ -30,22 +33,28 @@ def test_cluster_ensemble():
     w_ls = [1.0e-30, 1.0e-31]
     # Set up radial values
     bins_radians = np.logspace(np.log10(0.001), np.log10(0.02), 10)
-    bin_units = "radians"
     names = ("ra", "dec", "theta", "w_ls", "e1", "e2", "z")
 
     galcat = clmm.GCData(
         [ra_source, dec_source, theta_source, w_ls, shear1, shear2, z_src], names=names
     )
     # create cluster
-    cluster = clmm.GalaxyCluster(
-        unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat
-    )
+    cluster = clmm.GalaxyCluster(unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat)
     cluster_quad = clmm.GalaxyCluster(
-        unique_id="test", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=galcat, include_quadrupole=True
+        unique_id="test",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=galcat,
+        include_quadrupole=True,
     )
     cluster.compute_tangential_and_cross_components()
     cluster_quad.set_phi_major(
-        info_mem=(np.array([119.9, 120.1]), np.array([41.9, 42.1]), np.array([1.0, 1.0]))
+        info_mem=(
+            np.array([119.9, 120.1]),
+            np.array([41.9, 42.1]),
+            np.array([1.0, 1.0]),
+        )
     )
     cluster_quad.compute_tangential_and_cross_components()
     bins = bins_radians
@@ -207,7 +216,10 @@ def test_covariance():
     for i in range(n_catalogs):
         # generate random catalog
         e1, e2 = np.random.randn(ngals) * 0.001, np.random.randn(ngals) * 0.001
-        et, ex = da._compute_tangential_shear(e1, e2, phi), da._compute_cross_shear(e1, e2, phi)
+        et, ex = (
+            da._compute_tangential_shear(e1, e2, phi),
+            da._compute_cross_shear(e1, e2, phi),
+        )
         eft = da._compute_4theta_shear(e1, e2, phi)
         ecn = e1
         z_gal = np.random.random(ngals) * (3 - 1.1) + 1.1
@@ -259,7 +271,6 @@ def test_covariance():
         )
 
     ensemble_id = 1
-    names = ["id", "ra", "dec", "z", "radius", "gt", "gx", "g_quad_4theta", "g_quad_const", "W_l"]
 
     # test without args, kwargs
     ce = ClusterEnsemble(ensemble_id)
@@ -297,7 +308,10 @@ def test_covariance():
 
     assert_raises(ValueError, ce.make_individual_radial_profile, gclist[0], bin_units="radians")
     assert_raises(
-        ValueError, ce_quad.make_individual_radial_profile, gclist_quad[0], bin_units="radians"
+        ValueError,
+        ce_quad.make_individual_radial_profile,
+        gclist_quad[0],
+        bin_units="radians",
     )
 
     # test if te list object matches the calculation from the object with manually added clusters
@@ -308,7 +322,10 @@ def test_covariance():
 
     # comparing brut force calculation for cross and tangential component
     gt_individual, gx_individual = ce.data["gt"], ce.data["gx"]
-    gft_individual, gcn_individual = ce_quad.data["g_quad_4theta"], ce_quad.data["g_quad_const"]
+    gft_individual, gcn_individual = (
+        ce_quad.data["g_quad_4theta"],
+        ce_quad.data["g_quad_const"],
+    )
     Wl_individual = ce.data["W_l"]
     gt_stack = np.average(gt_individual, weights=Wl_individual, axis=0)
     gx_stack = np.average(gx_individual, weights=Wl_individual, axis=0)

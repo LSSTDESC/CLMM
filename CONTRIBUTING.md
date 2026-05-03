@@ -2,9 +2,10 @@
 
 This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
-* [Main readme](README.md)
+- [Main readme](README.md)
 
 ## Table of contents
+
 1. [Identifying Issues](#identifying_issues)
 2. [Making and submitting changes](#making_and_submitting_changes)
 3. [Adding documentation](#adding_documentation)
@@ -20,33 +21,32 @@ This is a brief guide to contributing to CLMM, including information about ident
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
-
 ## Making and submitting changes <a name="making_and_submitting_changes"></a>
+
 Once you've [created a local copy of CLMM](INSTALL.md) on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
 1. Checkout a new branch to contain your code changes independently from the `main` repository.
-    [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
-    ```bash
-    git checkout -b branchname
-    ```
-    Your `branchname` should be descriptive of your code changes.
-    If you are addressing a particular issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
+   [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
+   ```bash
+   git checkout -b branchname
+   ```
+   Your `branchname` should be descriptive of your code changes.
+   If you are addressing a particular issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
 2. Make your changes in the files stored in your local directory.
 3. Commit and push your changes to the `branchname` branch of the remote repository.
-    ```bash
-    git add NAMES-OF-CHANGED-FILES
-    git commit -m "Insert a descriptive commit message here"
-    git pull origin main
-    git push origin branchname
-    ```
+   ```bash
+   git add NAMES-OF-CHANGED-FILES
+   git commit -m "Insert a descriptive commit message here"
+   git pull origin main
+   git push origin branchname
+   ```
 4. You can continue to edit your code and push changes to the `branchname` remote branch.
-    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
-    Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
-    Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
-    Use the template provided for a pull request, it will faciliate the process for everybody.
-    Once the pull request is approved, it will be merged into the CLMM `main` branch.
-
+   Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
+   Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
+   Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
+   Use the template provided for a pull request, it will faciliate the process for everybody.
+   Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
 ### Requirements for every change <a name="adding_codes"></a>
 
@@ -55,14 +55,14 @@ The code is also not complete without unit tests and documentation. Please ensur
 So remember these steps:
 
 - **Formatting the code:** there are tools that will format the code automatically for you, so you don't have to worry about the correct syntax when developing it.
-Once you add your changes, `black clmm/` and `isort clmm/` before you commit your changes. These tools will correctly format the spacing and importing order respectilely.
-**Tip:** `black` can also be run on notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
+  Once you add your changes, `black clmm/` and `isort clmm/` before you commit your changes. These tools will correctly format the spacing and importing order respectilely.
+  **Tip:** `black` can also be run on notebooks, just install the notebook extention: `pip install "black[jupyter]"`.
 
 - **Structuring the code:** Run `pylint clmm/`, this will produce a diagnostic about the implementation and tell you what needs to be improved.
 
 - **Reinstall CLMM:** After your changes, resinstall `CLMM` by running `pip install .` (required after any change whatsoever to the `.py` files in `clmm/` directory). This will ensure your implementation is being used in the tests and documentation.
-**Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
-In this case you will not have to reinstall it at every change.
+  **Developer tip:** You can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`.
+  In this case you will not have to reinstall it at every change.
 
 - **Unit tests:** To run all of the unit tests, run `pytest` in the root package directory.
 
@@ -82,10 +82,9 @@ All these steps (except running the notebooks) are run automatically on each pul
 
 If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by the LSST-DESC website: http://lsstdesc.org/CLMM/
 
-We have done most of the hard work for you. Simply edit the configuration file, `docs/doc-config.ini`. If you are looking at add a module, put the module name under the `APIDOC` heading. If you are adding a demo notebook to demonstrate how to use the code, place the path from the `docs/` directory to the notebook under the `DEMO` heading. If you are adding an example notebook that shows off how to use `CLMM` to do science, place the path from the `docs/` directory to the notebook under the `EXAMPLE` heading. 
+We have done most of the hard work for you. Simply edit the configuration file, `docs/doc-config.ini`. If you are looking at add a module, put the module name under the `APIDOC` heading. If you are adding a demo notebook to demonstrate how to use the code, place the path from the `docs/` directory to the notebook under the `DEMO` heading. If you are adding an example notebook that shows off how to use `CLMM` to do science, place the path from the `docs/` directory to the notebook under the `EXAMPLE` heading.
 
 Once it has been added to the config file, simply run `./update_docs` from the top level directory of the repository and your documentation should compile and be linked in the correct places!
-
 
 ## Reviewing an open pull request <a name="reviewing_an_open_pull_request"></a>
 
@@ -107,7 +106,7 @@ To ensure consistency between our code and documentation, we need to take care o
 
 1. In the branch of the pull request, change the version number of the code located in `clmm/__init__.py`, commit and push. If you are unsure of how you should change the version number, don't hesitate to ask!
 
-We use [semantic versioning](https://semver.org/), X.Y.Z. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
+We use [semantic versioning](https://semver.org/), X.Y.Z. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand.
 
 2. "Squash and Merge" the pull request into `main`. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
 
@@ -117,10 +116,10 @@ Note: `fix:` should correspond to version changes to Y. The rest of the scopes a
 
 3. Tag and push this new version of the code. In the `main` branch use the following commands:
 
-    ```bash
-    git tag X.Y.Z
-    git push --tag
-    ```
+   ```bash
+   git tag X.Y.Z
+   git push --tag
+   ```
 
 of course replacing `X.Y.Z` by the new version.
 
@@ -128,11 +127,13 @@ of course replacing `X.Y.Z` by the new version.
 
 This is easy! Once you have merged all approved changes into `main`, you will want to update the public documentation.
 All these steps should be done on the `publish-docs` branch (just `git checkout publish-docs` on your local computer):
+
 1. Merge all of the latest changes from main `git merge main`.
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
 3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
 ## Creating installation via pip and conda <a name="creating_pip_conda"></a>
+
 `PyPI` and `conda-forge` publishing can be done automatically by creating a new release on the repository,
 and the developer usually won't have to worry about this issue.
 However, if necessary, it is also possible to manually perform this process.
@@ -142,31 +143,33 @@ Intructions below:
 <summary><h3>Manual publication to `PyPI` and `conda-forge`</h3></summary>
 
 1. Build the needed files for publication with the command:
-    ```bash
-    hatch build
-    ```
+   ```bash
+   hatch build
+   ```
 
-This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated.
-2. To publish the package to pip, we will use `twine`, which should be installed with the following:
-    ```bash
+This will create a `clmm-1.14.4.tar.gz` and `clmm-1.14.4-py3-none-any.whl` files in the `dist` folder inside the repository. Note that the name of the files will change for the given version to be publicated. 2. To publish the package to pip, we will use `twine`, which should be installed with the following:
+`bash
     pip install twine
-    ```
+    `
 
 3. To make sure that the package is working properly, we can first publish `clmm` to `PyPITest` running the command:
-    ```bash
-    twine upload --repository testpypi dist/* --verbose
-    ```
-Once the package is published, one can install it by running:
-    ```bash
-    pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
-    ```
-with the proper version number. This step will require an account at [PyPITest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PyPITest` and thus we need the extra index url to import the packages from `PyPI`. If the package was properly installed, we are now ready to publish it to `PyPI`.
+   `bash
+twine upload --repository testpypi dist/* --verbose
+`
+   Once the package is published, one can install it by running:
+   `bash
+pip install -i https://test.pypi.org/simple/ clmm==1.14.4 --extra-index-url https://pypi.org/simple clmm==1.14.4
+`
+   with the proper version number. This step will require an account at [PyPITest](https://test.pypi.org/) and you will need to generate a token that is required to publish packages. Note that some of the required dependencies may note be published to `PyPITest` and thus we need the extra index url to import the packages from `PyPI`. If the package was properly installed, we are now ready to publish it to `PyPI`.
 
 4. To publish to `PyPI`, run the command:
+
 ```bash
 twine upload dist/*
-``` 
+```
+
 This last step must be done with the token used to publish `CLMM` from the right account at `PyPI`. Once this is done, you will find the latest version of `CLMM` at the `PyPI` repository. To test it, try running
+
 ```bash
 pip install clmm
 ```
@@ -177,36 +180,38 @@ pip install clmm
 ## Additional resources <a name="additional_resources"></a>
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
-* The DESC Confluence page on [Getting Started with Git and Github](https://confluence.slac.stanford.edu/display/LSSTDESC/Getting+Started+with+Git+and+GitHub)
-* [Phil Marshall's Getting Started repository and FAQ](https://github.com/drphilmarshall/GettingStarted#forks)
-* [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
-* [The Github Help Pages](https://help.github.com/)
+
+- The DESC Confluence page on [Getting Started with Git and Github](https://confluence.slac.stanford.edu/display/LSSTDESC/Getting+Started+with+Git+and+GitHub)
+- [Phil Marshall's Getting Started repository and FAQ](https://github.com/drphilmarshall/GettingStarted#forks)
+- [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
+- [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (INAF / LIneA)
-* [Doug Applegate](https://github.com/deapplegate) (Novartis)
-* [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
-* [Lucie Baumont](https://github.com/lbaumo) (INAF)
-* [Miyoung Choi](https://github.com/mchoi8739) (UTD)
-* [Celine Combet](https://github.com/combet) (LPSC)
-* [Matthew Fong](https://github.com/matthewwf2001) (UTD)
-* [Shenming Fu](https://github.com/shenmingfu)(Brown)
-* [Matthew Ho](https://github.com/maho3) (CMU)
-* [Matthew Kirby](https://github.com/matthewkirby) (Arizona)
-* [Brandyn Lee](https://github.com/brandynlee) (UTD)
-* [Anja von der Linden](https://github.com/anjavdl) (SBU)
-* [Binyang Liu](https://github.com/rbliu) (Brown)
-* [Alex Malz](https://github.com/aimalz) (CMU)
-* [Tom McClintock](https://github.com/tmcclintock) (BNL)
-* [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
-* [Constantin Payerne](https://github.com/payerne) (LPSC)
-* [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
-* [Marina Ricci](https://github.com/marina-ricci) (LMU)
-* [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
-* [Melanie Simet](https://github.com/msimet) (JPL)
-* [Martin Sommer](https://github.com/sipplund) (Bonn)
-* [Sandro Vitenti](https://github.com/vitenti) (LIneA / UEL - Londrina)
-* [Heidi Wu](https://github.com/hywu) (Ohio)
-* [Mijin Yoon](https://github.com/mijinyoon) (RUB)
+
+- [Michel Aguena](https://github.com/m-aguena) (INAF / LIneA)
+- [Doug Applegate](https://github.com/deapplegate) (Novartis)
+- [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
+- [Lucie Baumont](https://github.com/lbaumo) (INAF)
+- [Miyoung Choi](https://github.com/mchoi8739) (UTD)
+- [Celine Combet](https://github.com/combet) (LPSC)
+- [Matthew Fong](https://github.com/matthewwf2001) (UTD)
+- [Shenming Fu](https://github.com/shenmingfu)(Brown)
+- [Matthew Ho](https://github.com/maho3) (CMU)
+- [Matthew Kirby](https://github.com/matthewkirby) (Arizona)
+- [Brandyn Lee](https://github.com/brandynlee) (UTD)
+- [Anja von der Linden](https://github.com/anjavdl) (SBU)
+- [Binyang Liu](https://github.com/rbliu) (Brown)
+- [Alex Malz](https://github.com/aimalz) (CMU)
+- [Tom McClintock](https://github.com/tmcclintock) (BNL)
+- [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
+- [Constantin Payerne](https://github.com/payerne) (LPSC)
+- [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
+- [Marina Ricci](https://github.com/marina-ricci) (LMU)
+- [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
+- [Melanie Simet](https://github.com/msimet) (JPL)
+- [Martin Sommer](https://github.com/sipplund) (Bonn)
+- [Sandro Vitenti](https://github.com/vitenti) (LIneA / UEL - Londrina)
+- [Heidi Wu](https://github.com/hywu) (Ohio)
+- [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
 The current administrators of the repository are Michel Aguena and Céline Combet.

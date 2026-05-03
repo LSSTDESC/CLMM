@@ -41,7 +41,13 @@ def test_unimplemented(modeling_data):
     )
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
     assert_raises(
-        NotImplementedError, mod.eval_magnification, [0.3], 0.3, (0.6, 0.4), "beta", "type1"
+        NotImplementedError,
+        mod.eval_magnification,
+        [0.3],
+        0.3,
+        (0.6, 0.4),
+        "beta",
+        "type1",
     )
     assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 3.0)
     assert_raises(
@@ -110,7 +116,6 @@ def test_instantiate(modeling_data):
         gi.require_version("NumCosmo", "1.0")
 
         import gi.repository.NumCosmoMath as Ncm
-        import gi.repository.NumCosmo as Nc
 
         mset = mod.get_mset()
         assert isinstance(mset, Ncm.MSet)
@@ -140,7 +145,9 @@ def test_instantiate(modeling_data):
 
     assert_allclose(reduced_shear, shear / (1.0 - convergence), rtol=1.0e-11)
     assert_allclose(
-        magnification, 1.0 / ((1.0 - convergence) ** 2 - np.abs(shear) ** 2), rtol=1.0e-11
+        magnification,
+        1.0 / ((1.0 - convergence) ** 2 - np.abs(shear) ** 2),
+        rtol=1.0e-11,
     )
 
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.full_like(r_proj, z_src))

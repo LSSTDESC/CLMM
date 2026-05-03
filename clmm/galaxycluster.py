@@ -353,7 +353,6 @@ class GalaxyCluster:
         )
 
         if add:
-
             prof_cols = [tan_component, cross_component]
             if self.include_quadrupole:
                 prof_cols += [quad_4theta_component, quad_const_component]
@@ -806,9 +805,7 @@ class GalaxyCluster:
                     profile[comp1_err] if comp1_err in profile.columns else None
                 ),
                 cross_component=profile[comp2],
-                cross_component_error=(
-                    profile[comp2_err] if comp2_err in profile.columns else None
-                ),
+                cross_component_error=(profile[comp2_err] if comp2_err in profile.columns else None),
                 xscale=xscale,
                 yscale=yscale,
                 tangential_component_label=comp1,

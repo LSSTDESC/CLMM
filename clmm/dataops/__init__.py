@@ -73,9 +73,9 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`, 
-    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` 
-    of the source galaxies, following Eq.31 and Eq.34 in Shin et al. (2018), arXiv:1705.11167. 
+    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`,
+    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2`
+    of the source galaxies, following Eq.31 and Eq.34 in Shin et al. (2018), arXiv:1705.11167.
 
     .. math::
         g_4theta =& \left( g_1\cos\left(4\phi\right)+g_2\sin\left(4\phi\right)\right)\\
@@ -121,7 +121,7 @@ def compute_tangential_and_cross_components(
     include_quadrupole: bool
         If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
     phi_major : float, optional
-        Direction of the major axis of the input cluster in the unit of radian. 
+        Direction of the major axis of the input cluster in the unit of radian.
         only needed when `include_quadrupole` is `True`.
         This quantity is always in Euclidean coordinates, for celestial coordinates only set
         the coordinate_system=`celestial`.

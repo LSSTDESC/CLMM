@@ -289,7 +289,11 @@ def test_integrity_of_lensfuncs():
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
         cluster_quad.set_phi_major(
-            info_mem=(np.array([161.2, 161.4]), np.array([33.9, 34.1]), np.array([1.0, 1.0]))
+            info_mem=(
+                np.array([161.2, 161.4]),
+                np.array([33.9, 34.1]),
+                np.array([1.0, 1.0]),
+            )
         )
         cluster_quad.compute_tangential_and_cross_components(
             is_deltasigma=True,
@@ -351,7 +355,6 @@ def test_integrity_of_weightfuncs():
     shape_component2 = np.array([-0.011, 0.012, -0.250])
     shape_component1_err = np.array([0.11, 0.01, 0.2])
     shape_component2_err = np.array([0.14, 0.16, 0.21])
-    p_background = np.array([1.0, 1.0, 1.0])
     cluster = clmm.GalaxyCluster(
         unique_id="1",
         ra=161.3,
@@ -436,11 +439,17 @@ def test_pzpdf_random_draw():
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
         # Test raising warnings when xmin<min(pzbins) and xmax>max(pzbins)
         assert_warns(
-            UserWarning, cluster.draw_gal_z_from_pdz, zcol_out="z_test", xmin=pzbins.min() / 10
+            UserWarning,
+            cluster.draw_gal_z_from_pdz,
+            zcol_out="z_test",
+            xmin=pzbins.min() / 10,
         )
         cluster.galcat.remove_column("z_test")
         assert_warns(
-            UserWarning, cluster.draw_gal_z_from_pdz, zcol_out="z_test", xmax=pzbins.max() * 10
+            UserWarning,
+            cluster.draw_gal_z_from_pdz,
+            zcol_out="z_test",
+            xmax=pzbins.max() * 10,
         )
         # test drawing 1 object from the whole range of pzpdf
         np.random.seed(0)
@@ -456,7 +465,11 @@ def test_pzpdf_random_draw():
         # also test overwrite=True
         np.random.seed(0)
         cluster.draw_gal_z_from_pdz(
-            zcol_out="z_random", overwrite=True, nobj=2, xmin=pzbins[50], xmax=pzbins[51]
+            zcol_out="z_random",
+            overwrite=True,
+            nobj=2,
+            xmin=pzbins[50],
+            xmax=pzbins[51],
         )
         assert_allclose(
             cluster.galcat["z_random"].data,
@@ -492,7 +505,8 @@ def test_plot_profiles():
         dec=dec_lens,
         z=z_lens,
         galcat=GCData(
-            [ra_source, dec_source, shear1, shear2, z_src], names=("ra", "dec", "e1", "e2", "z")
+            [ra_source, dec_source, shear1, shear2, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
         ),
     )
     cluster_quad = clmm.GalaxyCluster(
@@ -501,7 +515,8 @@ def test_plot_profiles():
         dec=dec_lens,
         z=z_lens,
         galcat=GCData(
-            [ra_source, dec_source, shear1, shear2, z_src], names=("ra", "dec", "e1", "e2", "z")
+            [ra_source, dec_source, shear1, shear2, z_src],
+            names=("ra", "dec", "e1", "e2", "z"),
         ),
         include_quadrupole=True,
     )
@@ -517,7 +532,11 @@ def test_plot_profiles():
     assert_raises(ValueError, cluster_quad.plot_profiles, table_name="made_up_table")
     # missing shear component
     assert_raises(ValueError, cluster.plot_profiles, cross_component="made_up_component")
-    assert_raises(ValueError, cluster_quad.plot_profiles, quad_4theta_component="made_up_component")
+    assert_raises(
+        ValueError,
+        cluster_quad.plot_profiles,
+        quad_4theta_component="made_up_component",
+    )
     # check basic plot is working
     cluster.plot_profiles()
     cluster_quad.plot_profiles()

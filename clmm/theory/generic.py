@@ -170,13 +170,22 @@ def compute_profile_mass_in_radius(
     rdelta = compute_rdelta(mdelta, redshift, cosmo, massdef, delta_mdef)
     # Check halo_profile_model
     if halo_profile_model == "nfw":
-        prof_integ = lambda c: np.log(1.0 + c) - c / (1.0 + c)
+
+        def prof_integ(c):
+            return np.log(1.0 + c) - c / (1.0 + c)
+
     elif halo_profile_model == "einasto":
         if alpha is None:
             raise ValueError("alpha must be provided when Einasto profile is selected!")
-        prof_integ = lambda c: gamma(3.0 / alpha) * gammainc(3.0 / alpha, 2.0 / alpha * c**alpha)
+
+        def prof_integ(c):
+            return gamma(3.0 / alpha) * gammainc(3.0 / alpha, 2.0 / alpha * c**alpha)
+
     elif halo_profile_model == "hernquist":
-        prof_integ = lambda c: (c / (1.0 + c)) ** 2.0
+
+        def prof_integ(c):
+            return (c / (1.0 + c)) ** 2.0
+
     else:
         raise ValueError(
             f"halo_profile_model=(={halo_profile_model=}) must be " "nfw, einasto, or hernquist!"
@@ -246,9 +255,7 @@ def convert_profile_mass_concentration(
     # Eq. to solve
     def delta_mass(params):
         mdelta2, cdelta2 = params
-        rdelta2 = compute_rdelta(
-            mdelta2, redshift, cosmo, kwargs2["massdef"], kwargs2["delta_mdef"]
-        )
+        rdelta2 = compute_rdelta(mdelta2, redshift, cosmo, kwargs2["massdef"], kwargs2["delta_mdef"])
         mdelta2_rad1 = compute_profile_mass_in_radius(
             rdelta, redshift, cosmo, mdelta2, cdelta2, **kwargs2
         )

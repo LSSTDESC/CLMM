@@ -5,12 +5,12 @@ libraries used for other programs.
 Here we present several ways to do it.
 
 ## Table of contents
+
 1. [Basic installation](#basic_install)
 2. [Developer installation](#dev_install)
-    * [Setting up the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
+   - [Setting up the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
 3. [An alternative installation at NERSC or at CC-IN2P3 for DESC members](#from_desc_conda_env)
 4. [Making a local copy of CLMM](#making_a_local_copy_of_clmm)
-
 
 ## Basic installation <a name="basic_install"></a>
 
@@ -35,6 +35,7 @@ or
 This should automatically pull all necessary dependencies, with the exception of the theory backend libraries.
 
 ### Theory backend installation
+
 First, choose and install a theory backend for CLMM.
 This can be CCL (versions 3.1.2 or later),
 NumCosmo (versions between v0.19 and v0.22),
@@ -45,7 +46,9 @@ To install CCL as the theory/cosmology backend, run
 ```bash
     conda install -c conda-forge pyccl
 ```
+
 or
+
 ```bash
     pip install pyccl
 ```
@@ -65,9 +68,10 @@ Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll al
     python setup.py install
     cd ..
 ```
+
 **Note**: While cluster-toolkit mentions the potential need to install CAMB/CLASS for all cluster-toolkit functionality, you do not need to install these to run CLMM.
 
-Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
+Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster*toolkit packages. You need at least one. If you install cluster_toolkit and others, then you need to install cluster_toolkit \_last*. If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
 
 ## Developer installation <a name="dev_install"></a>
 
@@ -88,10 +92,9 @@ To create and activate your conda environment, run:
 
 This procedure installs all available theory backends as well as the tools necessary for development.
 
-
 ### Setting up the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
-If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following.  We recommend executing line-by-line to avoid errors:
+If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment. After logging into cori.nersc.gov, you will need to execute the following. We recommend executing line-by-line to avoid errors:
 
 ```bash
     module load python  # Also loads anaconda
@@ -102,11 +105,11 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
     conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks
 ```
 
-Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
+Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in. You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
 
 Once in your CLMM conda env, you may follow the [basic procedure](#basic_install) to install CLMM and its dependencies.
 
-The above allows you to develop at NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install` then `pytest` to make sure your changes did not break any tests.
+The above allows you to develop at NERSC and run pytest. Your workflow as a developer would be to make your changes, do a `python setup.py install` then `pytest` to make sure your changes did not break any tests.
 
 If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. To run the DC2 example notebooks provided in CLMM, the following need to be installed in your CLMM environment at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
 
@@ -126,7 +129,7 @@ To open up a notebook from NERSC in your browser, you will need to go to the [ne
     python -m ipykernel install --user --name=conda-clmmenv
 ```
 
-Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose the kernel `conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
+Clicking on the upper right corner of the notebook will provide options for your kernel. Choose the kernel `conda-clmmenv` that you just created. You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
 
 ```python
 
@@ -163,7 +166,9 @@ To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/C
     cd CLMM
     git remote add base git@github.com:LSSTDESC/CLMM.git
 ```
+
 If you do have edit privileges to CLMM, it may be easier to simply clone the base CLMM repository.
-``` bash
+
+```bash
     git clone git@github.com:LSSTDESC/CLMM.git
 ```

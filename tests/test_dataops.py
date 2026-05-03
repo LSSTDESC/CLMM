@@ -1,7 +1,12 @@
 """Tests for dataops.py"""
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_raises, assert_array_equal, assert_warns
+from numpy.testing import (
+    assert_allclose,
+    assert_raises,
+    assert_array_equal,
+    assert_warns,
+)
 
 import clmm
 from clmm import GCData
@@ -114,7 +119,7 @@ def test_calculate_major_axis():
 
 def test_rotate_shear():
     """test rotate shear components"""
-    shear1, shear2, phi = 0.15, 0.08, 0.52
+    shear1, shear2 = 0.15, 0.08
     phi_major_45 = np.pi / 4.0
     phi_major_90 = np.pi / 2.0
     phi_major_180 = np.pi
@@ -129,7 +134,9 @@ def test_rotate_shear():
     assert_allclose([shear1_45, shear2_45], [expected_shear1_45, expected_shear2_45], **TOLERANCE)
     assert_allclose([shear1_90, shear2_90], [expected_shear1_90, expected_shear2_90], **TOLERANCE)
     assert_allclose(
-        [shear1_180, shear2_180], [expected_shear1_180, expected_shear2_180], **TOLERANCE
+        [shear1_180, shear2_180],
+        [expected_shear1_180, expected_shear2_180],
+        **TOLERANCE,
     )
 
 
@@ -225,7 +232,10 @@ def test_compute_lensing_angles_flatsky():
 
     assert_allclose(
         da._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
-        [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
+        [
+            [0.0012916551296819666, 0.003424250083245557],
+            [-2.570568636904587, 0.31079754672944354],
+        ],
         TOLERANCE["rtol"],
         err_msg="Failure when ra_l and ra_s are the same but one is defined negative",
     )
@@ -278,7 +288,6 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # Input values
     reltol = modeling_data["dataops_reltol"]
     ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
-    phi_major = 0.0
     gals = GCData(
         {
             "ra": np.array([120.1, 119.9]),
@@ -791,7 +800,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
     )
     # Use the cluster method
     cluster = clmm.GalaxyCluster(
-        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2"],
     )
     cluster_quad = clmm.GalaxyCluster(
         unique_id="blah",
@@ -803,7 +816,9 @@ def test_compute_tangential_and_cross_components(modeling_data):
     )
     # Test error with bad name/missing column
     assert_raises(
-        TypeError, cluster.compute_tangential_and_cross_components, shape_component1="crazy name"
+        TypeError,
+        cluster.compute_tangential_and_cross_components,
+        shape_component1="crazy name",
     )
     # Test output
     for geometry, expected in geo_tests:
@@ -830,7 +845,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
         )
         # include_quadrupole=True, with phi_major input
         cluster_quad.set_phi_major(
-            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+            info_mem=(
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            )
         )
         _, _, _, ftshear2, cnshear2 = cluster_quad.compute_tangential_and_cross_components(
             geometry=geometry,
@@ -849,7 +868,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
         )
         # include_quadrupole=True, with info_mem instead of phi_major input
         cluster_quad.set_phi_major(
-            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+            info_mem=(
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            )
         )
         _, _, _, ftshear3, cnshear3 = cluster_quad.compute_tangential_and_cross_components(
             geometry=geometry,
@@ -922,10 +945,16 @@ def test_compute_tangential_and_cross_components(modeling_data):
             geometry=geometry,
         )
         assert_allclose(
-            angsep_DS, expected["angsep"], reltol, err_msg="Angular Separation not correct"
+            angsep_DS,
+            expected["angsep"],
+            reltol,
+            err_msg="Angular Separation not correct",
         )
         assert_allclose(
-            tDS, expected["tangential_DS"], reltol, err_msg="Tangential Shear not correct"
+            tDS,
+            expected["tangential_DS"],
+            reltol,
+            err_msg="Tangential Shear not correct",
         )
         assert_allclose(xDS, expected["cross_DS"], reltol, err_msg="Cross Shear not correct")
         ## Turn on include_quadrupole w/ phi_major
@@ -943,10 +972,16 @@ def test_compute_tangential_and_cross_components(modeling_data):
             phi_major=0.0,
         )
         assert_allclose(
-            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+            ftDS,
+            expected["four_theta_DS"],
+            10 * reltol,
+            err_msg="4theta shear not correct",
         )
         assert_allclose(
-            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+            cnDS,
+            expected["const_DS"],
+            10 * reltol,
+            err_msg="constant shear not correct",
         )
         ## Turn on include_quadrupole w/ info_mem
         _, _, _, ftDS, cnDS = da.compute_tangential_and_cross_components(
@@ -969,15 +1004,25 @@ def test_compute_tangential_and_cross_components(modeling_data):
             ),
         )
         assert_allclose(
-            ftDS, expected["four_theta_DS"], 10 * reltol, err_msg="4theta shear not correct"
+            ftDS,
+            expected["four_theta_DS"],
+            10 * reltol,
+            err_msg="4theta shear not correct",
         )
         assert_allclose(
-            cnDS, expected["const_DS"], 10 * reltol, err_msg="constant shear not correct"
+            cnDS,
+            expected["const_DS"],
+            10 * reltol,
+            err_msg="constant shear not correct",
         )
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
     cluster = clmm.GalaxyCluster(
-        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2"],
     )
     assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # cluster object OK but function call missing cosmology
@@ -1022,7 +1067,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
         )
         # Turn on include_quadrupole w/ phi_major
         cluster_quad.set_phi_major(
-            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+            info_mem=(
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            )
         )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
             cosmo=cosmo,
@@ -1043,7 +1092,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
         )
         # Turn on include_quadrupole w/ info_mem
         cluster_quad.set_phi_major(
-            info_mem=(np.array([119.99, 120.01]), np.array([42.0, 42.0]), np.array([1.0, 1.0]))
+            info_mem=(
+                np.array([119.99, 120.01]),
+                np.array([42.0, 42.0]),
+                np.array([1.0, 1.0]),
+            )
         )
         _, _, _, ftDS, cnDS = cluster_quad.compute_tangential_and_cross_components(
             cosmo=cosmo,
@@ -1094,7 +1147,6 @@ def test_compute_background_probability():
     # photoz + deltasigma
     pzbin = np.linspace(0.0001, 5, 100)
     pzbins = [pzbin for i in range(z_src.size)]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     assert_raises(
         ValueError,
         da.compute_background_probability,
@@ -1258,7 +1310,10 @@ def _test_profile_table_output(
         err_msg="Minimum radius in bin not expected.",
     )
     assert_allclose(
-        profile["radius"], expected_radius, **TOLERANCE, err_msg="Mean radius in bin not expected."
+        profile["radius"],
+        expected_radius,
+        **TOLERANCE,
+        err_msg="Mean radius in bin not expected.",
     )
     assert_allclose(
         profile["radius_max"],
@@ -1267,11 +1322,12 @@ def _test_profile_table_output(
         err_msg="Maximum radius in bin not expected.",
     )
     assert_allclose(
-        profile[p0], expected_p0, **TOLERANCE, err_msg="Tangential shear in bin not expected"
+        profile[p0],
+        expected_p0,
+        **TOLERANCE,
+        err_msg="Tangential shear in bin not expected",
     )
-    assert_allclose(
-        profile[p1], expected_p1, **TOLERANCE, err_msg="Cross shear in bin not expected"
-    )
+    assert_allclose(profile[p1], expected_p1, **TOLERANCE, err_msg="Cross shear in bin not expected")
     assert_array_equal(profile["n_src"], expected_nsrc)
     if expected_gal_id is not None:
         assert_array_equal(profile["gal_id"], np.array(expected_gal_id, dtype=object))
@@ -1337,7 +1393,11 @@ def test_make_radial_profiles():
                 [tshear, xshear, gals["z"]], angsep, angsep_units, bin_units, bins=bins
             )[0],
             da.make_radial_profile(
-                [tshear, xshear, gals["z"]], angsep, angsep_units, bin_units, bins=vec_bins
+                [tshear, xshear, gals["z"]],
+                angsep,
+                angsep_units,
+                bin_units,
+                bins=vec_bins,
             )[0],
         )
         # Test the outputs of compute_tangential_and_cross_components just to be safe
@@ -1497,7 +1557,11 @@ def test_make_radial_profiles():
         )
         # Test it runs with galaxy id's and int bins
         cluster.make_radial_profile(
-            bin_units, bins=5, include_empty_bins=True, gal_ids_in_bins=True, table_name="profile3"
+            bin_units,
+            bins=5,
+            include_empty_bins=True,
+            gal_ids_in_bins=True,
+            table_name="profile3",
         )
         # And overwriting table
         cluster.make_radial_profile(
@@ -1569,7 +1633,11 @@ def test_make_radial_profiles():
     ########################################
     # Test error of missing redshift
     cluster = clmm.GalaxyCluster(
-        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2"],
     )
     cluster.compute_tangential_and_cross_components()
     assert_raises(TypeError, cluster.make_radial_profile, bin_units)

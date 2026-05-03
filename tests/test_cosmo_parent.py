@@ -1,7 +1,8 @@
 """Tests for clmm_cosmo.py"""
+
 import json
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose, assert_equal
+from numpy.testing import assert_raises, assert_allclose
 import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
 from clmm.utils.constants import Constants as const
@@ -17,7 +18,9 @@ def load_validation_config():
     numcosmo_ps = np.genfromtxt(numcosmo_path + "matter_power_spectrum.txt", names=True)
     # Cosmology
     cosmo = theo.Cosmology(
-        H0=testcase["cosmo_H0"], Omega_dm0=testcase["cosmo_Odm0"], Omega_b0=testcase["cosmo_Ob0"]
+        H0=testcase["cosmo_H0"],
+        Omega_dm0=testcase["cosmo_Odm0"],
+        Omega_b0=testcase["cosmo_Ob0"],
     )
 
     return cosmo, testcase, numcosmo_ps
@@ -44,7 +47,11 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology._eval_sigma_crit_core, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
     assert_raises(
-        NotImplementedError, CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None
+        NotImplementedError,
+        CLMMCosmology._eval_linear_matter_powerspectrum,
+        None,
+        None,
+        None,
     )
 
 
@@ -53,8 +60,6 @@ TOLERANCE = {"rtol": 1.0e-12}
 
 def test_z_and_a(modeling_data, cosmo_init):
     """Unit tests abstract class z and a methdods"""
-
-    reltol = modeling_data["cosmo_reltol"]
 
     cosmo = theo.Cosmology()
 
@@ -79,12 +84,12 @@ def test_z_and_a(modeling_data, cosmo_init):
     assert_allclose(
         cosmo.get_a_from_z([0.1, 0.2, 0.3, 0.4]),
         [10.0 / 11.0, 5.0 / 6.0, 10.0 / 13.0, 5.0 / 7.0],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         cosmo.get_a_from_z(np.array([0.1, 0.2, 0.3, 0.4])),
         np.array([10.0 / 11.0, 5.0 / 6.0, 10.0 / 13.0, 5.0 / 7.0]),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Convert from z to a - scalar, list, ndarray
@@ -92,20 +97,24 @@ def test_z_and_a(modeling_data, cosmo_init):
     assert_allclose(
         cosmo.get_z_from_a([10.0 / 11.0, 5.0 / 6.0, 10.0 / 13.0, 5.0 / 7.0]),
         [0.1, 0.2, 0.3, 0.4],
-        **TOLERANCE
+        **TOLERANCE,
     )
     assert_allclose(
         cosmo.get_z_from_a(np.array([10.0 / 11.0, 5.0 / 6.0, 10.0 / 13.0, 5.0 / 7.0])),
         np.array([0.1, 0.2, 0.3, 0.4]),
-        **TOLERANCE
+        **TOLERANCE,
     )
 
     # Some potential corner-cases for the two funcs
     assert_allclose(
-        cosmo.get_a_from_z(np.array([0.0, 1300.0])), np.array([1.0, 1.0 / 1301.0]), **TOLERANCE
+        cosmo.get_a_from_z(np.array([0.0, 1300.0])),
+        np.array([1.0, 1.0 / 1301.0]),
+        **TOLERANCE,
     )
     assert_allclose(
-        cosmo.get_z_from_a(np.array([1.0, 1.0 / 1301.0])), np.array([0.0, 1300.0]), **TOLERANCE
+        cosmo.get_z_from_a(np.array([1.0, 1.0 / 1301.0])),
+        np.array([0.0, 1300.0]),
+        **TOLERANCE,
     )
 
     # Test for exceptions when outside of domains

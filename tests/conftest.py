@@ -1,7 +1,6 @@
 import os
 
 os.environ["MPLBACKEND"] = "template"
-import sys
 import pytest
 import importlib
 import clmm

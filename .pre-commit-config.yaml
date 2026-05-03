@@ -23,4 +23,9 @@ repos:
         args: [--fix=lf]
       - id: trailing-whitespace
 
+  - repo: https://github.com/ambv/black
+    rev: 25.11.0
+    hooks:
+      - id: black
+
 #exclude: tests_cluster/

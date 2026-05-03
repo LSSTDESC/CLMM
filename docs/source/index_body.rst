@@ -7,7 +7,7 @@ library for performing galaxy cluster weak lensing analyses. clmm is
 associated with Key Tasks DC1 SW+RQ and DC2 SW of the LSST-DESC
 `Science Roadmap
 <https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf>`_
-pertaining to absolute and relative mass calibration. 
+pertaining to absolute and relative mass calibration.
 
 
 The source code is publically available at https://github.com/LSSTDESC/CLMM
@@ -20,4 +20,3 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    source/overview
    source/installation
    source/citing
-

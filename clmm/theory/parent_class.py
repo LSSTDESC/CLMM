@@ -1043,9 +1043,7 @@ class CLMModeling:
             )
         elif z_src_info == "beta":
             beta_s_mean = z_src[0]
-            gammat_inf = self._eval_tangential_shear_core(
-                r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf
-            )
+            gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
             gammat = beta_s_mean * gammat_inf
 
         return gammat
@@ -1361,7 +1359,6 @@ class CLMModeling:
                     r_proj,
                 )
         elif approx in ("type0", "type1", "type2"):
-
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
 
@@ -1705,9 +1702,9 @@ class CLMModeling:
             if approx == "type2":
                 beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
-                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
-                    2 * alpha - 1
-                ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
+                mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (2 * alpha - 1) * (
+                    alpha - 1
+                ) * beta_s_square_mean * kappa_inf**2
 
         return mu_bias
 
@@ -1832,9 +1829,7 @@ class CLMModeling:
                 f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}"
             )
 
-        return self._convert_mass_concentration(
-            z_cl, massdef, delta_mdef, halo_profile_model, alpha
-        )
+        return self._convert_mass_concentration(z_cl, massdef, delta_mdef, halo_profile_model, alpha)
 
     def _validate_z_src(self, loc_dict):
         r"""Validation for z_src according to z_src_info. The conditions are:

@@ -3,14 +3,14 @@ language: python
 cache: pip
 
 python:
-- 3.6
-- nightly
+  - 3.6
+  - nightly
 
 # We don't want travis to fail if a new experimental feature breaks us
 jobs:
-    allow_failures:
-        - python: nightly
-    fast_finish: true
+  allow_failures:
+    - python: nightly
+  fast_finish: true
 
 install:
   # Update apt-get and install GSL
@@ -29,7 +29,7 @@ install:
   - pip install -r requirements.txt
 
   #- export GI_TYPELIB_PATH="${GI_TYPELIB_PATH}:/usr/share/gir-1.0"
-  
+
   # Install the package
   - python setup.py install
 

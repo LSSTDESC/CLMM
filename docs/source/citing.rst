@@ -22,10 +22,10 @@ definitely before any publication or posting of the work to the arXiv.
 community, but planning to use CLMM in a non-DESC project, it would be
 good practice to contact the CL WG co-conveners and/or the CLMM Topical
 Team leads as well (see Contact section).  A desired outcome would be for your
-non-DESC project concept and progress to be presented in the working group 
+non-DESC project concept and progress to be presented in the working group
 so working group members can help co-identify tools and/or ongoing development
 that might mutually benefit your non-DESC project and ongoing DESC projects.
 
-*External Projects by Non-DESC members*: If you are not from the DESC 
-community, you are also welcome to contact CLMM Topical Team leads to introduce 
+*External Projects by Non-DESC members*: If you are not from the DESC
+community, you are also welcome to contact CLMM Topical Team leads to introduce
 your project and share feedback.

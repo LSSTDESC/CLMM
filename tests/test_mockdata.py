@@ -20,13 +20,35 @@ def test_mock_data():
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=None)
     assert_raises(
-        ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1
+        ValueError,
+        mock.generate_galaxy_catalog,
+        1e15,
+        0.3,
+        4,
+        cosmo,
+        0.8,
+        ngals=1,
+        ngal_density=1,
     )
     assert_raises(
-        ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, "unknown_src", ngals=10
+        ValueError,
+        mock.generate_galaxy_catalog,
+        1e15,
+        0.3,
+        4,
+        cosmo,
+        "unknown_src",
+        ngals=10,
     )
     assert_raises(
-        ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, "unknown_src", ngal_density=1
+        ValueError,
+        mock.generate_galaxy_catalog,
+        1e15,
+        0.3,
+        4,
+        cosmo,
+        "unknown_src",
+        ngal_density=1,
     )
     # Test warning if bad gals
     with warnings.catch_warnings(record=True) as warn:
@@ -35,7 +57,14 @@ def test_mock_data():
         # Trigger a warning.
         np.random.seed(314)
         mock.generate_galaxy_catalog(
-            1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0, coordinate_system="euclidean"
+            1e15,
+            0.3,
+            4,
+            cosmo,
+            0.30001,
+            ngals=1000,
+            nretry=0,
+            coordinate_system="euclidean",
         )
         # Verify some things
         assert len(warn) == 1
@@ -114,7 +143,7 @@ def test_mock_data():
                     pz_bins=pz_bins,
                     photoz_sigma_unscaled=0.1,
                     shapenoise=shapenoise,
-                    **kwargs
+                    **kwargs,
                 )
                 if kwargs.get("pzpdf_type", "shared_bins") == "shared_bins":
                     assert "zbins" in cat.pzpdf_info
@@ -132,7 +161,14 @@ def test_mock_data():
 
     def nfw_shear_profile(r, logm, z_src):
         return clmm.compute_reduced_tangential_shear(
-            r, 10.0**logm, 4, 0.3, z_src, cosmo, delta_mdef=200, halo_profile_model="nfw"
+            r,
+            10.0**logm,
+            4,
+            0.3,
+            z_src,
+            cosmo,
+            delta_mdef=200,
+            halo_profile_model="nfw",
         )
 
     def mass_mock_cluster(mass=15.0, guess=15.0):
@@ -164,7 +200,10 @@ def test_mock_data():
         cl = clmm.GalaxyCluster("test_cluster", cluster_ra, cluster_dec, cluster_z, data)
         theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
         binned = cl.make_radial_profile(
-            "Mpc", bins=da.make_bins(0.5, 5.0, 100), cosmo=cosmo, include_empty_bins=False
+            "Mpc",
+            bins=da.make_bins(0.5, 5.0, 100),
+            cosmo=cosmo,
+            include_empty_bins=False,
         )
 
         popt, pcov = fitters["curve_fit"](
@@ -259,17 +298,13 @@ def test_shapenoise():
 
     # Verify that the shape noise is Gaussian around 0 (for the very small shear here)
     sigma = 0.25
-    data = mock.generate_galaxy_catalog(
-        10**12.0, 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=sigma
-    )
+    data = mock.generate_galaxy_catalog(10**12.0, 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=sigma)
     # Check that there are no galaxies with |e|>1
     assert_equal(np.count_nonzero((data["e1"] > 1) | (data["e1"] < -1)), 0)
     assert_equal(np.count_nonzero((data["e2"] > 1) | (data["e2"] < -1)), 0)
     # Check that shape noise is Guassian with correct std dev
     bins = np.arange(-1, 1.1, 0.1)
-    gauss = (
-        5000 * np.exp(-0.5 * (bins[:-1] + 0.05) ** 2 / sigma**2) / (sigma * np.sqrt(2 * np.pi))
-    )
+    gauss = 5000 * np.exp(-0.5 * (bins[:-1] + 0.05) ** 2 / sigma**2) / (sigma * np.sqrt(2 * np.pi))
     assert_allclose(np.histogram(data["e1"], bins=bins)[0], gauss, atol=50, rtol=0.05)
     assert_allclose(np.histogram(data["e2"], bins=bins)[0], gauss, atol=50, rtol=0.05)
 
@@ -313,13 +348,13 @@ def test_coordinate_system():
         euclidean_data["e1"],
         celestial_data["e1"],
         **TOLERANCE,
-        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed",
     )
     assert_allclose(
         euclidean_data["e2"],
         -celestial_data["e2"],
         **TOLERANCE,
-        err_msg="Conversion from euclidean to celestial coordinate system for theta failed"
+        err_msg="Conversion from euclidean to celestial coordinate system for theta failed",
     )
 
     assert_raises(
