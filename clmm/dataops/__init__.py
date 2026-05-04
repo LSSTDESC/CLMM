@@ -487,7 +487,7 @@ def _compute_lensing_angles_astropy(
     return angsep, phi
 
 
-def calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
+def calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem, remove_cg=True):
     r"""Compute the major axis of a given cluster from the distribution of
     its member galaxies using the position second moments.
 
@@ -496,26 +496,52 @@ def calculate_major_axis(ra_lens_, dec_lens_, ra_mem_, dec_mem_, weight_mem_):
     Current implementation assumes the +RA direction is aligned with +x direction.
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
+
+    Parameters
+    ----------
+    ra_lens: float
+        Right ascension of the lensing cluster in degrees
+    dec_lens: float
+        Declination of the lensing cluster in degrees
+    ra_mem: array
+        Right ascensions of each cluster member galaxy in degrees
+    dec_mem: array
+        Declinations of each cluster member galaxy in degrees
+    weight_mem: array
+        Weight to be used for each cluster member galaxy
+    remove_cg: bool
+        Remove central galaxy from axis computation
+
+    Returns
+    -------
+    float
+        Major axis of cluster
     """
-    ind_bcg = (np.array(ra_mem_) == ra_lens_) * (np.array(dec_mem_) == dec_lens_)
-    sk_lens = SkyCoord(ra_lens_ * u.deg, dec_lens_ * u.deg, frame="icrs")
-    sk_mem = SkyCoord(
-        np.array(ra_mem_)[~ind_bcg] * u.deg, np.array(dec_mem_)[~ind_bcg] * u.deg, frame="icrs"
-    )
+    sk_lens = SkyCoord(ra_lens * u.deg, dec_lens * u.deg, frame="icrs")
+    sk_mem = SkyCoord(np.array(ra_mem) * u.deg, np.array(dec_mem) * u.deg, frame="icrs")
+    # remove central galaxy
+    if remove_cg:
+        ind_bc = (np.array(ra_mem) == ra_lens) * (np.array(dec_mem) == dec_lens)
+        sk_mem = sk_mem[~ind_cg]
+
+    # compute angles and weights
     position_angle_mem = np.array(sk_lens.position_angle(sk_mem).radian + np.pi / 2.0)
     separation_mem = np.array(sk_lens.separation(sk_mem).degree)
+
     x_mem = separation_mem * np.cos(position_angle_mem)
     y_mem = separation_mem * np.sin(position_angle_mem)
+
     distance_weight_mem = 1.0 / (separation_mem**2)
-    weight_total_mem = np.array(weight_mem_) * distance_weight_mem
-    sum_weight_total_mem = np.sum(weight_total_mem)
+    weight_total_mem = np.array(weight_mem) * distance_weight_mem
+    weight_total_mem_norm = weight_total_mem / weight_total_mem.sum()
+
     # Calcualte second moments of the member galaxies
-    ixx = np.sum(x_mem**2 * weight_total_mem) / sum_weight_total_mem
-    iyy = np.sum(y_mem**2 * weight_total_mem) / sum_weight_total_mem
-    ixy = np.sum(x_mem * y_mem * weight_total_mem) / sum_weight_total_mem
+    ixx = (x_mem**2 * weight_total_mem_norm).sum()
+    iyy = (y_mem**2 * weight_total_mem_norm).sum()
+    ixy = (x_mem * y_mem * weight_total_mem_norm).sum()
+
     # Transformation of the second moments to the direction of the major axis
-    phi_major = np.arctan2(2.0 * ixy, ixx - iyy) / 2.0
-    return phi_major
+    return np.arctan2(2.0 * ixy, ixx - iyy) / 2.0
 
 
 def _rotate_shear(shear1, shear2, phi_major):
