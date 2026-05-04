@@ -10,31 +10,22 @@ env:
   CONDA_ENV_NAME: clmm
 
 jobs:
+
   check-formatting:
     name: Code formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          activate-environment: ${{ env.CONDA_ENV_NAME }}
-          environment-file: environment.yml
-      - uses: actions/cache@v4
-        with:
-          path: ${{ env.CONDA }}/pkgs
-          key: ${{ runner.os }}-conda-${{ env.CONDA_ENV_NAME }}
-      - name: Analysing the code formatting with black
-        shell: bash -l {0}
-        run: |
-          black --check --diff clmm
-      - name: Analysing the code import order with isort
-        shell: bash -l {0}
-        run: |
-          isort --check --diff clmm
-      - name: Analysing the code with pylint
-        shell: bash -l {0}
-        run: |
-          pylint clmm
+          python-version: "3.10"
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files --show-diff-on-failure
+
   doc-valid:
     name: Documentation Validation
     runs-on: ubuntu-latest
@@ -56,6 +47,7 @@ jobs:
         shell: bash -l {0}
         run: |
           make -C docs/ html
+
   build-gcc-ubuntu:
     name: Unit tests
     runs-on: ubuntu-latest
