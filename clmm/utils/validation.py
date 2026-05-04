@@ -249,7 +249,7 @@ class DiffArray:
 
     def __eq__(self, other):
         # pylint: disable=unidiomatic-typecheck
-        if type(other) != type(self):
+        if type(other) is not type(self):
             return False
         if self.value.size != other.value.size:
             return False

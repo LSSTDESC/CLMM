@@ -8,10 +8,10 @@ import numpy as np
 # pylint: disable=wrong-import-position
 gi.require_version("NumCosmo", "1.0")
 gi.require_version("NumCosmoMath", "1.0")
-from gi.repository import NumCosmo as Nc
-from gi.repository import NumCosmoMath as Ncm
+from gi.repository import NumCosmo as Nc  # noqa: E402
+from gi.repository import NumCosmoMath as Ncm  # noqa: E402
 
-from .parent_class import CLMMCosmology
+from .parent_class import CLMMCosmology  # noqa: E402
 
 __all__ = []
 
