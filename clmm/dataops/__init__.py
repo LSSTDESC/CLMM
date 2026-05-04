@@ -521,8 +521,7 @@ def calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem, remove_
     sk_mem = SkyCoord(np.array(ra_mem) * u.deg, np.array(dec_mem) * u.deg, frame="icrs")
     # remove central galaxy
     if remove_cg:
-        ind_bc = (np.array(ra_mem) == ra_lens) * (np.array(dec_mem) == dec_lens)
-        sk_mem = sk_mem[~ind_cg]
+        sk_mem = sk_mem[(np.array(ra_mem) != ra_lens) + (np.array(dec_mem) != dec_lens)]
 
     # compute angles and weights
     position_angle_mem = np.array(sk_lens.position_angle(sk_mem).radian + np.pi / 2.0)
