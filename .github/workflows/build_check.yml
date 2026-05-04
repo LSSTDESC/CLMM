@@ -10,7 +10,6 @@ env:
   CONDA_ENV_NAME: clmm
 
 jobs:
-
   check-formatting:
     name: Code formatting
     runs-on: ubuntu-latest
