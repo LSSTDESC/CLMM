@@ -797,7 +797,7 @@ class GalaxyCluster:
         for col in filter(lambda col: col not in profile.columns, prof_cols_err):
             warnings.warn(f"Column for plotting '{col}' does not exist.")
 
-        return (
+        return tuple(
             plot_profiles(
                 rbins=profile["radius"],
                 r_units=profile.meta["bin_units"],
