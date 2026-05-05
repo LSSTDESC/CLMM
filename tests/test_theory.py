@@ -444,7 +444,7 @@ def test_miscentering(modeling_data, profile_init):
         assert_equal(
             theo.miscentering.integrand_surface_density_hernquist(0, 0.3, 0, 0.3), 4.0 / 15.0
         )
-        if mod.backend == "nc":
+        if mod.backend != "nc":
             return
 
         # OO tests
