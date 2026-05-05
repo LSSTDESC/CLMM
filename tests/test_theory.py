@@ -450,10 +450,7 @@ def test_miscentering(modeling_data, profile_init):
         # OO tests
         assert_allclose(
             mod.eval_surface_density(
-                cfg["SIGMA_PARAMS"]["r_proj"],
-                cfg["SIGMA_PARAMS"]["z_cl"],
-                r_mis=0.1,
-                verbose=True,
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1, verbose=True
             )[-40:],
             cfg["numcosmo_profiles"]["Sigma"][-40:],
             2.5e-2,
@@ -482,10 +479,7 @@ def test_miscentering(modeling_data, profile_init):
         )
         assert_allclose(
             mod.eval_mean_surface_density(
-                cfg["SIGMA_PARAMS"]["r_proj"],
-                cfg["SIGMA_PARAMS"]["z_cl"],
-                r_mis=0.1,
-                verbose=True,
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1, verbose=True
             )[-40:],
             (cfg["numcosmo_profiles"]["Sigma"] + cfg["numcosmo_profiles"]["DeltaSigma"])[-40:],
             8.5e-3,
@@ -514,10 +508,7 @@ def test_miscentering(modeling_data, profile_init):
         )
         assert_allclose(
             mod.eval_excess_surface_density(
-                cfg["SIGMA_PARAMS"]["r_proj"],
-                cfg["SIGMA_PARAMS"]["z_cl"],
-                r_mis=0.1,
-                verbose=True,
+                cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], r_mis=0.1, verbose=True
             )[-40:],
             cfg["numcosmo_profiles"]["DeltaSigma"][-40:],
             2.5e-2,
@@ -1077,48 +1068,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         assert_allclose(
             theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.ones(len(radius)),
             1.0e-10,
@@ -1142,48 +1113,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         z_src = [0.25, 0.1, 0.14, 0.02]
         assert_allclose(
             theo.compute_convergence(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
             theo.compute_magnification(
-                radius,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
+                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
             ),
             np.ones(len(z_src)),
             1.0e-10,
