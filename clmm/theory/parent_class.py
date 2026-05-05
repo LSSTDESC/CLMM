@@ -18,7 +18,7 @@ from ..utils import (
     compute_for_good_redshifts,
     validate_argument,
 )
-from . import miscentering
+from . import miscentering, triaxiality
 from .generic import (
     compute_magnification_bias_from_magnification,
     compute_profile_mass_in_radius,
@@ -277,6 +277,26 @@ class CLMModeling:
         return self._eval_2halo_term_generic(
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
+
+    def _eval_excess_surface_density_triaxial(
+        self, surface_density_func, r_proj, z_cl, ell, term, n_grid=10000
+    ):
+        """eval individual terms of  excess surface density"""
+
+        args = (surface_density_func, r_proj, z_cl, ell, n_grid)
+
+        if term == "mono":
+            delta_sigma = self._eval_excess_surface_density(
+                r_proj, z_cl
+            ) + triaxiality.excess_surface_density_mono_correction(*args)
+        elif term == "quad_4theta":
+            delta_sigma = triaxiality.excess_surface_density_quad_4theta(*args)
+        elif term == "quad_const":
+            delta_sigma = triaxiality.excess_surface_density_quad_const(*args)
+        else:
+            raise ValueError(f"Unsupported term (='{term}')")
+
+        return delta_sigma
 
     def _eval_rdelta(self, z_cl):
         delta_mdef = self._get_delta_mdef(z_cl)
@@ -684,8 +704,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -725,8 +744,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -767,8 +785,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            if r_mis is not None:
-                validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -883,6 +900,74 @@ class CLMModeling:
             )
         return self._eval_surface_density_2h(
             r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
+        )
+
+    def eval_excess_surface_density_triaxial(
+        self,
+        r_proj,
+        z_cl,
+        ell,
+        term,
+        r_mis=None,
+        mis_from_backend=False,
+        verbose=False,
+        n_grid=10000,
+    ):
+        r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
+
+        Parameters
+        ----------
+        r_proj: array
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of lens cluster
+        ell: float
+            ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+            q=b/a (Ratio of major axis to the minor axis lengths)
+        term: str
+            The expansion term wanted.
+                * 'mono': The monopole term with the ellipticity corrections applied. This will
+                    give the usual excess surface density but for a triaxial halo.
+                * 'quad_4theta': The 4theta component of the quadrupole term.
+                * 'quad_const': The constant component of the quadrupole term.
+        n_grid: int
+            Grid steps for gradient calculations.
+
+        Returns
+        -------
+        numpy.ndarry, float
+            Requested component of the excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), "r_proj", "float_array", argmin=0)
+            validate_argument(locals(), "z_cl", float, argmin=0)
+            validate_argument(locals(), "ell", float, argmin=0, argmax=1)
+            validate_argument(locals(), "term", str)
+            validate_argument(locals(), "n_grid", int, argmin=2)
+            validate_argument(locals(), "r_mis", float, argmin=0, eqmin=True, none_ok=True)
+
+        if self.halo_profile_model == "einasto" and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        if r_mis is not None:
+
+            def surface_density_func(r_proj, z_cl):
+                return self._eval_surface_density_miscentered(
+                    r_proj=r_proj, z_cl=z_cl, r_mis=r_mis, mis_from_backend=mis_from_backend
+                )
+
+        else:
+            surface_density_func = self._eval_surface_density
+
+        if self.backend not in ("ccl", "nc"):
+            raise NotImplementedError(
+                f"Triaxial-4theta term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead"
+            )
+
+        return self._eval_excess_surface_density_triaxial(
+            surface_density_func, r_proj, z_cl, ell, term, n_grid
         )
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):

@@ -12,6 +12,7 @@ from .theory import (
     compute_convergence,
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
+    compute_excess_surface_density_triaxial,
     compute_magnification,
     compute_magnification_bias,
     compute_magnification_bias_from_magnification,
@@ -27,4 +28,4 @@ from .theory import (
 )
 from .utils import compute_radial_averages, convert_units, make_bins
 
-__version__ = "1.17.0"
+__version__ = "1.18.0"

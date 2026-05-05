@@ -32,6 +32,8 @@ def compute_tangential_and_cross_components(
     geometry="curve",
     is_deltasigma=False,
     sigma_c=None,
+    include_quadrupole=False,
+    phi_major=None,
     validate_input=True,
 ):
     r"""Computes tangential- and cross- components for shear or ellipticity
@@ -71,6 +73,14 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
+    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`, 
+    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` 
+    of the source galaxies, following Eq.31 and Eq.34 in Shin et al. (2018), arXiv:1705.11167. 
+
+    .. math::
+        g_4theta =& \left( g_1\cos\left(4\phi\right)+g_2\sin\left(4\phi\right)\right)\\
+        g_const =& g_1
+
     Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate
     of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
@@ -96,9 +106,9 @@ def compute_tangential_and_cross_components(
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        If not set, defaults to 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either `celestial` or
+        `euclidean`. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        Default is `euclidean`.
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
@@ -108,6 +118,15 @@ def compute_tangential_and_cross_components(
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         Used only when is_deltasigma=True.
+    include_quadrupole: bool
+        If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
+    phi_major : float, optional
+        Direction of the major axis of the input cluster in the unit of radian. 
+        only needed when `include_quadrupole` is `True`.
+        This quantity is always in Euclidean coordinates, for celestial coordinates only set
+        the coordinate_system=`celestial`.
+        ``CLMM`` also provides a function to compute ``phi_major`` from the cluster members,
+        check :class:`clmm.data.calculate_major_axis` for details.
     validate_input: bool
         Validade each input argument
 
@@ -119,8 +138,13 @@ def compute_tangential_and_cross_components(
         Tangential shear (or assimilated quantity) for each source galaxy
     cross_component: array_like
         Cross shear (or assimilated quantity) for each source galaxy
+    IF include_quadrupole:
+        4theta_component: array_like
+            4theta shear component (or assimilated quantity) for each source galaxy
+        const_component: array_like
+            constant shear component (or assimilated quantity) for each source galaxy
     """
-    # pylint: disable-msg=too-many-locals
+    # pylint: disable-msg=too-many-locals,too-many-branches
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if coordinate_system is None:
@@ -135,6 +159,8 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "shear1", "float_array")
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)
+        validate_argument(locals(), "is_deltasigma", bool)
+        validate_argument(locals(), "include_quadrupole", bool)
         validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
         _validate_coordinate_system(locals(), "coordinate_system")
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
@@ -143,6 +169,7 @@ def compute_tangential_and_cross_components(
             prefix="Tangential- and Cross- shape components sources",
         )
         _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
+        validate_argument(locals(), "phi_major", float, none_ok=True)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -166,15 +193,29 @@ def compute_tangential_and_cross_components(
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
-    tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
-    cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
+    output_components = [
+        _compute_tangential_shear(shear1_, shear2_, phi),
+        _compute_cross_shear(shear1_, shear2_, phi),
+    ]
 
+    if include_quadrupole:
+        if phi_major is None:
+            raise ValueError("phi_major should be provided for quadrupole computation")
+        if coordinate_system == "celestial":
+            phi_major = np.pi - phi_major
+        rotated_shear1, rotated_shear2 = _rotate_shear(shear1_, shear2_, phi_major)
+        # Compute the quadrupole shear components
+        output_components += [
+            _compute_4theta_shear(rotated_shear1, rotated_shear2, phi - phi_major),
+            rotated_shear1,  # const_comp
+        ]
+
+    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
     if sigma_c is not None:
         _sigma_c_arr = np.array(sigma_c)
-        tangential_comp *= _sigma_c_arr
-        cross_comp *= _sigma_c_arr
+        output_components = [component * _sigma_c_arr for component in output_components]
 
-    return angsep, tangential_comp, cross_comp
+    return angsep, *output_components
 
 
 def compute_background_probability(
@@ -446,6 +487,76 @@ def _compute_lensing_angles_astropy(
     return angsep, phi
 
 
+def calculate_major_axis(ra_lens, dec_lens, ra_mem, dec_mem, weight_mem, remove_cg=True):
+    r"""Compute the major axis of a given cluster from the distribution of
+    its member galaxies using the position second moments.
+
+    The computation is done according to Eq. 5-10 of Shin et al. 2018, arXiv:1705.11167
+
+    Current implementation assumes the +RA direction is aligned with +x direction.
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+
+    Parameters
+    ----------
+    ra_lens: float
+        Right ascension of the lensing cluster in degrees
+    dec_lens: float
+        Declination of the lensing cluster in degrees
+    ra_mem: array
+        Right ascensions of each cluster member galaxy in degrees
+    dec_mem: array
+        Declinations of each cluster member galaxy in degrees
+    weight_mem: array
+        Weight to be used for each cluster member galaxy
+    remove_cg: bool
+        Remove central galaxy from axis computation
+
+    Returns
+    -------
+    float
+        Major axis of cluster
+    """
+    sk_lens = SkyCoord(ra_lens * u.deg, dec_lens * u.deg, frame="icrs")
+    sk_mem = SkyCoord(np.array(ra_mem) * u.deg, np.array(dec_mem) * u.deg, frame="icrs")
+    # remove central galaxy
+    if remove_cg:
+        sk_mem = sk_mem[(np.array(ra_mem) != ra_lens) + (np.array(dec_mem) != dec_lens)]
+
+    # compute angles and weights
+    position_angle_mem = np.array(sk_lens.position_angle(sk_mem).radian + np.pi / 2.0)
+    separation_mem = np.array(sk_lens.separation(sk_mem).degree)
+
+    x_mem = separation_mem * np.cos(position_angle_mem)
+    y_mem = separation_mem * np.sin(position_angle_mem)
+
+    distance_weight_mem = 1.0 / (separation_mem**2)
+    weight_total_mem = np.array(weight_mem) * distance_weight_mem
+    weight_total_mem_norm = weight_total_mem / weight_total_mem.sum()
+
+    # Calcualte second moments of the member galaxies
+    ixx = (x_mem**2 * weight_total_mem_norm).sum()
+    iyy = (y_mem**2 * weight_total_mem_norm).sum()
+    ixy = (x_mem * y_mem * weight_total_mem_norm).sum()
+
+    # Transformation of the second moments to the direction of the major axis
+    return np.arctan2(2.0 * ixy, ixx - iyy) / 2.0
+
+
+def _rotate_shear(shear1, shear2, phi_major):
+    r"""Rotate shear components into the coordinate where +x axis is aligned with
+    the cluster major axis.
+
+    .. math::
+        g_rotated = g * \exp\left(-2i\phi\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    shear_vec = shear1 + shear2 * 1.0j
+    rotated_shear_vec = shear_vec * np.exp(-2.0j * phi_major)
+    return np.real(rotated_shear_vec), np.imag(rotated_shear_vec)
+
+
 def _compute_tangential_shear(shear1, shear2, phi):
     r"""Compute the tangential shear given the two shears and azimuthal positions for
     a single source or list of sources.
@@ -473,6 +584,25 @@ def _compute_cross_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return shear1 * np.sin(2.0 * phi) - shear2 * np.cos(2.0 * phi)
+
+
+def _compute_4theta_shear(shear1, shear2, phi):
+    r"""Compute the 4theta component of the quadrupole shear given the two shear components and
+    azimuthal positions for a single source or list of sources.
+
+    We compute the tangential shear following Eq. 31 of Shin et al. 2018, arXiv:1705.11167
+
+    .. math::
+        g_4theta = g_1\cos\left(4\phi\right)+g_2\sin\left(4\phi\right)
+
+    Note that here `\phi` is the position angle of the source galaxies
+    with respect to the major axis of the cluster.
+    Also, `shear1` and `shear2` are measured in the coordinate where
+    the +x axis is aligned with the major axis of the cluster.
+
+    For extended descriptions of parameters, see `compute_shear()' documentation.
+    """
+    return shear1 * np.cos(4.0 * phi) + shear2 * np.sin(4.0 * phi)
 
 
 def make_radial_profile(
@@ -656,7 +786,7 @@ def make_stacked_radial_profile(angsep, weights, components):
     Parameters
     ----------
     angsep: 2d array
-        Transvesal distances corresponding to each object with shape `n_obj, n_rad_bins`.
+        Transversal distances corresponding to each object with shape `n_obj, n_rad_bins`.
     weights: 2d array
         Weights corresponding to each objects with shape `n_obj, n_rad_bins`.
     components: list of 2d arrays
