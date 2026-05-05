@@ -396,11 +396,6 @@ def test_miscentering(modeling_data, profile_init):
         "notabackend",
         "testnotabackend",
     ]:
-        if profile_init == "nfw":
-            reltol = modeling_data["theory_reltol"]
-        else:
-            reltol = modeling_data["theory_reltol_num"]
-
         # Object Oriented tests
         mod = theo.Modeling()
         mod.set_cosmo(cosmo)
