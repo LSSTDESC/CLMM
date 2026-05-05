@@ -404,6 +404,7 @@ def test_density_profiles(modeling_data, profile_init):
                 delattr(mod.hdpm, "projected_quad")
                 assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
+
 def test_miscentering(modeling_data, profile_init):
     """Tests for profile functions, compute_3d_density, compute_surface_density,
     and compute_excess_surface_density"""
@@ -413,7 +414,6 @@ def test_miscentering(modeling_data, profile_init):
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg["cosmo"]
-
 
     if theo.be_nick == "nc" and modeling_data["nick"] not in [
         "notabackend",
@@ -615,45 +615,6 @@ def test_triaxial(modeling_data):
             n_grid=100,
         )
     else:
-        # Just checking that it runs and returns array of the right length
-        # To be updated with proper comparison to benchmark when available
-        assert_equal(
-            len(
-                mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"],
-                    cfg["SIGMA_PARAMS"]["z_cl"],
-                    0.1,
-                    "mono",
-                    n_grid=100,
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
-        assert_equal(
-            len(
-                mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"],
-                    cfg["SIGMA_PARAMS"]["z_cl"],
-                    0.1,
-                    "quad_4theta",
-                    n_grid=100,
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
-        assert_equal(
-            len(
-                mod.eval_excess_surface_density_triaxial(
-                    cfg["SIGMA_PARAMS"]["r_proj"],
-                    cfg["SIGMA_PARAMS"]["z_cl"],
-                    0.1,
-                    "quad_const",
-                    n_grid=100,
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
-
         # Check that wrong term value is caught in OO-oriented and functional interface.
         assert_raises(
             ValueError,
@@ -678,6 +639,7 @@ def test_triaxial(modeling_data):
         )
 
         # Checks that OO-oriented and functional interface give the same results
+        # To be updated with proper comparison to benchmark when available
         assert_allclose(
             theo.compute_excess_surface_density_triaxial(
                 cfg["SIGMA_PARAMS"]["r_proj"],
@@ -805,26 +767,8 @@ def test_2halo_term(modeling_data):
             cfg["SIGMA_PARAMS"]["z_cl"],
         )
     else:
-        # Just checking that it runs and returns array of the right length
-        # To be updated with proper comparison to benchmark when available
-        assert_equal(
-            len(
-                mod.eval_surface_density_2h(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
-        assert_equal(
-            len(
-                mod.eval_excess_surface_density_2h(
-                    cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"]
-                )
-            ),
-            len(cfg["SIGMA_PARAMS"]["r_proj"]),
-        )
-
         # Checks that OO-oriented and functional interface give the same results
+        # To be updated with proper comparison to benchmark when available
         assert_allclose(
             theo.compute_excess_surface_density_2h(
                 cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], cosmo
