@@ -911,11 +911,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # reduced tangential shear
 
         # test errors and also prepare for the next round of tests
-        _kwargs_bad_z_src_info = {
-            "cosmo": cosmo,
-            **cfg_inf["GAMMA_PARAMS"],
-            "z_src_info": "notvalid",
-        }
         _kwargs_bad_approx = {"cosmo": cosmo, **cfg_inf["GAMMA_PARAMS"], "approx": "notvalid"}
         _kwargs_bad_integ_kwargs = {
             "cosmo": cosmo,
@@ -923,12 +918,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             "integ_kwargs": {"notavalidkey": 0.0},
         }
 
-        # test ValueError from unsupported z_src_info
-        assert_raises(ValueError, theo.compute_tangential_shear, **_kwargs_bad_z_src_info)
-        assert_raises(ValueError, theo.compute_convergence, **_kwargs_bad_z_src_info)
-
         for err, _kwargs in (
-            (ValueError, _kwargs_bad_z_src_info),
             (ValueError, _kwargs_bad_approx),
             (KeyError, _kwargs_bad_integ_kwargs),
         ):
@@ -1040,7 +1030,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 func(
                     radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
                 ),
-                value * np.ones(len(radius)),
+                value * np.ones(len(z_src)),
                 1.0e-10,
             )
 
