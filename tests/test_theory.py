@@ -1014,11 +1014,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # and magnification and magnification bias return one
         # if source is in front of the cluster
 
-        # First, check for a array of radius and single source z
-        radius = np.logspace(-2, 2, 10)
         z_cluster = 0.3
-        z_src = 0.2
-
         for func, value in (
             (theo.compute_convergence, 0),
             (theo.compute_tangential_shear, 0),
@@ -1026,6 +1022,9 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             (theo.compute_magnification, 1),
             (lambda *args, **kwargs: theo.compute_magnification_bias(*args, alpha=2, **kwargs), 1),
         ):
+            # First, check for a array of radius and single source z
+            radius = np.logspace(-2, 2, 10)
+            z_src = 0.2
             assert_allclose(
                 func(
                     radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
@@ -1034,50 +1033,16 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 1.0e-10,
             )
 
-        # Second, check a single radius and array of source z
-        radius = 1.0
-        z_src = [0.25, 0.1, 0.14, 0.02]
-        assert_allclose(
-            theo.compute_convergence(
-                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_tangential_shear(
-                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(
-                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
-            ),
-            np.zeros(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification(
-                radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
-            ),
-            np.ones(len(z_src)),
-            1.0e-10,
-        )
-        assert_allclose(
-            theo.compute_magnification_bias(
-                radius,
-                alpha=-1,
-                mdelta=1.0e15,
-                cdelta=4.0,
-                z_cluster=z_cluster,
-                z_src=z_src,
-                cosmo=cosmo,
-            ),
-            np.ones(len(z_src)),
-            1.0e-10,
-        )
+            # Second, check a single radius and array of source z
+            radius = 1.0
+            z_src = [0.25, 0.1, 0.14, 0.02]
+            assert_allclose(
+                func(
+                    radius, mdelta=1.0e15, cdelta=4.0, z_cluster=z_cluster, z_src=z_src, cosmo=cosmo
+                ),
+                value * np.ones(len(radius)),
+                1.0e-10,
+            )
 
         # Object Oriented tests
         mod = theo.Modeling()
