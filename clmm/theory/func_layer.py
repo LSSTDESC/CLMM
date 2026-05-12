@@ -1366,8 +1366,8 @@ def compute_excess_surface_density_triaxial(
     validate_input=True,
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
-    or constant quadrupole component given in Shin et al. 2018
-    (https://doi.org/10.1093/mnras/stx3366)
+    or constant quadrupole component given in
+    Shin et al. 2018 <https://doi.org/10.1093/mnras/stx3366>`_.
 
     Parameters
     ----------

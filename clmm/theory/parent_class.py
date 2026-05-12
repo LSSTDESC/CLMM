@@ -913,7 +913,9 @@ class CLMModeling:
         verbose=False,
         n_grid=10000,
     ):
-        r"""Compute the individual terms in the quadrupole expansion of the excess surface density.
+        r"""Compute the excess surface density lensing profile for the
+        monopole, 4theta quadrupole, or constant quadrupole component given in
+        Shin et al. 2018 <https://doi.org/10.1093/mnras/stx3366>`_.
 
         Parameters
         ----------
