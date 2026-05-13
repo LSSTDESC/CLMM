@@ -92,9 +92,9 @@ def excess_surface_density_mono_correction(surface_density_func, r_proj, z_cl, e
     Compute the ellipticity correction for the monopole term:
 
     .. math::
-        \Sigma_0(R) - \Sigma_{\rm sph}(R) = \Sigma_{\rm sph}(R)\left[\dfrac{\epsilon^2}{2} \left(\eta(R) +
-        \dfrac{\eta(R)^2}{2} + \frac{1}{2}\dfrac{\mathrm{d} \eta(R)}{\mathrm{d}\ln R} \right)
-        \right] + \mathcal{O}( \epsilon^3 )
+        \Sigma_0(R) - \Sigma_{\rm sph}(R) = \Sigma_{\rm sph}(R)\left[\dfrac{\epsilon^2}{2}
+        \left(\eta(R) + \dfrac{\eta(R)^2}{2} + \frac{1}{2}\dfrac{\mathrm{d} \eta(R)}{\mathrm{d}\ln
+        R} \right) \right] + \mathcal{O}( \epsilon^3 )
 
 
     Parameters
