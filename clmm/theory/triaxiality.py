@@ -89,7 +89,13 @@ def _sigma0_correction(ell, sigma_sph, eta, deta_dlnr):
 
 def excess_surface_density_mono_correction(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
     r"""
-    Compute the ellipticity correction for the monopole term.
+    Compute the ellipticity correction for the monopole term:
+
+    .. math::
+        \Sigma_0(R) - \Sigma_{\rm sph}(R) = \Sigma_{\rm sph}(R)\left[\dfrac{\epsilon^2}{2} \left(\eta(R) +
+        \dfrac{\eta(R)^2}{2} + \frac{1}{2}\dfrac{\mathrm{d} \eta(R)}{\mathrm{d}\ln R} \right)
+        \right] + \mathcal{O}( \epsilon^3 )
+
 
     Parameters
     ----------
@@ -134,7 +140,27 @@ def excess_surface_density_mono_correction(surface_density_func, r_proj, z_cl, e
 
 def excess_surface_density_quad_4theta(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
     r"""
-    Compute the 4theta component of the quadrupole term.
+    Compute the 4theta component of the quadrupole term:
+
+    .. math::
+        \Delta\Sigma^{4\theta} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \left( \gamma_1(R,\theta)\cos{4\theta} + \gamma_2(R,\theta) \sin{4\theta} \right) \\ =
+        \frac{\Sigma_2}{2} - \frac{3}{R^4}\int_0^R \mathrm{d}R' R'^3 \Sigma_2 (R')
+
+    where :math:`\Sigma_2` come from multipole coefficients of :math:`\Sigma(R, \theta)`:
+
+    .. math::
+        \Sigma_2(R) = - \epsilon \eta(R) \Sigma_{\rm sph} (R) \cos({2\theta_0}) + \mathcal{O}(
+        \epsilon^3 ),
+
+    with:
+
+    .. math::
+        \eta(R) = \frac{\mathrm{d} \ln{\Sigma_{\rm sph}(R)}} {\mathrm{d} \ln{R}},\;
+        \epsilon = \dfrac{1-q}{1+q}
+
+    and :math:`\theta_0` being the polar angle of the major axis (:math:`\theta_0=0` when we
+    align the major axis to the :math:`x`-axis).
 
     Parameters
     ----------
@@ -170,7 +196,27 @@ def excess_surface_density_quad_4theta(surface_density_func, r_proj, z_cl, ell, 
 
 def excess_surface_density_quad_const(surface_density_func, r_proj, z_cl, ell, n_grid=10000):
     r"""
-    Compute the constant component of the quadrupole term.
+    Compute the constant component of the quadrupole term:
+
+    .. math::
+        \Delta\Sigma^{\rm const} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \gamma_1(R,\theta) = \frac{\Sigma_2}{2} - \int_R^{\infty} \mathrm{d} R'
+        \frac{\Sigma_2(R')}{R'}
+
+    where :math:`\Sigma_2` come from multipole coefficients of :math:`\Sigma(R, \theta)`:
+
+    .. math::
+        \Sigma_2(R) = - \epsilon \eta(R) \Sigma_{\rm sph} (R) \cos({2\theta_0}) + \mathcal{O}(
+        \epsilon^3 ),
+
+    with:
+
+    .. math::
+        \eta(R) = \frac{\mathrm{d} \ln{\Sigma_{\rm sph}(R)}} {\mathrm{d} \ln{R}},\;
+        \epsilon = \dfrac{1-q}{1+q}
+
+    and :math:`\theta_0` being the polar angle of the major axis (:math:`\theta_0=0` when we
+    align the major axis to the :math:`x`-axis).
 
     Parameters
     ----------

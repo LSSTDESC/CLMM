@@ -1367,7 +1367,43 @@ def compute_excess_surface_density_triaxial(
 ):
     r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
     or constant quadrupole component given in
-    `Shin et al. 2018 <https://doi.org/10.1093/mnras/stx3366>`_.
+    `Shin et al. 2018 <https://doi.org/10.1093/mnras/stx3366>`_:
+
+    .. math::
+        \Delta\Sigma^{\rm mono} (R) \equiv \frac{2}{R^2}\int_0^R \mathrm{d} R' \Sigma_0(R') -
+        \Sigma_0(R)
+
+    .. math::
+        \Delta\Sigma^{4\theta} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \left( \gamma_1(R,\theta)\cos{4\theta} + \gamma_2(R,\theta) \sin{4\theta} \right) \\ =
+        \frac{\Sigma_2}{2} - \frac{3}{R^4}\int_0^R \mathrm{d}R' R'^3 \Sigma_2 (R')
+
+    .. math::
+        \Delta\Sigma^{\rm const} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \gamma_1(R,\theta) = \frac{\Sigma_2}{2} - \int_R^{\infty} \mathrm{d} R'
+        \frac{\Sigma_2(R')}{R'}
+
+    where :math:`\Sigma_0,\; \Sigma_2` come from multipole coefficients of :math:`\Sigma(R,
+    \theta)`:
+
+    .. math::
+        \Sigma_0(R) = \Sigma_{\rm sph}(R)\left[1 + \dfrac{\epsilon^2}{2} \left(\eta(R) +
+        \dfrac{\eta(R)^2}{2} + \frac{1}{2}\dfrac{\mathrm{d} \eta(R)}{\mathrm{d}\ln R} \right)
+        \right] + \mathcal{O}( \epsilon^3 )
+
+    .. math::
+        \Sigma_2(R) = - \epsilon \eta(R) \Sigma_{\rm sph} (R) \cos({2\theta_0}) + \mathcal{O}(
+        \epsilon^3 ),
+
+
+    with:
+
+    .. math::
+        \eta(R) = \frac{\mathrm{d} \ln{\Sigma_{\rm sph}(R)}} {\mathrm{d} \ln{R}},\;
+        \epsilon = \dfrac{1-q}{1+q}
+
+    and :math:`\theta_0` being the polar angle of the major axis (:math:`\theta_0=0` when we
+    align the major axis to the :math:`x`-axis).
 
     Parameters
     ----------
