@@ -65,21 +65,23 @@ def compute_tangential_and_cross_components(
         \tan\phi = & \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
     The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are
-    calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` of the
-    source galaxies, following Eq.7 and Eq.8 in Schrabback et al. (2018), arXiv:1611:03866 which
-    is consistent with arXiv:0509252
+    calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` of the source
+    galaxies, following Eq.7 and Eq.8 in `Schrabback et al. 2017
+    <https://doi.org/10.1093/mnras/stx2666>`_ which is consistent with `Schneier 2006
+    <https://doi.org/10.1007/978-3-540-30310-7_3>`_:
 
     .. math::
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`, 
-    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` 
-    of the source galaxies, following Eq.31 and Eq.34 in Shin et al. (2018), arXiv:1705.11167. 
+    The quadrupole ellipticity/shear components, :math:`g_4theta` and :math:`g_const`,
+    are also calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2`
+    of the source galaxies, following Eq.31 and Eq.34 in `Shin et al. (2018)
+    <https://doi.org/10.1093/mnras/stx3366>`_.
 
     .. math::
-        g_4theta =& \left( g_1\cos\left(4\phi\right)+g_2\sin\left(4\phi\right)\right)\\
-        g_const =& g_1
+        g_{4\theta} =& \left( g_1\cos\left(4\phi\right)+g_2\sin\left(4\phi\right)\right)\\
+        g_{\rm const} =& g_1
 
     Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate
     of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
@@ -107,7 +109,8 @@ def compute_tangential_and_cross_components(
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     coordinate_system: str, optional
         Coordinate system of the ellipticity components. Must be either `celestial` or
-        `euclidean`. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
+        `euclidean`. See `Rowe et al. 2015 <https://doi.org/10.48550/arXiv.1407.7676>`_ section 5.1
+        for more details.
         Default is `euclidean`.
     geometry: str, optional
         Sky geometry to compute angular separation.
@@ -119,9 +122,10 @@ def compute_tangential_and_cross_components(
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         Used only when is_deltasigma=True.
     include_quadrupole: bool
-        If `True`, the quadrupole shear components (g_4theta, g_const; Shin+2018) are calculated
+        If `True`, the quadrupole shear components (:math:`g_{4\theta},\; g_{\rm const}`) are
+        calculated .
     phi_major : float, optional
-        Direction of the major axis of the input cluster in the unit of radian. 
+        Direction of the major axis of the input cluster in the unit of radian.
         only needed when `include_quadrupole` is `True`.
         This quantity is always in Euclidean coordinates, for celestial coordinates only set
         the coordinate_system=`celestial`.
@@ -410,9 +414,10 @@ def _compute_lensing_angles_flatsky(
     dec_source_list: array
         Declinations of each source galaxy in degrees
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either `celestial` or
+        `euclidean`. See `Rowe et al. 2015 <https://doi.org/10.48550/arXiv.1407.7676>`_ section 5.1
+        for more details.
+        Default is `euclidean`.
 
     Returns
     -------
@@ -460,9 +465,10 @@ def _compute_lensing_angles_astropy(
     dec_source_list: array
         Declinations of each source galaxy in degrees
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either `celestial` or
+        `euclidean`. See `Rowe et al. 2015 <https://doi.org/10.48550/arXiv.1407.7676>`_ section 5.1
+        for more details.
+        Default is `euclidean`.
 
     Returns
     -------
@@ -675,9 +681,10 @@ def make_radial_profile(
         Array of individual galaxy weights. If specified, the radial binned profile is
         computed using a weighted average
     coordinate_system: str, optional
-        Coordinate system of the ellipticity components. Must be either 'celestial' or
-        euclidean'. See https://doi.org/10.48550/arXiv.1407.7676 section 5.1 for more details.
-        Default is 'euclidean'.
+        Coordinate system of the ellipticity components. Must be either `celestial` or
+        `euclidean`. See `Rowe et al. 2015 <https://doi.org/10.48550/arXiv.1407.7676>`_ section 5.1
+        for more details.
+        Default is `euclidean`.
     empty_bins_value: float, None
         Values to be assigned to empty bins.
 
