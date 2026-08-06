@@ -37,11 +37,11 @@ def test_unimplemented(modeling_data):
         0.3,
         (0.6, 0.4),
         "beta",
-        "order1",
+        "type1",
     )
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
     assert_raises(
-        NotImplementedError, mod.eval_magnification, [0.3], 0.3, (0.6, 0.4), "beta", "order1"
+        NotImplementedError, mod.eval_magnification, [0.3], 0.3, (0.6, 0.4), "beta", "type1"
     )
     assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 3.0)
     assert_raises(
@@ -52,7 +52,7 @@ def test_unimplemented(modeling_data):
         (0.6, 0.4),
         3.0,
         "beta",
-        "order1",
+        "type1",
     )
 
 

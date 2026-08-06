@@ -663,6 +663,16 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg["cosmo"]
 
+    _gt_type0 = lambda beta_s_mean, gammat_inf, kappa_inf: (
+        beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)
+    )
+    _gt_type1 = lambda beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf: (
+        beta_s_mean * gammat_inf / (1.0 - beta_s_square_mean / beta_s_mean * kappa_inf)
+    )
+    _gt_type2 = lambda beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf: (
+        (1.0 + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0) * beta_s_mean * kappa_inf)
+        * (beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf))
+    )
     if profile_init == "nfw" or modeling_data["nick"] in ["nc", "ccl"]:
         if profile_init == "nfw":
             reltol = modeling_data["theory_reltol"]
@@ -793,14 +803,14 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             theo.compute_reduced_tangential_shear,
             cosmo=cosmo,
             **cfg_inf["GAMMA_PARAMS"],
-            approx="order1",
+            approx="type1",
         )
         assert_raises(
             ValueError,
             theo.compute_magnification,
             cosmo=cosmo,
             **cfg_inf["GAMMA_PARAMS"],
-            approx="order1",
+            approx="type1",
         )
         assert_raises(
             ValueError,
@@ -808,7 +818,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             cosmo=cosmo,
             **cfg_inf["GAMMA_PARAMS"],
             alpha=2,
-            approx="order1",
+            approx="type1",
         )
 
         # test z_src_info = 'beta'
@@ -830,31 +840,33 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         )
 
         # reduced tangential shear
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order1"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type0"
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf),
+            _gt_type0(beta_s_mean, gammat_inf, kappa_inf),
             1.0e-10,
         )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order2"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
-            (
-                1.0
-                + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0) * beta_s_mean * kappa_inf
-            )
-            * (beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)),
+            _gt_type1(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
+            1.0e-10,
+        )
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
+            _gt_type2(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
             1.0e-10,
         )
 
         # magnification
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order1"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
         assert_allclose(
             theo.compute_magnification(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
             1 + 2 * beta_s_mean * kappa_inf,
             1.0e-10,
         )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order2"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
         assert_allclose(
             theo.compute_magnification(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"]),
             1
@@ -865,13 +877,13 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         )
 
         # magnification bias
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order1"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type1"
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"], alpha=alpha),
             1 + (alpha - 1) * (2 * beta_s_mean * kappa_inf),
             1.0e-10,
         )
-        cfg_inf["GAMMA_PARAMS"]["approx"] = "order2"
+        cfg_inf["GAMMA_PARAMS"]["approx"] = "type2"
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"], alpha=alpha),
             1
@@ -1101,20 +1113,16 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # Validate reduced tangential shear
         assert_allclose(
             mod.eval_reduced_tangential_shear(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "order1"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type1"
             ),
-            beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf),
+            _gt_type1(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
             1.0e-10,
         )
         assert_allclose(
             mod.eval_reduced_tangential_shear(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "order2"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type2"
             ),
-            (
-                1.0
-                + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.0) * beta_s_mean * kappa_inf
-            )
-            * (beta_s_mean * gammat_inf / (1.0 - beta_s_mean * kappa_inf)),
+            _gt_type2(beta_s_mean, beta_s_square_mean, gammat_inf, kappa_inf),
             1.0e-10,
         )
 
@@ -1122,14 +1130,14 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         alpha = -1.78
         assert_allclose(
             mod.eval_magnification(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "order1"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type1"
             ),
             1 + 2 * beta_s_mean * kappa_inf,
             1.0e-10,
         )
         assert_allclose(
             mod.eval_magnification(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "order2"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), "beta", "type2"
             ),
             1
             + 2 * beta_s_mean * kappa_inf
@@ -1141,14 +1149,14 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # Validate magnification bias
         assert_allclose(
             mod.eval_magnification_bias(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "order1"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "type1"
             ),
             1 + (alpha - 1) * (2 * beta_s_mean * kappa_inf),
             1.0e-10,
         )
         assert_allclose(
             mod.eval_magnification_bias(
-                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "order2"
+                *profile_pars[:2], (beta_s_mean, beta_s_square_mean), alpha, "beta", "type2"
             ),
             1
             + (alpha - 1) * (2 * beta_s_mean * kappa_inf)
@@ -1304,7 +1312,7 @@ def test_mass_conversion(modeling_data, profile_init):
 def test_delta_mdef_virial(modeling_data):
     if modeling_data["nick"] in ["nc", "ccl"]:
         cfg = load_validation_config()
-        cosmo = cfg['cosmo']
+        cosmo = cfg["cosmo"]
         mod = theo.Modeling(massdef="virial")
         mod.set_cosmo(cosmo)
         assert_equal(mod._get_delta_mdef(0.1), 111)
