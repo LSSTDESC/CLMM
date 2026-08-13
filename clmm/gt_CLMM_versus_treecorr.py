@@ -21,7 +21,7 @@ from clmm import ClusterEnsemble, Cosmology
 from clmm.support import mock_data as mock
 from clmm.utils.redshift_distributions import desc_srd
 
-from jk_kmeans import jk_cov
+from clmm.jk_kmeans import jk_cov
 
 PLOTS_DIR = "./plots/"
 os.makedirs(PLOTS_DIR, exist_ok=True)
@@ -143,9 +143,9 @@ def bivariate_draw(
 # Draw N=30 (M,z) pairs
 
 # Define the numbers of pairs to draw and the mass and redshift ranges
-N = 100
-logm_min = 14.5
-logm_max = 14.8
+N = 10000
+logm_min = 14.0
+logm_max = 15.0
 zmin = 0.2
 zmax = 0.3
 
@@ -540,4 +540,15 @@ ax.set_xscale('log')
 ax.set_yscale('log')
 plt.legend()
 fig.savefig(os.path.join(PLOTS_DIR, "error_comparison.png"))
+plt.close(fig)
+
+fig, ax = plt.subplots()
+ax.scatter(km_err_gt, err_gt)
+ax.plot([0, 0.007], [0, 0.007], "k:")
+ax.set_xlabel("Error from kmeans")
+ax.set_ylabel("Error from healpy")
+ax.set_xscale('log')
+ax.set_yscale('log')
+plt.legend()
+fig.savefig(os.path.join(PLOTS_DIR, "kmeans_healpy_error_comparison.png"))
 plt.close(fig)
