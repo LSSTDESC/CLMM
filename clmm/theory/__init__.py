@@ -15,6 +15,7 @@ from .func_layer import (
     compute_critical_surface_density_eff,
     compute_excess_surface_density,
     compute_excess_surface_density_2h,
+    compute_excess_surface_density_triaxial,
     compute_magnification,
     compute_magnification_bias,
     compute_mean_surface_density,
