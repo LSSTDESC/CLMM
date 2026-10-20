@@ -221,3 +221,43 @@ def test_covariance():
     assert_equal(ce.cov["cross_sc"].shape, ce2.cov["cross_sc"].shape)
     assert_equal(ce.cov["cross_bs"].shape, ce2.cov["cross_bs"].shape)
     assert_equal(ce.cov["cross_jk"].shape, ce2.cov["cross_jk"].shape)
+
+
+def test_jackknife_regions():
+    """test the healpix and k-means regions of the jackknife covariance"""
+    rng = np.random.default_rng(0)
+    n_clusters, n_bins = 40, 5
+    ce = ClusterEnsemble("jk")
+    ce.data = GCData(
+        {
+            "id": np.arange(n_clusters),
+            "ra": rng.uniform(0.0, 30.0, n_clusters),
+            "dec": rng.uniform(-10.0, 10.0, n_clusters),
+            "z": np.full(n_clusters, 0.3),
+            "radius": np.tile(np.arange(1.0, n_bins + 1.0), (n_clusters, 1)),
+            "gt": rng.normal(size=(n_clusters, n_bins)),
+            "gx": rng.normal(size=(n_clusters, n_bins)),
+            "W_l": np.ones((n_clusters, n_bins)),
+        }
+    )
+
+    # one region per cluster: k-means and fine healpix pixels both give leave-one-out
+    ce.compute_jackknife_covariance(n_side=1024)
+    tan_jk_healpix = ce.cov["tan_jk"]
+    ce.compute_jackknife_covariance(centers=np.column_stack([ce.data["ra"], ce.data["dec"]]))
+    assert_allclose(ce.cov["tan_jk"], tan_jk_healpix, **TOLERANCE)
+
+    # k-means regions computed from the clusters, reproducible with a seed
+    ce.compute_jackknife_covariance(n_regions=8, seed=11)
+    tan_jk_kmeans = ce.cov["tan_jk"]
+    assert_equal(tan_jk_kmeans.shape, (n_bins, n_bins))
+    assert_equal(ce.cov["cross_jk"].shape, (n_bins, n_bins))
+    ce.compute_jackknife_covariance(n_regions=8, seed=11)
+    assert_equal(ce.cov["tan_jk"], tan_jk_kmeans)
+
+    # shared regions with no clusters in them are skipped
+    centers = clmm.utils.compute_kmeans_centers(ce.data["ra"], ce.data["dec"], 8, seed=11)
+    ce.compute_jackknife_covariance(centers=np.vstack([centers, [[200.0, 50.0]]]))
+    assert_allclose(ce.cov["tan_jk"], tan_jk_kmeans, **TOLERANCE)
+
+    assert_raises(ValueError, ce.compute_jackknife_covariance, n_regions=8, centers=centers)

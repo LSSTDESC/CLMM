@@ -10,7 +10,7 @@ import numpy as np
 
 from .dataops import make_stacked_radial_profile
 from .gcdata import GCData
-from .utils import DiffArray
+from .utils import DiffArray, assign_kmeans_regions, compute_kmeans_centers
 
 
 class ClusterEnsemble:
@@ -328,11 +328,22 @@ class ClusterEnsemble:
         self.cov["tan_bs"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
         self.cov["cross_bs"] = coeff * np.cov(np.array(gx_boot), bias=False)
 
-    def compute_jackknife_covariance(self, tan_component="gt", cross_component="gx", n_side=16):
+    def compute_jackknife_covariance(
+        self,
+        tan_component="gt",
+        cross_component="gx",
+        n_side=16,
+        n_regions=None,
+        centers=None,
+        seed=None,
+    ):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
         tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_jk`).
 
-        Uses healpix sky area sub-division : https://healpix.sourceforge.io
+        The sky is divided into regions, and each region containing clusters is removed in
+        turn. By default, the regions are healpix pixels (https://healpix.sourceforge.io).
+        If `n_regions` or `centers` is given, they are k-means regions instead: each cluster
+        belongs to the region of its nearest center.
 
         Parameters
         ----------
@@ -343,17 +354,37 @@ class ClusterEnsemble:
             Name of the cross component column in `data`.
             Default: 'gx'
         n_side : int
-            healpix sky area division parameter (number of sky area : 12*n_side^2)
+            healpix sky area division parameter (number of sky area : 12*n_side^2).
+            Only used for healpix regions.
+        n_regions : int, None, optional
+            Number of k-means regions computed from the cluster positions with
+            `clmm.utils.compute_kmeans_centers` (requires `kmeans_radec`). Default: None
+        centers : array_like, None, optional
+            Centers (ra, dec) in degrees of predefined k-means regions, shape (n, 2),
+            e.g. to use the same regions for several ensembles. Default: None
+        seed : int, None, optional
+            Seed for the k-means initialisation when `n_regions` is given. Default: None
         """
         # may induce artificial noise if there are some healpix pixels
         # not covering entirely the 2D map of clusters
         self._check_empty_data()
 
-        pixels = healpy.ang2pix(n_side, self.data["ra"], self.data["dec"], nest=True, lonlat=True)
-        pixels_list_unique = np.unique(pixels)
+        if n_regions is not None and centers is not None:
+            raise ValueError("Only one of n_regions and centers can be given.")
+        if n_regions is not None:
+            centers = compute_kmeans_centers(
+                self.data["ra"], self.data["dec"], n_regions, seed=seed
+            )
+        if centers is None:
+            regions = healpy.ang2pix(
+                n_side, self.data["ra"], self.data["dec"], nest=True, lonlat=True
+            )
+        else:
+            regions = assign_kmeans_regions(self.data["ra"], self.data["dec"], centers)
+        regions_list_unique = np.unique(regions)
         gt_jack, gx_jack = [], []
-        for hp_list_delete in pixels_list_unique:
-            mask = ~np.isin(pixels, hp_list_delete)
+        for region_delete in regions_list_unique:
+            mask = ~np.isin(regions, region_delete)
             gt, gx = make_stacked_radial_profile(
                 self["radius"][mask],
                 self["W_l"][mask],
@@ -361,7 +392,7 @@ class ClusterEnsemble:
             )[1]
             gt_jack.append(gt)
             gx_jack.append(gx)
-        n_jack = pixels_list_unique.size
+        n_jack = regions_list_unique.size
         coeff = (n_jack - 1) ** 2 / (n_jack)
         self.cov["tan_jk"] = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)
         self.cov["cross_jk"] = coeff * np.cov(np.transpose(gx_jack), bias=False, ddof=0)

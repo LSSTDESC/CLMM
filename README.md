@@ -55,6 +55,10 @@ CLMM has the following dependencies:
 - [healpy](https://healpy.readthedocs.io/en/latest/index.html)
 - [qp-prob](https://github.com/LSSTDESC/qp)
 
+Optional:
+
+- [kmeans_radec](https://github.com/esheldon/kmeans_radec) (to compute k-means jackknife regions)
+
 ### Back-ends <a name="backends"></a>
 
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:

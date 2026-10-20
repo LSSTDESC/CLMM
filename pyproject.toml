@@ -88,6 +88,7 @@ ignored-modules = [
     "gi.repository.NumCosmo",
     "gi.repository.NumCosmoMath",
     "healpy",
+    "kmeans_radec",
     "matplotlib",
     "matplotlib.pyplot",
     "numpy",

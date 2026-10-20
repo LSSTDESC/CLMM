@@ -69,6 +69,13 @@ Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll al
 
 Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
 
+### Optional dependencies
+To compute k-means jackknife regions (`clmm.utils.compute_kmeans_centers`, or `ClusterEnsemble.compute_jackknife_covariance` with `n_regions`), install kmeans_radec:
+
+```bash
+    pip install git+https://github.com/esheldon/kmeans_radec.git
+```
+
 ## Developer installation <a name="dev_install"></a>
 
 Here we provide a quick guide for a developer instalation, using `environment.yml` to create a suitable conda environment and install all necessary packages.

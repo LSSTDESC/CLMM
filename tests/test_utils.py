@@ -1,5 +1,7 @@
 # pylint: disable=no-member, protected-access
 """ Tests for utils.py """
+import sys
+
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from scipy.integrate import quad
@@ -634,3 +636,39 @@ def test_beta_functions(modeling_data):
         ),
         **TOLERANCE
     )
+
+
+def test_assign_kmeans_regions():
+    """Test the assignment of points to the nearest region center"""
+    centers = [[1.0, 0.0], [180.0, 0.0], [0.0, 89.0]]
+    # points near ra=0 on both sides of the wrap, the opposite side, and the pole
+    ra = [359.5, 0.5, 170.0, 100.0]
+    dec = [0.0, 0.0, 10.0, 85.0]
+    assert_equal(utils.assign_kmeans_regions(ra, dec, centers), [0, 0, 1, 2])
+    # a single center gets every point
+    assert_equal(utils.assign_kmeans_regions(ra, dec, [10.0, 0.0]), [0, 0, 0, 0])
+
+
+def test_compute_kmeans_centers(monkeypatch):
+    """Test the k-means region centers"""
+    rng = np.random.default_rng(1)
+    ra = rng.uniform(0.0, 360.0, 500)
+    dec = np.degrees(np.arcsin(rng.uniform(-1.0, 1.0, 500)))
+
+    centers = utils.compute_kmeans_centers(ra, dec, 10, seed=11)
+    assert_equal(centers.shape, (10, 2))
+    # every region gets points
+    assert_equal(np.unique(utils.assign_kmeans_regions(ra, dec, centers)).size, 10)
+    # reproducible with a seed, without changing the global random state
+    state = np.random.get_state()[1].copy()
+    assert_equal(utils.compute_kmeans_centers(ra, dec, 10, seed=11), centers)
+    assert_equal(np.random.get_state()[1], state)
+    # as many regions as points
+    assert_equal(utils.compute_kmeans_centers(ra[:5], dec[:5], 5, seed=11).shape, (5, 2))
+
+    assert_raises(ValueError, utils.compute_kmeans_centers, ra, dec, 0)
+    assert_raises(ValueError, utils.compute_kmeans_centers, ra[:5], dec[:5], 6)
+
+    # kmeans_radec is optional
+    monkeypatch.setitem(sys.modules, "kmeans_radec", None)
+    assert_raises(ImportError, utils.compute_kmeans_centers, ra, dec, 10)

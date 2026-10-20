@@ -28,3 +28,4 @@ dependencies:
     - black-configparser
     - qp-prob @ git+https://github.com/LSSTDESC/qp.git
     - cluster-toolkit @ git+https://github.com/tmcclintock/cluster_toolkit.git
+    - kmeans_radec @ git+https://github.com/esheldon/kmeans_radec.git
