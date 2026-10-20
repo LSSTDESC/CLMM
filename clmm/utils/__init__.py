@@ -22,6 +22,7 @@ from .ellipticity import (
     compute_lensed_ellipticity,
     convert_shapes_to_epsilon,
 )
+from .jackknife import assign_kmeans_regions, compute_kmeans_centers
 from .redshift_tools import _integ_pzfuncs, compute_for_good_redshifts
 from .statistic import (
     _draw_random_points_from_distribution,
