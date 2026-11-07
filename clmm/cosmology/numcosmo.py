@@ -40,9 +40,6 @@ class NumCosmoCosmology(CLMMCosmology):
         # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = "nc"
 
-        # set kmin/kmax for powerspectrum computations
-        self.additional_config["pk_kmin"] = 1.0e-5
-        self.additional_config["pk_kmax"] = 1.0
         self.additional_config["ns"] = 0.96
         self.additional_config["sigma8"] = 0.8
         self.additional_config["sigma8_eps"] = 1e-8
@@ -165,8 +162,6 @@ class NumCosmoCosmology(CLMMCosmology):
         pow_spec = Nc.PowspecMLTransfer.new(
             Nc.TransferFuncEH.new()  # pylint: disable=no-value-for-parameter
         )
-        pow_spec.set_kmin(self.additional_config["pk_kmin"])
-        pow_spec.set_kmax(self.additional_config["pk_kmax"])
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
         # pow_spec  = Nc.PowspecMLCBE.new ()
@@ -181,12 +176,10 @@ class NumCosmoCosmology(CLMMCosmology):
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
             self.be_cosmo.prim.props.n_SA = self.additional_config["ns"]
-            sigma8 = pow_spec.sigma_tophat_R(  # computes sigma8 at z=0
-                self.be_cosmo,
-                self.additional_config["sigma8_eps"],
-                0.0,
-                8.0 / self.be_cosmo.h(),
-            )
+            # sigma8 at z=0, integrated over the default k range of pow_spec
+            psf = Ncm.PowspecFilter.new(pow_spec, Ncm.PowspecFilterType.TOPHAT)
+            psf.set_reltol(self.additional_config["sigma8_eps"])
+            sigma8 = self.be_cosmo.sigma8(psf)
             old_amplitude = np.exp(self.be_cosmo.prim.props.ln10e10ASA)
             self.be_cosmo.prim.props.ln10e10ASA = np.log(
                 (self.additional_config["sigma8"] / sigma8) ** 2 * old_amplitude
