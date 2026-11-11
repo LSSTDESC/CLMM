@@ -1344,3 +1344,157 @@ def compute_magnification_bias(
 
     _modeling_object.validate_input = True
     return magnification_bias
+
+
+def compute_excess_surface_density_triaxial(
+    r_proj,
+    mdelta,
+    cdelta,
+    z_cl,
+    ell,
+    cosmo,
+    term,
+    n_grid=10000,
+    delta_mdef=200,
+    halo_profile_model="nfw",
+    massdef="mean",
+    alpha_ein=None,
+    r_mis=None,
+    mis_from_backend=False,
+    verbose=False,
+    use_projected_quad=False,
+    validate_input=True,
+):
+    r"""Compute the excess surface density lensing profile for the monopole, 4theta quadrupole,
+    or constant quadrupole component given in
+    `Shin et al. 2018 <https://doi.org/10.1093/mnras/stx3366>`_:
+
+    .. math::
+        \Delta\Sigma^{\rm mono} (R) \equiv \frac{2}{R^2}\int_0^R \mathrm{d} R' \Sigma_0(R') -
+        \Sigma_0(R)
+
+    .. math::
+        \Delta\Sigma^{4\theta} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \left( \gamma_1(R,\theta)\cos{4\theta} + \gamma_2(R,\theta) \sin{4\theta} \right) \\ =
+        \frac{\Sigma_2}{2} - \frac{3}{R^4}\int_0^R \mathrm{d}R' R'^3 \Sigma_2 (R')
+
+    .. math::
+        \Delta\Sigma^{\rm const} (R) \equiv \frac{\Sigma_{\rm crit}}{2\pi} \int \mathrm{d}\theta
+        \gamma_1(R,\theta) = \frac{\Sigma_2}{2} - \int_R^{\infty} \mathrm{d} R'
+        \frac{\Sigma_2(R')}{R'}
+
+    where :math:`\Sigma_0,\; \Sigma_2` come from multipole coefficients of :math:`\Sigma(R,
+    \theta)`:
+
+    .. math::
+        \Sigma_0(R) = \Sigma_{\rm sph}(R)\left[1 + \dfrac{\epsilon^2}{2} \left(\eta(R) +
+        \dfrac{\eta(R)^2}{2} + \frac{1}{2}\dfrac{\mathrm{d} \eta(R)}{\mathrm{d}\ln R} \right)
+        \right] + \mathcal{O}( \epsilon^3 )
+
+    .. math::
+        \Sigma_2(R) = - \epsilon \eta(R) \Sigma_{\rm sph} (R) \cos({2\theta_0}) + \mathcal{O}(
+        \epsilon^3 ),
+
+
+    with:
+
+    .. math::
+        \eta(R) = \frac{\mathrm{d} \ln{\Sigma_{\rm sph}(R)}} {\mathrm{d} \ln{R}},\;
+        \epsilon = \dfrac{1-q}{1+q}
+
+    and :math:`\theta_0` being the polar angle of the major axis (:math:`\theta_0=0` when we
+    align the major axis to the :math:`x`-axis).
+
+    Parameters
+    ----------
+    r_source : array
+        Radial distance of each source galaxy
+    mdelta : float
+        Mass of lens cluster
+    cdelta : array
+        Concentration of lens cluster
+    z_cluster : float
+        Redshift of lens cluster
+    ell : float
+        Ellipticity of halo defined by e = (1-q)/(1+q), q is the axis ratio.
+        q=b/a (Ratio of major axis to the minor axis lengths)
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    term : str
+        The component of the Taylor expansion to return as described in Shin et al. 2018.
+        Must be in : 'mono', 'quad_4theta', 'quad_const'
+        - 'mono' : the ellipticity corrected monopole term
+        - 'quad_4theta' : the 4theta component of the quadrupole term
+        - 'quad_const' : the constant component of the quadrupole term
+    n_grid : int
+        Grid resolution for functions to be computed on.
+        Too low n_grid can lead to large deviations.
+    delta_mdef : int, optional
+        Mass overdensity definition; defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * ``nfw`` (default)
+            * ``einasto`` - not in cluster_toolkit
+            * ``hernquist`` - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * ``mean`` (default)
+            * ``critical``
+            * ``virial``
+
+    alpha_ein : float, None, optional
+        If ``halo_profile_model=='einasto'``, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+
+    r_mis : float, optional
+        Projected miscenter distance in :math:`M\!pc`
+    mis_from_backend : bool, optional
+        If True, use the projected surface density from the backend for miscentering
+        calculations. If False, use the (faster) CLMM exact analytical
+        implementation instead. (Default: False)
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
+    use_projected_quad : bool
+        Only available for Einasto profile with CCL as the backend. If True, CCL will use
+        quad_vec instead of default FFTLog to calculate the surface density profile.
+        Default: False
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+
+    Returns
+    -------
+    dsmono : array
+        Component of delta sigma excess for the elliptical halo specified
+    """
+
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
+    )
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
+    if halo_profile_model == "einasto" or alpha_ein is not None:
+        _modeling_object.set_einasto_alpha(alpha_ein)
+    if halo_profile_model == "einasto" and _modeling_object.backend == "ccl":
+        _modeling_object.set_projected_quad(use_projected_quad)
+
+    delta_sigma = _modeling_object.eval_excess_surface_density_triaxial(
+        r_proj,
+        z_cl,
+        ell,
+        term,
+        r_mis=r_mis,
+        mis_from_backend=mis_from_backend,
+        verbose=verbose,
+        n_grid=n_grid,
+    )
+
+    _modeling_object.validate_input = True
+    return delta_sigma

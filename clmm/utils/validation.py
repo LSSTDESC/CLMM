@@ -212,7 +212,7 @@ def _validate_dec(loc, dec_name, is_array):
 
 
 def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
-    r""" "Validate the compatibility between is_deltasigma and sigma_c arguments.
+    r"""Validate the compatibility between is_deltasigma and sigma_c arguments.
 
 
     Parameters
